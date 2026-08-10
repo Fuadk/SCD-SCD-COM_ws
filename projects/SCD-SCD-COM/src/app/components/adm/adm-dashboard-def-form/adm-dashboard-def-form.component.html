@@ -1,0 +1,71 @@
+<div>
+    <legend *ngIf="!componentConfig.isMaster" class="k-form-legend">{{ title }}</legend>
+
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="!isChild && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  kendoButton [icon]="'print'" title="print" (click)="printScreen()" ></kendo-toolbar-button >
+
+
+    <kendo-toolbar-button  [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="Enter Query" (click)="enterQuery( form);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'" title="Cancel"  (click)="onCancel($event)" ></kendo-toolbar-button >
+
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="First Record" (click)="goRecord( 'first');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="Previous Record"  (click)="goRecord(  'prev');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="Next Record"  (click)="goRecord('next')" *ngIf="!isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="Last Record" (click)="goRecord('last')" *ngIf="!isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf="!isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button  [icon]="'preview'" title="Preview Dashboard" (click)="openTest()"></kendo-toolbar-button>
+    
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" >
+    <fieldset class="form-fieldset"  class="k-form-fieldset">
+
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" >
+		<kendo-label class="form-label" [for]="DASHBOARD_ID" text="Dashboard Id"></kendo-label>
+		<input class="form-input" formControlName="DASHBOARD_ID" kendoTextBox #DASHBOARD_ID  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="DASHBOARD_NAME" text="Dashboard Name"></kendo-label>
+		<input class="form-input" formControlName="DASHBOARD_NAME" kendoTextBox #DASHBOARD_NAME  required 
+		
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.DASHBOARD_NAME.errors }" />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="MODULE" text="Module"></kendo-label>
+		<kendo-combobox  #MODULE class="form-field-combobox" [formControlName]="'MODULE'"
+		[data]="lkpArrMODULE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+
+
+
+    </fieldset>
+    </form>
+</kendo-pdf-export>
+</div>
+
+<kendo-dialog title="Test Dashboard" *ngIf="dashboardOpened" 
+		width="90%" height="90%"
+		(close)="dashboardClose()" >
+	<app-dsp-dashboard
+	[setComponentConfig_Input]="DSP_DASHBOARDConfig"
+	>
+
+	</app-dsp-dashboard>
+</kendo-dialog>

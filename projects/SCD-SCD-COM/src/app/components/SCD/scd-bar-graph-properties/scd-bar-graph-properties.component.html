@@ -1,0 +1,71 @@
+<div>
+        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.component_title","") }}</legend> 
+        <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
+
+<kendo-tabstrip-tab [selected]="true">
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.compsTitleID1","Common") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+        <app-scd-tp-common-screen 
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      [setComponentConfig_Input]="SCD_SHAPEForm_0Config">
+        </app-scd-tp-common-screen >
+
+    </ng-template>
+  </kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.compsTitleID2","General") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-gg-graph-general [detail_Input]="formdivs_1_SCD_GRAPH_GENERAL"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      [setComponentConfig_Input]="SCD_GRAPH_GENERALFormdivs_1Config">
+        </app-scd-gg-graph-general >
+
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.compsTitleID3","Connections") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-sc-shape-connections [detail_Input]="grid_2_SCD_SHAPE_CONNECTION"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      [setComponentConfig_Input]="SCD_SHAPE_CONNECTIONGrid_2Config">
+        </app-scd-sc-shape-connections >
+
+</ng-template>
+</kendo-tabstrip-tab>
+   </kendo-tabstrip> 
+    </div>   
+<div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
+			iconClass="fas fa-save" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_OK($event)">{{starServices.getNLS([],'OK','Ok')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'CANCEL','Cancel')"
+			iconClass="fas fa-ban" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_CANCEL($event)">{{starServices.getNLS([],'CANCEL','Cancel')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'HELP','Help')"
+			iconClass="fas fa-question" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_HELP($event)">{{starServices.getNLS([],'HELP','Help')}}</button>
+	</div>
+	
+	<kendo-window [hidden]="!helpOpened" class="form-borders" [themeColor]="'primary'" [top]="0" [left]="0" title=""
+		state="maximized" (close)="helpOpened=false">
+		<app-dsp-upload [setComponentConfig_Input]="help_1Config">
+		</app-dsp-upload>
+		<button kendoButton [icon]="'close'" (click)="helpOpened=!helpOpened">
+			{{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+	</kendo-window>
+
+	
+	

@@ -1,0 +1,12 @@
+
+    
+      .k-editor .k-toolbar {
+        display: none;
+      }
+
+ 
+.cell-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

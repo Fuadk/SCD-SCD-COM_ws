@@ -1,0 +1,49 @@
+<div style="height: calc(100vh - 200px); display: flex; flex-direction: column;">
+  <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_application_log_management.SCD_application_log_management.component_title","Application Log Management") }}</legend>
+<kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment" style="flex: 1; min-height: 0;">
+<kendo-tabstrip-tab [selected]="true">
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"SCD_application_log_management.SCD_application_log_management.compsTitleID1","Log Management") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+          <app-scd-alm-application-log-management
+			[setComponentConfig_Input]="scd_alm_application_log_management0_0Config">
+	 </app-scd-alm-application-log-management >
+    </ng-template>
+  </kendo-tabstrip-tab>
+<kendo-tabstrip-tab>
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"SCD_application_log_management.SCD_application_log_management.compsTitleID2","Log Triggers") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+          <app-scd-lt-log-triggers 
+				[setComponentConfig_Input]="scd_lt_log_triggers1_1Config">
+    </app-scd-lt-log-triggers >
+    </ng-template>
+  </kendo-tabstrip-tab>
+</kendo-tabstrip>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
+			iconClass="fas fa-save" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_OK($event)">{{starServices.getNLS([],'OK','Ok')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'CANCEL','Cancel')"
+			iconClass="fas fa-ban" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_CANCEL($event)">{{starServices.getNLS([],'CANCEL','Cancel')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'HELP','Help')"
+			iconClass="fas fa-question" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_HELP($event)">{{starServices.getNLS([],'HELP','Help')}}</button>
+	</div>
+	
+	<kendo-window [hidden]="!helpOpened" class="form-borders" [themeColor]="'primary'" [top]="0" [left]="0" title=""
+		state="maximized" (close)="helpOpened=false">
+		<app-dsp-upload [setComponentConfig_Input]="help_1Config">
+		</app-dsp-upload>
+		<button kendoButton [icon]="'close'" (click)="helpOpened=!helpOpened">
+			{{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+	</kendo-window>
+
+	
+	

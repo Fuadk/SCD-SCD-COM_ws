@@ -1,0 +1,179 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+    <kendo-grid [rowClass]="ROW_CLASS"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate>
+        <legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{ title }}</legend>
+
+
+        
+        
+        <button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isChild && !isSearch"></button >
+        <button  kendoButton [icon]="'print'" title="print" (click)="printScreen()" ></button >
+
+        
+            <button  kendoButton  title="Enter Query" (click)="enterQuery(grid);">{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);"></button >
+            <button  kendoButton [icon]="'cancel'" title="Cancel"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="!isSearch"></button >
+            <button  [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton (click)="removeHandler($event)" *ngIf="!isSearch">Remove</button >
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"  (click)="toggleColumnMenu()" *ngIf="!isSearch"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "   >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column *ngIf="false"
+	[headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('BATCH_ID') > -1)  && !primarKeyReadOnlyArr.isBATCH_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('BATCH_ID') > -1" 		 title="{{starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.BATCH_ID','Batch Id')}}"  [width]="120">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.BATCH_ID}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_BATCH_ID()"    [formControl]="formGroup.get('BATCH_ID')" [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.BATCH_ID_Hint','Please enter Batch Id')" />
+		</ng-template>
+		</kendo-grid-column>
+
+		
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FILE_NAME" title="{{starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.FILE_NAME','File Name')}}" [width]="120"     [editable]=" !(disabledColumns.indexOf('FILE_NAME') > -1)  && !primarKeyReadOnlyArr.isFILE_NAMEreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('FILE_NAME') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem> {{lkpArrGetFILE_NAME(dataItem.FILE_NAME)?.CODETEXT_LANG}} </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrFILE_NAME"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeFILE_NAME($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('FILE_NAME')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DATA_NAME" title="{{starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.DATA_NAME','Data Name')}}" [width]="150"     [editable]=" !(disabledColumns.indexOf('DATA_NAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('DATA_NAME') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem> {{lkpArrGetDATA_NAME(dataItem.DATA_NAME)?.CODETEXT_LANG}} </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrDATA_NAME"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeDATA_NAME($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('DATA_NAME')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}"  *ngIf=false  [editable]=" !(disabledColumns.indexOf('AREA_TYPE') > -1)  "
+
+		[hidden]="hiddenColumns.indexOf('AREA_TYPE') > -1" 		
+		 title="AREA_TYPE"  [width]="120">
+				<ng-template kendoGridCellTemplate let-dataItem> {{dataItem.AREA_TYPE}}</ng-template>
+			   <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+			   <input     [formControl]="formGroup.get('AREA_TYPE')" [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.AREA_TYPE_Hint','Please enter AREA_TYPE')" />
+			   </ng-template>
+			   </kendo-grid-column>
+			   
+			   <kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="MASTER_FILE" title="{{starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.MASTER_FILE','Master')}}" [width]="80"     [editable]=" !(disabledColumns.indexOf('MASTER_FILE') > -1)  "
+				[hidden]="hiddenColumns.indexOf('MASTER_FILE') > -1" >
+					   <ng-template kendoGridCellTemplate let-dataItem> {{lkpArrGetMASTER_FILE(dataItem.MASTER_FILE)?.CODETEXT_LANG}} </ng-template>
+					   <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+					   <kendo-dropdownlist  [data]="lkpArrMASTER_FILE"  textField="CODETEXT_LANG" valueField="CODE"
+						(valueChange)="valueChangeMASTER_FILE($event)" 
+					   [valuePrimitive]="true" [formControl]="formGroup.get('MASTER_FILE')">
+					   </kendo-dropdownlist>
+					   </ng-template>
+				   </kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="LINK_FIELD" title="{{starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.LINK_FIELD','Link Field')}}" [width]="150"     [editable]=" !(disabledColumns.indexOf('LINK_FIELD') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('LINK_FIELD') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem> {{lkpArrGetLINK_FIELD(dataItem.LINK_FIELD)?.CODETEXT_LANG}} </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="getlkpArrLINK_FIELD()"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeLINK_FIELD($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('LINK_FIELD')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}"  *ngIf=false  [editable]=" !(disabledColumns.indexOf('LOGNAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('LOGNAME') > -1" 		 title="{{starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.LOGNAME','Logname')}}"  [width]="120">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.LOGNAME}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_LOGNAME()"    [formControl]="formGroup.get('LOGNAME')" [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.LOGNAME_Hint','Please enter Logname')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="LOGDATE"  [width]="40"	filter="date"	 editor="date"  title="{{starServices.getNLS([],'dsp_batch_DSP_BATCH_FILES_GRID.dspbatchFilesDspBatchDspBatchFilesGrid.LOGDATE','Logdate')}}" *ngIf=false  
+ [editable]=" !(disabledColumns.indexOf('LOGDATE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('LOGDATE') > -1" 		[format]="paramConfig.DateFormat">
+		<ng-template KendoGridEditTemplate  let-dataItem>
+		<kendo-datepicker [format]="this.paramConfig.DateFormat" ngDefaultControl	 #datepicker>
+		 (valueChange)="valueChangeLOGDATE($event)"   		</kendo-datepicker>
+		</ng-template>
+		</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>

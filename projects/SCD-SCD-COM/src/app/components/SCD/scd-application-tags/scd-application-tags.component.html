@@ -1,0 +1,46 @@
+    <div>   
+        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_application_tags.scd_application_tags.component_title","") }}</legend> 
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-at-tags-grid  
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      [setComponentConfig_Input]="SCD_TAGGrid_0Config">
+        </app-scd-at-tags-grid >
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-at-tag-details  [detail_Input]="form_1_SCD_TAG"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,2)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      [setComponentConfig_Input]="SCD_TAGForm_1Config">
+        </app-scd-at-tag-details >
+
+</div>
+
+    </div>   
+<div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
+			iconClass="fas fa-save" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_OK($event)">{{starServices.getNLS([],'OK','Ok')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'CANCEL','Cancel')"
+			iconClass="fas fa-ban" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_CANCEL($event)">{{starServices.getNLS([],'CANCEL','Cancel')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'HELP','Help')"
+			iconClass="fas fa-question" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_HELP($event)">{{starServices.getNLS([],'HELP','Help')}}</button>
+	</div>
+	
+	<kendo-window [hidden]="!helpOpened" class="form-borders" [themeColor]="'primary'" [top]="0" [left]="0" title=""
+		state="maximized" (close)="helpOpened=false">
+		<app-dsp-upload [setComponentConfig_Input]="help_1Config">
+		</app-dsp-upload>
+		<button kendoButton [icon]="'close'" (click)="helpOpened=!helpOpened">
+			{{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+	</kendo-window>
+
+	
+	

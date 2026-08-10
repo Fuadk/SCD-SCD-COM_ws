@@ -1,0 +1,22 @@
+    <div>   
+        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_group_membership.scd_group_membership.component_title","") }}</legend> 
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-gm-group  
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      [setComponentConfig_Input]="SCD_GROUP_MEMBERSHIPForm_0Config">
+        </app-scd-gm-group >
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-gm-members  [detail_Input]="grid_1_SCD_GROUP_MEMBERSHIP"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,2)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      [setComponentConfig_Input]="SCD_GROUP_MEMBERSHIPGrid_1Config">
+        </app-scd-gm-members >
+
+</div>
+
+    </div>   

@@ -1,0 +1,128 @@
+<div>
+    <!-- <legend  class="k-form-legend">{{ this.starServices.getNLS([],"dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.component_title","Dsp Batch Def Dsp Batch Dsp Batch Def Form") }}</legend> -->
+<div class="form-toolbar"> </div>
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="!isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+     <kendo-toolbar-button  kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}" (click)="printScreen()" *ngIf="componentConfig.toolsShow"></kendo-toolbar-button >
+
+
+
+    <kendo-toolbar-button [disabled]="isSearch"  text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+
+<kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="!isSearch"></kendo-toolbar-button>
+<kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf="!isSearch">Remove</kendo-toolbar-button>
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled">
+
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" >
+		<kendo-label class="form-label" [for]="BATCH_ID" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.BATCH_ID','Batch Id')"></kendo-label>
+		<input class="form-input" formControlName="BATCH_ID" kendoTextBox #BATCH_ID
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.BATCH_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isBATCH_IDreadOnly" [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.BATCH_ID_Hint','Please enter Batch Id')"
+ (change)="onChange_BATCH_ID($event)"    />
+	</kendo-formfield>
+
+	<kendo-formfield  [orientation]="'horizontal'" >
+		<kendo-label class="form-label" [for]="DESCRIPTION" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.DESCRIPTION','Description')"></kendo-label>
+		<kendo-textarea kendoTextArea  style="width: auto;" resizable="both"  [rows]="2" [cols]="30"   formControlName="DESCRIPTION" #DESCRIPTION
+  [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.DESCRIPTION_Hint','Please enter Description')"  ></kendo-textarea>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" >
+		<kendo-label class="form-label" [for]="TEMPLATE_NAME" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.TEMPLATE_NAME','WorkFlow')"></kendo-label>
+		<kendo-combobox  #TEMPLATE_NAME class="form-field-combobox" [formControlName]="'TEMPLATE_NAME'"
+		[data]="lkpArrTEMPLATE_NAME" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.TEMPLATE_NAME_Hint','Please enter Tempalte Name')" (valueChange)="onValueChange_TEMPLATE_NAME($event)"   
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'TEMPLATE_NAME')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" *ngIf="false">
+		<kendo-label class="form-label" [for]="BATCH_COUNT" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.BATCH_COUNT','Batch Count')"></kendo-label>
+		<input class="form-input" formControlName="BATCH_COUNT" kendoTextBox #BATCH_COUNT  [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.BATCH_COUNT_Hint','Please enter Batch Count')"
+ (change)="onChange_BATCH_COUNT($event)"    />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" >
+		<kendo-label class="form-label" [for]="BATCH_LIMIT" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.BATCH_LIMIT','Batch Limit')"></kendo-label>
+		<input class="form-input" formControlName="BATCH_LIMIT" kendoTextBox #BATCH_LIMIT  [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.BATCH_LIMIT_Hint','Please enter Batch Limit')"
+ (change)="onChange_BATCH_LIMIT($event)"    />
+	</kendo-formfield>
+
+	<button class="k-button k-primary" kendoButton (click)="deleteAllLogs()" themeColor="warning" icon="minus-outline" style ="margin: 1px 15px 1px 1px;">Delete All Logs</button>
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield  [orientation]="'horizontal'" *ngIf="false">
+		<kendo-label class="form-label" [for]="WHERE_CLAUSE" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.WHERE_CLAUSE','Where Clause')"></kendo-label>
+		<kendo-textarea kendoTextArea  style="width: auto;" resizable="both"  [rows]="3" [cols]="80"   formControlName="WHERE_CLAUSE" #WHERE_CLAUSE
+  [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.WHERE_CLAUSE_Hint','Please enter Where Clause')"  ></kendo-textarea>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'"  *ngIf=false >
+		<kendo-label class="form-label" [for]="LOGNAME" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.LOGNAME','Logname')"></kendo-label>
+		<input class="form-input" formControlName="LOGNAME" kendoTextBox #LOGNAME  [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.LOGNAME_Hint','Please enter Logname')"
+ (change)="onChange_LOGNAME($event)"    />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'"  *ngIf=false >
+		<kendo-label class="form-label" [for]="LOGDATE" [text]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.LOGDATE','Logdate')"></kendo-label>
+		<kendo-datepicker [format]="this.paramConfig.DateFormat" class="form-field-date" formControlName="LOGDATE"  #LOGDATE 
+  [placeholder]="starServices.getNLS([],'dsp_batch_DSP_BATCH_DEF_FORM.dspbatchDefDspBatchDspBatchDefForm.LOGDATE_Hint','Please enter Logdate')" (valueChange)="onValueChange_LOGDATE($event)"   
+		></kendo-datepicker>
+	</kendo-formfield>
+</div>
+<button class="k-button k-primary" kendoButton (click)="runBatch()" icon="arrow-60-right" style ="margin: 5px 5px 5px 5px;">Run Batch</button>
+    </fieldset>
+    </form>
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+  
+
+
+

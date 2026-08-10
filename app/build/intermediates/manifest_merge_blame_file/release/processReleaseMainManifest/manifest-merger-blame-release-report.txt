@@ -1,0 +1,440 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3    Copyright 2019 Google Inc. All Rights Reserved.
+4
+5     Licensed under the Apache License, Version 2.0 (the "License");
+6     you may not use this file except in compliance with the License.
+7     You may obtain a copy of the License at
+8
+9         http://www.apache.org/licenses/LICENSE-2.0
+10
+11     Unless required by applicable law or agreed to in writing, software
+12     distributed under the License is distributed on an "AS IS" BASIS,
+13     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+14     See the License for the specific language governing permissions and
+15     limitations under the License.
+16-->
+17<!--
+18 The "package" attribute is rewritten by the Gradle build with the value of applicationId.
+19     It is still required here, as it is used to derive paths, for instance when referring
+20     to an Activity by ".MyActivity" instead of the full name. If more Activities are added to the
+21     application, the package attribute will need to reflect the correct path in order to use
+22     the abbreviated format.
+23-->
+24<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+25    package="com.starapps.attendance"
+26    android:versionCode="2"
+27    android:versionName="2" >
+28
+29    <uses-sdk
+30        android:minSdkVersion="21"
+31        android:targetSdkVersion="35" />
+32
+33    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+33-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:26:9-80
+33-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:26:26-78
+34    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+34-->[com.google.androidbrowserhelper:locationdelegation:1.1.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/6215e13210b05cc5715af15b5940fb9f/transformed/locationdelegation-1.1.2/AndroidManifest.xml:7:5-79
+34-->[com.google.androidbrowserhelper:locationdelegation:1.1.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/6215e13210b05cc5715af15b5940fb9f/transformed/locationdelegation-1.1.2/AndroidManifest.xml:7:22-76
+35    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+35-->[com.google.androidbrowserhelper:locationdelegation:1.1.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/6215e13210b05cc5715af15b5940fb9f/transformed/locationdelegation-1.1.2/AndroidManifest.xml:8:5-81
+35-->[com.google.androidbrowserhelper:locationdelegation:1.1.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/6215e13210b05cc5715af15b5940fb9f/transformed/locationdelegation-1.1.2/AndroidManifest.xml:8:22-78
+36
+37    <queries>
+37-->[com.google.androidbrowserhelper:androidbrowserhelper:2.6.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5053e02be90783e54992393be394bb70/transformed/androidbrowserhelper-2.6.2/AndroidManifest.xml:22:5-30:15
+38        <intent>
+38-->[com.google.androidbrowserhelper:androidbrowserhelper:2.6.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5053e02be90783e54992393be394bb70/transformed/androidbrowserhelper-2.6.2/AndroidManifest.xml:23:9-29:18
+39            <action android:name="android.intent.action.VIEW" />
+39-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:155:17-68
+39-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:155:25-66
+40
+41            <category android:name="android.intent.category.BROWSABLE" />
+41-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:157:17-77
+41-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:157:27-75
+42
+43            <data android:scheme="https" />
+43-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:158:17-163:19
+43-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:158:23-45
+44        </intent>
+45    </queries>
+46
+47    <permission
+47-->[androidx.core:core:1.13.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/a5429f7b20c607b890f08b5283ad4ec0/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
+48        android:name="com.starapps.attendance.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+48-->[androidx.core:core:1.13.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/a5429f7b20c607b890f08b5283ad4ec0/transformed/core-1.13.0/AndroidManifest.xml:23:9-81
+49        android:protectionLevel="signature" />
+49-->[androidx.core:core:1.13.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/a5429f7b20c607b890f08b5283ad4ec0/transformed/core-1.13.0/AndroidManifest.xml:24:9-44
+50
+51    <uses-permission android:name="com.starapps.attendance.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+51-->[androidx.core:core:1.13.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/a5429f7b20c607b890f08b5283ad4ec0/transformed/core-1.13.0/AndroidManifest.xml:26:5-97
+51-->[androidx.core:core:1.13.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/a5429f7b20c607b890f08b5283ad4ec0/transformed/core-1.13.0/AndroidManifest.xml:26:22-94
+52
+53    <application
+53-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:35:5-218:19
+54        android:name="com.starapps.attendance.Application"
+54-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:36:9-35
+55        android:allowBackup="true"
+55-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:37:9-35
+56        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+56-->[androidx.core:core:1.13.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/a5429f7b20c607b890f08b5283ad4ec0/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
+57        android:extractNativeLibs="true"
+58        android:icon="@mipmap/ic_launcher"
+58-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:38:9-43
+59        android:label="@string/appName"
+59-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:39:9-40
+60        android:manageSpaceActivity="com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity"
+60-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:41:9-105
+61        android:supportsRtl="true"
+61-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:43:9-35
+62        android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+62-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:44:9-68
+63        <meta-data
+63-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:46:9-48:58
+64            android:name="asset_statements"
+64-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:47:13-44
+65            android:resource="@string/assetStatements" />
+65-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:48:13-55
+66        <meta-data
+66-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:51:13-53:58
+67            android:name="web_manifest_url"
+67-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:52:17-48
+68            android:value="@string/webManifestUrl" />
+68-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:53:17-55
+69        <meta-data
+69-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:56:9-58:52
+70            android:name="twa_generator"
+70-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:57:13-41
+71            android:value="@string/generatorApp" />
+71-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:58:13-49
+72
+73        <activity
+73-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:65:13-76:24
+74            android:name="com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity"
+74-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:65:23-104
+75            android:enabled="true"
+75-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:67:17-39
+76            android:excludeFromRecents="true"
+76-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:68:17-50
+77            android:exported="false" >
+77-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:66:17-41
+78            <meta-data
+78-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:69:17-71:57
+79                android:name="android.support.customtabs.trusted.MANAGE_SPACE_URL"
+79-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:70:21-87
+80                android:value="@string/launchUrl" />
+80-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:71:21-54
+81
+82            <intent-filter>
+82-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:72:17-75:33
+83                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+83-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:73:21-92
+83-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:73:29-89
+84
+85                <category android:name="android.intent.category.DEFAULT" />
+85-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:21-80
+85-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:31-77
+86            </intent-filter>
+87        </activity>
+88        <activity
+88-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:79:9-176:20
+89            android:name="com.starapps.attendance.LauncherActivity"
+89-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:79:19-50
+90            android:alwaysRetainTaskState="true"
+90-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:80:13-49
+91            android:exported="true"
+91-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:82:13-36
+92            android:label="@string/launcherName" >
+92-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:81:13-49
+93            <meta-data
+93-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:83:13-84:53
+94                android:name="android.support.customtabs.trusted.DEFAULT_URL"
+94-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:83:24-85
+95                android:value="@string/launchUrl" />
+95-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:84:17-50
+96            <meta-data
+96-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:86:13-88:58
+97                android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
+97-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:87:17-83
+98                android:resource="@color/colorPrimary" />
+98-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:88:17-55
+99            <meta-data
+99-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:92:13-94:62
+100                android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR_DARK"
+100-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:93:17-88
+101                android:resource="@color/colorPrimaryDark" />
+101-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:94:17-59
+102            <meta-data
+102-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:96:13-98:61
+103                android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR"
+103-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:97:17-87
+104                android:resource="@color/navigationColor" />
+104-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:98:17-58
+105            <meta-data
+105-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:100:13-102:65
+106                android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR_DARK"
+106-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:101:17-92
+107                android:resource="@color/navigationColorDark" />
+107-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:102:17-62
+108            <meta-data
+108-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:104:13-106:68
+109                android:name="androix.browser.trusted.NAVIGATION_BAR_DIVIDER_COLOR"
+109-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:105:17-84
+110                android:resource="@color/navigationDividerColor" />
+110-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:106:17-65
+111            <meta-data
+111-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:108:13-110:72
+112                android:name="androix.browser.trusted.NAVIGATION_BAR_DIVIDER_COLOR_DARK"
+112-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:109:17-89
+113                android:resource="@color/navigationDividerColorDark" />
+113-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:110:17-69
+114            <meta-data
+114-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:112:13-113:54
+115                android:name="android.support.customtabs.trusted.SPLASH_IMAGE_DRAWABLE"
+115-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:112:24-95
+116                android:resource="@drawable/splash" />
+116-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:113:17-52
+117            <meta-data
+117-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:115:13-116:60
+118                android:name="android.support.customtabs.trusted.SPLASH_SCREEN_BACKGROUND_COLOR"
+118-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:115:24-104
+119                android:resource="@color/backgroundColor" />
+119-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:116:17-58
+120            <meta-data
+120-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:118:13-119:71
+121                android:name="android.support.customtabs.trusted.SPLASH_SCREEN_FADE_OUT_DURATION"
+121-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:118:24-105
+122                android:value="@integer/splashScreenFadeOutDuration" />
+122-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:119:17-69
+123            <meta-data
+123-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:121:13-122:60
+124                android:name="android.support.customtabs.trusted.FILE_PROVIDER_AUTHORITY"
+124-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:121:24-97
+125                android:value="@string/providerAuthority" />
+125-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:122:17-58
+126            <meta-data
+126-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:124:13-97
+127                android:name="android.app.shortcuts"
+127-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:124:24-60
+128                android:resource="@xml/shortcuts" />
+128-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:124:61-94
+129            <meta-data
+129-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:126:13-127:56
+130                android:name="android.support.customtabs.trusted.FALLBACK_STRATEGY"
+130-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:126:24-91
+131                android:value="@string/fallbackType" />
+131-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:127:17-53
+132            <meta-data
+132-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:132:13-133:46
+133                android:name="android.support.customtabs.trusted.DISPLAY_MODE"
+133-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:132:24-86
+134                android:value="minimal-ui" />
+134-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:133:17-43
+135            <meta-data
+135-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:136:13-137:54
+136                android:name="android.support.customtabs.trusted.SCREEN_ORIENTATION"
+136-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:136:24-92
+137                android:value="@string/orientation" />
+137-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:137:17-52
+138            <meta-data
+138-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:142:17-144:66
+139                android:name="android.support.customtabs.trusted.DISPLAY_OVERRIDE"
+139-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:143:21-87
+140                android:resource="@array/display_override" />
+140-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:144:21-63
+141
+142            <intent-filter>
+142-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:149:13-152:29
+143                <action android:name="android.intent.action.MAIN" />
+143-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:150:17-69
+143-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:150:25-66
+144
+145                <category android:name="android.intent.category.LAUNCHER" />
+145-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:151:17-77
+145-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:151:27-74
+146            </intent-filter>
+147            <intent-filter android:autoVerify="true" >
+147-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:154:13-164:29
+147-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:154:28-53
+148                <action android:name="android.intent.action.VIEW" />
+148-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:155:17-68
+148-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:155:25-66
+149
+150                <category android:name="android.intent.category.DEFAULT" />
+150-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:21-80
+150-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:31-77
+151                <category android:name="android.intent.category.BROWSABLE" />
+151-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:157:17-77
+151-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:157:27-75
+152
+153                <data
+153-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:158:17-163:19
+154                    android:host="@string/hostName"
+154-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:159:21-52
+155                    android:pathPrefix="/prj1/"
+155-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:161:21-55
+156                    android:scheme="https" />
+156-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:158:23-45
+157            </intent-filter>
+158            <intent-filter>
+158-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:169:17-174:27
+159                <action android:name="android.intent.action.VIEW" />
+159-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:155:17-68
+159-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:155:25-66
+160
+161                <category android:name="android.intent.category.DEFAULT" />
+161-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:21-80
+161-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:31-77
+162                <category android:name="android.intent.category.BROWSABLE" />
+162-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:157:17-77
+162-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:157:27-75
+163
+164                <data android:scheme="web+palm" />
+164-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:158:17-163:19
+164-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:158:23-45
+165            </intent-filter>
+166        </activity>
+167        <activity android:name="com.google.androidbrowserhelper.trusted.FocusActivity" />
+167-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:178:9-90
+167-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:178:19-87
+168        <activity
+168-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:180:9-181:62
+169            android:name="com.google.androidbrowserhelper.trusted.WebViewFallbackActivity"
+169-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:180:19-97
+170            android:configChanges="orientation|screenSize" />
+170-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:181:13-59
+171
+172        <provider
+172-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:183:9-191:20
+173            android:name="androidx.core.content.FileProvider"
+173-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:184:13-62
+174            android:authorities="@string/providerAuthority"
+174-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:185:13-60
+175            android:exported="false"
+175-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:187:13-37
+176            android:grantUriPermissions="true" >
+176-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:186:13-47
+177            <meta-data
+177-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:188:13-190:53
+178                android:name="android.support.FILE_PROVIDER_PATHS"
+178-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:189:17-67
+179                android:resource="@xml/filepaths" />
+179-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:190:17-50
+180        </provider>
+181
+182        <service
+182-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:193:9-208:19
+183            android:name="com.starapps.attendance.DelegationService"
+183-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:194:13-46
+184            android:enabled="@bool/enableNotification"
+184-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:195:13-55
+185            android:exported="@bool/enableNotification" >
+185-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:196:13-56
+186            <meta-data
+186-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:199:17-201:73
+187                android:name="android.support.customtabs.trusted.SMALL_ICON"
+187-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:200:21-81
+188                android:resource="@drawable/ic_notification_icon" />
+188-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:201:21-70
+189
+190            <intent-filter>
+190-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:204:13-207:29
+191                <action android:name="android.support.customtabs.trusted.TRUSTED_WEB_ACTIVITY_SERVICE" />
+191-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:205:17-105
+191-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:205:25-103
+192
+193                <category android:name="android.intent.category.DEFAULT" />
+193-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:21-80
+193-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:74:31-77
+194            </intent-filter>
+195        </service>
+196
+197        <activity android:name="com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity" />
+197-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:211:13-118
+197-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:211:23-115
+198        <activity android:name="com.google.androidbrowserhelper.locationdelegation.PermissionRequestActivity" />
+198-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:215:13-216:89
+198-->/Users/Macbookpro/Documents/win/Genovity/dev/users/userws/app/src/main/AndroidManifest.xml:215:23-123
+199        <activity
+199-->[com.google.android.gms:play-services-base:18.1.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/02e37f92c71ffadabef41ae6f5feca22/transformed/play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+200            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+200-->[com.google.android.gms:play-services-base:18.1.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/02e37f92c71ffadabef41ae6f5feca22/transformed/play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+201            android:exported="false"
+201-->[com.google.android.gms:play-services-base:18.1.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/02e37f92c71ffadabef41ae6f5feca22/transformed/play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+202            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+202-->[com.google.android.gms:play-services-base:18.1.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/02e37f92c71ffadabef41ae6f5feca22/transformed/play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+203
+204        <meta-data
+204-->[com.google.android.gms:play-services-basement:18.1.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/d176d6696a4772b4ce2a6021c61f9202/transformed/play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+205            android:name="com.google.android.gms.version"
+205-->[com.google.android.gms:play-services-basement:18.1.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/d176d6696a4772b4ce2a6021c61f9202/transformed/play-services-basement-18.1.0/AndroidManifest.xml:22:13-58
+206            android:value="@integer/google_play_services_version" />
+206-->[com.google.android.gms:play-services-basement:18.1.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/d176d6696a4772b4ce2a6021c61f9202/transformed/play-services-basement-18.1.0/AndroidManifest.xml:23:13-66
+207
+208        <provider
+208-->[androidx.emoji2:emoji2:1.3.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5cb7738f5242d8c4e38c8ffa2b265b31/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+209            android:name="androidx.startup.InitializationProvider"
+209-->[androidx.emoji2:emoji2:1.3.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5cb7738f5242d8c4e38c8ffa2b265b31/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+210            android:authorities="com.starapps.attendance.androidx-startup"
+210-->[androidx.emoji2:emoji2:1.3.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5cb7738f5242d8c4e38c8ffa2b265b31/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+211            android:exported="false" >
+211-->[androidx.emoji2:emoji2:1.3.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5cb7738f5242d8c4e38c8ffa2b265b31/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+212            <meta-data
+212-->[androidx.emoji2:emoji2:1.3.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5cb7738f5242d8c4e38c8ffa2b265b31/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+213                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+213-->[androidx.emoji2:emoji2:1.3.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5cb7738f5242d8c4e38c8ffa2b265b31/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+214                android:value="androidx.startup" />
+214-->[androidx.emoji2:emoji2:1.3.0] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/5cb7738f5242d8c4e38c8ffa2b265b31/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+215            <meta-data
+215-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/4bc52031417e9743197e36b704fe409f/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:29:13-31:52
+216                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+216-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/4bc52031417e9743197e36b704fe409f/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:30:17-78
+217                android:value="androidx.startup" />
+217-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/4bc52031417e9743197e36b704fe409f/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:31:17-49
+218            <meta-data
+218-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+219                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+219-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+220                android:value="androidx.startup" />
+220-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+221        </provider>
+222
+223        <receiver
+223-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+224            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+224-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+225            android:directBootAware="false"
+225-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+226            android:enabled="true"
+226-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+227            android:exported="true"
+227-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+228            android:permission="android.permission.DUMP" >
+228-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+229            <intent-filter>
+229-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+230                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+230-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+230-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+231            </intent-filter>
+232            <intent-filter>
+232-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+233                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+233-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+233-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+234            </intent-filter>
+235            <intent-filter>
+235-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+236                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+236-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+236-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+237            </intent-filter>
+238            <intent-filter>
+238-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+239                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+239-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+239-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/Macbookpro/.gradle/caches/8.11.1/transforms/bb4a0d32d1b17a1dcea0cf71d2bde5e0/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+240            </intent-filter>
+241        </receiver>
+242    </application>
+243
+244</manifest>

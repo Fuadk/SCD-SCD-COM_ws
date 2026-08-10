@@ -1,0 +1,32 @@
+<div #myTargetBox class="target-box">
+<kendo-treeview #myTargetBox
+                [nodes]="treeData"
+                childrenField="items"
+                textField="text"
+                kendoTreeViewExpandable
+                kendoTreeViewHierarchyBinding
+                kendoTreeViewSelectable
+                (selectionChange)="handleSelection($event)"
+                [(selectedKeys)]="selectedKeys"
+                [(expandedKeys)]="expandedKeys"
+                >
+    <ng-template kendoTreeViewNodeTemplate let-dataItem>
+        <span 
+            [ngClass]="ICON_CLASS(dataItem.dataItem)"
+            (contextmenu)="onNodeContextMenu($event, dataItem)"
+            (click)="onNodeClick($event, dataItem)"
+            style="cursor: pointer; display: inline-block; width: 100%;"
+        >
+            {{dataItem.text}}
+        </span>
+    </ng-template>
+</kendo-treeview>
+</div>
+
+<kendo-contextmenu 
+    #contextMenu
+    [target]="myTargetBox" 
+    [items]="contextMenuItems" 
+    (select)="onContextMenuSelect($event)"
+>
+</kendo-contextmenu>

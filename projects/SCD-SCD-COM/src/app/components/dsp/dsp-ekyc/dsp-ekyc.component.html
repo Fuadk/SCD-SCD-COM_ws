@@ -1,0 +1,50 @@
+<div class="wrapper" >
+    <kendo-pdf-export #ekycPdf paperSize="A4" margin="1cm"
+    [forceProxy]="doProxyURL"
+	[proxyURL]="pdfexportURL"
+	[proxyData]="proxyData"
+
+    >
+        <legend>{{ title }}</legend>
+
+        <h2 *ngIf="!!printTitle" class="print-title">{{ printTitle }}</h2>
+    
+        <div [hidden]="!multiStepFormOpened"  style="justify-content: center; width: 100%;" >
+                <app-dsp-multistep
+                (saveCompletedOutput)="savemultiStepFormCompletedHandler($event)"
+                (formNextOutput)="handleFormNext($event)"
+                [setLanguageChanged]="languageChanged"
+                (currentPageData)="getCurrentPageData($event)"
+                [setComponentConfig_Input]="DSP_MULTISTEPFormConfig">
+                </app-dsp-multistep>
+            </div>
+
+            <img *ngIf="!signature" [src]="signature" class="signature-img">
+        <!--form class="form-layout" class="k-form k-form-horizontal"  [hidden]="!multiStepFormOpened">
+            <fieldset class="k-form-fieldset" class="form-fieldset"  >
+                <p class="k-block"  >
+
+
+                    <button kendoButton style="float: right;" style="vertical-align: top;" class="col-xs-12 col-sm-6 col-lg-3 k-primary" (click)="onSaveFields($event)">Submit</button>
+                </p>
+
+
+            </fieldset>
+        </form-->
+    </kendo-pdf-export>
+</div>
+<!--div>
+    <legend *ngIf="showURLMsg" class="k-form-legend">{{ URL_msg }}</legend>
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+    <label class="k-label">Finger
+        <input type="checkbox" kendoCheckBox [(ngModel)]="responseData.FINGER" />
+    </label>
+    <label class="k-label">BIO
+        <input type="checkbox" kendoCheckBox [(ngModel)]="responseData.BIO" />
+    </label>
+    <label class="k-label">ID
+        <input type="checkbox" kendoCheckBox [(ngModel)]="responseData.ID" />
+    </label>
+
+</div-->

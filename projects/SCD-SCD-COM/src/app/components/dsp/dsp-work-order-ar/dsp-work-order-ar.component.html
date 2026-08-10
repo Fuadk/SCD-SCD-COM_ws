@@ -1,0 +1,130 @@
+<div>
+    <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+        <div class="row" style="padding: 10px 0 0 0">
+            <div class="col-md-6">
+                <legend class="k-form-legend float-start" style="width: auto !important">{{ title }}</legend>
+            </div>
+
+            <div class="col-md-6">
+                <div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+                    <label class="k-checkbox-label" for="showHistory">Show history</label>
+                    <input type="checkbox" id="showHistory" (change)="showHistory()" [(ngModel)]="showHistoryCheck"
+                        kendoCheckBox />
+                </div>
+            </div>
+        </div>
+
+        <kendo-toolbar class="form-toolbar" style="width: 100% !important">
+            <kendo-toolbar-button kendoButton [icon]="'print'" title="print" (click)="printScreen()">
+            </kendo-toolbar-button>
+            <kendo-toolbar-button [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}" (click)="getWorkOrdersApprove()">
+            </kendo-toolbar-button>
+        </kendo-toolbar>
+        <kendo-grid id="grid" [height]=250 [selectable]="true" [kendoGridBinding]="gridData"
+            (cellClick)="cellClickHandler($event)" (selectionChange)="gridUserSelectionChange($event)">
+            <kendo-grid-column field="TEMPLATE_NAME" title="Template Name" [width]="70">
+            </kendo-grid-column>
+            <kendo-grid-column field="ASSIGNEE_TYPE" title="Ass. Type" [width]="70">
+            </kendo-grid-column>
+
+            <kendo-grid-column field="ASSIGNEE" title="Assignee" [width]="100">
+            </kendo-grid-column>
+            <kendo-grid-column field="WO_STATUS" title="Status" [width]="100">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span class="whole-cell" [style.backgroundColor]="colorCode(dataItem.WO_STATUS)">
+                        {{ parseApprvalFlag(dataItem['WO_STATUS']) }}
+                    </span>
+                </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="ORDER_NO" title="Order No" [width]="60">
+            </kendo-grid-column>
+
+            <kendo-grid-column field="WO_ORDER_NO" title="No" [width]="60">
+            </kendo-grid-column>
+
+            <kendo-grid-column field="WO_TYPE" title="WO Job" [width]="100">
+            </kendo-grid-column>
+        </kendo-grid>
+
+        <app-dsp-diagram-wrap [setComponentConfig_Input]="app_dsp_diagram_wrapConfig">
+        </app-dsp-diagram-wrap>
+
+
+        <div [style.display]="showForm ? 'block' : 'none'">
+            <div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+                <app-dsp-orders-form (getOrderOutput)="readCompletedHandler($event)"
+                    (orderStatusOutput)="orderStatusHandler($event)" [setComponentConfig_Input]="DSP_ORDERSFormConfig">
+                </app-dsp-orders-form>
+
+                <kendo-listview [data]="view" *ngIf="showNotes">
+                    <ng-template kendoListViewHeaderTemplate>
+                        <h5 class="header-title">Notes</h5>
+                    </ng-template>
+                    <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-isLast="isLast">
+                        <kendo-card *ngFor="let item of items;let indexOfelement=index;">
+                            <div class="card-format">By:{{item.LOGNAME}}:</div>
+                            <div class="card-format">{{item.NOTES}}</div>
+
+                        </kendo-card>
+
+                    </ng-template>
+                </kendo-listview>
+            </div>
+          
+
+
+
+        </div>
+        <div [hidden]="!showApproveReject">
+            <kendo-dialog (close)="closeApproveReject()" resizable="true" [minWidth]="480" width="480"
+                [height]="420" title="Approve , Reject, or Modify">
+                <div  style="text-align: center;">
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2 ms-3"
+                        (click)="changeWOStatus(paramConfig.APPROVED)">Approve</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2 ms-1"
+                        (click)="changeWOStatus(paramConfig.REJECTED)">Reject</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2 ms-1"
+                        (click)="changeWOStatus(paramConfig.MODIFIED)">Modify</button>
+                </div>
+                <div>
+                    <kendo-label
+                        class="form-label"
+                        [text]="starServices.getNLS([],'ETR_ETR_CASE_1_FORM.etrcase1EtrEtrCase1Form.APPROVAL_TYPE','Approval Type')"></kendo-label>
+                    <ul class="k-radio-list">
+                        <li class="k-radio-item" *ngFor="let item of lkpArrAPPROVAL_TYPE">
+                            <kendo-radiobutton value={{item.CODE}} [(ngModel)]="ApprovalType"
+                            #APPROVAL_TYPE   ></kendo-radiobutton>
+                            <kendo-label class="k-radio-label" [for]="APPROVAL_TYPE "
+                                text={{item.CODETEXT_LANG}}></kendo-label>
+                        </li>
+                    </ul>
+                </div>
+			
+
+                <div class="component-container">
+                <kendo-label text="Note">
+                    <kendo-textarea
+                    placeholder="Add a note..."
+                    [rows]="3"
+                     [(ngModel)]="NoteValue"
+                    resizable="vertical"
+                    ></kendo-textarea>
+                </kendo-label>
+                </div>
+            </kendo-dialog>
+        </div>
+
+        <div [hidden]="!showMultistep">
+            <kendo-dialog (close)="closeMultistep()" resizable="true" [minWidth]="700" width="70%" [height]="700"
+                [title]="DSP_MULTISTEPFormConfig?.masterParams?.formName || 'Form title'">
+                <app-dsp-multistep *ngIf="showMultistep" (saveCompletedOutput)="saveCompletedOutputHandler($event)"
+                    (formValidationChangedOutput)="formValidationChanged($event)"
+                    [setComponentConfig_Input]="DSP_MULTISTEPFormConfig">
+                </app-dsp-multistep>
+            </kendo-dialog>
+        </div>
+    </kendo-pdf-export>
+
+
+</div>

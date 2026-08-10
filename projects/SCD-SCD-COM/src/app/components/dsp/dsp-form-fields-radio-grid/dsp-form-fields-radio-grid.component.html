@@ -1,0 +1,169 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+    <kendo-grid [rowClass]="ROW_CLASS"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="showToolBar">
+        <!-- <legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{ title }}</legend> -->
+
+
+        
+        
+        <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" ></button >
+        <button  kendoButton [icon]="'print'" title="print" (click)="printScreen()" *ngIf="componentConfig.toolsShow"></button >
+
+        
+            <button  [disabled]="isSearch" kendoButton  title="Enter Query" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable"></button >
+            <button [disabled]="isSearch" [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton (click)="removeHandler($event)"  *ngIf="componentConfig.removeable">Remove</button >
+
+<!--         
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"  (click)="toggleColumnMenu()" *ngIf="!isSearch"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > -->
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column  *ngIf="false" [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('FORM_NAME') > -1)  && !primarKeyReadOnlyArr.isFORM_NAMEreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('FORM_NAME') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FORM_NAME','Form Name')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.FORM_NAME}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_FORM_NAME()"  [formControl]="formGroup.get('FORM_NAME')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FORM_NAME_Hint','Please enter FORM_NAME')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column  *ngIf="false" [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('PAGE_NO') > -1)  && !primarKeyReadOnlyArr.isPAGE_NOreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('PAGE_NO') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.PAGE_NO','Page No')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.PAGE_NO}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_PAGE_NO()"  [formControl]="formGroup.get('PAGE_NO')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.PAGE_NO_Hint','Please enter PAGE_NO')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column  *ngIf="false" [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('AREA_NO') > -1)  && !primarKeyReadOnlyArr.isAREA_NOreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('AREA_NO') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.AREA_NO','Area No')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.AREA_NO}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_AREA_NO()"  [formControl]="formGroup.get('AREA_NO')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.AREA_NO_Hint','Please enter AREA_NO')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('FIELD_ID') > -1)  && !primarKeyReadOnlyArr.isFIELD_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('FIELD_ID') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_ID','Id')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.FIELD_ID}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_FIELD_ID()"  [formControl]="formGroup.get('FIELD_ID')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_ID_Hint','Please enter FIELD_ID')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('FIELD_VALUE') > -1)  && !primarKeyReadOnlyArr.isFIELD_VALUEreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('FIELD_VALUE') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_VALUE','Value')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.FIELD_VALUE}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_FIELD_VALUE()"  [formControl]="formGroup.get('FIELD_VALUE')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_VALUE_Hint','Please enter FIELD_VALUE')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('FIELD_TEXT') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('FIELD_TEXT') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_TEXT','Text')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.FIELD_TEXT}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_FIELD_TEXT()"  [formControl]="formGroup.get('FIELD_TEXT')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_TEXT_Hint','Please enter FIELD_TEXT')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('FIELD_INFO') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('FIELD_INFO') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_INFO','Other Info')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.FIELD_INFO}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_FIELD_INFO()"  [formControl]="formGroup.get('FIELD_INFO')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.FIELD_INFO_Hint','Please enter FIELD_INFO')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column  *ngIf="false" [headerStyle]="{'white-space': 'pre-wrap'}"  [editable]=" !(disabledColumns.indexOf('LOGNAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('LOGNAME') > -1" 		 title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.LOGNAME','Logname')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.LOGNAME}}</ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_LOGNAME()"  [formControl]="formGroup.get('LOGNAME')" [placeholder]="starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.LOGNAME_Hint','Please enter LOGNAME')" />
+		</ng-template>
+		</kendo-grid-column>
+
+        <kendo-grid-column *ngIf="false" [headerStyle]="{'white-space': 'pre-wrap'}" field="LOGDATE"  [width]="40"	filter="date"	 editor="date"  title="{{starServices.getNLS([],'dsp_form_fields_radio_grid.dspformFieldsRadio.LOGDATE','Logdate')}}" 
+        [editable]=" !(disabledColumns.indexOf('LOGDATE') > -1)  "
+       
+        [hidden]="hiddenColumns.indexOf('LOGDATE') > -1" 		[format]="paramConfig.DateFormat">
+               <ng-template KendoGridEditTemplate  let-dataItem>
+               <kendo-datepicker [format]="this.paramConfig.DateFormat" ngDefaultControl	 #datepicker>
+                (valueChange)="valueChangeLOGDATE($event)" 		</kendo-datepicker>
+               </ng-template>
+               </kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>

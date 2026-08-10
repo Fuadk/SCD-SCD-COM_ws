@@ -1,0 +1,28 @@
+.k-radio-list-horizontal {
+  display: inline-grid !important;
+  grid-template-columns: repeat(3, max-content);
+  column-gap: 4px;
+  row-gap: 2px;
+  justify-content: start;
+}
+
+.up {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.down {
+    grid-column: 2;
+    grid-row: 3;
+}
+

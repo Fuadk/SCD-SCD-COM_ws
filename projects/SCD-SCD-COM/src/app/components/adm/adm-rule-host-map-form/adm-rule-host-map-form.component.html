@@ -1,0 +1,81 @@
+<div>
+    <legend *ngIf="!componentConfig.isMaster" class="k-form-legend">{{ title }}</legend>
+
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="!isChild && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  kendoButton [icon]="'print'" title="print" (click)="printScreen()" ></kendo-toolbar-button >
+
+
+    <kendo-toolbar-button  [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="Enter Query" (click)="enterQuery( form);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'" title="Cancel"  (click)="onCancel($event)" ></kendo-toolbar-button >
+
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="First Record" (click)="goRecord( 'first');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="Previous Record"  (click)="goRecord(  'prev');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="Next Record"  (click)="goRecord('next')" *ngIf="!isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="Last Record" (click)="goRecord('last')" *ngIf="!isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf="!isSearch">Remove</kendo-toolbar-button>
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" >
+    <fieldset class="form-fieldset"  class="k-form-fieldset">
+
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="HOST_ID" text="Host Id"></kendo-label>
+		<input class="form-input" formControlName="HOST_ID" kendoTextBox #HOST_ID  required 
+		[readonly]="primarKeyReadOnlyArr.isHOST_IDreadOnly"
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.HOST_ID.errors }" />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="MAP_ID" text="Map Id"></kendo-label>
+		<input class="form-input" formControlName="MAP_ID" kendoTextBox #MAP_ID  required 
+		[readonly]="primarKeyReadOnlyArr.isMAP_IDreadOnly"
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.MAP_ID.errors }" />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="MAP_NAME" text="Map Name"></kendo-label>
+		<input class="form-input" formControlName="MAP_NAME" kendoTextBox #MAP_NAME  required 
+		
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.MAP_NAME.errors }" />
+	</kendo-formfield>
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	
+
+		<kendo-formfield [orientation]="'horizontal'">
+			<kendo-label class="form-label" [for]="XSLT_CONSTANT" text="Constant"></kendo-label>
+			<kendo-textarea    [rows]="5" [cols]="250" style="width: auto;" resizable="both" kendoTextBox formControlName="XSLT_CONSTANT" 
+            #XSLT_CONSTANT         ></kendo-textarea>
+		</kendo-formfield>
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	
+
+		<kendo-formfield class="form-field-double" [orientation]="'horizontal'">
+			<kendo-label class="form-label" [for]="XSLT_SEND" text="Map Send"></kendo-label>
+			<kendo-textarea    [rows]="10" [cols]="100" style="width: auto;" resizable="both" kendoTextBox formControlName="XSLT_SEND" 
+            #XSLT_SEND         ></kendo-textarea>
+		</kendo-formfield>
+		<kendo-formfield class="form-field-double" [orientation]="'horizontal'">
+			<kendo-label class="form-label" [for]="XSLT_RECEIVE" text="Map Receive"></kendo-label>
+			<kendo-textarea    [rows]="10" [cols]="100" style="width: auto;" resizable="both" kendoTextBox formControlName="XSLT_RECEIVE" 
+            #XSLT_RECEIVE         ></kendo-textarea>
+		</kendo-formfield>
+	
+	
+</div>
+
+    </fieldset>
+    </form>
+</kendo-pdf-export>
+</div>
+

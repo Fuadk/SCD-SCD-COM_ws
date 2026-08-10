@@ -1,0 +1,94 @@
+<!-- tab-host.component.html -->
+<div class="tab-host" [class.tab-host-dark]="isDarkTheme">
+  
+  <!-- Toolbar -->
+  <!-- <div class="tab-toolbar">
+    <div class="tab-toolbar-left">
+      <kendo-menu>
+        <kendo-menu-item text="File">
+          <kendo-menu-item text="Open Diagram" (click)="openDiagram()"></kendo-menu-item>
+          <kendo-menu-item text="Open Form" (click)="openForm()"></kendo-menu-item>
+          <kendo-menu-item text="Open Trend" (click)="openTrend()"></kendo-menu-item>
+          <kendo-menu-item text="Open Alarm" (click)="openAlarm()"></kendo-menu-item>
+          <kendo-menu-item text="Open Grid" (click)="openGrid()"></kendo-menu-item>
+          <kendo-menu-item text="New Tab Group" (click)="createTabGroup('New Group')"></kendo-menu-item>
+          <kendo-menu-item divider="true"></kendo-menu-item>
+          <kendo-menu-item text="Close All" (click)="closeAllTabs()"></kendo-menu-item>
+        </kendo-menu-item>
+        <kendo-menu-item text="Window">
+          <kendo-menu-item text="New Window" (click)="createTabGroup('New Window')"></kendo-menu-item>
+        </kendo-menu-item>
+      </kendo-menu>
+    </div>
+    <div class="tab-toolbar-right">
+      <span class="tab-count">{{ getTabCount() }} tabs</span>
+    </div>
+  </div> -->
+
+  <!-- Tab Groups Container -->
+  <div class="tab-groups-container" *ngIf="tabGroups.length > 0">
+    <div *ngFor="let group of tabGroups" class="tab-group">
+      <div class="group-header">
+        <span class="group-title">{{ group.title }}</span>
+        <button kendoButton [icon]="'close'" size="small" (click)="closeAllTabs()">Close All</button>
+      </div>
+      <div class="group-content">
+        <kendo-tabstrip 
+          [tabPosition]="'top'"
+          [tabAlignment]="'start'"
+          (tabSelect)="onTabSelect($event)"
+          (tabClose)="onTabClose($event)"
+          (tabReorder)="onTabReorder($event)">
+          
+          <kendo-tabstrip-tab 
+            *ngFor="let tab of group.tabs"
+            [title]="tab.title"
+            [selected]="tab.id === group.activeTabId"
+            [disabled]="false"
+            [closable]="tab.closable !== false">
+            
+            <ng-template kendoTabContent>
+              <div class="tab-content">
+                <ng-container *ngComponentOutlet="tab.component; inputs: tab.inputs"></ng-container>
+              </div>
+            </ng-template>
+          </kendo-tabstrip-tab>
+        </kendo-tabstrip>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Tab Strip (no groups) -->
+  <div class="tab-strip-container" *ngIf="tabGroups.length === 0 && tabs.length > 0">
+    <kendo-tabstrip [keepTabContent]="true"
+      [tabPosition]="'top'"
+      [tabAlignment]="'start'"
+      (tabSelect)="onTabSelect($event)"
+      (tabClose)="onTabClose($event)"
+      (tabReorder)="onTabReorder($event)">
+      
+      <kendo-tabstrip-tab 
+        *ngFor="let tab of tabs"
+        [title]="tab.title"
+        [selected]="isTabSelected(tab.id)"
+        [disabled]="false"
+        [closable]="tab.closable !== false">
+        
+        <ng-template kendoTabContent>
+          <div class="tab-content">
+            <ng-container *ngComponentOutlet="tab.component; inputs: tab.inputs"></ng-container>
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+    </kendo-tabstrip>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="tabs.length === 0">
+    <div class="empty-state-content">
+      <span class="empty-icon">📂</span>
+      <h3>No Tabs Open</h3>
+      <p>Open a diagram or form from the File menu</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div>
+
+
+ <kendo-checkbox #isHidden (click)="ON_CLICK_isHidden()"></kendo-checkbox>
+ <kendo-label class="k-checkbox-label" [for]="isHidden" text="Show Hidden"></kendo-label>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="tree-container">
+                <div class="mb-3">
+                    <kendo-menu style="display: inline-block; float:right;" [items]="langitems"
+                        (select)="onSelectLang($event)"></kendo-menu>
+                    <kendo-menu [items]="mainMenus" (select)="selectMainMenu($event)"></kendo-menu>
+
+                   
+
+                    <h3>{{ currentMainMenu }}</h3>
+                </div>
+                <p *ngIf="panelItems.length == 0 && currentMainMenu != ''"
+                    style="text-align: center; color: grey; margin-top: 20px">There is no data to show</p>
+
+                <kendo-treeview [nodes]="panelItems" textField="text" kendoTreeViewExpandable kendoTreeViewSelectable
+                    kendoTreeViewHierarchyBinding kendoTreeViewDragAndDrop kendoTreeViewDragAndDropEditing
+                    [(selectedKeys)]="selectedMenuItems" childrenField="items" (nodeDrop)="handleDrop($event)"
+                    (click)="selectMenuItem()">
+                </kendo-treeview>
+            </div>
+        </div>
+        <!-- <div class="col-md-8">
+            <legend>{{ title }}</legend>
+
+            <h3 *ngIf="!selectMenuObject" style="text-align: center; color: grey; margin-top: 50px">Select a Module</h3>
+
+            <app-menus-form *ngIf="selectMenuObject" [executeQueryInput]="form_MENUS" (readCompletedOutput)="readCompletedHandler($event)"
+                (clearCompletedOutput)="clearCompletedHandler($event)"
+                (saveCompletedOutput)="saveCompletedHandler($event)" [setComponentConfig_Input]="MENUSFormConfig">
+            </app-menus-form>
+
+            <app-routines-form *ngIf="selectMenuObject" [executeQueryInput]="form_ROUTINES" [setComponentConfig_Input]="ROUTINESFormConfig">
+            </app-routines-form>
+        </div> -->
+
+
+        <div class="col-md-8">
+            <legend class="k-form-legend">{{title }}</legend>
+            <kendo-tabstrip [keepTabContent]="true">
+
+                <kendo-tabstrip-tab [selected]="true">
+                    <ng-template kendoTabTitle>
+                        <legend>Menu & routines </legend>
+                    </ng-template>
+                    <ng-template kendoTabContent>
+                        <legend>{{ title }}</legend>
+
+                        <h3 *ngIf="!selectMenuObject" style="text-align: center; color: grey; margin-top: 50px">Select a
+                            Module</h3>
+
+                        <app-menus-form *ngIf="selectMenuObject" [executeQueryInput]="form_MENUS"
+                            (readCompletedOutput)="readCompletedHandler($event)"
+                            (clearCompletedOutput)="clearCompletedHandler($event)"
+                            (saveCompletedOutput)="saveCompletedHandler($event)"
+                            (removeCompletedOutput)="removeCompletedHandler($event)"
+                            [setComponentConfig_Input]="MENUSFormConfig">
+                        </app-menus-form>
+                        <button kendoButton [primary]="true" *ngIf="selectMenuObject && showCopyButton" (click)="copyOpen()">Copy Choice to another Menu</button>
+                 
+                        <app-routines-form *ngIf="selectMenuObject" [executeQueryInput]="form_ROUTINES"
+                            [setComponentConfig_Input]="ROUTINESFormConfig">
+                        </app-routines-form>
+                       
+                    </ng-template>
+                </kendo-tabstrip-tab>
+
+                <kendo-tabstrip-tab>
+                    <ng-template kendoTabTitle>
+                        <legend>Groups </legend>
+                    </ng-template>
+                    <ng-template kendoTabContent>
+                        <app-adm-group-authority>
+                        </app-adm-group-authority>
+                    </ng-template>
+                </kendo-tabstrip-tab>
+
+            </kendo-tabstrip>
+        </div>
+
+    </div>
+</div>
+
+<div [hidden]="!copyOpened" >
+<kendo-dialog title="Copy Routine to menu" resizable="true" [minWidth]="400" [width]="500" [height]="200" (close)="copyClose()">
+  <kendo-menu [items]="copyToMenus" (select)="selectcopyToMenus($event)"></kendo-menu>
+  <h5>{{ currentcopyToMenus }}</h5>
+
+  <h6>{{ currentcopyToMsg }}</h6>
+
+    <kendo-dialog-actions>
+        <button class="k-button" (click)="onCancelKeys($event)">Cancel</button>
+        <button class="k-button k-primary" (click)="onCopyKeys($event)">Copy</button>
+    </kendo-dialog-actions>
+</kendo-dialog>
+</div>

@@ -1,0 +1,58 @@
+<!-- <button  kendoButton [icon]="'align-remove'" title="Hide/Show Diagram" (click)="showHideDiagram();" ></button > -->
+<!-- <kendo-tabstrip [keepTabContent]="true" *ngIf="showDiagram" >
+      <kendo-tabstrip-tab  [selected]="true"> 
+        <ng-template kendoTabTitle>
+          <legend>{{flowName}}</legend>
+        </ng-template>
+        <ng-template kendoTabContent>
+          <div class="diagram-parent">
+            <app-diagram [url]="diagramUrl" (importDone)="handleImported($event)"
+           
+            [setComponentConfig_Input]="app_diagramConfigView">
+            </app-diagram>
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+  
+      <kendo-tabstrip-tab *ngIf="ModelShow">
+        <ng-template kendoTabTitle>
+          <legend>Model </legend>
+        </ng-template>
+        <ng-template kendoTabContent>
+          <div class="diagram-parent">
+            <app-diagram [url]="diagramUrl" (importDone)="handleImported($event)"
+            (saveCompletedOutput)="saveFormCompletedHandler($event)"
+            [setComponentConfig_Input]="app_diagramConfig">
+            </app-diagram>
+          </div>
+        </ng-template>
+      </kendo-tabstrip-tab>
+  
+  
+  
+  
+  </kendo-tabstrip> -->
+
+      <!-- <app-diagram *ngIf="showDiagram"
+      [url]="diagramUrl" (importDone)="handleImported($event)"
+         
+          [setComponentConfig_Input]="app_diagramConfigView">
+      </app-diagram>
+
+        <app-diagram *ngIf="ModelShow"
+        [url]="diagramUrl" (importDone)="handleImported($event)"
+          (saveCompletedOutput)="saveFormCompletedHandler($event)"
+          [setComponentConfig_Input]="app_diagramConfig">
+          </app-diagram> -->
+
+        <app-diagram *ngIf="false"
+      [url]="diagramUrl" (importDone)="handleImported($event)"
+         
+          [setComponentConfig_Input]="app_diagramConfigView">
+      </app-diagram>
+
+        <app-diagram *ngIf="true"
+        [url]="diagramUrl" (importDone)="handleImported($event)"
+          (saveCompletedOutput)="saveFormCompletedHandler($event)"
+          [setComponentConfig_Input]="app_diagramConfig">
+          </app-diagram>

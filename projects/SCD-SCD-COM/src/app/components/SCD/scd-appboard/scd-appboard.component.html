@@ -1,0 +1,116 @@
+<!-- scd-appboard.component.html -->
+<div class="appboard-container">
+  <legend class="k-form-legend screen-legend">
+    {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.component_title","SCADA Application") }}
+  </legend>
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('1')">
+      {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Diagram") }}
+    </button>
+    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('2')">
+      {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID3","Diagram1") }}
+    </button>
+    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('3')">
+      {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID4","Diagram 2") }}
+    </button>
+    
+    <!-- Group Controls -->
+    <button kendoButton [icon]="'plus'" themeColor="primary" (click)="createTabGroup('Group ' + (tabGroups.length + 1))">
+      New Group
+    </button>
+    <button kendoButton [icon]="'close'" (click)="closeAllWindows()">
+      Close All
+    </button>
+    <span class="window-count">{{ getTotalWindowCount() }} windows</span>
+  </div>
+
+  <!-- Tab Host -->
+  <div class="tab-host" [class.tab-host-dark]="isDarkTheme">
+    
+    <!-- ===== GROUP TABS (TOP LEVEL) ===== -->
+    <div class="group-tabs-container" *ngIf="tabGroups.length > 0">
+      <kendo-tabstrip
+        [keepTabContent]="true"
+        [tabPosition]="'top'"
+        [tabAlignment]="'start'"
+        (tabSelect)="onGroupTabSelect($event)"
+        class="group-tabstrip"
+      >
+        <kendo-tabstrip-tab 
+          *ngFor="let group of tabGroups; trackBy: trackGroup"
+          [title]="group.title"
+          [selected]="group.id === activeGroupId"
+          [closable]="false"
+          [disabled]="false"
+        >
+          <ng-template kendoTabTitle>
+            <span class="group-tab-title">{{ group.title }}</span>
+            <span 
+              class="close-group-btn"
+              (click)="closeGroup(group.id, $event)"
+              (mousedown)="$event.stopPropagation()"
+              title="Close Group"
+            >
+              ×
+            </span>
+          </ng-template>
+          
+          <ng-template kendoTabContent>
+            <!-- ===== FLOATING WINDOWS FOR SELECTED GROUP ===== -->
+            <div class="group-content-area" style="position: relative; width: 100%; height: 100%;">
+              <!-- Show floating windows that belong to this group -->
+              <div *ngIf="getWindowsForGroup(group.id).length > 0" class="floating-windows-container">
+                <app-mdi-window
+                  *ngFor="let window of getWindowsForGroup(group.id)"
+                  [window]="window"
+                  (closeWindow)="closeWindow($event)"
+                  (bringToFrontWindow)="bringToFront($event)"
+                  (activateWindow)="activateGroupWindow(group.id, $event)"
+                  (minimizeWindow)="minimizeWindow($event)"
+                  (maximizeWindow)="maximizeWindow($event)"
+                  (dragWindow)="onDragStart($event)"
+                  (resizeWindow)="onResizeStart($event)">
+                </app-mdi-window>
+              </div>
+              
+              <!-- Empty state for group with no windows -->
+              <div *ngIf="getWindowsForGroup(group.id).length === 0" class="empty-group-content">
+                <span class="empty-icon-small">📂</span>
+                <p>No windows in this group</p>
+                <button kendoButton size="small" (click)="addWindowToGroup(group.id)">
+                  Add Window
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-tabstrip-tab>
+      </kendo-tabstrip>
+    </div>
+
+    <!-- ===== FLOATING WINDOWS (NO GROUPS - FALLBACK) ===== -->
+    <div class="floating-windows-container full-height" *ngIf="tabGroups.length === 0 && windows.length > 0">
+      <app-mdi-window
+        *ngFor="let window of windows"
+        [window]="window"
+        (closeWindow)="closeWindow($event)"
+        (bringToFrontWindow)="bringToFront($event)"
+        (activateWindow)="activateFloatingWindow($event)"
+        (minimizeWindow)="minimizeWindow($event)"
+        (maximizeWindow)="maximizeWindow($event)"
+        (dragWindow)="onDragStart($event)"
+        (resizeWindow)="onResizeStart($event)">
+      </app-mdi-window>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="getTotalWindowCount() === 0 && tabGroups.length === 0">
+      <div class="empty-state-content">
+        <span class="empty-icon">📂</span>
+        <h3>No Windows Open</h3>
+        <p>Open a diagram from the buttons above or create a new tab group</p>
+      </div>
+    </div>
+  </div>
+</div>

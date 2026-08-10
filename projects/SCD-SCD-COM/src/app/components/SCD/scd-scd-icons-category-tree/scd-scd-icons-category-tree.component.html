@@ -1,0 +1,18 @@
+
+<kendo-treeview
+                [nodes]="treeData"
+                childrenField="items"
+                textField="text"
+                kendoTreeViewExpandable
+                kendoTreeViewHierarchyBinding
+                kendoTreeViewSelectable
+                (selectionChange)="handleSelection($event)"
+                kendoTreeViewSelectable
+                [(selectedKeys)]="selectedKeys"
+                [(expandedKeys)]="expandedKeys"
+                ><ng-template kendoTreeViewNodeTemplate let-dataItem>
+                    <span [ngClass]="ICON_CLASS(dataItem.dataItem)"></span>
+                    {{dataItem.text}}
+                </ng-template>
+
+            </kendo-treeview>

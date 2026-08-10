@@ -1,0 +1,403 @@
+<div>
+	<legend *ngIf="showToolBar" class="k-form-legend">{{
+		this.starServices.getNLS([],"dsp_template_detail_form.dsptemplateDetail.component_title","Step") }}</legend>
+	<div class="form-toolbar"> </div>
+	<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+		<kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}"
+			(click)="saveChanges( form)"
+			*ngIf="!isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+		<kendo-toolbar-button kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}"
+			(click)="printScreen()" *ngIf="componentConfig.toolsShow"></kendo-toolbar-button>
+
+
+
+		<kendo-toolbar-button [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}"
+			title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery( form);"
+			*ngIf="componentConfig.queryable"></kendo-toolbar-button>
+		<kendo-toolbar-button [icon]="'search'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"
+			(click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+		<kendo-toolbar-button [icon]="'cancel'" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"
+			(click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+
+
+		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'"
+			title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');"
+			*ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'"
+			title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}" (click)="goRecord(  'prev');"
+			*ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"
+			(click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'"
+			title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')"
+			*ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+
+		<kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);"
+			*ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+		<kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);"
+			*ngIf="componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+		<kendo-toolbar-button kendoButton *ngIf="starServices.helpMsg !=='' "
+			text="{{starServices.helpMsg}}"></kendo-toolbar-button>
+	</kendo-toolbar>
+	<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+		<div class="form-borders">
+			<form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form"
+				(click)="ON_CLICK(form.value)">
+				<fieldset class="form-fieldset" class="k-form-fieldset" [disabled]="!componentConfig.enabled ">
+
+
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+						
+
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelWO_TYPETop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelWO_TYPETop && !isPhonePortrait) && labelWO_TYPEVisible"
+								class="form-label" [for]="WO_TYPE"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.WO_TYPE','Type')"></kendo-label>
+							<label *ngIf="(labelWO_TYPETop || isPhonePortrait) && labelWO_TYPEVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.WO_TYPE','Type')}}</label>
+							<kendo-combobox #WO_TYPE class="form-field-combobox" [formControlName]="'WO_TYPE'"
+								[data]="lkpArrWO_TYPE" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.WO_TYPE_Hint','Please enter WO_TYPE')"
+								(click)="ON_CLICK_WO_TYPE($event)" (valueChange)="onValueChange_WO_TYPE($event)"
+								(filterChange)="starServices.handleFilterCode(this, $event)" [valuePrimitive]="true"
+								[kendoDropDownFilter]="{ operator: 'contains' }">
+								<ng-template kendoDropDownListNoDataTemplate>
+									<div>
+										<button *ngIf="filterCode" kendoButton
+											(click)="starServices.addNewCode(this, 'WO_TYPE')">
+											{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}}
+										</button>
+									</div>
+								</ng-template>
+							</kendo-combobox>
+						</kendo-formfield>
+
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelDESCRIPTIONTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label
+								*ngIf="(!labelDESCRIPTIONTop && !isPhonePortrait) && labelDESCRIPTIONVisible"
+								class="form-label" [for]="DESCRIPTION"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DESCRIPTION','Description')"></kendo-label>
+							<label *ngIf="(labelDESCRIPTIONTop || isPhonePortrait) && labelDESCRIPTIONVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DESCRIPTION','Description')}}</label>
+							<input class="form-input" formControlName="DESCRIPTION" kendoTextBox #DESCRIPTION
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DESCRIPTION_Hint','Please enter DESCRIPTION')"
+								(click)="ON_CLICK_DESCRIPTION($event)" (change)="onChange_DESCRIPTION($event)" />
+						</kendo-formfield>
+
+
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelTEMPLATE_ORDERTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label
+								*ngIf="(!labelTEMPLATE_ORDERTop && !isPhonePortrait) && labelTEMPLATE_ORDERVisible"
+								class="form-label" [for]="TEMPLATE_ORDER"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.TEMPLATE_ORDER','Order')"></kendo-label>
+							<label *ngIf="(labelTEMPLATE_ORDERTop || isPhonePortrait) && labelTEMPLATE_ORDERVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.TEMPLATE_ORDER','Order')}}</label>
+							<input class="form-input" formControlName="TEMPLATE_ORDER" kendoTextBox #TEMPLATE_ORDER
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.TEMPLATE_ORDER_Hint','Please enter TEMPLATE_ORDER')"
+								(click)="ON_CLICK_TEMPLATE_ORDER($event)" (change)="onChange_TEMPLATE_ORDER($event)" />
+						</kendo-formfield>
+					</div>
+
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+			
+						
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelTEMPLATE_NAMETop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label
+								*ngIf="(!labelTEMPLATE_NAMETop && !isPhonePortrait) && labelTEMPLATE_NAMEVisible"
+								class="form-label" [for]="TEMPLATE_NAME"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.TEMPLATE_NAME','Template')"></kendo-label>
+							<label *ngIf="(labelTEMPLATE_NAMETop || isPhonePortrait) && labelTEMPLATE_NAMEVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.TEMPLATE_NAME','Template')}}</label>
+							<input class="form-input" formControlName="TEMPLATE_NAME" kendoTextBox #TEMPLATE_NAME
+								[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.TEMPLATE_NAME.errors }"
+								required [readonly]="primarKeyReadOnlyArr.isTEMPLATE_NAMEreadOnly"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.TEMPLATE_NAME_Hint','Please enter TEMPLATE_NAME')"
+								(click)="ON_CLICK_TEMPLATE_NAME($event)" (change)="onChange_TEMPLATE_NAME($event)" />
+						</kendo-formfield>
+						
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelFORM_PAGES_NOTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label
+								*ngIf="(!labelFORM_PAGES_NOTop && !isPhonePortrait) && labelFORM_PAGES_NOVisible"
+								class="form-label" [for]="FORM_PAGES_NO"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.FORM_PAGES_NO','Form Pages')"></kendo-label>
+							<label *ngIf="(labelFORM_PAGES_NOTop || isPhonePortrait) && labelFORM_PAGES_NOVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.FORM_PAGES_NO','Form
+								Pages')}}</label>
+							<input class="form-input" formControlName="FORM_PAGES_NO" kendoTextBox #FORM_PAGES_NO
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.FORM_PAGES_NO_Hint','Please enter FORM_PAGES_NO')"
+								(click)="ON_CLICK_FORM_PAGES_NO($event)" (change)="onChange_FORM_PAGES_NO($event)" />
+						</kendo-formfield>
+
+						<kendo-formfield class="form-field" [orientation]="'horizontal'" 
+							[ngClass]="(labelSEQUENCE_NAMETop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label
+								*ngIf="(!labelSEQUENCE_NAMETop && !isPhonePortrait) && labelSEQUENCE_NAMEVisible"
+								class="form-label" [for]="SEQUENCE_NAME"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.SEQUENCE_NAME','Seq.')"></kendo-label>
+							<label *ngIf="(labelSEQUENCE_NAMETop || isPhonePortrait) && labelSEQUENCE_NAMEVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.SEQUENCE_NAME','Seq.')}}</label>
+							<input class="form-input" formControlName="SEQUENCE_NAME" kendoTextBox #SEQUENCE_NAME
+								[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SEQUENCE_NAME.errors }"
+								required [readonly]="primarKeyReadOnlyArr.isSEQUENCE_NAMEreadOnly"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.SEQUENCE_NAME_Hint','Please enter SEQUENCE_NAME')"
+								(click)="ON_CLICK_SEQUENCE_NAME($event)" (change)="onChange_SEQUENCE_NAME($event)" />
+						</kendo-formfield>
+
+					</div>
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+
+
+						<kendo-formfield *ngIf="false" class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelDEPENDANT_WO_ORDERTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label
+								*ngIf="(!labelDEPENDANT_WO_ORDERTop && !isPhonePortrait) && labelDEPENDANT_WO_ORDERVisible"
+								class="form-label" [for]="DEPENDANT_WO_ORDER"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DEPENDANT_WO_ORDER','Dependant Wo Order')"></kendo-label>
+							<label
+								*ngIf="(labelDEPENDANT_WO_ORDERTop || isPhonePortrait) && labelDEPENDANT_WO_ORDERVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DEPENDANT_WO_ORDER','Dependant
+								Wo Order')}}</label>
+							<input class="form-input" formControlName="DEPENDANT_WO_ORDER" kendoTextBox
+								#DEPENDANT_WO_ORDER
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DEPENDANT_WO_ORDER_Hint','Please enter DEPENDANT_WO_ORDER')"
+								(click)="ON_CLICK_DEPENDANT_WO_ORDER($event)"
+								(change)="onChange_DEPENDANT_WO_ORDER($event)" />
+						</kendo-formfield>
+
+
+						<kendo-formfield *ngIf="false" class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelDIVSTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelDIVSTop && !isPhonePortrait) && labelDIVSVisible"
+								class="form-label" [for]="DIVS"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DIVS','Divs')"></kendo-label>
+							<label *ngIf="(labelDIVSTop || isPhonePortrait) && labelDIVSVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DIVS','Divs')}}</label>
+							<input class="form-input" formControlName="DIVS" kendoTextBox #DIVS
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DIVS_Hint','Please enter DIVS')"
+								(click)="ON_CLICK_DIVS($event)" (change)="onChange_DIVS($event)" />
+						</kendo-formfield>
+
+					</div>
+
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+						<kendo-formfield *ngIf="false" class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelDEPTTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelDEPTTop && !isPhonePortrait) && labelDEPTVisible"
+								class="form-label" [for]="DEPT"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DEPT','Dept')"></kendo-label>
+							<label *ngIf="(labelDEPTTop || isPhonePortrait) && labelDEPTVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DEPT','Dept')}}</label>
+							<kendo-combobox #DEPT class="form-field-combobox" [formControlName]="'DEPT'"
+								[data]="lkpArrDEPT" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DEPT_Hint','Please enter DEPT')"
+								(click)="ON_CLICK_DEPT($event)" (valueChange)="onValueChange_DEPT($event)"
+								(filterChange)="starServices.handleFilterCode(this, $event)" [valuePrimitive]="true"
+								[kendoDropDownFilter]="{ operator: 'contains' }">
+								<ng-template kendoDropDownListNoDataTemplate>
+									<div>
+										<button *ngIf="filterCode" kendoButton
+											(click)="starServices.addNewCode(this, 'DEPT')">
+											{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}}
+										</button>
+									</div>
+								</ng-template>
+							</kendo-combobox>
+						</kendo-formfield>
+
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelDURATIONTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelDURATIONTop && !isPhonePortrait) && labelDURATIONVisible"
+								class="form-label" [for]="DURATION"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DURATION','Days')"></kendo-label>
+							<label *ngIf="(labelDURATIONTop || isPhonePortrait) && labelDURATIONVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DURATION','Days')}}</label>
+							<input class="form-input" formControlName="DURATION" kendoTextBox #DURATION
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.DURATION_Hint','Please enter DURATION')"
+								(click)="ON_CLICK_DURATION($event)" (change)="onChange_DURATION($event)" />
+						</kendo-formfield>
+
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelASSIGNEE_TYPETop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label
+								*ngIf="(!labelASSIGNEE_TYPETop && !isPhonePortrait) && labelASSIGNEE_TYPEVisible"
+								class="form-label" [for]="ASSIGNEE_TYPE"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.ASSIGNEE_TYPE','Assign Type')"></kendo-label>
+							<label *ngIf="(labelASSIGNEE_TYPETop || isPhonePortrait) && labelASSIGNEE_TYPEVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.ASSIGNEE_TYPE','Assign
+								Type')}}</label>
+							<kendo-combobox #ASSIGNEE_TYPE class="form-field-combobox"
+								[formControlName]="'ASSIGNEE_TYPE'" [data]="lkpArrASSIGNEE_TYPE"
+								[textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.ASSIGNEE_TYPE_Hint','Please enter ASSIGNEE_TYPE')"
+								(click)="ON_CLICK_ASSIGNEE_TYPE($event)"
+								(valueChange)="onValueChange_ASSIGNEE_TYPE($event)"
+								(filterChange)="starServices.handleFilterCode(this, $event)" [valuePrimitive]="true"
+								[kendoDropDownFilter]="{ operator: 'contains' }">
+								<ng-template kendoDropDownListNoDataTemplate>
+									<div>
+										<button *ngIf="filterCode" kendoButton
+											(click)="starServices.addNewCode(this, 'ASSIGNEE_TYPE')">
+											{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}}
+										</button>
+									</div>
+								</ng-template>
+							</kendo-combobox>
+						</kendo-formfield>
+
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelASSIGNEETop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelASSIGNEETop && !isPhonePortrait) && labelASSIGNEEVisible"
+								class="form-label" [for]="ASSIGNEE"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.ASSIGNEE','Assignee')"></kendo-label>
+							<label *ngIf="(labelASSIGNEETop || isPhonePortrait) && labelASSIGNEEVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.ASSIGNEE','Assignee')}}</label>
+							<kendo-combobox #ASSIGNEE class="form-field-combobox" [formControlName]="'ASSIGNEE'"
+								[data]="getlkpArrASSIGNEE()" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.ASSIGNEE_Hint','Please enter ASSIGNEE')"
+								(click)="ON_CLICK_ASSIGNEE($event)" (valueChange)="onValueChange_ASSIGNEE($event)"
+								(filterChange)="starServices.handleFilterCode(this, $event)" [valuePrimitive]="true"
+								[kendoDropDownFilter]="{ operator: 'contains' }">
+								<ng-template kendoDropDownListNoDataTemplate>
+									<div>
+										<button *ngIf="filterCode" kendoButton
+											(click)="starServices.addNewCode(this, 'ASSIGNEE')">
+											{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}}
+										</button>
+									</div>
+								</ng-template>
+							</kendo-combobox>
+						</kendo-formfield>
+
+					</div>
+
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+
+
+
+
+						<kendo-formfield *ngIf="false" class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelLOGDATETop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelLOGDATETop && !isPhonePortrait) && labelLOGDATEVisible"
+								class="form-label" [for]="LOGDATE"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.LOGDATE','Logdate')"></kendo-label>
+							<label *ngIf="(labelLOGDATETop || isPhonePortrait) && labelLOGDATEVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.LOGDATE','Logdate')}}</label>
+							<input class="form-input" formControlName="LOGDATE" kendoTextBox #LOGDATE
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.LOGDATE_Hint','Please enter LOGDATE')"
+								(click)="ON_CLICK_LOGDATE($event)" (change)="onChange_LOGDATE($event)" />
+						</kendo-formfield>
+
+					</div>
+
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+						<kendo-formfield *ngIf="false" class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelLOGNAMETop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelLOGNAMETop && !isPhonePortrait) && labelLOGNAMEVisible"
+								class="form-label" [for]="LOGNAME"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.LOGNAME','Logname')"></kendo-label>
+							<label *ngIf="(labelLOGNAMETop || isPhonePortrait) && labelLOGNAMEVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.LOGNAME','Logname')}}</label>
+							<input class="form-input" formControlName="LOGNAME" kendoTextBox #LOGNAME
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.LOGNAME_Hint','Please enter LOGNAME')"
+								(click)="ON_CLICK_LOGNAME($event)" (change)="onChange_LOGNAME($event)" />
+						</kendo-formfield>
+
+	
+
+					<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelAPPROVE_SEQTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelAPPROVE_SEQTop && !isPhonePortrait) && labelAPPROVE_SEQVisible"
+								class="form-label" [for]="APPROVE_SEQ"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.APPROVE_SEQ','If Approve')"></kendo-label>
+							<label *ngIf="(labelAPPROVE_SEQTop || isPhonePortrait) && labelAPPROVE_SEQVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.APPROVE_SEQ','If Approve')}}</label>
+							<kendo-combobox #APPROVE_SEQ class="form-field-combobox" [formControlName]="'APPROVE_SEQ'"
+								[data]="lkpArrDETAIL" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.APPROVE_SEQ_Hint','Please enter APPROVE_SEQ')"
+								(click)="ON_CLICK_APPROVE_SEQ($event)" (valueChange)="onValueChange_APPROVE_SEQ($event)"
+								(filterChange)="starServices.handleFilterCode(this, $event)" [valuePrimitive]="true"
+								[kendoDropDownFilter]="{ operator: 'contains' }">
+								<ng-template kendoDropDownListNoDataTemplate>
+									<div>
+										<button *ngIf="filterCode" kendoButton
+											(click)="starServices.addNewCode(this, 'APPROVE_SEQ')">
+											{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}}
+										</button>
+									</div>
+								</ng-template>
+							</kendo-combobox>
+						</kendo-formfield>
+ 					
+						<kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelREJECT_SEQTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelREJECT_SEQTop && !isPhonePortrait) && labelREJECT_SEQVisible"
+								class="form-label" [for]="REJECT_SEQ"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.REJECT_SEQ','If Reject')"></kendo-label>
+							<label *ngIf="(labelREJECT_SEQTop || isPhonePortrait) && labelREJECT_SEQVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.REJECT_SEQ','If Reject')}}</label>
+							<kendo-combobox #REJECT_SEQ class="form-field-combobox" [formControlName]="'REJECT_SEQ'"
+								[data]="lkpArrDETAIL" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.REJECT_SEQ_Hint','Please enter REJECT_SEQ')"
+								(click)="ON_CLICK_REJECT_SEQ($event)" (valueChange)="onValueChange_REJECT_SEQ($event)"
+								(filterChange)="starServices.handleFilterCode(this, $event)" [valuePrimitive]="true"
+								[kendoDropDownFilter]="{ operator: 'contains' }">
+								<ng-template kendoDropDownListNoDataTemplate>
+									<div>
+										<button *ngIf="filterCode" kendoButton
+											(click)="starServices.addNewCode(this, 'REJECT_SEQ')">
+											{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}}
+										</button>
+									</div>
+								</ng-template>
+							</kendo-combobox>
+						</kendo-formfield>
+
+
+                    <kendo-formfield class="form-field" [orientation]="'horizontal'"
+							[ngClass]="(labelMODIFY_SEQTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
+							<kendo-label *ngIf="(!labelMODIFY_SEQTop && !isPhonePortrait) && labelMODIFY_SEQVisible"
+								class="form-label" [for]="MODIFY_SEQ"
+								[text]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.MODIFY_SEQ','If Modify')"></kendo-label>
+							<label *ngIf="(labelMODIFY_SEQTop || isPhonePortrait) && labelMODIFY_SEQVisible"
+								class="form-label">{{starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.MODIFY_SEQ','If Modify')}}</label>
+							<kendo-combobox #MODIFY_SEQ class="form-field-combobox" [formControlName]="'MODIFY_SEQ'"
+								[data]="lkpArrDETAIL" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+								[placeholder]="starServices.getNLS([],'dsp_template_detail_form.dsptemplateDetail.MODIFY_SEQ_Hint','Please enter MODIFY_SEQ')"
+								(click)="ON_CLICK_MODIFY_SEQ($event)" (valueChange)="onValueChange_MODIFY_SEQ($event)"
+								(filterChange)="starServices.handleFilterCode(this, $event)" [valuePrimitive]="true"
+								[kendoDropDownFilter]="{ operator: 'contains' }">
+								<ng-template kendoDropDownListNoDataTemplate>
+									<div>
+										<button *ngIf="filterCode" kendoButton
+											(click)="starServices.addNewCode(this, 'MODIFY_SEQ')">
+											{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}}
+										</button>
+									</div>
+								</ng-template>
+							</kendo-combobox>
+						</kendo-formfield>
+
+					</div>
+
+				</fieldset>
+			</form>
+		</div>
+		<app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+	</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog (close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700"
+		[height]="500" title="Add Code">
+		<app-som-tabs-codes-grid [detail_Input]="grid_som_tabs_codes" [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+		</app-som-tabs-codes-grid>
+
+	</kendo-dialog>
+</div>

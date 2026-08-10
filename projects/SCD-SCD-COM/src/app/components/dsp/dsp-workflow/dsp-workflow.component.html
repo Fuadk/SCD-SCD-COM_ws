@@ -1,0 +1,78 @@
+<div style="display: flex;justify-content: flex-start;">
+    <div style="display: inline-block;">
+        <!--legend class="k-form-legend">{{ title }}</legend-->
+        <button kendoButton [icon]="'preview-off'" title="Hide/Show Tree" (click)="showHideGrid();"></button>
+
+
+        <button kendoButton [icon]="'preview-off'" title="Hide/Show Flow" (click)="showHideFlow();"></button>
+        <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" [hidden]="showHideGridFlag ">
+            <fieldset class="form-fieldset" class="k-form-fieldset">
+                <div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+                    <kendo-formfield class="form-field" [orientation]="'horizontal'">
+                        <kendo-label class="form-label" [for]="FLOW_CODE" text="Workflow"></kendo-label>
+                        <kendo-combobox #FLOW_CODE class="form-field-combobox" [formControlName]="'FLOW_CODE'"
+                            [data]="lkpArrWORKFLOW_CODE" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+                            [value]="currentFlow" [readonly]="!enableFlowCode" (click)="home()"
+                            (valueChange)="valueChangeFLOW_CODE($event)" [valuePrimitive]="true"
+                            [kendoDropDownFilter]="{ operator: 'contains' }">
+                        </kendo-combobox>
+                    </kendo-formfield>
+                    <button *ngIf="showAddStep" class="k-button k-primary" kendoButton (click)="AddStep()" icon="plus"
+                        style="margin: 5px 5px 5px 5px;">{{AddStepMsg}}</button>
+                </div>
+            </fieldset>
+        </form>
+        <div class="form-borders" [hidden]="showHideGridFlag"
+            style="display: inline-block; height:700px; vertical-align: top;overflow: auto; width: 350px;margin-right: 20px;">
+            <kendo-treeview [nodes]="data" textField="text" kendoTreeViewExpandable kendoTreeViewHierarchyBinding
+                childrenField="items" kendoTreeViewSelectable (selectionChange)="handleSelection($event)"
+                [selectBy]="'i'" [(selectedKeys)]="selectedKeys">
+
+                <ng-template kendoTreeViewNodeTemplate let-dataItem>
+                    <kendo-svg-icon [icon]="getSvgIcon(dataItem)"></kendo-svg-icon>
+                    {{dataItem.text}}
+                </ng-template>
+
+            </kendo-treeview>
+        </div>
+    </div>
+    <div style="display: inline-block;  width: 80%;min-width: width 700px;">
+
+        <div *ngIf="showHideFlowFlag">
+            <app-dsp-template-form [hidden]="!showTemplate" [executeQueryInput]="form_TEMPLATE"
+                (clearCompletedOutput)="clearCompletedHandler($event)"
+                (saveCompletedOutput)="saveCompletedHandlerTemplate($event)"
+                (setComponentConfigOutput)="setComponentConfigHandler($event)"
+                [setComponentConfig_Input]="DSP_TEMPLATEFormConfig"></app-dsp-template-form>
+
+            <app-dsp-template-detail-form [hidden]="!showTemplateDetail" [executeQueryInput]="form_EMP_STEPS"
+                (clearCompletedOutput)="clearCompletedHandler($event)"
+                (saveCompletedOutput)="saveCompletedHandlerTemplateDetail($event)"
+                (setComponentConfigOutput)="setComponentConfigHandler($event)"
+                [setComponentConfig_Input]="DSP_TEMPLATE_DETAILFormConfig"></app-dsp-template-detail-form>
+
+            <app-adm-rules [hidden]="!showRules" 
+                [setComponentConfig_Input]="ADM_RULE_DEFFormConfig">
+            </app-adm-rules>
+              <!-- <app-adm-rules [hidden]="!showRules" [triggersaveChanges_Input]="masterSaved"
+                [setComponentConfig_Input]="ADM_RULE_DEFFormConfig">
+            </app-adm-rules> -->
+        </div>
+        <div *ngIf="showHideFlowFlag" class="form-borders">
+            <app-dsp-multistep *ngIf="multiStepFormOpened"
+                (saveCompletedOutput)="savemultiStepFormCompletedHandler($event)"
+                [setComponentConfig_Input]="DSP_MULTISTEPFormConfig">
+            </app-dsp-multistep>
+
+            <app-dsp-ifram-form *ngIf="iFormOpened" [setComponentConfig_Input]="DSP_IFRAME_FormConfig">
+                ></app-dsp-ifram-form>
+        </div>
+
+        <app-dsp-diagram-wrap *ngIf="showDiagramWrap" style="height:700px;"
+            [setComponentConfig_Input]="app_dsp_diagram_wrapConfig">
+        </app-dsp-diagram-wrap>
+    </div>
+
+
+
+</div>

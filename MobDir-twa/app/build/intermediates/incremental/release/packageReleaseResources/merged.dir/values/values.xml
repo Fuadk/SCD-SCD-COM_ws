@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="display_override">
+    
+      
+        <item>standalone</item>
+      
+    
+      
+        <item>minimal-ui</item>
+      
+    
+      
+        <item>window-controls-overlay</item>
+      
+    
+    </string-array>
+    <bool name="enableNotification">true</bool>
+    <bool name="enableSiteSettingsShortcut">true</bool>
+    <color name="backgroundColor">#1A365D</color>
+    <color name="colorPrimary">#1A365D</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="navigationColor">#000000</color>
+    <color name="navigationColorDark">#000000</color>
+    <color name="navigationDividerColor">#000000</color>
+    <color name="navigationDividerColorDark">#000000</color>
+    <color name="shortcut_background">#F5F5F5</color>
+    <integer name="splashScreenFadeOutDuration">300</integer>
+    <string name="appName" translatable="false">PALM lines AI</string>
+    <string name="assetStatements">
+    [{
+        \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+        \"target\": {
+            \"namespace\": \"web\",
+            \"site\": \"https://starapps.duckdns.org\"
+        }
+    }]
+    
+  </string>
+    <string name="fallbackType" translatable="false">customtabs</string>
+    <string name="fullScopeUrl" translatable="false">https://starapps.duckdns.org:8443/PALM-PALM-COM/</string>
+    <string name="generatorApp" translatable="false">bubblewrap-cli</string>
+    <string name="hostName" translatable="false">starapps.duckdns.org</string>
+    <string name="launchUrl" translatable="false">https://starapps.duckdns.org:8443/PALM-PALM-COM/?c2hhcmU9RUtZQyZTQ1JFRU49cGFsbV9wYWxtX3VzZXJzX2Zvcm1zdGVwcw==</string>
+    <string name="launcherName" translatable="false">PALM</string>
+    <string name="orientation" translatable="false">any</string>
+    <string name="providerAuthority" translatable="false">org_8443.duckdns.starapps.twa.fileprovider</string>
+    <string name="shortcut_name_0" translatable="false">New User</string>
+    <string name="shortcut_name_1" translatable="false">Dashboard</string>
+    <string name="shortcut_short_name_0" translatable="false">Add User</string>
+    <string name="shortcut_short_name_1" translatable="false">Home</string>
+    <string name="webManifestUrl" translatable="false">https://starapps.duckdns.org:8443/PALM-PALM-COM/manifest.json</string>
+</resources>

@@ -1,0 +1,206 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+<legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.component_title","Symbol States List") }}</legend>
+	
+    <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight ? componentConfig.gridHeight : gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="componentConfig.showToolBar">
+
+
+        
+        
+
+        
+            <button  [icon]="'sliders'"  [disabled]="isSearch" kendoButton  title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="Cancel" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
+            <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isSearch && (componentConfig.updateable || componentConfig.insertable) "></button >
+            <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable && !isSearch"></button >
+
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"   (click)="toggleColumnMenu()" *ngIf="!isSearch && !isPhonePortrait"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "    >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SYMBOL_STATE_ID"
+ *ngIf=visibleSYMBOL_STATE_ID  [editable]=" !(disabledColumns.indexOf('SYMBOL_STATE_ID') > -1)  && !primarKeyReadOnlyArr.isSYMBOL_STATE_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('SYMBOL_STATE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.SYMBOL_STATE_ID','Symbol State Id') + ' *'}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SYMBOL_STATE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SYMBOL_STATE_ID()"      [formControl]="formGroup.get('SYMBOL_STATE_ID')" [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.SYMBOL_STATE_ID_Hint','Please enter Symbol State Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetSHAPE_ID(dataItem.SHAPE_ID)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrSHAPE_ID"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeSHAPE_ID($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('SHAPE_ID')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STATE_ID"
+ *ngIf=visibleSTATE_ID  [editable]=" !(disabledColumns.indexOf('STATE_ID') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('STATE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.STATE_ID','State Id')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.STATE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_STATE_ID()"      [formControl]="formGroup.get('STATE_ID')" [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.STATE_ID_Hint','Please enter State Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STATE_NAME"
+ *ngIf=visibleSTATE_NAME  [editable]=" !(disabledColumns.indexOf('STATE_NAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('STATE_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.STATE_NAME','State Name')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.STATE_NAME}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_STATE_NAME()"      [formControl]="formGroup.get('STATE_NAME')" [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.STATE_NAME_Hint','Please enter State Name.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="VALUE"
+ *ngIf=visibleVALUE  [editable]=" !(disabledColumns.indexOf('VALUE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('VALUE') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.VALUE','Value')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.VALUE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_VALUE()"      [formControl]="formGroup.get('VALUE')" [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.VALUE_Hint','Please enter Value.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BORDER_COLOR"
+ *ngIf=visibleBORDER_COLOR  [editable]=" !(disabledColumns.indexOf('BORDER_COLOR') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('BORDER_COLOR') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.BORDER_COLOR','Border Color')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.BORDER_COLOR}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_BORDER_COLOR()"      [formControl]="formGroup.get('BORDER_COLOR')" [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.BORDER_COLOR_Hint','Please enter Border Color.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_COLOR" 
+ *ngIf=visibleIMAGE_COLOR  [editable]=" !(disabledColumns.indexOf('IMAGE_COLOR') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('IMAGE_COLOR') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.IMAGE_COLOR','Image Color')}}"   [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem>
+		 <kendo-avatar [imageSrc]="dataItem.IMAGE_COLOR"  width="50px" height="50px"  ></kendo-avatar>
+		 </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<textarea kendoTextArea  style="resize: both;"  [formControl]="formGroup.get('IMAGE_COLOR')"  
+		kendoTextBox #IMAGE_COLOR></textarea>
+		 </ng-template>
+</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_BACK_COLOR" 
+ *ngIf=visibleIMAGE_BACK_COLOR  [editable]=" !(disabledColumns.indexOf('IMAGE_BACK_COLOR') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('IMAGE_BACK_COLOR') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.IMAGE_BACK_COLOR','Image Back Color')}}"   [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem>
+		 <kendo-avatar [imageSrc]="dataItem.IMAGE_BACK_COLOR"  width="50px" height="50px"  ></kendo-avatar>
+		 </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<textarea kendoTextArea  style="resize: both;"  [formControl]="formGroup.get('IMAGE_BACK_COLOR')"  
+		kendoTextBox #IMAGE_BACK_COLOR></textarea>
+		 </ng-template>
+</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BACK_STYLE"
+ *ngIf=visibleBACK_STYLE  [editable]=" !(disabledColumns.indexOf('BACK_STYLE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('BACK_STYLE') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.BACK_STYLE','Back Style')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.BACK_STYLE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_BACK_STYLE()"      [formControl]="formGroup.get('BACK_STYLE')" [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.BACK_STYLE_Hint','Please enter Back Style.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_BLINK" 
+ *ngIf=visibleIMAGE_BLINK  [editable]=" !(disabledColumns.indexOf('IMAGE_BLINK') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('IMAGE_BLINK') > -1" 		 title="{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATES_LIST.scdsymbolStateScdSspSymbolStatesList.IMAGE_BLINK','Image Blink')}}"   [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem>
+		 <kendo-avatar [imageSrc]="dataItem.IMAGE_BLINK"  width="50px" height="50px"  ></kendo-avatar>
+		 </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<textarea kendoTextArea  style="resize: both;"  [formControl]="formGroup.get('IMAGE_BLINK')"  
+		kendoTextBox #IMAGE_BLINK></textarea>
+		 </ng-template>
+</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+

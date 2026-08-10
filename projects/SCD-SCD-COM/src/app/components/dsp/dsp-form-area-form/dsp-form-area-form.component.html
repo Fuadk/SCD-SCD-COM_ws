@@ -1,0 +1,107 @@
+<div>
+    <p *ngIf="!componentConfig.isMaster" class="mb-2"><strong>{{ title }}</strong></p>
+
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="!isChild && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  kendoButton [icon]="'print'" title="print" (click)="printScreen()" ></kendo-toolbar-button >
+
+
+    <kendo-toolbar-button  [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="Enter Query" (click)="enterQuery( form);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'" title="Cancel"  (click)="onCancel($event)" ></kendo-toolbar-button >
+
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="First Record" (click)="goRecord( 'first');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="Previous Record"  (click)="goRecord(  'prev');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="Next Record"  (click)="goRecord('next')" *ngIf="!isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="Last Record" (click)="goRecord('last')" *ngIf="!isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf="!isSearch">Remove</kendo-toolbar-button>
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" >
+    <fieldset class="form-fieldset"  class="k-form-fieldset">
+
+		<div #focusElement tabindex="1000"></div>
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' " style="display: none;">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="FORM_NAME" text="Form Name"></kendo-label>
+		<input class="form-input" formControlName="FORM_NAME" kendoTextBox #FORM_NAME
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.FORM_NAME.errors }"  required
+		[readonly]="primarKeyReadOnlyArr.isFORM_NAMEreadOnly" />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' " style="display: none;">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="PAGE_NO" text="Page No"></kendo-label>
+		<input class="form-input" formControlName="PAGE_NO" kendoTextBox #PAGE_NO
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.PAGE_NO.errors }"  required
+		[readonly]="primarKeyReadOnlyArr.isPAGE_NOreadOnly" />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' " >
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="AREA_NO" text="Area No*"></kendo-label>
+		<input class="form-input" formControlName="AREA_NO" kendoTextBox #AREA_NO
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.AREA_NO.errors }"  required
+		[readonly]="componentConfig.formMode == 'area_new' ? false  : true " />
+	</kendo-formfield>
+</div>
+
+
+
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="AREA_TYPE" text="Area Type*"></kendo-label>
+		<kendo-combobox  #AREA_TYPE class="form-field-combobox" [formControlName]="'AREA_TYPE'"
+		[data]="lkpArrAREA_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+		(valueChange)="onValueChange_AREA_TYPE($event)" 
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.AREA_NO.errors }"  required
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		</kendo-combobox>
+	</kendo-formfield>
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="AREA_DATA_NAME" text="Data Name"></kendo-label>
+		<input class="form-input" formControlName="AREA_DATA_NAME" kendoTextBox #AREA_DATA_NAME  />
+	</kendo-formfield>
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="AREA_TITLE" text="Title"></kendo-label>
+		<input class="form-input" formControlName="AREA_TITLE" kendoTextBox #AREA_TITLE  />
+	</kendo-formfield>
+
+</div>
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="AREA_HELP" text="Help"></kendo-label>
+		<input class="form-input" formControlName="AREA_HELP" kendoTextBox #AREA_HELP  />
+	</kendo-formfield>
+
+</div>
+
+
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="AREA_PROTECTED" text="Protected"></kendo-label>
+		<input type="checkbox" class="form-input" formControlName="AREA_PROTECTED" #AREA_PROTECTED  />
+	</kendo-formfield>
+
+</div>
+
+    </fieldset>
+    </form>
+</kendo-pdf-export>
+</div>
+

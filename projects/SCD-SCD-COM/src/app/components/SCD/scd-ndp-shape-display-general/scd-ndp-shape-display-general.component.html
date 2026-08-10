@@ -1,0 +1,238 @@
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.component_title","Shape Display General") }}</legend>
+<div class="form-toolbar"> </div>
+
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+ 
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+ <div class="form-borders" > 
+    <form class="form-layout" [ngClass]="isPhonePortrait ? 'k-form k-form-horizontal-star' : 'k-form k-form-horizontal' "
+     [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled && !isSearch"-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_DISPLAY_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_DISPLAY_GENERAL_ID >
+		<kendo-label *ngIf="(!labelSHAPE_DISPLAY_GENERAL_IDTop && !isPhonePortrait) && labelSHAPE_DISPLAY_GENERAL_IDVisible" class="form-label" [for]="SHAPE_DISPLAY_GENERAL_ID" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHAPE_DISPLAY_GENERAL_ID','Shape Display General Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSHAPE_DISPLAY_GENERAL_IDTop || isPhonePortrait) && labelSHAPE_DISPLAY_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHAPE_DISPLAY_GENERAL_ID','Shape Display General Id') + ' *'}}</label>
+		<input   formControlName="SHAPE_DISPLAY_GENERAL_ID"
+ kendoTextBox #SHAPE_DISPLAY_GENERAL_ID 
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_DISPLAY_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHAPE_DISPLAY_GENERAL_ID_Hint','Please enter Shape Display General Id.')"
+		(click)="ON_CLICK_SHAPE_DISPLAY_GENERAL_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHAPE_DISPLAY_GENERAL_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
+		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHAPE_ID','Shape Id') + ' *'}}</label>
+		<kendo-combobox  #SHAPE_ID class="form-field-combobox"  [formControlName]="'SHAPE_ID'"
+		[data]="lkpArrSHAPE_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SHAPE_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_DATA >
+		<kendo-label *ngIf="(!labelEXPRESSION_DATATop && !isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label" [for]="EXPRESSION_DATA" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.EXPRESSION_DATA','Expression Data')"></kendo-label>
+		<label *ngIf="(labelEXPRESSION_DATATop || isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.EXPRESSION_DATA','Expression Data')}}</label>
+		<input   formControlName="EXPRESSION_DATA"
+ kendoTextBox #EXPRESSION_DATA  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.EXPRESSION_DATA_Hint','Please enter Expression Data.')"
+		(click)="ON_CLICK_EXPRESSION_DATA($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_EXPRESSION_DATA($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFORMATTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFORMAT >
+		<kendo-label *ngIf="(!labelFORMATTop && !isPhonePortrait) && labelFORMATVisible" class="form-label" [for]="FORMAT" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FORMAT','Format')"></kendo-label>
+		<label *ngIf="(labelFORMATTop || isPhonePortrait) && labelFORMATVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FORMAT','Format')}}</label>
+		<input   formControlName="FORMAT"
+ kendoTextBox #FORMAT  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FORMAT_Hint','Please enter Format.')"
+		(click)="ON_CLICK_FORMAT($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FORMAT($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelOVERFLOWTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleOVERFLOW >
+		<kendo-label *ngIf="(!labelOVERFLOWTop && !isPhonePortrait) && labelOVERFLOWVisible" class="form-label" [for]="OVERFLOW" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.OVERFLOW','Overflow')"></kendo-label>
+		<label *ngIf="(labelOVERFLOWTop || isPhonePortrait) && labelOVERFLOWVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.OVERFLOW','Overflow')}}</label>
+		<input   formControlName="OVERFLOW"
+ kendoTextBox #OVERFLOW  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.OVERFLOW_Hint','Please enter Overflow.')"
+		(click)="ON_CLICK_OVERFLOW($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_OVERFLOW($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFIELD_LENGTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFIELD_LENGTH >
+		<kendo-label *ngIf="(!labelFIELD_LENGTHTop && !isPhonePortrait) && labelFIELD_LENGTHVisible" class="form-label" [for]="FIELD_LENGTH" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FIELD_LENGTH','Field Length')"></kendo-label>
+		<label *ngIf="(labelFIELD_LENGTHTop || isPhonePortrait) && labelFIELD_LENGTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FIELD_LENGTH','Field Length')}}</label>
+		<input   formControlName="FIELD_LENGTH"
+ kendoTextBox #FIELD_LENGTH  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FIELD_LENGTH_Hint','Please enter Field Length.')"
+		(click)="ON_CLICK_FIELD_LENGTH($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FIELD_LENGTH($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHOW_DIGIT_GROUPINGTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHOW_DIGIT_GROUPING >
+		<kendo-label *ngIf="(!labelSHOW_DIGIT_GROUPINGTop && !isPhonePortrait) && labelSHOW_DIGIT_GROUPINGVisible" class="form-label" [for]="SHOW_DIGIT_GROUPING" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHOW_DIGIT_GROUPING','Show Digit Grouping')"></kendo-label>
+		<label *ngIf="(labelSHOW_DIGIT_GROUPINGTop || isPhonePortrait) && labelSHOW_DIGIT_GROUPINGVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHOW_DIGIT_GROUPING','Show Digit Grouping')}}</label>
+		<input   formControlName="SHOW_DIGIT_GROUPING"
+ kendoTextBox #SHOW_DIGIT_GROUPING  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.SHOW_DIGIT_GROUPING_Hint','Please enter Show Digit Grouping.')"
+		(click)="ON_CLICK_SHOW_DIGIT_GROUPING($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHOW_DIGIT_GROUPING($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDECIMAL_PLACESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDECIMAL_PLACES >
+		<kendo-label *ngIf="(!labelDECIMAL_PLACESTop && !isPhonePortrait) && labelDECIMAL_PLACESVisible" class="form-label" [for]="DECIMAL_PLACES" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.DECIMAL_PLACES','Decimal Places')"></kendo-label>
+		<label *ngIf="(labelDECIMAL_PLACESTop || isPhonePortrait) && labelDECIMAL_PLACESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.DECIMAL_PLACES','Decimal Places')}}</label>
+		<input   formControlName="DECIMAL_PLACES"
+ kendoTextBox #DECIMAL_PLACES  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.DECIMAL_PLACES_Hint','Please enter Decimal Places.')"
+		(click)="ON_CLICK_DECIMAL_PLACES($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DECIMAL_PLACES($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFIXED_DECIMAL_PLACESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFIXED_DECIMAL_PLACES >
+		<kendo-label *ngIf="(!labelFIXED_DECIMAL_PLACESTop && !isPhonePortrait) && labelFIXED_DECIMAL_PLACESVisible" class="form-label" [for]="FIXED_DECIMAL_PLACES" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FIXED_DECIMAL_PLACES','Fixed Decimal Places')"></kendo-label>
+		<label *ngIf="(labelFIXED_DECIMAL_PLACESTop || isPhonePortrait) && labelFIXED_DECIMAL_PLACESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FIXED_DECIMAL_PLACES','Fixed Decimal Places')}}</label>
+		<input   formControlName="FIXED_DECIMAL_PLACES"
+ kendoTextBox #FIXED_DECIMAL_PLACES  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.FIXED_DECIMAL_PLACES_Hint','Please enter Fixed Decimal Places.')"
+		(click)="ON_CLICK_FIXED_DECIMAL_PLACES($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FIXED_DECIMAL_PLACES($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDYNAMIC_DECIMAL_PLACESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDYNAMIC_DECIMAL_PLACES >
+		<kendo-label *ngIf="(!labelDYNAMIC_DECIMAL_PLACESTop && !isPhonePortrait) && labelDYNAMIC_DECIMAL_PLACESVisible" class="form-label" [for]="DYNAMIC_DECIMAL_PLACES" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.DYNAMIC_DECIMAL_PLACES','Dynamic Decimal Places')"></kendo-label>
+		<label *ngIf="(labelDYNAMIC_DECIMAL_PLACESTop || isPhonePortrait) && labelDYNAMIC_DECIMAL_PLACESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.DYNAMIC_DECIMAL_PLACES','Dynamic Decimal Places')}}</label>
+		<input   formControlName="DYNAMIC_DECIMAL_PLACES"
+ kendoTextBox #DYNAMIC_DECIMAL_PLACES  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.DYNAMIC_DECIMAL_PLACES_Hint','Please enter Dynamic Decimal Places.')"
+		(click)="ON_CLICK_DYNAMIC_DECIMAL_PLACES($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DYNAMIC_DECIMAL_PLACES($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelJUSTIFICATIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleJUSTIFICATION >
+		<kendo-label *ngIf="(!labelJUSTIFICATIONTop && !isPhonePortrait) && labelJUSTIFICATIONVisible" class="form-label" [for]="JUSTIFICATION" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.JUSTIFICATION','Justification')"></kendo-label>
+		<label *ngIf="(labelJUSTIFICATIONTop || isPhonePortrait) && labelJUSTIFICATIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.JUSTIFICATION','Justification')}}</label>
+		<input   formControlName="JUSTIFICATION"
+ kendoTextBox #JUSTIFICATION  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.JUSTIFICATION_Hint','Please enter Justification.')"
+		(click)="ON_CLICK_JUSTIFICATION($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_JUSTIFICATION($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLEADING_CHARACTERTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLEADING_CHARACTER >
+		<kendo-label *ngIf="(!labelLEADING_CHARACTERTop && !isPhonePortrait) && labelLEADING_CHARACTERVisible" class="form-label" [for]="LEADING_CHARACTER" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.LEADING_CHARACTER','Leading Character')"></kendo-label>
+		<label *ngIf="(labelLEADING_CHARACTERTop || isPhonePortrait) && labelLEADING_CHARACTERVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.LEADING_CHARACTER','Leading Character')}}</label>
+		<input   formControlName="LEADING_CHARACTER"
+ kendoTextBox #LEADING_CHARACTER  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.LEADING_CHARACTER_Hint','Please enter Leading Character.')"
+		(click)="ON_CLICK_LEADING_CHARACTER($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LEADING_CHARACTER($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelWIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleWIDTH >
+		<kendo-label *ngIf="(!labelWIDTHTop && !isPhonePortrait) && labelWIDTHVisible" class="form-label" [for]="WIDTH" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.WIDTH','Width')"></kendo-label>
+		<label *ngIf="(labelWIDTHTop || isPhonePortrait) && labelWIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.WIDTH','Width')}}</label>
+		<input   formControlName="WIDTH"
+ kendoTextBox #WIDTH  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.WIDTH_Hint','Please enter Width.')"
+		(click)="ON_CLICK_WIDTH($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_WIDTH($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelHEIGHTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleHEIGHT >
+		<kendo-label *ngIf="(!labelHEIGHTTop && !isPhonePortrait) && labelHEIGHTVisible" class="form-label" [for]="HEIGHT" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.HEIGHT','Height')"></kendo-label>
+		<label *ngIf="(labelHEIGHTTop || isPhonePortrait) && labelHEIGHTVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.HEIGHT','Height')}}</label>
+		<input   formControlName="HEIGHT"
+ kendoTextBox #HEIGHT  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.HEIGHT_Hint','Please enter Height.')"
+		(click)="ON_CLICK_HEIGHT($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_HEIGHT($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelOFFSETTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleOFFSET >
+		<kendo-label *ngIf="(!labelOFFSETTop && !isPhonePortrait) && labelOFFSETVisible" class="form-label" [for]="OFFSET" [text]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.OFFSET','Offset')"></kendo-label>
+		<label *ngIf="(labelOFFSETTop || isPhonePortrait) && labelOFFSETVisible" class="form-label"  >{{starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.OFFSET','Offset')}}</label>
+		<input   formControlName="OFFSET"
+ kendoTextBox #OFFSET  [placeholder]="starServices.getNLS([],'SCD_NDP_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdNdpShapeDisplayGeneral.OFFSET_Hint','Please enter Offset.')"
+		(click)="ON_CLICK_OFFSET($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_OFFSET($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+    </fieldset>
+    </form>
+    </div>
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+      <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+  
+
+
+
+

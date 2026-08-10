@@ -1,0 +1,21 @@
+    <div>   
+        <!-- <legend class="k-form-legend">{{ this.starServices.getNLS([],"dsp_batch_file_fields.dsp_batch_file_fields.component_title","Dsp Batch File Def Dsp Batch File Def Form") }}</legend>  -->
+<div class="wrap">
+
+        <app-dsp-batch-dsp-batch-file-def-form  
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      [setComponentConfig_Input]="DSP_BATCH_FILE_DEFForm_0Config">
+        </app-dsp-batch-dsp-batch-file-def-form >
+
+</div>
+<!-- <div class="wrap">
+
+        <app-dsp-batch-dsp-batch-fields-grid  [detail_Input]="grid_1_DSP_BATCH_FIELDS"  
+                      [setComponentConfig_Input]="DSP_BATCH_FIELDSGrid_1Config">
+        </app-dsp-batch-dsp-batch-fields-grid >
+
+</div> -->
+
+    </div>   

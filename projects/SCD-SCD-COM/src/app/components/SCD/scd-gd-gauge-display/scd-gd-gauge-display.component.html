@@ -1,0 +1,307 @@
+
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{ this.starServices.getNLS([],"SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.component_title","Gauge Display") }}</legend>
+<div class="form-toolbar"> </div>
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+
+  
+
+
+
+
+
+
+    
+
+           <div class="form-borders" > 
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+
+         <legend *ngIf="FormStepsArr[1].visible" class="divTitle">{{FormStepsArr.length > 0 ?
+          FormStepsArr[1].CODETEXT_LANG:this.starServices.getNLS([],"SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.component_title","Gauge Display") }}</legend>
+			 <div *ngIf="FormStepsArr[1].visible" class="form-div">
+
+    
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelGAUGE_DISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleGAUGE_DISPLAY_ID >
+		<kendo-label *ngIf="(!labelGAUGE_DISPLAY_IDTop && !isPhonePortrait) && labelGAUGE_DISPLAY_IDVisible" class="form-label" [for]="GAUGE_DISPLAY_ID" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.GAUGE_DISPLAY_ID','Gauge Display Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelGAUGE_DISPLAY_IDTop || isPhonePortrait) && labelGAUGE_DISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.GAUGE_DISPLAY_ID','Gauge Display Id') + ' *'}}</label>
+		<input   formControlName="GAUGE_DISPLAY_ID"
+ kendoTextBox #GAUGE_DISPLAY_ID 
+		[readonly]="primarKeyReadOnlyArr.isGAUGE_DISPLAY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.GAUGE_DISPLAY_ID_Hint','Please enter Gauge Display Id.')"
+		(click)="ON_CLICK_GAUGE_DISPLAY_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
+		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.SHAPE_ID','Shape Id') + ' *'}}</label>
+		<kendo-combobox  #SHAPE_ID class="form-field-combobox"  [formControlName]="'SHAPE_ID'"
+		[data]="lkpArrSHAPE_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
+     adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SHAPE_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMINIMUM_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMINIMUM_VALUE >
+		<kendo-label *ngIf="(!labelMINIMUM_VALUETop && !isPhonePortrait) && labelMINIMUM_VALUEVisible" class="form-label" [for]="MINIMUM_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE','Minimum Value')"></kendo-label>
+		<label *ngIf="(labelMINIMUM_VALUETop || isPhonePortrait) && labelMINIMUM_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE','Minimum Value')}}</label>
+		<input   formControlName="MINIMUM_VALUE"
+ kendoTextBox #MINIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE_Hint','Please enter Minimum Value.')"
+		(click)="ON_CLICK_MINIMUM_VALUE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAXIMUM_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAXIMUM_VALUE >
+		<kendo-label *ngIf="(!labelMAXIMUM_VALUETop && !isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label" [for]="MAXIMUM_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE','Maximum Value')"></kendo-label>
+		<label *ngIf="(labelMAXIMUM_VALUETop || isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE','Maximum Value')}}</label>
+		<input   formControlName="MAXIMUM_VALUE"
+ kendoTextBox #MAXIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE_Hint','Please enter Maximum Value.')"
+		(click)="ON_CLICK_MAXIMUM_VALUE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+		</div>
+		<legend *ngIf="FormStepsArr[2].visible" class="divTitle">{{FormStepsArr[2].CODETEXT_LANG}}</legend>
+		<div *ngIf="FormStepsArr[2].visible"  class="form-div">
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHOW_LEGENDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHOW_LEGEND >
+		<kendo-label *ngIf="(!labelSHOW_LEGENDTop && !isPhonePortrait) && labelSHOW_LEGENDVisible" class="form-label" [for]="SHOW_LEGEND" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.SHOW_LEGEND','Show Legend')"></kendo-label>
+		<label *ngIf="(labelSHOW_LEGENDTop || isPhonePortrait) && labelSHOW_LEGENDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.SHOW_LEGEND','Show Legend')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SHOW_LEGEND"
+  #SHOW_LEGEND kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.SHOW_LEGEND_Hint','Please enter Show Legend.')"		(click)="ON_CLICK_SHOW_LEGEND($event)"
+     adaptiveMode="auto" 
+ />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDIGITS_AFTER_DECIMALTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDIGITS_AFTER_DECIMAL >
+		<kendo-label *ngIf="(!labelDIGITS_AFTER_DECIMALTop && !isPhonePortrait) && labelDIGITS_AFTER_DECIMALVisible" class="form-label" [for]="DIGITS_AFTER_DECIMAL" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.DIGITS_AFTER_DECIMAL','Digits After Decimal')"></kendo-label>
+		<label *ngIf="(labelDIGITS_AFTER_DECIMALTop || isPhonePortrait) && labelDIGITS_AFTER_DECIMALVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.DIGITS_AFTER_DECIMAL','Digits After Decimal')}}</label>
+		<kendo-combobox  #DIGITS_AFTER_DECIMAL class="form-field-combobox"  [formControlName]="'DIGITS_AFTER_DECIMAL'"
+		[data]="lkpArrDIGITS_AFTER_DECIMAL" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.DIGITS_AFTER_DECIMAL_Hint','Please enter Digits After Decimal.')"		(click)="ON_CLICK_DIGITS_AFTER_DECIMAL($event)"
+     adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DIGITS_AFTER_DECIMAL')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLEGEND_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLEGEND_COLOR >
+		<kendo-label *ngIf="(!labelLEGEND_COLORTop && !isPhonePortrait) && labelLEGEND_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.LEGEND_COLOR','Legend Color')"></kendo-label>
+		<label *ngIf="(labelLEGEND_COLORTop || isPhonePortrait) && labelLEGEND_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.LEGEND_COLOR','Legend Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="LEGEND_COLOR"
+  #LEGEND_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_LEGEND_COLOR($event)"
+     adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_LEGEND_COLOR($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.LEGEND_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+
+</div>
+		</div>
+		<legend *ngIf="FormStepsArr[3].visible" class="divTitle">{{FormStepsArr[3].CODETEXT_LANG}}</legend>
+		<div *ngIf="FormStepsArr[3].visible"  class="form-div">
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNUMBER_OF_THRESHOLDSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNUMBER_OF_THRESHOLDS >
+		<kendo-label *ngIf="(!labelNUMBER_OF_THRESHOLDSTop && !isPhonePortrait) && labelNUMBER_OF_THRESHOLDSVisible" class="form-label" [for]="NUMBER_OF_THRESHOLDS" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.NUMBER_OF_THRESHOLDS','Number Of Thresholds')"></kendo-label>
+		<label *ngIf="(labelNUMBER_OF_THRESHOLDSTop || isPhonePortrait) && labelNUMBER_OF_THRESHOLDSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.NUMBER_OF_THRESHOLDS','Number Of Thresholds')}}</label>
+		<kendo-combobox  #NUMBER_OF_THRESHOLDS class="form-field-combobox"  [formControlName]="'NUMBER_OF_THRESHOLDS'"
+		[data]="lkpArrNUMBER_OF_THRESHOLDS" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.NUMBER_OF_THRESHOLDS_Hint','Please enter Number Of Thresholds.')"		(click)="ON_CLICK_NUMBER_OF_THRESHOLDS($event)"
+     adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'NUMBER_OF_THRESHOLDS')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHRESHOLD_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHRESHOLD_TYPE >
+		<kendo-label *ngIf="(!labelTHRESHOLD_TYPETop && !isPhonePortrait) && labelTHRESHOLD_TYPEVisible" class="form-label" [for]="THRESHOLD_TYPE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_TYPE','Threshold Type')"></kendo-label>
+		<label *ngIf="(labelTHRESHOLD_TYPETop || isPhonePortrait) && labelTHRESHOLD_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_TYPE','Threshold Type')}}</label>
+		<kendo-combobox  #THRESHOLD_TYPE class="form-field-combobox"  [formControlName]="'THRESHOLD_TYPE'"
+		[data]="lkpArrTHRESHOLD_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_TYPE_Hint','Please enter Threshold Type.')"		(click)="ON_CLICK_THRESHOLD_TYPE($event)"
+     adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'THRESHOLD_TYPE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+		</div>
+		<legend *ngIf="FormStepsArr[4].visible" class="divTitle">{{FormStepsArr[4].CODETEXT_LANG}}</legend>
+		<div *ngIf="FormStepsArr[4].visible"  class="form-div">
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHRESHOLD_1_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHRESHOLD_1_VALUE >
+		<kendo-label *ngIf="(!labelTHRESHOLD_1_VALUETop && !isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label" [for]="THRESHOLD_1_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE','Threshold 1 Value')"></kendo-label>
+		<label *ngIf="(labelTHRESHOLD_1_VALUETop || isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE','Threshold 1 Value')}}</label>
+		<input   formControlName="THRESHOLD_1_VALUE"
+ kendoTextBox #THRESHOLD_1_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE_Hint','Please enter Threshold 1 Value.')"
+		(click)="ON_CLICK_THRESHOLD_1_VALUE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFILL_COLOR_1Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFILL_COLOR_1 >
+		<kendo-label *ngIf="(!labelFILL_COLOR_1Top && !isPhonePortrait) && labelFILL_COLOR_1Visible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.FILL_COLOR_1','Fill Color 1')"></kendo-label>
+		<label *ngIf="(labelFILL_COLOR_1Top || isPhonePortrait) && labelFILL_COLOR_1Visible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.FILL_COLOR_1','Fill Color 1')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="FILL_COLOR_1"
+  #FILL_COLOR_1 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_FILL_COLOR_1($event)"
+     adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_FILL_COLOR_1($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.FILL_COLOR_1, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINK_1Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK_1 >
+		<kendo-label *ngIf="(!labelBLINK_1Top && !isPhonePortrait) && labelBLINK_1Visible" class="form-label" [for]="BLINK_1" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_1','Blink 1')"></kendo-label>
+		<label *ngIf="(labelBLINK_1Top || isPhonePortrait) && labelBLINK_1Visible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_1','Blink 1')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BLINK_1"
+  #BLINK_1 kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_1_Hint','Please enter Blink 1.')"		(click)="ON_CLICK_BLINK_1($event)"
+     adaptiveMode="auto" 
+ />
+	</kendo-formfield>
+
+
+</div>
+		</div>
+		<legend *ngIf="FormStepsArr[5].visible" class="divTitle">{{FormStepsArr[5].CODETEXT_LANG}}</legend>
+		<div *ngIf="FormStepsArr[5].visible"  class="form-div">
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFILL_COLOR_2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFILL_COLOR_2 >
+		<kendo-label *ngIf="(!labelFILL_COLOR_2Top && !isPhonePortrait) && labelFILL_COLOR_2Visible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.FILL_COLOR_2','Fill Color 2')"></kendo-label>
+		<label *ngIf="(labelFILL_COLOR_2Top || isPhonePortrait) && labelFILL_COLOR_2Visible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.FILL_COLOR_2','Fill Color 2')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="FILL_COLOR_2"
+  #FILL_COLOR_2 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_FILL_COLOR_2($event)"
+     adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_FILL_COLOR_2($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.FILL_COLOR_2, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINK_2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK_2 >
+		<kendo-label *ngIf="(!labelBLINK_2Top && !isPhonePortrait) && labelBLINK_2Visible" class="form-label" [for]="BLINK_2" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_2','Blink 2')"></kendo-label>
+		<label *ngIf="(labelBLINK_2Top || isPhonePortrait) && labelBLINK_2Visible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_2','Blink 2')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BLINK_2"
+  #BLINK_2 kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_2_Hint','Please enter Blink 2.')"		(click)="ON_CLICK_BLINK_2($event)"
+     adaptiveMode="auto" 
+ />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHRESHOLD_2_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHRESHOLD_2_VALUE >
+		<kendo-label *ngIf="(!labelTHRESHOLD_2_VALUETop && !isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label" [for]="THRESHOLD_2_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE','Threshold 2 Value')"></kendo-label>
+		<label *ngIf="(labelTHRESHOLD_2_VALUETop || isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE','Threshold 2 Value')}}</label>
+		<input   formControlName="THRESHOLD_2_VALUE"
+ kendoTextBox #THRESHOLD_2_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE_Hint','Please enter Threshold 2 Value.')"
+		(click)="ON_CLICK_THRESHOLD_2_VALUE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+
+    
+      </div>
+    </fieldset>
+    </form>
+    </div>
+ 
+
+
+
+
+
+
+
+
+</kendo-pdf-export>
+</div>
+
+   <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>

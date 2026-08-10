@@ -1,0 +1,14 @@
+.wrapScreen{
+   // display:flex;
+   height:calc(100vh - 80px);   /* subtract toolbar height */
+}
+
+app-scd-appselect{
+    width:260px;
+}
+
+app-scd-appboard{
+     //flex:1;
+     position:relative;
+     overflow:hidden;
+}

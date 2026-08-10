@@ -1,0 +1,234 @@
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.component_title","Log Triggers") }}</legend>
+<div class="form-toolbar"> </div>
+
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+ 
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+ <div class="form-borders" > 
+    <form class="form-layout" [ngClass]="isPhonePortrait ? 'k-form k-form-horizontal-star' : 'k-form k-form-horizontal' "
+     [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled && !isSearch"-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLOG_TRIGGER_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLOG_TRIGGER_ID >
+		<kendo-label *ngIf="(!labelLOG_TRIGGER_IDTop && !isPhonePortrait) && labelLOG_TRIGGER_IDVisible" class="form-label" [for]="LOG_TRIGGER_ID" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.LOG_TRIGGER_ID','Log Trigger Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelLOG_TRIGGER_IDTop || isPhonePortrait) && labelLOG_TRIGGER_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.LOG_TRIGGER_ID','Log Trigger Id') + ' *'}}</label>
+		<input   formControlName="LOG_TRIGGER_ID"
+ kendoTextBox #LOG_TRIGGER_ID 
+		[readonly]="primarKeyReadOnlyArr.isLOG_TRIGGER_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.LOG_TRIGGER_ID_Hint','Please enter Log Trigger Id.')"
+		(click)="ON_CLICK_LOG_TRIGGER_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LOG_TRIGGER_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_ID >
+		<kendo-label *ngIf="(!labelAPPLICATION_IDTop && !isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label" [for]="APPLICATION_ID" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.APPLICATION_ID','Application Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelAPPLICATION_IDTop || isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.APPLICATION_ID','Application Id') + ' *'}}</label>
+		<kendo-combobox  #APPLICATION_ID class="form-field-combobox"  [formControlName]="'APPLICATION_ID'"
+		[data]="lkpArrAPPLICATION_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.APPLICATION_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAPPLICATION_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.APPLICATION_ID_Hint','Please enter Application Id.')"		(click)="ON_CLICK_APPLICATION_ID($event)"
+ (valueChange)="onValueChange_APPLICATION_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APPLICATION_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<div class="form-field"  [ngClass]="(labelTRIGGER_OPTIONSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTRIGGER_OPTIONS >
+		<kendo-label *ngIf="(!labelTRIGGER_OPTIONSTop && !isPhonePortrait) && labelTRIGGER_OPTIONSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.TRIGGER_OPTIONS','Trigger Options')"></kendo-label>
+		<label *ngIf="(labelTRIGGER_OPTIONSTop || isPhonePortrait) && labelTRIGGER_OPTIONSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.TRIGGER_OPTIONS','Trigger Options')}}</label>
+		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_TRIGGER_OPTIONS($event)"
+ (change)="onChange_TRIGGER_OPTIONS($event)"      adaptiveMode="auto" 
+>
+			<li class="k-radio-item" *ngFor="let item of lkpArrTRIGGER_OPTIONS">
+				<kendo-radiobutton value={{item.CODE}} 
+ [formControlName]="'TRIGGER_OPTIONS'"
+					#TRIGGER_OPTIONS ></kendo-radiobutton> 
+				<kendo-label class="k-radio-label" [for]="TRIGGER_OPTIONS " 
+					text={{item.CODETEXT_LANG}}></kendo-label>
+			</li>
+		</ul>
+	</div>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelINTERVALTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleINTERVAL >
+		<kendo-label *ngIf="(!labelINTERVALTop && !isPhonePortrait) && labelINTERVALVisible" class="form-label" [for]="INTERVAL" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.INTERVAL','Interval')"></kendo-label>
+		<label *ngIf="(labelINTERVALTop || isPhonePortrait) && labelINTERVALVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.INTERVAL','Interval')}}</label>
+		<input   formControlName="INTERVAL"
+ kendoTextBox #INTERVAL  [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.INTERVAL_Hint','Please enter Interval.')"
+		(click)="ON_CLICK_INTERVAL($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_INTERVAL($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelINTERVAL_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleINTERVAL_TYPE >
+		<kendo-label *ngIf="(!labelINTERVAL_TYPETop && !isPhonePortrait) && labelINTERVAL_TYPEVisible" class="form-label" [for]="INTERVAL_TYPE" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.INTERVAL_TYPE','Interval Type')"></kendo-label>
+		<label *ngIf="(labelINTERVAL_TYPETop || isPhonePortrait) && labelINTERVAL_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.INTERVAL_TYPE','Interval Type')}}</label>
+		<kendo-combobox  #INTERVAL_TYPE class="form-field-combobox"  [formControlName]="'INTERVAL_TYPE'"
+		[data]="lkpArrINTERVAL_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.INTERVAL_TYPE_Hint','Please enter Interval Type.')"		(click)="ON_CLICK_INTERVAL_TYPE($event)"
+ (valueChange)="onValueChange_INTERVAL_TYPE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'INTERVAL_TYPE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelON_CHANGE_MAX_UPDATE_RATETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleON_CHANGE_MAX_UPDATE_RATE >
+		<kendo-label *ngIf="(!labelON_CHANGE_MAX_UPDATE_RATETop && !isPhonePortrait) && labelON_CHANGE_MAX_UPDATE_RATEVisible" class="form-label" [for]="ON_CHANGE_MAX_UPDATE_RATE" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_MAX_UPDATE_RATE','Max Update Rate')"></kendo-label>
+		<label *ngIf="(labelON_CHANGE_MAX_UPDATE_RATETop || isPhonePortrait) && labelON_CHANGE_MAX_UPDATE_RATEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_MAX_UPDATE_RATE','Max Update Rate')}}</label>
+		<kendo-combobox  #ON_CHANGE_MAX_UPDATE_RATE class="form-field-combobox"  [formControlName]="'ON_CHANGE_MAX_UPDATE_RATE'"
+		[data]="lkpArrON_CHANGE_MAX_UPDATE_RATE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_MAX_UPDATE_RATE_Hint','Please enter On Change Max Update Rate.')"		(click)="ON_CLICK_ON_CHANGE_MAX_UPDATE_RATE($event)"
+ (valueChange)="onValueChange_ON_CHANGE_MAX_UPDATE_RATE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'ON_CHANGE_MAX_UPDATE_RATE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelON_CHANGE_PERCENTAGETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleON_CHANGE_PERCENTAGE >
+		<kendo-label *ngIf="(!labelON_CHANGE_PERCENTAGETop && !isPhonePortrait) && labelON_CHANGE_PERCENTAGEVisible" class="form-label" [for]="ON_CHANGE_PERCENTAGE" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_PERCENTAGE','Change Percentage')"></kendo-label>
+		<label *ngIf="(labelON_CHANGE_PERCENTAGETop || isPhonePortrait) && labelON_CHANGE_PERCENTAGEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_PERCENTAGE','Change Percentage')}}</label>
+		<input   formControlName="ON_CHANGE_PERCENTAGE"
+ kendoTextBox #ON_CHANGE_PERCENTAGE  [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_PERCENTAGE_Hint','Please enter On Change Percentage.')"
+		(click)="ON_CLICK_ON_CHANGE_PERCENTAGE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ON_CHANGE_PERCENTAGE($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelON_CHANGE_HEARTBEATTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleON_CHANGE_HEARTBEAT >
+		<kendo-label *ngIf="(!labelON_CHANGE_HEARTBEATTop && !isPhonePortrait) && labelON_CHANGE_HEARTBEATVisible" class="form-label" [for]="ON_CHANGE_HEARTBEAT" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_HEARTBEAT','Heartbeat')"></kendo-label>
+		<label *ngIf="(labelON_CHANGE_HEARTBEATTop || isPhonePortrait) && labelON_CHANGE_HEARTBEATVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_HEARTBEAT','Heartbeat')}}</label>
+		<input   formControlName="ON_CHANGE_HEARTBEAT"
+ kendoTextBox #ON_CHANGE_HEARTBEAT  [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_HEARTBEAT_Hint','Please enter On Change Heartbeat.')"
+		(click)="ON_CLICK_ON_CHANGE_HEARTBEAT($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ON_CHANGE_HEARTBEAT($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelON_CHANGE_HEARTBEAT_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleON_CHANGE_HEARTBEAT_TYPE >
+		<kendo-label *ngIf="(!labelON_CHANGE_HEARTBEAT_TYPETop && !isPhonePortrait) && labelON_CHANGE_HEARTBEAT_TYPEVisible" class="form-label" [for]="ON_CHANGE_HEARTBEAT_TYPE" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_HEARTBEAT_TYPE','On Change Heartbeat Type')"></kendo-label>
+		<label *ngIf="(labelON_CHANGE_HEARTBEAT_TYPETop || isPhonePortrait) && labelON_CHANGE_HEARTBEAT_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_HEARTBEAT_TYPE','On Change Heartbeat Type')}}</label>
+		<kendo-combobox  #ON_CHANGE_HEARTBEAT_TYPE class="form-field-combobox"  [formControlName]="'ON_CHANGE_HEARTBEAT_TYPE'"
+		[data]="lkpArrON_CHANGE_HEARTBEAT_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_CHANGE_HEARTBEAT_TYPE_Hint','Please enter On Change Heartbeat Type.')"		(click)="ON_CLICK_ON_CHANGE_HEARTBEAT_TYPE($event)"
+ (valueChange)="onValueChange_ON_CHANGE_HEARTBEAT_TYPE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'ON_CHANGE_HEARTBEAT_TYPE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelON_DEMAND_MAX_UPDATE_RATETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleON_DEMAND_MAX_UPDATE_RATE >
+		<kendo-label *ngIf="(!labelON_DEMAND_MAX_UPDATE_RATETop && !isPhonePortrait) && labelON_DEMAND_MAX_UPDATE_RATEVisible" class="form-label" [for]="ON_DEMAND_MAX_UPDATE_RATE" [text]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_DEMAND_MAX_UPDATE_RATE','Max Update Rate')"></kendo-label>
+		<label *ngIf="(labelON_DEMAND_MAX_UPDATE_RATETop || isPhonePortrait) && labelON_DEMAND_MAX_UPDATE_RATEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_DEMAND_MAX_UPDATE_RATE','Max Update Rate')}}</label>
+		<kendo-combobox  #ON_DEMAND_MAX_UPDATE_RATE class="form-field-combobox"  [formControlName]="'ON_DEMAND_MAX_UPDATE_RATE'"
+		[data]="lkpArrON_DEMAND_MAX_UPDATE_RATE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_LOG_TRIGGERS.scdlogTriggerScdLtLogTriggers.ON_DEMAND_MAX_UPDATE_RATE_Hint','Please enter On Demand Max Update Rate.')"		(click)="ON_CLICK_ON_DEMAND_MAX_UPDATE_RATE($event)"
+ (valueChange)="onValueChange_ON_DEMAND_MAX_UPDATE_RATE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'ON_DEMAND_MAX_UPDATE_RATE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+</div>
+
+    </fieldset>
+    </form>
+    </div>
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+      <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+  
+
+
+
+

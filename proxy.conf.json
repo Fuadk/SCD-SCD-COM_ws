@@ -1,0 +1,19 @@
+{
+  "/valify": {
+    "target": "https://www.valifystage.com",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/socket.io": {
+    "target": "http://localhost:3000",
+    "ws": true,
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+

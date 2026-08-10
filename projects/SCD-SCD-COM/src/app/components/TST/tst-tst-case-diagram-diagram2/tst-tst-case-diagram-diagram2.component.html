@@ -1,0 +1,130 @@
+<div class="mode-toggle">
+<button kendoButton [icon]="'hyperlink-open'" (click)="starlib1.dialog_openDialog(this,'1')">">
+      {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Text") }}
+    </button>
+
+  <div style="background: #1a1a2e; color: #00ff00; padding: 10px; font-family: monospace; font-size: 12px; border-bottom: 1px solid #e94560;">
+    <strong>🔌 SCADA</strong> 
+    <div style="background: #1a1a2e; color: #00ff00; padding: 10px;">
+      🔌 SCADA {{ scadaData.connectionStatus ? '● Connected' : '○ Disconnected' }} | 
+      Temp: {{ scadaData.localTemperature }}°C | 
+      Press: {{ scadaData.localPressure }} | 
+      Flow: {{ scadaData.localFlowRate }}
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+    <label>
+      <input type="checkbox" [checked]="isEditMode" (change)="toggleMode()" />
+      Edit Mode
+    </label>
+    <span class="mode-status" [class.edit]="isEditMode" [class.view]="!isEditMode">
+      {{ isEditMode ? '✎ Edit Mode' : '▶ View Mode' }}
+    </span>
+    <button *ngIf="isEditMode" kendoButton (click)="handleAI()" style="margin: 5px 5px 5px 5px;">AI</button>
+    <kendo-dropdowntree 
+    kendoDropDownTreeExpandable 
+      [kendoDropDownTreeHierarchyBinding]="ShapeMenu" 
+      textField="text" 
+      valueField="id"
+      childrenField="items" 
+      placeholder="Shapes"
+      (valueChange)="onItemSelectItem('DROPDOWN', $event)"
+      [(value)]="selectedShape"
+      [popupSettings]="{ width: 300, popupClass: 'expandable-tree-popup' }"
+      style="display: inline-flex; width: 120px; vertical-align: middle;">
+    </kendo-dropdowntree>
+    <!-- ✅ Tooltip Popup - Shows only in Edit Mode -->
+    <div *ngIf="isEditMode && tooltipVisible" 
+         class="custom-tooltip-popup" 
+         [style.left.px]="tooltipX" 
+         [style.top.px]="tooltipY">
+      {{ tooltipText }}
+    </div>
+  </div>
+</div>
+
+<div #myTargetBox class="target-box">
+  <kendo-diagram [shapes]="shapes" #diagram
+      [connections]="connections"
+      [shapeDefaults]="shapeDefaults" 
+      [style.height.px]="750" 
+      [style.width.px]="1000"
+      (select)="ON_EVENT('select', $event)" 
+      [editable]="editable" 
+      (mouseEnter)="ON_EVENT('mouseEnter', $event)"
+      (click)="onDiagramClick($event)"
+      (zoomEnd)="ON_EVENT('zoomEnd', $event)"
+      (zoomStart)="ON_EVENT('zoomStart', $event)"
+      (pan)="ON_EVENT('pan', $event)"
+      (shapeBoundsChange)="ON_EVENT('shapeBoundsChange', $event)"
+      (dragStart)="ON_EVENT('dragStart', $event)"
+      (dragEnd)="ON_EVENT('dragEnd', $event)"
+      (drag)="ON_EVENT('drag', $event)"
+       
+      (mouseLeave)="ON_EVENT('mouseLeave', $event)">
+  </kendo-diagram>
+  <div
+    *ngIf="popupVisible"
+    [ngStyle]="{
+        'position': 'absolute',
+        'left.px': popupLeft,
+        'top.px': popupTop,
+        'width.px': 220,
+        'padding.px': 10,
+        'background': 'white',
+        'border': '1px solid #888',
+        'border-radius.px': 6,
+        'box-shadow': '0 3px 12px rgba(0,0,0,.25)',
+        'z-index': 9999
+    }">
+
+    <h4>{{selectedPartId}}</h4>
+    <button
+        (click)="popupVisible=false">
+        Close
+    </button>
+
+  </div>
+</div>
+
+<kendo-contextmenu *ngIf="isEditMode" [target]="myTargetBox" 
+  [items]="items" (select)="onItemSelectItem('CONTEXT_MENU', $event)">
+</kendo-contextmenu>
+
+<kendo-window [hidden]="!AIFormOpened" title="Create Diagram" (close)="AIFormOpened = false" [minWidth]="500"
+  [width]="500" [height]="500" [state]="isPhonePortrait ? 'maximized' : 'default' ">
+  <app-ai-ai-form (saveCompletedOutput)="saveFormCompletedHandler($event)"
+    [setComponentConfig_Input]="DSP_AIFormConfig">
+  </app-ai-ai-form>
+</kendo-window>
+
+
+<!-- ===== PROPERTY DIALOG  ===== -->
+<kendo-window
+  *ngIf="propertyDialogVisible"
+  [title]=propertyDialogDefinition.Title
+  [minWidth]=propertyDialogDefinition?.Width || 800
+  [width]=propertyDialogDefinition?.Width || 700
+  [height]=propertyDialogDefinition?.Height || 500
+  
+  [resizable]="true"
+  (close)="propertyDialogVisible = false">
+  
+  <div class="property-dialog-content">
+    <!-- Dynamic property editor using ngComponentOutlet -->
+    <ng-container *ngIf="componentToRender">
+      <ng-container *ngComponentOutlet="componentToRender; inputs: starlib1.dialog_getComponentInputs(propertyDialogDefinition)"></ng-container>
+    </ng-container>
+    
+    <!-- Fallback when no component is found -->
+    <div *ngIf="!componentToRender" class="no-editor-message">
+      <p>No property editor found for shape type: <strong>{{ propertyDialogShapeType }}</strong></p>
+    </div>
+  </div>
+  
+  <!-- <kendo-window-actions>
+    <button kendoButton (click)="propertyDialogVisible = false">Cancel</button>
+    <button kendoButton themeColor="primary" (click)="starlib1.dialog_onPropertySaved(this, propertyDialogDefinition)">OK</button>
+  </kendo-window-actions> -->
+</kendo-window>

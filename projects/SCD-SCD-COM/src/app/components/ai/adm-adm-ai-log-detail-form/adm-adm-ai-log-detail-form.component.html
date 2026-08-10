@@ -1,0 +1,194 @@
+<div>
+    <legend *ngIf="showToolBar"  class="k-form-legend">{{ this.starServices.getNLS([],"ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.component_title","ADM AI LOG DETAIL FORM") }}</legend>
+<div class="form-toolbar"> </div>
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="!isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+     <kendo-toolbar-button  kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}" (click)="printScreen()" *ngIf="componentConfig.toolsShow"></kendo-toolbar-button >
+
+
+
+    <kendo-toolbar-button [disabled]="isSearch"  text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+
+<kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+<kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf="componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled || !componentConfig.updateable">
+
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelUSERNAMETop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=false >
+		<kendo-label *ngIf="(!labelUSERNAMETop && !isPhonePortrait) && labelUSERNAMEVisible" class="form-label" [for]="USERNAME" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.USERNAME','Username')"></kendo-label>
+		<label *ngIf="(labelUSERNAMETop || isPhonePortrait) && labelUSERNAMEVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.USERNAME','Username')}}</label>
+		<input class="form-input" formControlName="USERNAME" kendoTextBox #USERNAME
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.USERNAME.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isUSERNAMEreadOnly" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.USERNAME_Hint','Please enter Username')"
+		(click)="ON_CLICK_USERNAME($event)"
+ (change)="onChange_USERNAME($event)"    />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAP_IDTop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=false >
+		<kendo-label *ngIf="(!labelAP_IDTop && !isPhonePortrait) && labelAP_IDVisible" class="form-label" [for]="APP_ID" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.APP_ID','Ap Id')"></kendo-label>
+		<label *ngIf="(labelAP_IDTop || isPhonePortrait) && labelAP_IDVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.APP_ID','Ap Id')}}</label>
+		<input class="form-input" formControlName="APP_ID" kendoTextBox #APP_ID
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.APP_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAP_IDreadOnly" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AP_ID_Hint','Please enter Ap Id')"
+		(click)="ON_CLICK_AP_ID($event)"
+ (change)="onChange_AP_ID($event)"    />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAI_ACTION_IDTop || isPhonePortrait) ? 'displayBlock' : 'standard' "   >
+		<kendo-label *ngIf="(!labelAI_ACTION_IDTop && !isPhonePortrait) && labelAI_ACTION_IDVisible" class="form-label" [for]="AI_ACTION_ID" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_ACTION_ID','Ai Action Id')"></kendo-label>
+		<label *ngIf="(labelAI_ACTION_IDTop || isPhonePortrait) && labelAI_ACTION_IDVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_ACTION_ID','Ai Action Id')}}</label>
+		<kendo-combobox  #AI_ACTION_ID class="form-field-combobox" [formControlName]="'AI_ACTION_ID'"
+		[data]="lkpArrAI_ACTION_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.AI_ACTION_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAI_ACTION_IDreadOnly" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_ACTION_ID_Hint','Please enter Ai Action Id')"		(click)="ON_CLICK_AI_ACTION_ID($event)"
+ (valueChange)="onValueChange_AI_ACTION_ID($event)"   
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'AI_ACTION_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDURATIONTop || isPhonePortrait) ? 'displayBlock' : 'standard' " >
+		<kendo-label *ngIf="(!labelDURATIONTop && !isPhonePortrait) && labelDURATIONVisible" class="form-label" [for]="DURATION" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.DURATION','Duration')"></kendo-label>
+		<label *ngIf="(labelDURATIONTop || isPhonePortrait) && labelDURATIONVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.DURATION','Duration')}}</label>
+		<input class="form-input" formControlName="DURATION" kendoTextBox #DURATION  [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.DURATION_Hint','Please enter Duration')"
+		(click)="ON_CLICK_DURATION($event)"
+ (change)="onChange_DURATION($event)"    />
+	</kendo-formfield>
+	
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAI_ENTITY_IDTop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=false >
+		<kendo-label *ngIf="(!labelAI_ENTITY_IDTop && !isPhonePortrait) && labelAI_ENTITY_IDVisible" class="form-label" [for]="AI_ENTITY_ID" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_ENTITY_ID','Ai Entity Id')"></kendo-label>
+		<label *ngIf="(labelAI_ENTITY_IDTop || isPhonePortrait) && labelAI_ENTITY_IDVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_ENTITY_ID','Ai Entity Id')}}</label>
+		<input class="form-input" formControlName="AI_ENTITY_ID" kendoTextBox #AI_ENTITY_ID
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.AI_ENTITY_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAI_ENTITY_IDreadOnly" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_ENTITY_ID_Hint','Please enter Ai Entity Id')"
+		(click)="ON_CLICK_AI_ENTITY_ID($event)"
+ (change)="onChange_AI_ENTITY_ID($event)"    />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelREQUESTED_ONTop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=false >
+		<kendo-label *ngIf="(!labelREQUESTED_ONTop && !isPhonePortrait) && labelREQUESTED_ONVisible" class="form-label" [for]="REQUESTED_ON" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.REQUESTED_ON','Requested On')"></kendo-label>
+		<label *ngIf="(labelREQUESTED_ONTop || isPhonePortrait) && labelREQUESTED_ONVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.REQUESTED_ON','Requested On')}}</label>
+		<kendo-datepicker [format]="this.paramConfig.DateFormat" class="form-field-date" formControlName="REQUESTED_ON"  #REQUESTED_ON 
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.REQUESTED_ON.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isREQUESTED_ONreadOnly" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.REQUESTED_ON_Hint','Please enter Requested On')"		(click)="ON_CLICK_REQUESTED_ON($event)"
+ (valueChange)="onValueChange_REQUESTED_ON($event)"   
+		></kendo-datepicker>
+	</kendo-formfield>
+
+	
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" 
+	[orientation]="'horizontal'" [ngClass]="(labelAI_SEQTop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=true >
+		<kendo-label *ngIf="(!labelAI_SEQTop && !isPhonePortrait) && labelAI_SEQVisible" class="form-label" [for]="AI_SEQ" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_SEQ','Ai Seq')"></kendo-label>
+		<label *ngIf="(labelAI_SEQTop || isPhonePortrait) && labelAI_SEQVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_SEQ','Seq')}}</label>
+		<input class="form-input" formControlName="AI_SEQ" kendoTextBox #AI_SEQ
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.AI_SEQ.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAI_SEQreadOnly" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.AI_SEQ_Hint','Please enter Ai Seq')"
+		(click)="ON_CLICK_AI_SEQ($event)"
+ (change)="onChange_AI_SEQ($event)"    />
+	</kendo-formfield>
+
+		<kendo-formfield class="form-field" 
+		[orientation]="'horizontal'" [ngClass]="(labelSTAGETop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=true >
+		<kendo-label *ngIf="(!labelSTAGETop && !isPhonePortrait) && labelSTAGEVisible" class="form-label" [for]="STAGE" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.STAGE','Ai Seq')"></kendo-label>
+		<label *ngIf="(labelSTAGETop || isPhonePortrait) && labelSTAGEVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.STAGE','Stage')}}</label>
+		<input class="form-input" formControlName="STAGE" kendoTextBox #STAGE
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.STAGE.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isSTAGEreadOnly" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.STAGE_Hint','Please enter Ai Seq')"
+		(click)="ON_CLICK_STAGE($event)"
+ (change)="onChange_STAGE($event)"    />
+	</kendo-formfield>
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelQUESTIONTop || isPhonePortrait) ? 'displayBlock' : 'standard' " >
+		<kendo-label *ngIf="(!labelQUESTIONTop && !isPhonePortrait) && labelQUESTIONVisible" class="form-label" [for]="QUESTION" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.QUESTION','Question')"></kendo-label>
+		<label *ngIf="(labelQUESTIONTop || isPhonePortrait) && labelQUESTIONVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.QUESTION','Question')}}</label>
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="10" [cols]="40"  kendoTextBox formControlName="QUESTION" #QUESTION
+  [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.QUESTION_Hint','Please enter Question')"		(click)="ON_CLICK_QUESTION($event)"
+  ></kendo-textarea>
+	</kendo-formfield>
+
+	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelANSWERTop || isPhonePortrait) ? 'displayBlock' : 'standard' " >
+		<kendo-label *ngIf="(!labelANSWERTop && !isPhonePortrait) && labelANSWERVisible" class="form-label" [for]="ANSWER" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.ANSWER','Answer')"></kendo-label>
+		<label *ngIf="(labelANSWERTop || isPhonePortrait) && labelANSWERVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.ANSWER','Answer')}}</label>
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="10" [cols]="40"  kendoTextBox formControlName="ANSWER" #ANSWER
+  		(click)="ON_CLICK_ANSWER($event)"
+  ></kendo-textarea>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLOGDATETop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=false >
+		<kendo-label *ngIf="(!labelLOGDATETop && !isPhonePortrait) && labelLOGDATEVisible" class="form-label" [for]="LOGDATE" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.LOGDATE','Logdate')"></kendo-label>
+		<label *ngIf="(labelLOGDATETop || isPhonePortrait) && labelLOGDATEVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.LOGDATE','Logdate')}}</label>
+		<kendo-datepicker [format]="this.paramConfig.DateFormat" class="form-field-date" formControlName="LOGDATE"  #LOGDATE 
+  [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.LOGDATE_Hint','Please enter Logdate')"		(click)="ON_CLICK_LOGDATE($event)"
+ (valueChange)="onValueChange_LOGDATE($event)"   
+		></kendo-datepicker>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLOGNAMETop || isPhonePortrait) ? 'displayBlock' : 'standard' "  *ngIf=false >
+		<kendo-label *ngIf="(!labelLOGNAMETop && !isPhonePortrait) && labelLOGNAMEVisible" class="form-label" [for]="LOGNAME" [text]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.LOGNAME','Logname')"></kendo-label>
+		<label *ngIf="(labelLOGNAMETop || isPhonePortrait) && labelLOGNAMEVisible" class="form-label"  >{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.LOGNAME','Logname')}}</label>
+		<input class="form-input" formControlName="LOGNAME" kendoTextBox #LOGNAME  [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_FORM.admaiLogDetailAdmAdmAiLogDetailForm.LOGNAME_Hint','Please enter Logname')"
+		(click)="ON_CLICK_LOGNAME($event)"
+ (change)="onChange_LOGNAME($event)"    />
+	</kendo-formfield>
+</div>
+
+    </fieldset>
+    </form>
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+  
+
+
+

@@ -1,0 +1,230 @@
+
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{ this.starServices.getNLS([],"SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.component_title","Symbol State Definition") }}</legend>
+<div class="form-toolbar"> </div>
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+
+  
+
+
+
+
+
+
+    
+
+           <div class="form-borders" > 
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+
+         <legend *ngIf="FormStepsArr[1].visible" class="divTitle">{{FormStepsArr.length > 0 ?
+          FormStepsArr[1].CODETEXT_LANG:this.starServices.getNLS([],"SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.component_title","Symbol State Definition") }}</legend>
+			 <div *ngIf="FormStepsArr[1].visible" class="form-div">
+
+    
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSYMBOL_STATE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSYMBOL_STATE_ID >
+		<kendo-label *ngIf="(!labelSYMBOL_STATE_IDTop && !isPhonePortrait) && labelSYMBOL_STATE_IDVisible" class="form-label" [for]="SYMBOL_STATE_ID" [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SYMBOL_STATE_ID','Symbol State Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSYMBOL_STATE_IDTop || isPhonePortrait) && labelSYMBOL_STATE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SYMBOL_STATE_ID','Symbol State Id') + ' *'}}</label>
+		<input   formControlName="SYMBOL_STATE_ID"
+ kendoTextBox #SYMBOL_STATE_ID 
+		[readonly]="primarKeyReadOnlyArr.isSYMBOL_STATE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SYMBOL_STATE_ID_Hint','Please enter Symbol State Id.')"
+		(click)="ON_CLICK_SYMBOL_STATE_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
+		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SHAPE_ID','Shape Id') + ' *'}}</label>
+		<kendo-combobox  #SHAPE_ID class="form-field-combobox"  [formControlName]="'SHAPE_ID'"
+		[data]="lkpArrSHAPE_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
+     adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SHAPE_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_ID >
+		<kendo-label *ngIf="(!labelSTATE_IDTop && !isPhonePortrait) && labelSTATE_IDVisible" class="form-label" [for]="STATE_ID" [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_ID','State Id')"></kendo-label>
+		<label *ngIf="(labelSTATE_IDTop || isPhonePortrait) && labelSTATE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_ID','State Id')}}</label>
+		<input   formControlName="STATE_ID"
+ kendoTextBox #STATE_ID  [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_ID_Hint','Please enter State Id.')"
+		(click)="ON_CLICK_STATE_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_NAME >
+		<kendo-label *ngIf="(!labelSTATE_NAMETop && !isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label" [for]="STATE_NAME" [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_NAME','State Name')"></kendo-label>
+		<label *ngIf="(labelSTATE_NAMETop || isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_NAME','State Name')}}</label>
+		<input   formControlName="STATE_NAME"
+ kendoTextBox #STATE_NAME  [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_NAME_Hint','Please enter State Name.')"
+		(click)="ON_CLICK_STATE_NAME($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelVALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleVALUE >
+		<kendo-label *ngIf="(!labelVALUETop && !isPhonePortrait) && labelVALUEVisible" class="form-label" [for]="VALUE" [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.VALUE','Value')"></kendo-label>
+		<label *ngIf="(labelVALUETop || isPhonePortrait) && labelVALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.VALUE','Value')}}</label>
+		<input   formControlName="VALUE"
+ kendoTextBox #VALUE  [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.VALUE_Hint','Please enter Value.')"
+		(click)="ON_CLICK_VALUE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
+		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.BORDER_COLOR','Border Color')"></kendo-label>
+		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.BORDER_COLOR','Border Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BORDER_COLOR"
+  #BORDER_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_BORDER_COLOR($event)"
+     adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BORDER_COLOR($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BORDER_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+
+</div>
+		</div>
+		<legend *ngIf="FormStepsArr[2].visible" class="divTitle">{{FormStepsArr[2].CODETEXT_LANG}}</legend>
+		<div *ngIf="FormStepsArr[2].visible"  class="form-div">
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_COLOR >
+		<kendo-label *ngIf="(!labelIMAGE_COLORTop && !isPhonePortrait) && labelIMAGE_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_COLOR','Image Color')"></kendo-label>
+		<label *ngIf="(labelIMAGE_COLORTop || isPhonePortrait) && labelIMAGE_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_COLOR','Image Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="IMAGE_COLOR"
+  #IMAGE_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_IMAGE_COLOR($event)"
+     adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_IMAGE_COLOR($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.IMAGE_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_STYLE >
+		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label" [for]="BACK_STYLE" [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.BACK_STYLE','Back Style')"></kendo-label>
+		<label *ngIf="(labelBACK_STYLETop || isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.BACK_STYLE','Back Style')}}</label>
+		<kendo-combobox  #BACK_STYLE class="form-field-combobox"  [formControlName]="'BACK_STYLE'"
+		[data]="lkpArrBACK_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.BACK_STYLE_Hint','Please enter Back Style.')"		(click)="ON_CLICK_BACK_STYLE($event)"
+     adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'BACK_STYLE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_BACK_COLOR >
+		<kendo-label *ngIf="(!labelIMAGE_BACK_COLORTop && !isPhonePortrait) && labelIMAGE_BACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BACK_COLOR','Image Back Color')"></kendo-label>
+		<label *ngIf="(labelIMAGE_BACK_COLORTop || isPhonePortrait) && labelIMAGE_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BACK_COLOR','Image Back Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="IMAGE_BACK_COLOR"
+  #IMAGE_BACK_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_IMAGE_BACK_COLOR($event)"
+     adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_IMAGE_BACK_COLOR($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.IMAGE_BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_BLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_BLINK >
+		<kendo-label *ngIf="(!labelIMAGE_BLINKTop && !isPhonePortrait) && labelIMAGE_BLINKVisible" class="form-label" [for]="IMAGE_BLINK" [text]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BLINK','Image Blink')"></kendo-label>
+		<label *ngIf="(labelIMAGE_BLINKTop || isPhonePortrait) && labelIMAGE_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BLINK','Image Blink')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="IMAGE_BLINK"
+  #IMAGE_BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BLINK_Hint','Please enter Image Blink.')"		(click)="ON_CLICK_IMAGE_BLINK($event)"
+     adaptiveMode="auto" 
+ />
+	</kendo-formfield>
+</div>
+
+
+    
+      </div>
+    </fieldset>
+    </form>
+    </div>
+ 
+
+
+
+
+
+
+
+
+</kendo-pdf-export>
+</div>
+
+   <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>

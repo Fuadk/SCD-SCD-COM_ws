@@ -1,0 +1,283 @@
+  
+  <kendo-window [hidden]="!showFilterWindow"
+   		[top]="50"
+      	[left]="50"
+        title="{{ title }}"
+        (close)="closeFilter()"
+        [state] ="isPhonePortrait ? 'maximized' : 'default' "
+
+      >
+<div>
+    <!-- <legend class="k-form-legend">{{ title }}</legend> -->
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{starServices.getNLS([],'FILTER','Filter')}}" title="{{starServices.getNLS([],'FILTER','Filter')}}" (click)="openFilter()" *ngIf="queryable2"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form2.value);" *ngIf="queryable2"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="form2.reset()" *ngIf="queryable2"></kendo-toolbar-button >
+<kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (queryable2 || navigable2)">
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="navigable2 && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="navigable2 && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="navigable2 && !isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="navigable2 && !isSearch"></kendo-toolbar-button>
+</kendo-toolbar-buttongroup>
+<kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="insertable2 && !isSearch"></kendo-toolbar-button>
+<kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form2)" *ngIf="updateable2 && !isSearch"></kendo-toolbar-button>
+<kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf="removeable2 && !isSearch">Remove</kendo-toolbar-button>
+
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+   <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form2" >
+    <fieldset class="form-fieldset" class="k-form-fieldset" >
+
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelidTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleid >
+		<kendo-label *ngIf="(!labelidTop && !isPhonePortrait) && labelidVisible" class="form-label" [for]="id" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.id','Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelidTop || isPhonePortrait) && labelidVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.id','Id') + ' *'}}</label>
+		<input   formControlName="id"
+ kendoTextBox #id 
+		[readonly]="primarKeyReadOnlyArr.isidreadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.id_Hint','Please enter Id.')"
+		(click)="ON_CLICK_id($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelcategoryTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblecategory >
+		<kendo-label *ngIf="(!labelcategoryTop && !isPhonePortrait) && labelcategoryVisible" class="form-label" [for]="category" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.category','Category') + ' *'"></kendo-label>
+		<label *ngIf="(labelcategoryTop || isPhonePortrait) && labelcategoryVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.category','Category') + ' *'}}</label>
+		<input   formControlName="category"
+ kendoTextBox #category
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.category.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.iscategoryreadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.category_Hint','Please enter Category.')"
+		(click)="ON_CLICK_category($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelsvg_nameTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblesvg_name >
+		<kendo-label *ngIf="(!labelsvg_nameTop && !isPhonePortrait) && labelsvg_nameVisible" class="form-label" [for]="svg_name" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name','Svg Name') + ' *'"></kendo-label>
+		<label *ngIf="(labelsvg_nameTop || isPhonePortrait) && labelsvg_nameVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name','Svg Name') + ' *'}}</label>
+		<input   formControlName="svg_name"
+ kendoTextBox #svg_name
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.svg_name.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.issvg_namereadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name_Hint','Please enter Svg Name.')"
+		(click)="ON_CLICK_svg_name($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelicon_typeTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleicon_type >
+		<kendo-label *ngIf="(!labelicon_typeTop && !isPhonePortrait) && labelicon_typeVisible" class="form-label" [for]="icon_type" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.icon_type','Icon Type')"></kendo-label>
+		<label *ngIf="(labelicon_typeTop || isPhonePortrait) && labelicon_typeVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.icon_type','Icon Type')}}</label>
+		<input   formControlName="icon_type"
+ kendoTextBox #icon_type  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.icon_type_Hint','Please enter Icon Type.')"
+		(click)="ON_CLICK_icon_type($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelkendoui_contentTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblekendoui_content >
+		<kendo-label *ngIf="(!labelkendoui_contentTop && !isPhonePortrait) && labelkendoui_contentVisible" class="form-label" [for]="kendoui_content" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.kendoui_content','Kendoui Content')"></kendo-label>
+		<label *ngIf="(labelkendoui_contentTop || isPhonePortrait) && labelkendoui_contentVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.kendoui_content','Kendoui Content')}}</label>
+		<input   formControlName="kendoui_content"
+ kendoTextBox #kendoui_content  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.kendoui_content_Hint','Please enter Kendoui Content.')"
+		(click)="ON_CLICK_kendoui_content($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelsvg_name_animatedTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblesvg_name_animated >
+		<kendo-label *ngIf="(!labelsvg_name_animatedTop && !isPhonePortrait) && labelsvg_name_animatedVisible" class="form-label" [for]="svg_name_animated" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name_animated','Svg Name Animated')"></kendo-label>
+		<label *ngIf="(labelsvg_name_animatedTop || isPhonePortrait) && labelsvg_name_animatedVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name_animated','Svg Name Animated')}}</label>
+		<input   formControlName="svg_name_animated"
+ kendoTextBox #svg_name_animated  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name_animated_Hint','Please enter Svg Name Animated.')"
+		(click)="ON_CLICK_svg_name_animated($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelupdated_atTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleupdated_at >
+		<kendo-label *ngIf="(!labelupdated_atTop && !isPhonePortrait) && labelupdated_atVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.updated_at','Updated At')"></kendo-label>
+		<label *ngIf="(labelupdated_atTop || isPhonePortrait) && labelupdated_atVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.updated_at','Updated At')}}</label>
+		<kendo-datetimepicker [format]="this.paramConfig.DateTimeFormat"  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="updated_at"
+  #updated_at 
+		 *ngIf="!customerFacing" 
+  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.updated_at_Hint','Please enter Updated At.')"		(click)="ON_CLICK_updated_at($event)"
+     adaptiveMode="auto" 
+		 ></kendo-datetimepicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_updated_at($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.updated_at, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelcreated_atTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblecreated_at >
+		<kendo-label *ngIf="(!labelcreated_atTop && !isPhonePortrait) && labelcreated_atVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.created_at','Created At')"></kendo-label>
+		<label *ngIf="(labelcreated_atTop || isPhonePortrait) && labelcreated_atVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.created_at','Created At')}}</label>
+		<kendo-datetimepicker [format]="this.paramConfig.DateTimeFormat"  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="created_at"
+  #created_at 
+		 *ngIf="!customerFacing" 
+  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.created_at_Hint','Please enter Created At.')"		(click)="ON_CLICK_created_at($event)"
+     adaptiveMode="auto" 
+		 ></kendo-datetimepicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_created_at($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.created_at, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labeldefault_checkTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibledefault_check >
+		<kendo-label *ngIf="(!labeldefault_checkTop && !isPhonePortrait) && labeldefault_checkVisible" class="form-label" [for]="default_check" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.default_check','Default Check')"></kendo-label>
+		<label *ngIf="(labeldefault_checkTop || isPhonePortrait) && labeldefault_checkVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.default_check','Default Check')}}</label>
+		<input   formControlName="default_check"
+ kendoTextBox #default_check  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.default_check_Hint','Please enter Default Check.')"
+		(click)="ON_CLICK_default_check($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelsvg_contentTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblesvg_content >
+		<kendo-label *ngIf="(!labelsvg_contentTop && !isPhonePortrait) && labelsvg_contentVisible" class="form-label" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_content','Svg Content')"></kendo-label>
+		<label *ngIf="(labelsvg_contentTop || isPhonePortrait) && labelsvg_contentVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_content','Svg Content')}}</label>
+<kendo-svg-icon *ngIf="showIcon" #svg_content style="width: 2em;height: 2em;"    adaptiveMode="auto" 		(click)="ON_CLICK_svg_content($event)"
+ [icon]="svg_data['svg_content']"  ></kendo-svg-icon> 
+		<input *ngIf="form.touched&&componentConfig.enabled" [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="svg_content"
+ kendoTextBox #svg_content  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_content_Hint','Please enter Svg Content.')"
+ />
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+		<button      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.COPY_BUT_Hint','Please enter Copy But.')" 
+ iconClass="fas fa-copy"  *ngIf=visibleCOPY_BUT 		(click)="ON_CLICK_COPY_BUT($event)"
+ >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.COPY_BUT','Copy')}}</button>
+</div>
+
+    
+	</fieldset>
+	
+    </form>
+</kendo-pdf-export>
+</div>
+<app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveForm2CompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+<app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveForm2CompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+</kendo-window>
+  
+
+
+
+ <legend   class="k-form-legend">{{ 
+    componentConfig.title ? componentConfig.title :
+    this.starServices.getNLS([],"SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.component_title","Icons") }}</legend>
+<i *ngIf="componentConfig.queryable" style="font-size:20px ;" class="fas fa-sliders-h "  (click)="openFilter()"  >. Filter</i>
+
+<div class="card-list" *ngIf="this.executeQueryresult.data" 
+[ngClass]="isPhonePortrait ? 'standard' : 'wrapyes' " 
+style ="overflow: scroll;">
+	<div *ngFor="let card of executeQueryresult.data;let i = index" (click)="cellClickHandler(i, card)">
+
+        <kendo-card width="auto"  orientation="vertical" 
+        style="overflow: hide;margin-left: 10px;margin-top: 10px;height:;width:500;">
+            <kendo-card-header *ngIf="showCardHeader" class ="card-header" >
+            <kendo-icon *ngIf="componentConfig.removeable"  name="trash"  (click)="actRemove(i)" style="float:right;margin: 5px;" class="hidden-element"></kendo-icon> 
+            <kendo-icon *ngIf="componentConfig.updateable || componentConfig.insertable"  name="edit"  (click)="openEdit(i)" style="float:right;margin: 5px;" class="hidden-element"></kendo-icon> 
+            <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1': 'wrap' ">
+	  <i class="fas fa-" *ngIf=visibleid  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.id','Id') + ' *'"  ></i>
+ <i class="card-format"  *ngIf=visibleid 		(click)="ON_CLICK_id(card)"
+		     adaptiveMode="auto" >{{card.id}}</i>
+	  <i class="fas fa-" *ngIf=visiblecategory  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.category','Category') + ' *'"  ></i>
+ <i class="card-format"  *ngIf=visiblecategory 		(click)="ON_CLICK_category(card)"
+		     adaptiveMode="auto" >{{card.category}}</i>
+</div  >
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1': 'wrap' ">
+	  <i class="fas fa-" *ngIf=visiblesvg_name  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name','Svg Name') + ' *'"  ></i>
+ <i class="card-format"  *ngIf=visiblesvg_name 		(click)="ON_CLICK_svg_name(card)"
+		     adaptiveMode="auto" >{{card.svg_name}}</i>
+	  <i class="fas fa-" *ngIf=visibleicon_type  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.icon_type','Icon Type')"  ></i>
+ <i class="card-format"  *ngIf=visibleicon_type 		(click)="ON_CLICK_icon_type(card)"
+		     adaptiveMode="auto" >{{card.icon_type}}</i>
+	  <i class="fas fa-" *ngIf=visiblekendoui_content  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.kendoui_content','Kendoui Content')"  ></i>
+ <i class="card-format"  *ngIf=visiblekendoui_content 		(click)="ON_CLICK_kendoui_content(card)"
+		     adaptiveMode="auto" >{{card.kendoui_content}}</i>
+</div  >
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1': 'wrap' ">
+	  <i class="fas fa-" *ngIf=visiblesvg_name_animated  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_name_animated','Svg Name Animated')"  ></i>
+ <i class="card-format"  *ngIf=visiblesvg_name_animated 		(click)="ON_CLICK_svg_name_animated(card)"
+		     adaptiveMode="auto" >{{card.svg_name_animated}}</i>
+	  <i class="fas fa-" *ngIf=visibleupdated_at  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.updated_at','Updated At')"  ></i>
+	 <i class="card-format"  *ngIf=visibleupdated_at 		(click)="ON_CLICK_updated_at(card)"
+		     adaptiveMode="auto"  width="100"> 		{{starServices.formatthisDate(card.updated_at, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</i>
+	  <i class="fas fa-" *ngIf=visiblecreated_at  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.created_at','Created At')"  ></i>
+	 <i class="card-format"  *ngIf=visiblecreated_at 		(click)="ON_CLICK_created_at(card)"
+		     adaptiveMode="auto"  width="100"> 		{{starServices.formatthisDate(card.created_at, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</i>
+	  <i class="fas fa-" *ngIf=visibledefault_check  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.default_check','Default Check')"  ></i>
+ <i class="card-format"  *ngIf=visibledefault_check 		(click)="ON_CLICK_default_check(card)"
+		     adaptiveMode="auto" >{{card.default_check}}</i>
+</div  >
+
+
+
+            </kendo-card-header>
+
+
+            <kendo-card-body *ngIf="this.executeQueryresult.data">
+            <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1': 'wrap' ">
+	  <i class="fas fa-" *ngIf=visiblesvg_content  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_content','Svg Content')"  ></i>
+<i  *ngIf=visiblesvg_content >
+		<kendo-label *ngIf="(!labelsvg_contentTop && !isPhonePortrait) && labelsvg_contentVisible" class="form-label" [for]="svg_content" [text]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_content','Svg Content')"></kendo-label>
+		<label *ngIf="(labelsvg_contentTop || isPhonePortrait) && labelsvg_contentVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.svg_content','Svg Content')}}</label>
+		<kendo-svg-icon class="card-format"   
+		 [icon]="starServices.convertSvgToKendoIcon(this,  card.svg_content,null,svg_content )" #svg_content 		(click)="ON_CLICK_svg_content(card)"
+		 style="width: 2em;height: 2em;"    adaptiveMode="auto"  >
+		</kendo-svg-icon>
+		</i> 
+</div  >
+
+
+
+            </kendo-card-body>
+
+            <kendo-card-actions *ngIf="showCardFooter" orientation="vertical" layout="stretched">
+            
+
+
+            </kendo-card-actions>
+
+            <kendo-card-footer *ngIf="showCardFooter" class ="card-footer">
+            <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1': 'wrap' ">
+	   <i  *ngIf=visibleCOPY_BUT  [title]="starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.COPY_BUT','Copy')"  ></i>
+		<button  *ngIf=visibleCOPY_BUT 		(click)="ON_CLICK_COPY_BUT(card)"
+		 class="k-button k-primary" kendoButton  
+		     adaptiveMode="auto" 
+ class="item"  
+ iconClass="fas fa-copy" 		 title="{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.COPY_BUT_Hint','Please enter Copy But.')}}" 
+		 width="10px"  height="10px" 
+ #COPY_BUT>{{starServices.getNLS([],'SCD_SCD_ICONS_CARD.scdiconsScdScdIconsCard.COPY_BUT','Copy')}}</button> 
+
+</div>
+
+            </kendo-card-footer>
+
+        </kendo-card>   
+    </div>
+</div>
+
+
+
+    
+ 
+
+  

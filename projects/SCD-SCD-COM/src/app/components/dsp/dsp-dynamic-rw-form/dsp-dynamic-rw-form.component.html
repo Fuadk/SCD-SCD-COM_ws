@@ -1,0 +1,231 @@
+<div >
+  <legend *ngIf="!componentConfig.isMaster" class="k-form-legend" [style]="legend_color">{{ title }}</legend>
+  <p style="margin: 0 0 10px 0; opacity: .6" >{{ areaHelp }}</p>
+
+  <kendo-toolbar *ngIf="componentConfig.showToolBar && formType != 'PRINT'">
+    <!--kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="!isChild"></kendo-toolbar-button-->
+    <kendo-toolbar-button kendoButton [icon]="'print'" title="print" (click)="printScreen()"></kendo-toolbar-button>
+
+    
+    <!--kendo-toolbar-button  text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="Enter Query" (click)="enterQuery( form);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);"></kendo-toolbar-button-->
+    <kendo-toolbar-button [fillMode]="isSearch ? 'outline' : 'solid' " [icon]="'cancel'" title="Cancel" (click)="onCancel($event)"></kendo-toolbar-button>
+    <!--kendo-toolbar-separator></kendo-toolbar-separator>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="First Record" (click)="goRecord( 'first');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="Previous Record"  (click)="goRecord(  'prev');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="Next Record"  (click)="goRecord('next')" *ngIf="!isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="Last Record" (click)="goRecord('last')" *ngIf="!isSearch"></kendo-toolbar-button>
+<kendo-toolbar-separator></kendo-toolbar-separator-->
+    <!--kendo-toolbar-button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);"></kendo-toolbar-button>
+    <kendo-toolbar-button [disabled]="isSearch" [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);">Remove</kendo-toolbar-button-->
+
+  </kendo-toolbar>
+
+  <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+    <div class="form-borders">
+      <form class="form-layout" class="k-form k-form-horizontal-star" [formGroup]="form">
+
+        <!--fieldset [ngClass]="isPhonePortrait ? 'standard' : 'wrap' "  class="form-fieldset" class="k-form-fieldset" >
+            <div   *ngFor="let row of rows ;let i = index"-->
+
+        <fieldset class="k-form-fieldset" class="form-fieldset" >
+          <div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' " *ngFor="let row of rows ;let i = index">
+
+            <ng-container *ngFor="let column of columns[i] ;let j = index">
+              <kendo-formfield
+                *ngIf="column.textfield && column.maskField == null && isFieldShown(column)"
+                class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-textbox class="form-input" formControlName={{column.field}} #column.field
+                  [placeholder]="column.fieldHelp || ''" [readonly]="column.fieldProtected == 1 || areaProtected"></kendo-textbox>
+              </kendo-formfield>
+              <kendo-formfield
+                *ngIf="column.textfield && column.maskField && isFieldShown(column)"
+                class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-maskedtextbox class="form-input" formControlName={{column.field}} #column.field [mask]="column.maskField" [maskValidation]="true" [readonly]="column.fieldProtected == 1 || areaProtected"></kendo-maskedtextbox>
+                <p class="k-form-hint" style="margin-bottom: 0;">{{ column.fieldHelp || '' }}</p>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.passwordfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-textbox class="form-input" type="password" formControlName={{column.field}} #column.field
+                  [placeholder]="column.fieldHelp || ''" [readonly]="column.fieldProtected == 1 || areaProtected"></kendo-textbox>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.lookup && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-combobox #column.field class="form-field-combobox" formControlName={{column.field}}
+                  [data]="getlkpArrField(column.field)" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+                  [valuePrimitive]="true" [kendoDropDownFilter]="{ operator: 'contains' }"
+                  [ngClass]="{ 'ng-invalid-required ng-touched': submitted &&  form.get(column.field).errors }"
+                  [readonly]="column.fieldProtected == 1 || areaProtected"
+                  (selectionChange)="fieldsEnablerSelectionChange(column.id, $event)">
+                </kendo-combobox>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.datefield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-datepicker [format]="this.paramConfig.DateFormat" class="form-field-date"
+                  formControlName={{column.field}} #column.field
+                  [ngClass]="{ 'ng-invalid-required ng-touched': submitted &&  form.get(column.field).errors }"
+                  [readonly]="column.fieldProtected == 1 || areaProtected">
+                </kendo-datepicker>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.dateInputfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-dateinput [format]="column.format" class="form-field-date" formControlName={{column.field}}
+                  #column.field
+                  [ngClass]="{ 'ng-invalid-required ng-touched': submitted &&  form.get(column.field).errors }"
+                  [readonly]="column.fieldProtected == 1 || areaProtected">
+                </kendo-dateinput>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.checkboxfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-switch formControlName={{column.field}} #column.field
+                  [readonly]="column.fieldProtected == 1 || areaProtected"></kendo-switch>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.numericboxfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-numerictextbox [spinners]="column.numericSpinner" [step]="column.numericStep"
+                  [min]="column.numericMin" [max]="column.numericMax" [format]="column.format"
+                  formControlName={{column.field}} #column.field [readonly]="column.fieldProtected == 1 || areaProtected">
+                </kendo-numerictextbox>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.emailboxfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                  <input class="form-input" type="email" kendoTextBox formControlName={{column.field}} #column.field 
+                  [placeholder]="column.fieldHelp || ''" [readonly]="column.fieldProtected == 1 || areaProtected">
+
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.textAreafield && isFieldShown(column)" class="form-field-double" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <kendo-textarea  style="resize: both;" class="form-input-double"
+                  formControlName={{column.field}} kendoTextBox #column.field
+                  (change)="onValueChange($event, column, form)" 
+                  (selectionChange)="fieldsEnablerSelectionChange(column.id, $event)"
+                  [placeholder]="column.fieldHelp || ''"
+                  [readonly]="column.fieldProtected == 1 || areaProtected"></kendo-textarea>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.signatureField && isFieldShown(column)" class="form-field" orientation="horizontal" style="flex: 1">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+
+                <signature-pad #signaturePad
+                  [options]="signaturePadOptions"
+                  (onEndEvent)="signatureComplete(signaturePad, column.field)"
+                  [class.disabled]="column.fieldProtected == 1 || areaProtected">
+                </signature-pad>
+                <input type="text" formControlName={{column.field}} #column.field hidden>
+                <p *ngIf="form.get(column.field).invalid" style="color: red;">Signature is not valid</p>
+                <button kendoButton (click)="clearSignaturePad(signaturePad, column.field)" style="margin-right:40px;">{{starServices.getNLS([],'SIG_CLEAR','Clear Signature')}}</button>
+                <button kendoButton (click)="signatureComplete(signaturePad, column.field)" >{{starServices.getNLS([],'SIG_CHECK','Check Signature')}}</button>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.imageUploadfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                <input style="display:none" class="form-input" formControlName={{column.field}} #column.field 
+                [placeholder]="column.fieldHelp || ''" [readonly]="column.fieldProtected == 1 || areaProtected"/> 
+                <img src="{{starServices.att_img_getFileLink(form.get(column.field).value,this)}}"
+                style="width:100px;height:100px"
+                (click)="starServices.att_img_form_openUploadimage(column.field,this)"    			 
+
+                />
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.attachmentfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                
+                <input style="display:none" class="form-input" formControlName={{column.field}} #column.field 
+                [placeholder]="column.fieldHelp || ''" [readonly]="column.fieldProtected == 1 || areaProtected"/> 
+               
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"
+                (click)="starServices.att_img_form_openUploadimage(column.field,this)" 		
+                ></kendo-label>
+
+                <a text="{{getAttWrapper(column.field)}}"   			
+                 (click)="starServices.att_img_form_openUploadimage(column.field,this)">----</a> 
+                 <button *ngIf="getAttWrapper(column.field) != '' ? false : true" kendoButton (click)="starServices.att_img_form_openUploadimage(column.field,this)">Upload</button>
+                 
+                <kendo-formhint  (click)="starServices.att_img_form_openUploadimage(column.field,this)">{{ column.fieldHelp || '' }}</kendo-formhint>
+              </kendo-formfield>
+
+              <kendo-formfield *ngIf="column.imagefield"  [orientation]="'horizontal'">
+                        <kendo-label  formControlName={{column.field}}  style="{{column.style}}" ></kendo-label>
+                        <!-- <img src="{{column.fieldDefault}}"  style="{{column.style}}"/> -->
+                        <!-- <kendo-avatar  imageSrc="{{column.fieldDefault}}" shape="rounded" style="{{column.style}}"></kendo-avatar> -->
+                        
+              </kendo-formfield>
+
+              
+            
+
+              <!-- <label *ngIf="column.imagefield" [style]="column.style"> </label> -->
+              <!-- <img *ngIf="column.imagefield" [src]="form.get(column.field).value" [alt]="column.title"> -->
+
+              <label *ngIf="column.labelfield && isFieldShown(column)" class="form-label">{{column.title}}</label>
+
+              <div *ngIf="column.htmlfield" [innerHTML]="column.html" style="width: 100%; padding: 10px"></div>
+              <!-- <kendo-editor *ngIf="column.htmlfield" value="{{column.html}}" style="width:100%" [readonly]=true>
+                <kendo-toolbar style="height: 0%;" [hidden]=true></kendo-toolbar>
+              </kendo-editor> -->
+             
+              <kendo-formfield   *ngIf="column.radiofield && isFieldShown(column)" [orientation]="'horizontal'">
+                <!-- <kendo-label class="k-radio-label" [for]="column.field" ></kendo-label> -->
+                <ul class="k-radio-list" >
+                  <h6 >{{column.title}}</h6>
+                  <li class="k-radio-item" *ngFor="let item of column.radiofieldArr">
+                    <kendo-radiobutton  value= {{item.FIELD_VALUE}} formControlName={{column.field}} #column.field></kendo-radiobutton>
+                    <kendo-label  class="k-radio-label" [for]="column.field" text= {{item.FIELD_TEXT}}></kendo-label>
+                  </li>
+                </ul>
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+                <!-- <kendo-formerror>Error: This field is required</kendo-formerror> -->
+              </kendo-formfield>
+            
+
+              <!-- <kendo-formfield *ngIf="column.emailboxfield && isFieldShown(column)" class="form-field" [orientation]="'horizontal'">
+                <kendo-label class="form-label" [for]="column.field" text="{{column.title}}"></kendo-label>
+                  <input class="form-input" type="email" kendoTextBox formControlName={{column.field}} #column.field 
+                  [placeholder]="column.fieldHelp || ''" [readonly]="column.fieldProtected == 1 || areaProtected">
+
+                <kendo-formhint>{{ column.fieldHelp || '' }}</kendo-formhint>
+                <kendo-formerror>Error: This field is required</kendo-formerror>
+              </kendo-formfield> -->
+
+
+            </ng-container>
+
+          </div>
+        </fieldset>
+      </form>
+      <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    </div>
+  </kendo-pdf-export>
+
+</div>
+
+<div *ngIf="msgOpened">
+  <kendo-dialog title="Info" (close)="msgOpened = false" resizable="true" [minWidth]="400" [width]="400"
+      [height]="200">
+          <div >
+            {{userMsg}}
+          </div>
+  </kendo-dialog>
+</div>

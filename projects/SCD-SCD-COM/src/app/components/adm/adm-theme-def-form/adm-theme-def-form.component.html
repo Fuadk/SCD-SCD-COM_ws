@@ -1,0 +1,98 @@
+<div>
+  <legend  class="k-form-legend">{{ this.starServices.getNLS([],"MySecondApp_THEME_DEF_FORM.themedefMysecondappThemeDefForm.component_title","") }}</legend>
+
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+  <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="!isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+   <kendo-toolbar-button  kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}" (click)="printScreen()" *ngIf="componentConfig.toolsShow"></kendo-toolbar-button >
+
+
+
+  <kendo-toolbar-button [disabled]="isSearch"  text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+  <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+  <kendo-toolbar-button [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+
+  <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+  <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+  <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+  <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+
+
+  <kendo-toolbar-button  [disabled]="isSearch" [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);"  *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+  <kendo-toolbar-button  [disabled]="isSearch" [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);"  *ngIf="componentConfig.removeable">Remove</kendo-toolbar-button>
+
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+  <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+  <fieldset   class="k-form-fieldset" class="form-fieldset" [disabled]="!componentConfig.enabled">
+
+
+      <div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+<kendo-formfield class="form-field" [orientation]="'horizontal'" >
+          <kendo-label class="form-label" [for]="THEME_NAME" [text]="starServices.getNLS([],'MySecondApp_THEME_DEF_FORM.themedefMysecondappThemeDefForm.THEME_NAME','Name')"></kendo-label>
+          <input class="form-input" formControlName="THEME_NAME" kendoTextBox #THEME_NAME
+  [ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.THEME_NAME.errors }"  required
+            [readonly]="primarKeyReadOnlyArr.isTHEME_NAMEreadOnly" [placeholder]="starServices.getNLS([],'MySecondApp_THEME_DEF_FORM.themedefMysecondappThemeDefForm.THEME_NAME_Hint','Please enter Theme Name')"
+(change)="onChange_THEME_NAME($event)"    />
+        </kendo-formfield>
+
+        <kendo-formfield class="form-field" [orientation]="'horizontal'">
+          <kendo-label class="form-label" [for]="DEFAULT_THEME" text="Default"></kendo-label>
+          <input class="form-input" formControlName="DEFAULT_THEME" #DEFAULT_THEME kendoCheckBox type="checkbox" [attr.disabled]="!isAdmin" />
+        </kendo-formfield>
+        <button kendoButton *ngIf="!opened" (click)="openEditorForm()">Copy Theme</button>
+
+      </div>
+
+    </fieldset>
+  </form>
+
+  <kendo-formfield class="form-field" [orientation]="'horizontal'" style="display: flex; align-items: center; flex-wrap: wrap;">
+    <kendo-label class="form-label2" [text]="'Default Theme: ' + themeName" style="margin-right: 300px;"></kendo-label>
+    <button kendoButton *ngIf="!opened" (click)="themeName ? resetToAppTheme() : setAsDefaultTheme()" style="margin-left:60px;">
+      {{ themeName ? 'Reset to App Theme' : 'Set as My Default Theme' }}
+    </button>
+  </kendo-formfield>
+
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+  [setComponentConfig_Input]="DSP_UPLOADConfig">
+  </app-dsp-upload>
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+<kendo-dialog
+  (close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+  title="Add Code">
+  <app-som-tabs-codes-grid
+    [detail_Input]="grid_som_tabs_codes"
+    [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+  </app-som-tabs-codes-grid>
+
+</kendo-dialog>
+</div>
+
+
+<!-- FORM\CODE_HTML.html -->
+<kendo-dialog
+*ngIf="opened"
+title="Create New Theme"
+(close)="opened = false"
+resizable="true"
+[minWidth]="700"
+[width]="100"
+[height]="100"
+>
+<div class="theme-dialog-content">
+  <label for="targetTheme">New Theme Name:</label>
+  <input id="targetTheme" [(ngModel)]="targetTheme" placeholder="Enter new theme name" />
+  <button kendoButton (click)="copyTheme()">Create Theme</button>
+</div>
+</kendo-dialog>
+<!-- FORM\CODE_HTML.html -->
+
+
+

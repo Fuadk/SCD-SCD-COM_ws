@@ -1,0 +1,246 @@
+
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{ this.starServices.getNLS([],"SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.component_title","Application Users Management") }}</legend>
+<div class="form-toolbar"> </div>
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+
+  
+
+
+
+
+
+
+    
+
+           <div class="form-borders" > 
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+    <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
+      <kendo-tabstrip-tab  [selected]="true" >
+        <ng-template   kendoTabTitle>
+         <legend>{{FormStepsArr.length > 0   ? FormStepsArr[1].CODETEXT_LANG 
+			:  this.starServices.getNLS([],"SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.component_title","Application Users Management") }}
+			 </legend>
+
+        </ng-template>
+        <ng-template kendoTabContent>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelUSER_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleUSER_ID >
+		<kendo-label *ngIf="(!labelUSER_IDTop && !isPhonePortrait) && labelUSER_IDVisible" class="form-label" [for]="USER_ID" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_ID','User Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelUSER_IDTop || isPhonePortrait) && labelUSER_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_ID','User Id') + ' *'}}</label>
+		<input   formControlName="USER_ID"
+ kendoTextBox #USER_ID 
+		[readonly]="primarKeyReadOnlyArr.isUSER_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_ID_Hint','Please enter User Id.')"
+		(click)="ON_CLICK_USER_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_USER_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_ID >
+		<kendo-label *ngIf="(!labelAPPLICATION_IDTop && !isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label" [for]="APPLICATION_ID" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.APPLICATION_ID','Application Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelAPPLICATION_IDTop || isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.APPLICATION_ID','Application Id') + ' *'}}</label>
+		<kendo-combobox  #APPLICATION_ID class="form-field-combobox"  [formControlName]="'APPLICATION_ID'"
+		[data]="lkpArrAPPLICATION_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.APPLICATION_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAPPLICATION_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.APPLICATION_ID_Hint','Please enter Application Id.')"		(click)="ON_CLICK_APPLICATION_ID($event)"
+ (valueChange)="onValueChange_APPLICATION_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APPLICATION_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelUSER_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleUSER_NAME >
+		<kendo-label *ngIf="(!labelUSER_NAMETop && !isPhonePortrait) && labelUSER_NAMEVisible" class="form-label" [for]="USER_NAME" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_NAME','User Name')"></kendo-label>
+		<label *ngIf="(labelUSER_NAMETop || isPhonePortrait) && labelUSER_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_NAME','User Name')}}</label>
+		<input   formControlName="USER_NAME"
+ kendoTextBox #USER_NAME  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_NAME_Hint','Please enter User Name.')"
+		(click)="ON_CLICK_USER_NAME($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_USER_NAME($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFULL_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFULL_NAME >
+		<kendo-label *ngIf="(!labelFULL_NAMETop && !isPhonePortrait) && labelFULL_NAMEVisible" class="form-label" [for]="FULL_NAME" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.FULL_NAME','Full Name')"></kendo-label>
+		<label *ngIf="(labelFULL_NAMETop || isPhonePortrait) && labelFULL_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.FULL_NAME','Full Name')}}</label>
+		<input   formControlName="FULL_NAME"
+ kendoTextBox #FULL_NAME  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.FULL_NAME_Hint','Please enter Full Name.')"
+		(click)="ON_CLICK_FULL_NAME($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FULL_NAME($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDESCRIPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDESCRIPTION >
+		<kendo-label *ngIf="(!labelDESCRIPTIONTop && !isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label" [for]="DESCRIPTION" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.DESCRIPTION','Description')"></kendo-label>
+		<label *ngIf="(labelDESCRIPTIONTop || isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.DESCRIPTION','Description')}}</label>
+		<input   formControlName="DESCRIPTION"
+ kendoTextBox #DESCRIPTION  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.DESCRIPTION_Hint','Please enter Description.')"
+		(click)="ON_CLICK_DESCRIPTION($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DESCRIPTION($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEMAILTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEMAIL >
+		<kendo-label *ngIf="(!labelEMAILTop && !isPhonePortrait) && labelEMAILVisible" class="form-label" [for]="EMAIL" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.EMAIL','Email')"></kendo-label>
+		<label *ngIf="(labelEMAILTop || isPhonePortrait) && labelEMAILVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.EMAIL','Email')}}</label>
+		<input   formControlName="EMAIL"
+ kendoTextBox #EMAIL  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.EMAIL_Hint','Please enter Email.')"
+		(click)="ON_CLICK_EMAIL($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_EMAIL($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelGROUP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleGROUP_ID >
+		<kendo-label *ngIf="(!labelGROUP_IDTop && !isPhonePortrait) && labelGROUP_IDVisible" class="form-label" [for]="GROUP_ID" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.GROUP_ID','Group Id')"></kendo-label>
+		<label *ngIf="(labelGROUP_IDTop || isPhonePortrait) && labelGROUP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.GROUP_ID','Group Id')}}</label>
+		<input   formControlName="GROUP_ID"
+ kendoTextBox #GROUP_ID  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.GROUP_ID_Hint','Please enter Group Id.')"
+		(click)="ON_CLICK_GROUP_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_GROUP_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelUSER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleUSER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON >
+		<kendo-label *ngIf="(!labelUSER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGONTop && !isPhonePortrait) && labelUSER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGONVisible" class="form-label" [for]="USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON','User Must Change Password At Next Logon')"></kendo-label>
+		<label *ngIf="(labelUSER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGONTop || isPhonePortrait) && labelUSER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON','User Must Change Password At Next Logon')}}</label>
+		<input   formControlName="USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON"
+ kendoTextBox #USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON_Hint','Please enter User Must Change Password At Next Logon.')"
+		(click)="ON_CLICK_USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_USER_MUST_CHANGE_PASSWORD_AT_NEXT_LOGON($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelUSER_CAN_NOT_CHANGE_PASSWORDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleUSER_CAN_NOT_CHANGE_PASSWORD >
+		<kendo-label *ngIf="(!labelUSER_CAN_NOT_CHANGE_PASSWORDTop && !isPhonePortrait) && labelUSER_CAN_NOT_CHANGE_PASSWORDVisible" class="form-label" [for]="USER_CAN_NOT_CHANGE_PASSWORD" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_CAN_NOT_CHANGE_PASSWORD','User Can Not Change Password')"></kendo-label>
+		<label *ngIf="(labelUSER_CAN_NOT_CHANGE_PASSWORDTop || isPhonePortrait) && labelUSER_CAN_NOT_CHANGE_PASSWORDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_CAN_NOT_CHANGE_PASSWORD','User Can Not Change Password')}}</label>
+		<input   formControlName="USER_CAN_NOT_CHANGE_PASSWORD"
+ kendoTextBox #USER_CAN_NOT_CHANGE_PASSWORD  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.USER_CAN_NOT_CHANGE_PASSWORD_Hint','Please enter User Can Not Change Password.')"
+		(click)="ON_CLICK_USER_CAN_NOT_CHANGE_PASSWORD($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_USER_CAN_NOT_CHANGE_PASSWORD($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPASSWORD_NEVER_EXPIRESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePASSWORD_NEVER_EXPIRES >
+		<kendo-label *ngIf="(!labelPASSWORD_NEVER_EXPIRESTop && !isPhonePortrait) && labelPASSWORD_NEVER_EXPIRESVisible" class="form-label" [for]="PASSWORD_NEVER_EXPIRES" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.PASSWORD_NEVER_EXPIRES','Password Never Expires')"></kendo-label>
+		<label *ngIf="(labelPASSWORD_NEVER_EXPIRESTop || isPhonePortrait) && labelPASSWORD_NEVER_EXPIRESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.PASSWORD_NEVER_EXPIRES','Password Never Expires')}}</label>
+		<input   formControlName="PASSWORD_NEVER_EXPIRES"
+ kendoTextBox #PASSWORD_NEVER_EXPIRES  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.PASSWORD_NEVER_EXPIRES_Hint','Please enter Password Never Expires.')"
+		(click)="ON_CLICK_PASSWORD_NEVER_EXPIRES($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PASSWORD_NEVER_EXPIRES($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelACCOUNT_IS_DISABLEDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleACCOUNT_IS_DISABLED >
+		<kendo-label *ngIf="(!labelACCOUNT_IS_DISABLEDTop && !isPhonePortrait) && labelACCOUNT_IS_DISABLEDVisible" class="form-label" [for]="ACCOUNT_IS_DISABLED" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.ACCOUNT_IS_DISABLED','Account Is Disabled')"></kendo-label>
+		<label *ngIf="(labelACCOUNT_IS_DISABLEDTop || isPhonePortrait) && labelACCOUNT_IS_DISABLEDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.ACCOUNT_IS_DISABLED','Account Is Disabled')}}</label>
+		<input   formControlName="ACCOUNT_IS_DISABLED"
+ kendoTextBox #ACCOUNT_IS_DISABLED  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.ACCOUNT_IS_DISABLED_Hint','Please enter Account Is Disabled.')"
+		(click)="ON_CLICK_ACCOUNT_IS_DISABLED($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ACCOUNT_IS_DISABLED($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelACCOUNT_IS_LOCKEDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleACCOUNT_IS_LOCKED >
+		<kendo-label *ngIf="(!labelACCOUNT_IS_LOCKEDTop && !isPhonePortrait) && labelACCOUNT_IS_LOCKEDVisible" class="form-label" [for]="ACCOUNT_IS_LOCKED" [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.ACCOUNT_IS_LOCKED','Account Is Locked')"></kendo-label>
+		<label *ngIf="(labelACCOUNT_IS_LOCKEDTop || isPhonePortrait) && labelACCOUNT_IS_LOCKEDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.ACCOUNT_IS_LOCKED','Account Is Locked')}}</label>
+		<input   formControlName="ACCOUNT_IS_LOCKED"
+ kendoTextBox #ACCOUNT_IS_LOCKED  [placeholder]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.ACCOUNT_IS_LOCKED_Hint','Please enter Account Is Locked.')"
+		(click)="ON_CLICK_ACCOUNT_IS_LOCKED($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ACCOUNT_IS_LOCKED($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPHOTOTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePHOTO >
+		<kendo-label *ngIf="(!labelPHOTOTop && !isPhonePortrait) && labelPHOTOVisible" class="form-label" 
+			 [text]="starServices.getNLS([],'SCD_AUM_APPLICATION_USERS_MANAGEMENT.scduserScdAumApplicationUsersManagement.PHOTO','Photo')"></kendo-label>
+			 <input style="display:none" [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="PHOTO"
+ #PHOTO /> 
+			 <kendo-avatar shape="rounded" [imageSrc]="form.value.PHOTO" width="100px" height="100px"       adaptiveMode="auto" 			 (click)="form.markAsTouched()"></kendo-avatar> 
+	</kendo-formfield>
+	<kendo-formfield *ngIf="form.touched&&componentConfig.enabled"   [orientation]="'horizontal'" > 
+		<textarea kendoTextArea  style="resize: both;" class="form-input-double"  
+		 *ngIf=visiblePHOTO 
+ formControlName="PHOTO"
+ kendoTextBox #PHOTO></textarea>  
+	</kendo-formfield>
+</div>
+
+
+        </ng-template>
+      </kendo-tabstrip-tab>
+      </kendo-tabstrip>
+      
+    </fieldset>
+    </form>
+    </div>
+ 
+
+
+
+
+
+
+
+
+</kendo-pdf-export>
+</div>
+
+   <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>

@@ -1,0 +1,808 @@
+
+
+// modules/scd.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { SharedModule as AppSharedModule } from './Shared.module';
+
+// modules/dsp.module.ts
+
+// Kendo modules for DSP
+import { GridModule, PDFModule, ExcelModule } from '@progress/kendo-angular-grid';
+import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
+import { LabelModule } from '@progress/kendo-angular-label';
+
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
+import { MenuModule } from '@progress/kendo-angular-menu';
+import { MenusModule } from '@progress/kendo-angular-menu';
+import { SortableModule } from '@progress/kendo-angular-sortable';
+import { UploadModule } from '@progress/kendo-angular-upload';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { ToolBarModule } from '@progress/kendo-angular-toolbar';
+import { NotificationModule } from '@progress/kendo-angular-notification';
+import { TreeViewModule } from '@progress/kendo-angular-treeview';
+import { ICON_SETTINGS, IconsModule } from "@progress/kendo-angular-icons";
+import { RTL } from '@progress/kendo-angular-l10n';
+
+import { FormsModule } from '@angular/forms';
+import { DiagramModule } from '@progress/kendo-angular-diagrams';
+
+
+/////
+//import { BrowserModule } from '@angular/platform-browser';
+import { APP_INITIALIZER,   CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { APP_BASE_HREF  } from '@angular/common';
+import { SchedulerModule } from "@progress/kendo-angular-scheduler";
+import {  CommonModule } from '@angular/common';
+//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+
+import { ListViewModule } from "@progress/kendo-angular-listview";
+
+import { ReactiveFormsModule } from '@angular/forms';
+//import 'hammerjs';
+// import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+// import {initializeKeycloak} from '../utility/app.init';
+
+import { EditorModule } from '@progress/kendo-angular-editor';
+import { MessageService } from '@progress/kendo-angular-l10n';
+import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
+
+import { MapModule } from "@progress/kendo-angular-map";
+import { ProgressBarModule } from "@progress/kendo-angular-progressbar";
+
+
+//import { environment } from '../environments/environment';//   src/environments/environment';
+
+import { NgxToggleModule } from '@nikiphoros/ngx-toggle';
+import { NgxDnDModule } from '@swimlane/ngx-dnd';
+import { WebcamModule } from 'ngx-webcam';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { SignaturePadModule } from 'angular2-signaturepad';
+// import { SignaturePadModule } from 'ngx-signaturepad';
+
+import { QRCodeComponent } from 'angularx-qrcode';
+import {  DialogsModule} from '@progress/kendo-angular-dialog';
+
+
+import { UploadInterceptor } from '../app.component';
+import { ScrollViewModule } from "@progress/kendo-angular-scrollview";
+
+
+// Import all scd components
+
+//point1
+import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
+import { ScdExpressionEditorComponent } from '../components/SCD/scd-expression-editor/scd-expression-editor.component';
+import { ScdAppTreeScdAtApplicationTreeTreeComponent } from '../components/SCD/scd-at-application-tree/scd-at-application-tree.component';
+import { ScdApplicationTreeComponent } from '../components/SCD/scd-application-tree/scd-application-tree.component';
+import { ScdApplicationScdAdApplicationFormComponent } from '../components/SCD/scd-ad-application/scd-ad-application.component';
+import { ScdApplicationDefinitionComponent } from '../components/SCD/scd-application-definition/scd-application-definition.component';
+import { ScdOpcuaServerDefinitionComponent } from '../components/SCD/scd-opcua-server-definition/scd-opcua-server-definition.component';
+
+import { ScdOpcuaServerRealTimeDiagnosticsComponent } from '../components/SCD/scd-opcua-server-real-time-diagnostics/scd-opcua-server-real-time-diagnostics.component';
+import { ScdTagScdAtTagsGridGridComponent } from '../components/SCD/scd-at-tags-grid/scd-at-tags-grid.component';
+import { ScdTagScdAtTagDetailsFormComponent } from '../components/SCD/scd-at-tag-details/scd-at-tag-details.component';
+import { ScdApplicationTagsComponent } from '../components/SCD/scd-application-tags/scd-application-tags.component';
+import { ScdDisplayScdAdDisplayFormComponent } from '../components/SCD/scd-ad-display/scd-ad-display.component';
+import { ScdApplicationDisplayComponent } from '../components/SCD/scd-application-display/scd-application-display.component';
+
+import { ScdLogManagementComponent } from '../components/SCD/scd-log-management/scd-log-management.component';
+import { ScdLogTriggerScdLtLogTriggersFormComponent } from '../components/SCD/scd-lt-log-triggers/scd-lt-log-triggers.component';
+import { ScdLogTriggersComponent } from '../components/SCD/scd-log-triggers/scd-log-triggers.component';
+import { ScdTagInModelScdTimTagToAddFormComponent } from '../components/SCD/scd-tim-tag-to-add/scd-tim-tag-to-add.component';
+import { ScdTagInModelScdTimTagsInModelListGridComponent } from '../components/SCD/scd-tim-tags-in-model-list/scd-tim-tags-in-model-list.component';
+import { ScdTagsInModelComponent } from '../components/SCD/scd-tags-in-model/scd-tags-in-model.component';
+import { ScdLogManagementScdAlmApplicationLogManagementFormtabsComponent } from '../components/SCD/scd-alm-application-log-management/scd-alm-application-log-management.component';
+import { ScdApplicationLogManagementComponent } from '../components/SCD/scd-application-log-management/scd-application-log-management.component';
+import { ScdLocalMessageScdAlmLocalMessagesGridComponent } from '../components/SCD/scd-alm-local-messages/scd-alm-local-messages.component';
+import { ScdApplicationLocalMessagesComponent } from '../components/SCD/scd-application-local-messages/scd-application-local-messages.component';
+import { ScdDerivedTagScdAdtDerivedTagFormComponent } from '../components/SCD/scd-adt-derived-tag/scd-adt-derived-tag.component';
+import { ScdDerivedTagChildScdAdtDerivedTagChildrenGridComponent } from '../components/SCD/scd-adt-derived-tag-children/scd-adt-derived-tag-children.component';
+import { ScdApplicationDerivedTagsComponent } from '../components/SCD/scd-application-derived-tags/scd-application-derived-tags.component';
+import { ScdEventScdAeEventFormComponent } from '../components/SCD/scd-ae-event/scd-ae-event.component';
+import { ScdEventChildScdAeEventChildrenGridComponent } from '../components/SCD/scd-ae-event-children/scd-ae-event-children.component';
+import { ScdApplicationEventsComponent } from '../components/SCD/scd-application-events/scd-application-events.component';
+import { ScdMacroScdAmMacrosGridComponent } from '../components/SCD/scd-am-macros/scd-am-macros.component';
+import { ScdMacroScdAmMacroDetailsFormComponent } from '../components/SCD/scd-am-macro-details/scd-am-macro-details.component';
+import { ScdApplicationMacrosComponent } from '../components/SCD/scd-application-macros/scd-application-macros.component';
+import { ScdAlarmScdAaAlarmFilterFormComponent } from '../components/SCD/scd-aa-alarm-filter/scd-aa-alarm-filter.component';
+import { ScdAlarmScdAaAlarmsListGridComponent } from '../components/SCD/scd-aa-alarms-list/scd-aa-alarms-list.component';
+import { ScdAllAlarmsComponent } from '../components/SCD/scd-all-alarms/scd-all-alarms.component';
+import { ScdMessageScdMMessagesGridComponent } from '../components/SCD/scd-m-messages/scd-m-messages.component';
+import { ScdMessagesComponent } from '../components/SCD/scd-messages/scd-messages.component';
+import { ScdTagUpdateRateScdTurTagUpdateRatesGridComponent } from '../components/SCD/scd-tur-tag-update-rates/scd-tur-tag-update-rates.component';
+import { ScdTagUpdateRatesComponent } from '../components/SCD/scd-tag-update-rates/scd-tag-update-rates.component';
+import { ScdAlarmScdAaaesApplicationAlarmAndEventSetupFormtabsComponent } from '../components/SCD/scd-aaaes-application-alarm-and-event-setup/scd-aaaes-application-alarm-and-event-setup.component';
+import { ScdApplicationAlarmAndEventSetupComponent } from '../components/SCD/scd-application-alarm-and-event-setup/scd-application-alarm-and-event-setup.component';
+import { ScdCommunicationSetupScdAcsServersTreeComponent } from '../components/SCD/scd-acs-servers/scd-acs-servers.component';
+import { ScdCommunicationSetupScdAcsCommunicationSetupDetailsFormComponent } from '../components/SCD/scd-acs-communication-setup-details/scd-acs-communication-setup-details.component';
+import { ScdApplicationCommunicationSetupComponent } from '../components/SCD/scd-application-communication-setup/scd-application-communication-setup.component';
+import { ScdActionGroupScdAagActionGroupFormComponent } from '../components/SCD/scd-aag-action-group/scd-aag-action-group.component';
+import { ScdApplicationActionGroupComponent } from '../components/SCD/scd-application-action-group/scd-application-action-group.component';
+import { ScdUserScdAuUserFormComponent } from '../components/SCD/scd-au-user/scd-au-user.component';
+import { ScdApplicationUsersComponent } from '../components/SCD/scd-application-users/scd-application-users.component';
+import { ScdGroupMembershipScdGmGroupFormComponent } from '../components/SCD/scd-gm-group/scd-gm-group.component';
+import { ScdGroupMembershipScdGmMembersGridComponent } from '../components/SCD/scd-gm-members/scd-gm-members.component';
+import { ScdGroupMembershipComponent } from '../components/SCD/scd-group-membership/scd-group-membership.component';
+import { ScdUserScdAumApplicationUsersManagementFormtabsComponent } from '../components/SCD/scd-aum-application-users-management/scd-aum-application-users-management.component';
+import { ScdApplicationUsersManagementComponent } from '../components/SCD/scd-application-users-management/scd-application-users-management.component';
+import { ScdDisplaySettingScdDssDisplaySettingsFormtabsComponent } from '../components/SCD/scd-dss-display-settings/scd-dss-display-settings.component';
+import { ScdDisplaySettingsScreenComponent } from '../components/SCD/scd-display-settings-screen/scd-display-settings-screen.component';
+import { ScdDisplayKeyScdDksKeyDetailFormComponent } from '../components/SCD/scd-dks-key-detail/scd-dks-key-detail.component';
+import { ScdDisplayKeyScdDksKeysListGridComponent } from '../components/SCD/scd-dks-keys-list/scd-dks-keys-list.component';
+import { ScdDisplayKeysScreenComponent } from '../components/SCD/scd-display-keys-screen/scd-display-keys-screen.component';
+import { ScdJavascriptCodeScdJcsJavascriptCodeFormComponent } from '../components/SCD/scd-jcs-javascript-code/scd-jcs-javascript-code.component';
+import { ScdJavascriptCodeScreenComponent } from '../components/SCD/scd-javascript-code-screen/scd-javascript-code-screen.component';
+import { ScdShapeScdCsCommonScreenFormdivsComponent } from '../components/SCD/scd-cs-common-screen/scd-cs-common-screen.component';
+import { ScdCommonScreenComponent } from '../components/SCD/scd-common-screen/scd-common-screen.component';
+import { ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent } from '../components/SCD/scd-ssd-shape-state-definition/scd-ssd-shape-state-definition.component';
+import { ScdShapeStatesDefComponent } from '../components/SCD/scd-shape-states-def/scd-shape-states-def.component';
+import { ScdTextGeneralScdTgTextGeneralFormComponent } from '../components/SCD/scd-tg-text-general/scd-tg-text-general.component';
+import { ScdTextGeneralComponent } from '../components/SCD/scd-text-general/scd-text-general.component';
+import { ScdShapeScdTpCommonScreenFormComponent } from '../components/SCD/scd-tp-common-screen/scd-tp-common-screen.component';
+import { ScdTextGeneralScdTgTextGeneral1FormComponent } from '../components/SCD/scd-tg-text-general-1/scd-tg-text-general-1.component';
+import { ScdTextPropertiesComponent } from '../components/SCD/scd-text-properties/scd-text-properties.component';
+import { ScdShapeGeneralScdSgShapeGeneralFormComponent } from '../components/SCD/scd-sg-shape-general/scd-sg-shape-general.component';
+import { ScdShapeGeneralComponent } from '../components/SCD/scd-shape-general/scd-shape-general.component';
+import { ScdShapeGeneralScdSgShapeGeneral1FormComponent } from '../components/SCD/scd-sg-shape-general-1/scd-sg-shape-general-1.component';
+import { ScdShapePropertiesComponent } from '../components/SCD/scd-shape-properties/scd-shape-properties.component';
+import { ScdButtonGeneralScdBgButtonGeneralFormdivsComponent } from '../components/SCD/scd-bg-button-general/scd-bg-button-general.component';
+import { ScdButtonGeneralComponent } from '../components/SCD/scd-button-general/scd-button-general.component';
+import { ScdButtonActionScdBaButtonActionFormdivsComponent } from '../components/SCD/scd-ba-button-action/scd-ba-button-action.component';
+import { ScdButtonActionComponent } from '../components/SCD/scd-button-action/scd-button-action.component';
+import { ScdButtonAppearanceScdBaButtonAppearanceFormdivsComponent } from '../components/SCD/scd-ba-button-appearance/scd-ba-button-appearance.component';
+import { ScdButtonAppearanceComponent } from '../components/SCD/scd-button-appearance/scd-button-appearance.component';
+import { ScdButtonGeneralScdBpButtonGeneralFormComponent } from '../components/SCD/scd-bp-button-general/scd-bp-button-general.component';
+import { ScdButtonPropertiesComponent } from '../components/SCD/scd-button-properties/scd-button-properties.component';
+import { ScdButtonPushGeneralScdPbgPushButtonGeneralFormdivsComponent } from '../components/SCD/scd-pbg-push-button-general/scd-pbg-push-button-general.component';
+import { ScdPushButtonGeneralComponent } from '../components/SCD/scd-push-button-general/scd-push-button-general.component';
+import { ScdShapeStateScdSslShapeStatesListGridComponent } from '../components/SCD/scd-ssl-shape-states-list/scd-ssl-shape-states-list.component';
+import { ScdShapeStatesListComponent } from '../components/SCD/scd-shape-states-list/scd-shape-states-list.component';
+import { ScdShapeStateScdSspShapeStateDefinitionFormComponent } from '../components/SCD/scd-ssp-shape-state-definition/scd-ssp-shape-state-definition.component';
+import { ScdShapeStatesPropertiesComponent } from '../components/SCD/scd-shape-states-properties/scd-shape-states-properties.component';
+import { ScdShapeConnectionScdScShapeConnectionsGridComponent } from '../components/SCD/scd-sc-shape-connections/scd-sc-shape-connections.component';
+import { ScdShapeConnectionsComponent } from '../components/SCD/scd-shape-connections/scd-shape-connections.component';
+import { ScdButtonPushGeneralScdPbpPushButtonGeneralFormComponent } from '../components/SCD/scd-pbp-push-button-general/scd-pbp-push-button-general.component';
+import { ScdPushButtonPropertiesComponent } from '../components/SCD/scd-push-button-properties/scd-push-button-properties.component';
+import { ScdShapeDisplayGeneralScdSdgShapeDisplayGeneralFormdivsComponent } from '../components/SCD/scd-sdg-shape-display-general/scd-sdg-shape-display-general.component';
+import { ScdShapeDisplayGeneralComponent } from '../components/SCD/scd-shape-display-general/scd-shape-display-general.component';
+import { ScdShapeDisplayGeneralScdNdpShapeDisplayGeneralFormComponent } from '../components/SCD/scd-ndp-shape-display-general/scd-ndp-shape-display-general.component';
+import { ScdNumericDisplayPropertiesComponent } from '../components/SCD/scd-numeric-display-properties/scd-numeric-display-properties.component';
+import { ScdShapeInputGeneralScdSigShapeInputGeneralFormdivsComponent } from '../components/SCD/scd-sig-shape-input-general/scd-sig-shape-input-general.component';
+import { ScdShapeInputGeneralComponent } from '../components/SCD/scd-shape-input-general/scd-shape-input-general.component';
+import { ScdShapeInputAppearanceScdSiaShapeInputAppearanceFormdivsComponent } from '../components/SCD/scd-sia-shape-input-appearance/scd-sia-shape-input-appearance.component';
+import { ScdShapeInputAppearanceComponent } from '../components/SCD/scd-shape-input-appearance/scd-shape-input-appearance.component';
+import { ScdShapeInputGeneralScdNipShapeInputGeneralFormComponent } from '../components/SCD/scd-nip-shape-input-general/scd-nip-shape-input-general.component';
+import { ScdNumericInputPropertiesComponent } from '../components/SCD/scd-numeric-input-properties/scd-numeric-input-properties.component';
+import { ScdStringDisplayPropertiesComponent } from '../components/SCD/scd-string-display-properties/scd-string-display-properties.component';
+import { ScdStringInputPropertiesComponent } from '../components/SCD/scd-string-input-properties/scd-string-input-properties.component';
+import { ScdMultistateIndicatorGeneralScdMigMultistateIndicatorGeneralFormComponent } from '../components/SCD/scd-mig-multistate-indicator-general/scd-mig-multistate-indicator-general.component';
+import { ScdMultistateIndicatorGeneralComponent } from '../components/SCD/scd-multistate-indicator-general/scd-multistate-indicator-general.component';
+import { ScdMultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1FormComponent } from '../components/SCD/scd-mig-multistate-indicator-general-1/scd-mig-multistate-indicator-general-1.component';
+import { ScdMultistateIndicatorPropertiesComponent } from '../components/SCD/scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
+import { ScdSymbolStateScdSsdSymbolStateDefinitionFormdivsComponent } from '../components/SCD/scd-ssd-symbol-state-definition/scd-ssd-symbol-state-definition.component';
+import { ScdSymbolStatesDefComponent } from '../components/SCD/scd-symbol-states-def/scd-symbol-states-def.component';
+import { ScdSymbolStateScdSspSymbolStatesListGridComponent } from '../components/SCD/scd-ssp-symbol-states-list/scd-ssp-symbol-states-list.component';
+import { ScdSymbolStateScdSspSymbolStateDefinitionFormComponent } from '../components/SCD/scd-ssp-symbol-state-definition/scd-ssp-symbol-state-definition.component';
+import { ScdSymbolStatesPropertiesComponent } from '../components/SCD/scd-symbol-states-properties/scd-symbol-states-properties.component';
+import { ScdSymbolGeneralScdSgSymbolGeneralFormdivsComponent } from '../components/SCD/scd-sg-symbol-general/scd-sg-symbol-general.component';
+import { ScdSymbolGeneralComponent } from '../components/SCD/scd-symbol-general/scd-symbol-general.component';
+import { ScdSymbolGeneralScdSpSymbolGeneralFormComponent } from '../components/SCD/scd-sp-symbol-general/scd-sp-symbol-general.component';
+import { ScdSymbolPropertiesComponent } from '../components/SCD/scd-symbol-properties/scd-symbol-properties.component';
+import { ScdListIndicatorStateScdLisdListIndicatorStateDefinitionFormdivsComponent } from '../components/SCD/scd-lisd-list-indicator-state-definition/scd-lisd-list-indicator-state-definition.component';
+import { ScdListIndicatorStatesDefComponent } from '../components/SCD/scd-list-indicator-states-def/scd-list-indicator-states-def.component';
+import { ScdListIndicatorStateScdLispListIndicatorStatesListGridComponent } from '../components/SCD/scd-lisp-list-indicator-states-list/scd-lisp-list-indicator-states-list.component';
+import { ScdListIndicatorStateScdLispListIndicatorStateDefinitionFormComponent } from '../components/SCD/scd-lisp-list-indicator-state-definition/scd-lisp-list-indicator-state-definition.component';
+import { ScdListIndicatorStatesPropertiesComponent } from '../components/SCD/scd-list-indicator-states-properties/scd-list-indicator-states-properties.component';
+import { ScdListIndicatorGeneralScdLigListIndicatorGeneralFormdivsComponent } from '../components/SCD/scd-lig-list-indicator-general/scd-lig-list-indicator-general.component';
+import { ScdListIndicatorGeneralComponent } from '../components/SCD/scd-list-indicator-general/scd-list-indicator-general.component';
+import { ScdListIndicatorGeneralScdLipListIndicatorGeneralFormComponent } from '../components/SCD/scd-lip-list-indicator-general/scd-lip-list-indicator-general.component';
+import { ScdListIndicatorPropertiesComponent } from '../components/SCD/scd-list-indicator-properties/scd-list-indicator-properties.component';
+import { ScdGraphGeneralScdGgGraphGeneralFormdivsComponent } from '../components/SCD/scd-gg-graph-general/scd-gg-graph-general.component';
+import { ScdGraphGeneralComponent } from '../components/SCD/scd-graph-general/scd-graph-general.component';
+import { ScdGraphGeneralScdBgpGraphGeneralFormComponent } from '../components/SCD/scd-bgp-graph-general/scd-bgp-graph-general.component';
+import { ScdBarGraphPropertiesComponent } from '../components/SCD/scd-bar-graph-properties/scd-bar-graph-properties.component';
+import { ScdGaugeDisplayScdGdGaugeDisplayFormdivsComponent } from '../components/SCD/scd-gd-gauge-display/scd-gd-gauge-display.component';
+import { ScdGaugeDisplayComponent } from '../components/SCD/scd-gauge-display/scd-gauge-display.component';
+import { ScdGaugeDisplayScdGpGaugeDisplayFormComponent } from '../components/SCD/scd-gp-gauge-display/scd-gp-gauge-display.component';
+import { ScdGaugePropertiesComponent } from '../components/SCD/scd-gauge-properties/scd-gauge-properties.component';
+import { ScdGraphGeneralScdBgpGraphGeneral1FormComponent } from '../components/SCD/scd-bgp-graph-general-1/scd-bgp-graph-general-1.component';
+import { ScdScalePropertiesComponent } from '../components/SCD/scd-scale-properties/scd-scale-properties.component';
+import { ScdArrowButtonGeneralScdAbgArrowButtonGeneralFormdivsComponent } from '../components/SCD/scd-abg-arrow-button-general/scd-abg-arrow-button-general.component';
+import { ScdArrowButtonGeneralComponent } from '../components/SCD/scd-arrow-button-general/scd-arrow-button-general.component';
+import { ScdArrowButtonLabelScdAblArrowButtonLabelFormdivsComponent } from '../components/SCD/scd-abl-arrow-button-label/scd-abl-arrow-button-label.component';
+import { ScdArrowButtonLabelComponent } from '../components/SCD/scd-arrow-button-label/scd-arrow-button-label.component';
+import { ScdArrowButtonGeneralScdAbpArrowButtonGeneralFormComponent } from '../components/SCD/scd-abp-arrow-button-general/scd-abp-arrow-button-general.component';
+import { ScdArrowButtonPropertiesComponent } from '../components/SCD/scd-arrow-button-properties/scd-arrow-button-properties.component';
+import { ScdArrowButtonTimingScdAbtArrowButtonTimingFormComponent } from '../components/SCD/scd-abt-arrow-button-timing/scd-abt-arrow-button-timing.component';
+import { ScdArrowButtonTimingComponent } from '../components/SCD/scd-arrow-button-timing/scd-arrow-button-timing.component';
+import { ScdArrowTimingPropertiesComponent } from '../components/SCD/scd-arrow-timing-properties/scd-arrow-timing-properties.component';
+import { ScdArrowGeneralScdAgArrowGeneralFormdivsComponent } from '../components/SCD/scd-ag-arrow-general/scd-ag-arrow-general.component';
+import { ScdArrowGeneralComponent } from '../components/SCD/scd-arrow-general/scd-arrow-general.component';
+import { ScdArrowGeneralScdApArrowGeneralFormComponent } from '../components/SCD/scd-ap-arrow-general/scd-ap-arrow-general.component';
+import { ScdArrowPropertiesComponent } from '../components/SCD/scd-arrow-properties/scd-arrow-properties.component';
+import { ScdControlListTimingScdLtControlListTimingFormComponent } from '../components/SCD/scd-lt-control-list-timing/scd-lt-control-list-timing.component';
+import { ScdListTimingComponent } from '../components/SCD/scd-list-timing/scd-list-timing.component';
+import { ScdControlListSelectorPropertiesComponent } from '../components/SCD/scd-control-list-selector-properties/scd-control-list-selector-properties.component';
+import { ScdDisplayListSelectorPropertiesComponent } from '../components/SCD/scd-display-list-selector-properties/scd-display-list-selector-properties.component';
+import { ScdMessageGeneralScdMgMessageGeneralFormdivsComponent } from '../components/SCD/scd-mg-message-general/scd-mg-message-general.component';
+import { ScdMessageGeneralComponent } from '../components/SCD/scd-message-general/scd-message-general.component';
+import { ScdMessageGeneralScdMdpMessageGeneralFormComponent } from '../components/SCD/scd-mdp-message-general/scd-mdp-message-general.component';
+import { ScdMessageDatePropertiesComponent } from '../components/SCD/scd-message-date-properties/scd-message-date-properties.component';
+import { ScdTagLabelGeneralScdTlgTagLabelGeneralFormdivsComponent } from '../components/SCD/scd-tlg-tag-label-general/scd-tlg-tag-label-general.component';
+import { ScdTagLabelGeneralComponent } from '../components/SCD/scd-tag-label-general/scd-tag-label-general.component';
+import { ScdTagLabelGeneralScdTlpTagLabelGeneralFormComponent } from '../components/SCD/scd-tlp-tag-label-general/scd-tlp-tag-label-general.component';
+import { ScdTagLabelPropertiesComponent } from '../components/SCD/scd-tag-label-properties/scd-tag-label-properties.component';
+import { ScdBrowserGeneralScdBgBrowserGeneralFormComponent } from '../components/SCD/scd-bg-browser-general/scd-bg-browser-general.component';
+import { ScdBrowserGeneralComponent } from '../components/SCD/scd-browser-general/scd-browser-general.component';
+import { ScdBrowserGeneralScdBgBrowserGeneral1FormComponent } from '../components/SCD/scd-bg-browser-general-1/scd-bg-browser-general-1.component';
+import { ScdBrowserPropertiesComponent } from '../components/SCD/scd-browser-properties/scd-browser-properties.component';
+
+
+
+import { ScdOpcuaServerScdScdOpcuaServerFormtabsComponent } from '../components/SCD/scd-scd-opcua-server/scd-scd-opcua-server.component';
+import { ScdOpcuaServerDiagnosticScdOsrtdOpcuaServerDiagnosticsFormtabsComponent } from '../components/SCD/scd-osrtd-opcua-server-diagnostics/scd-osrtd-opcua-server-diagnostics.component';
+import { ScdLogManagementScdLmLogManagementFormdivsComponent } from '../components/SCD/scd-lm-log-management/scd-lm-log-management.component';
+import { ScdJavascriptCodeScdScdJavascriptCodeGridGridComponent } from '../components/SCD/scd-scd-javascript-code-grid/scd-scd-javascript-code-grid.component';
+import { ScdPilotedListSelectorPropertiesComponent } from '../components/SCD/scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
+import { ScdDiagramScdScdDiagramDiagramDiagramComponent } from '../components/SCD/scd-scd-diagram-diagram/scd-scd-diagram-diagram.component';
+import { ScdIconsCategoryScdScdIconsCategoryTreeTreeComponent } from '../components/SCD/scd-scd-icons-category-tree/scd-scd-icons-category-tree.component';
+import { ScdIconsScdScdIconsCardCardComponent } from '../components/SCD/scd-scd-icons-card/scd-scd-icons-card.component';
+import { ScdIconsScdScdIconsFormFormComponent } from '../components/SCD/scd-scd-icons-form/scd-scd-icons-form.component';
+import { ScdIconsComponent } from '../components/SCD/scd-icons/scd-icons.component';
+import { ScdSymbolfactoryComponent } from '../components/SCD/scd-symbolfactory/scd-symbolfactory.component';
+import { ScdIconsScdScdIconsFormQueryFormComponent } from '../components/SCD/scd-scd-icons-form-query/scd-scd-icons-form-query.component';
+import { ScdSymbolfactoryplusComponent } from '../components/SCD/scd-symbolfactoryplus/scd-symbolfactoryplus.component';
+import { ScdApplicationScdScdApplicationTreeTreeComponent } from '../components/SCD/scd-scd-application-tree/scd-scd-application-tree.component';
+import { ScdAppboardComponent } from '../components/SCD/scd-appboard/scd-appboard.component';
+import { ScdAppselectComponent } from '../components/SCD/scd-appselect/scd-appselect.component';
+import { ScdAppscadaComponent } from '../components/SCD/scd-appscada/scd-appscada.component';
+import { WindowHostComponent } from '../window-host/window-host.component';
+
+import {TabHostComponent } from '../tab-host/tab-host.component'
+
+
+import { ScdDiagramMenusScdScdDiagramMenusGridGridComponent } from '../components/SCD/scd-scd-diagram-menus-grid/scd-scd-diagram-menus-grid.component';
+import { ScdMdiTabsComponent } from '../components/SCD/scd-mdi-tabs/scd-mdi-tabs.component';
+ import { KENDO_UTILS } from '@progress/kendo-angular-utils';
+// import { KENDO_LAYOUT } from '@progress/kendo-angular-layout';
+// import { KENDO_ICONS } from '@progress/kendo-angular-icons'; 
+
+import { ScdMdiWinComponent } from '../components/SCD/scd-mdi-win/scd-mdi-win.component';
+import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+import { ScdAppMainComponent } from '../components/SCD/scd-app-main/scd-app-main.component';
+
+
+
+
+import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
+import { ScdAppTreeScdScdAppTreeGridGridComponent } from '../components/SCD/scd-scd-app-tree-grid/scd-scd-app-tree-grid.component';
+import { ScdAppTreeContextScdScdAppTreeContextGridGridComponent } from '../components/SCD/scd-scd-app-tree-context-grid/scd-scd-app-tree-context-grid.component';
+import { ScdMenusMaintComponent } from '../components/SCD/scd-menus-maint/scd-menus-maint.component';
+const scdRoutes: Routes = [
+ 
+
+  
+
+  //{ path: '**', component: null },
+  
+      
+		
+		
+		{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
+		{ path: 'scd_expression_editor', component: ScdExpressionEditorComponent },
+		{ path: 'scd_at_application_tree', component: ScdAppTreeScdAtApplicationTreeTreeComponent },
+		{ path: 'scd_application_tree', component: ScdApplicationTreeComponent },
+		{ path: 'scd_ad_application', component: ScdApplicationScdAdApplicationFormComponent },
+		{ path: 'scd_application_definition', component: ScdApplicationDefinitionComponent },
+		
+		{ path: 'scd_opcua_server_definition', component: ScdOpcuaServerDefinitionComponent },
+
+		{ path: 'scd_opcua_server_real_time_diagnostics', component: ScdOpcuaServerRealTimeDiagnosticsComponent },
+		{ path: 'scd_at_tags_grid', component: ScdTagScdAtTagsGridGridComponent },
+		{ path: 'scd_at_tag_details', component: ScdTagScdAtTagDetailsFormComponent },
+		{ path: 'scd_application_tags', component: ScdApplicationTagsComponent },
+		{ path: 'scd_ad_display', component: ScdDisplayScdAdDisplayFormComponent },
+		{ path: 'scd_application_display', component: ScdApplicationDisplayComponent },
+
+		{ path: 'scd_log_management', component: ScdLogManagementComponent },
+		{ path: 'scd_lt_log_triggers', component: ScdLogTriggerScdLtLogTriggersFormComponent },
+		{ path: 'scd_log_triggers', component: ScdLogTriggersComponent },
+		{ path: 'scd_tim_tag_to_add', component: ScdTagInModelScdTimTagToAddFormComponent },
+		{ path: 'scd_tim_tags_in_model_list', component: ScdTagInModelScdTimTagsInModelListGridComponent },
+		{ path: 'scd_tags_in_model', component: ScdTagsInModelComponent },
+		{ path: 'scd_alm_application_log_management', component: ScdLogManagementScdAlmApplicationLogManagementFormtabsComponent },
+		{ path: 'scd_application_log_management', component: ScdApplicationLogManagementComponent },
+		{ path: 'scd_alm_local_messages', component: ScdLocalMessageScdAlmLocalMessagesGridComponent },
+		{ path: 'scd_application_local_messages', component: ScdApplicationLocalMessagesComponent },
+		{ path: 'scd_adt_derived_tag', component: ScdDerivedTagScdAdtDerivedTagFormComponent },
+		{ path: 'scd_adt_derived_tag_children', component: ScdDerivedTagChildScdAdtDerivedTagChildrenGridComponent },
+		{ path: 'scd_application_derived_tags', component: ScdApplicationDerivedTagsComponent },
+		{ path: 'scd_ae_event', component: ScdEventScdAeEventFormComponent },
+		{ path: 'scd_ae_event_children', component: ScdEventChildScdAeEventChildrenGridComponent },
+		{ path: 'scd_application_events', component: ScdApplicationEventsComponent },
+		{ path: 'scd_am_macros', component: ScdMacroScdAmMacrosGridComponent },
+		{ path: 'scd_am_macro_details', component: ScdMacroScdAmMacroDetailsFormComponent },
+		{ path: 'scd_application_macros', component: ScdApplicationMacrosComponent },
+		{ path: 'scd_aa_alarm_filter', component: ScdAlarmScdAaAlarmFilterFormComponent },
+		{ path: 'scd_aa_alarms_list', component: ScdAlarmScdAaAlarmsListGridComponent },
+		{ path: 'scd_all_alarms', component: ScdAllAlarmsComponent },
+		{ path: 'scd_m_messages', component: ScdMessageScdMMessagesGridComponent },
+		{ path: 'scd_messages', component: ScdMessagesComponent },
+		{ path: 'scd_tur_tag_update_rates', component: ScdTagUpdateRateScdTurTagUpdateRatesGridComponent },
+		{ path: 'scd_tag_update_rates', component: ScdTagUpdateRatesComponent },
+		{ path: 'scd_aaaes_application_alarm_and_event_setup', component: ScdAlarmScdAaaesApplicationAlarmAndEventSetupFormtabsComponent },
+		{ path: 'scd_application_alarm_and_event_setup', component: ScdApplicationAlarmAndEventSetupComponent },
+		{ path: 'scd_acs_servers', component: ScdCommunicationSetupScdAcsServersTreeComponent },
+		{ path: 'scd_acs_communication_setup_details', component: ScdCommunicationSetupScdAcsCommunicationSetupDetailsFormComponent },
+		{ path: 'scd_application_communication_setup', component: ScdApplicationCommunicationSetupComponent },
+		{ path: 'scd_aag_action_group', component: ScdActionGroupScdAagActionGroupFormComponent },
+		{ path: 'scd_application_action_group', component: ScdApplicationActionGroupComponent },
+		{ path: 'scd_au_user', component: ScdUserScdAuUserFormComponent },
+		{ path: 'scd_application_users', component: ScdApplicationUsersComponent },
+		{ path: 'scd_gm_group', component: ScdGroupMembershipScdGmGroupFormComponent },
+		{ path: 'scd_gm_members', component: ScdGroupMembershipScdGmMembersGridComponent },
+		{ path: 'scd_group_membership', component: ScdGroupMembershipComponent },
+		{ path: 'scd_aum_application_users_management', component: ScdUserScdAumApplicationUsersManagementFormtabsComponent },
+		{ path: 'scd_application_users_management', component: ScdApplicationUsersManagementComponent },
+		{ path: 'scd_dss_display_settings', component: ScdDisplaySettingScdDssDisplaySettingsFormtabsComponent },
+		{ path: 'scd_display_settings_screen', component: ScdDisplaySettingsScreenComponent },
+		{ path: 'scd_dks_key_detail', component: ScdDisplayKeyScdDksKeyDetailFormComponent },
+		{ path: 'scd_dks_keys_list', component: ScdDisplayKeyScdDksKeysListGridComponent },
+		{ path: 'scd_display_keys_screen', component: ScdDisplayKeysScreenComponent },
+		{ path: 'scd_jcs_javascript_code', component: ScdJavascriptCodeScdJcsJavascriptCodeFormComponent },
+		{ path: 'scd_javascript_code_screen', component: ScdJavascriptCodeScreenComponent },
+		{ path: 'scd_cs_common_screen', component: ScdShapeScdCsCommonScreenFormdivsComponent },
+		{ path: 'scd_common_screen', component: ScdCommonScreenComponent },
+		{ path: 'scd_ssd_shape_state_definition', component: ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent },
+		{ path: 'scd_shape_states_def', component: ScdShapeStatesDefComponent },
+		{ path: 'scd_tg_text_general', component: ScdTextGeneralScdTgTextGeneralFormComponent },
+		{ path: 'scd_text_general', component: ScdTextGeneralComponent },
+		{ path: 'scd_tp_common_screen', component: ScdShapeScdTpCommonScreenFormComponent },
+		{ path: 'scd_tg_text_general_1', component: ScdTextGeneralScdTgTextGeneral1FormComponent },
+		{ path: 'scd_text_properties', component: ScdTextPropertiesComponent },
+		{ path: 'scd_sg_shape_general', component: ScdShapeGeneralScdSgShapeGeneralFormComponent },
+		{ path: 'scd_shape_general', component: ScdShapeGeneralComponent },
+		{ path: 'scd_sg_shape_general_1', component: ScdShapeGeneralScdSgShapeGeneral1FormComponent },
+		{ path: 'scd_shape_properties', component: ScdShapePropertiesComponent },
+		{ path: 'scd_bg_button_general', component: ScdButtonGeneralScdBgButtonGeneralFormdivsComponent },
+		{ path: 'scd_button_general', component: ScdButtonGeneralComponent },
+		{ path: 'scd_ba_button_action', component: ScdButtonActionScdBaButtonActionFormdivsComponent },
+		{ path: 'scd_button_action', component: ScdButtonActionComponent },
+		{ path: 'scd_ba_button_appearance', component: ScdButtonAppearanceScdBaButtonAppearanceFormdivsComponent },
+		{ path: 'scd_button_appearance', component: ScdButtonAppearanceComponent },
+		{ path: 'scd_bp_button_general', component: ScdButtonGeneralScdBpButtonGeneralFormComponent },
+		{ path: 'scd_button_properties', component: ScdButtonPropertiesComponent },
+		{ path: 'scd_pbg_push_button_general', component: ScdButtonPushGeneralScdPbgPushButtonGeneralFormdivsComponent },
+		{ path: 'scd_push_button_general', component: ScdPushButtonGeneralComponent },
+		{ path: 'scd_ssl_shape_states_list', component: ScdShapeStateScdSslShapeStatesListGridComponent },
+		{ path: 'scd_shape_states_list', component: ScdShapeStatesListComponent },
+		{ path: 'scd_ssp_shape_state_definition', component: ScdShapeStateScdSspShapeStateDefinitionFormComponent },
+		{ path: 'scd_shape_states_properties', component: ScdShapeStatesPropertiesComponent },
+		{ path: 'scd_sc_shape_connections', component: ScdShapeConnectionScdScShapeConnectionsGridComponent },
+		{ path: 'scd_shape_connections', component: ScdShapeConnectionsComponent },
+		{ path: 'scd_pbp_push_button_general', component: ScdButtonPushGeneralScdPbpPushButtonGeneralFormComponent },
+		{ path: 'scd_push_button_properties', component: ScdPushButtonPropertiesComponent },
+		{ path: 'scd_sdg_shape_display_general', component: ScdShapeDisplayGeneralScdSdgShapeDisplayGeneralFormdivsComponent },
+		{ path: 'scd_shape_display_general', component: ScdShapeDisplayGeneralComponent },
+		{ path: 'scd_ndp_shape_display_general', component: ScdShapeDisplayGeneralScdNdpShapeDisplayGeneralFormComponent },
+		{ path: 'scd_numeric_display_properties', component: ScdNumericDisplayPropertiesComponent },
+		{ path: 'scd_sig_shape_input_general', component: ScdShapeInputGeneralScdSigShapeInputGeneralFormdivsComponent },
+		{ path: 'scd_shape_input_general', component: ScdShapeInputGeneralComponent },
+		{ path: 'scd_sia_shape_input_appearance', component: ScdShapeInputAppearanceScdSiaShapeInputAppearanceFormdivsComponent },
+		{ path: 'scd_shape_input_appearance', component: ScdShapeInputAppearanceComponent },
+		{ path: 'scd_nip_shape_input_general', component: ScdShapeInputGeneralScdNipShapeInputGeneralFormComponent },
+		{ path: 'scd_numeric_input_properties', component: ScdNumericInputPropertiesComponent },
+		{ path: 'scd_string_display_properties', component: ScdStringDisplayPropertiesComponent },
+		{ path: 'scd_string_input_properties', component: ScdStringInputPropertiesComponent },
+		{ path: 'scd_mig_multistate_indicator_general', component: ScdMultistateIndicatorGeneralScdMigMultistateIndicatorGeneralFormComponent },
+		{ path: 'scd_multistate_indicator_general', component: ScdMultistateIndicatorGeneralComponent },
+		{ path: 'scd_mig_multistate_indicator_general_1', component: ScdMultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1FormComponent },
+		{ path: 'scd_multistate_indicator_properties', component: ScdMultistateIndicatorPropertiesComponent },
+		{ path: 'scd_ssd_symbol_state_definition', component: ScdSymbolStateScdSsdSymbolStateDefinitionFormdivsComponent },
+		{ path: 'scd_symbol_states_def', component: ScdSymbolStatesDefComponent },
+		{ path: 'scd_ssp_symbol_states_list', component: ScdSymbolStateScdSspSymbolStatesListGridComponent },
+		{ path: 'scd_ssp_symbol_state_definition', component: ScdSymbolStateScdSspSymbolStateDefinitionFormComponent },
+		{ path: 'scd_symbol_states_properties', component: ScdSymbolStatesPropertiesComponent },
+		{ path: 'scd_sg_symbol_general', component: ScdSymbolGeneralScdSgSymbolGeneralFormdivsComponent },
+		{ path: 'scd_symbol_general', component: ScdSymbolGeneralComponent },
+		{ path: 'scd_sp_symbol_general', component: ScdSymbolGeneralScdSpSymbolGeneralFormComponent },
+		{ path: 'scd_symbol_properties', component: ScdSymbolPropertiesComponent },
+		{ path: 'scd_lisd_list_indicator_state_definition', component: ScdListIndicatorStateScdLisdListIndicatorStateDefinitionFormdivsComponent },
+		{ path: 'scd_list_indicator_states_def', component: ScdListIndicatorStatesDefComponent },
+		{ path: 'scd_lisp_list_indicator_states_list', component: ScdListIndicatorStateScdLispListIndicatorStatesListGridComponent },
+		{ path: 'scd_lisp_list_indicator_state_definition', component: ScdListIndicatorStateScdLispListIndicatorStateDefinitionFormComponent },
+		{ path: 'scd_list_indicator_states_properties', component: ScdListIndicatorStatesPropertiesComponent },
+		{ path: 'scd_lig_list_indicator_general', component: ScdListIndicatorGeneralScdLigListIndicatorGeneralFormdivsComponent },
+		{ path: 'scd_list_indicator_general', component: ScdListIndicatorGeneralComponent },
+		{ path: 'scd_lip_list_indicator_general', component: ScdListIndicatorGeneralScdLipListIndicatorGeneralFormComponent },
+		{ path: 'scd_list_indicator_properties', component: ScdListIndicatorPropertiesComponent },
+		{ path: 'scd_gg_graph_general', component: ScdGraphGeneralScdGgGraphGeneralFormdivsComponent },
+		{ path: 'scd_graph_general', component: ScdGraphGeneralComponent },
+		{ path: 'scd_bgp_graph_general', component: ScdGraphGeneralScdBgpGraphGeneralFormComponent },
+		{ path: 'scd_bar_graph_properties', component: ScdBarGraphPropertiesComponent },
+		{ path: 'scd_gd_gauge_display', component: ScdGaugeDisplayScdGdGaugeDisplayFormdivsComponent },
+		{ path: 'scd_gauge_display', component: ScdGaugeDisplayComponent },
+		{ path: 'scd_gp_gauge_display', component: ScdGaugeDisplayScdGpGaugeDisplayFormComponent },
+		{ path: 'scd_gauge_properties', component: ScdGaugePropertiesComponent },
+		{ path: 'scd_bgp_graph_general_1', component: ScdGraphGeneralScdBgpGraphGeneral1FormComponent },
+		{ path: 'scd_scale_properties', component: ScdScalePropertiesComponent },
+		{ path: 'scd_abg_arrow_button_general', component: ScdArrowButtonGeneralScdAbgArrowButtonGeneralFormdivsComponent },
+		{ path: 'scd_arrow_button_general', component: ScdArrowButtonGeneralComponent },
+		{ path: 'scd_abl_arrow_button_label', component: ScdArrowButtonLabelScdAblArrowButtonLabelFormdivsComponent },
+		{ path: 'scd_arrow_button_label', component: ScdArrowButtonLabelComponent },
+		{ path: 'scd_abp_arrow_button_general', component: ScdArrowButtonGeneralScdAbpArrowButtonGeneralFormComponent },
+		{ path: 'scd_arrow_button_properties', component: ScdArrowButtonPropertiesComponent },
+		{ path: 'scd_abt_arrow_button_timing', component: ScdArrowButtonTimingScdAbtArrowButtonTimingFormComponent },
+		{ path: 'scd_arrow_button_timing', component: ScdArrowButtonTimingComponent },
+		{ path: 'scd_arrow_timing_properties', component: ScdArrowTimingPropertiesComponent },
+		{ path: 'scd_ag_arrow_general', component: ScdArrowGeneralScdAgArrowGeneralFormdivsComponent },
+		{ path: 'scd_arrow_general', component: ScdArrowGeneralComponent },
+		{ path: 'scd_ap_arrow_general', component: ScdArrowGeneralScdApArrowGeneralFormComponent },
+		{ path: 'scd_arrow_properties', component: ScdArrowPropertiesComponent },
+		{ path: 'scd_lt_control_list_timing', component: ScdControlListTimingScdLtControlListTimingFormComponent },
+		{ path: 'scd_list_timing', component: ScdListTimingComponent },
+		{ path: 'scd_control_list_selector_properties', component: ScdControlListSelectorPropertiesComponent },
+		{ path: 'scd_display_list_selector_properties', component: ScdDisplayListSelectorPropertiesComponent },
+		{ path: 'scd_mg_message_general', component: ScdMessageGeneralScdMgMessageGeneralFormdivsComponent },
+		{ path: 'scd_message_general', component: ScdMessageGeneralComponent },
+		{ path: 'scd_mdp_message_general', component: ScdMessageGeneralScdMdpMessageGeneralFormComponent },
+		{ path: 'scd_message_date_properties', component: ScdMessageDatePropertiesComponent },
+		{ path: 'scd_tlg_tag_label_general', component: ScdTagLabelGeneralScdTlgTagLabelGeneralFormdivsComponent },
+		{ path: 'scd_tag_label_general', component: ScdTagLabelGeneralComponent },
+		{ path: 'scd_tlp_tag_label_general', component: ScdTagLabelGeneralScdTlpTagLabelGeneralFormComponent },
+		{ path: 'scd_tag_label_properties', component: ScdTagLabelPropertiesComponent },
+		{ path: 'scd_bg_browser_general', component: ScdBrowserGeneralScdBgBrowserGeneralFormComponent },
+		{ path: 'scd_browser_general', component: ScdBrowserGeneralComponent },
+		{ path: 'scd_bg_browser_general_1', component: ScdBrowserGeneralScdBgBrowserGeneral1FormComponent },
+		{ path: 'scd_browser_properties', component: ScdBrowserPropertiesComponent },
+
+
+
+		{ path: 'scd_scd_opcua_server', component: ScdOpcuaServerScdScdOpcuaServerFormtabsComponent },
+		{ path: 'scd_osrtd_opcua_server_diagnostics', component: ScdOpcuaServerDiagnosticScdOsrtdOpcuaServerDiagnosticsFormtabsComponent },
+		{ path: 'scd_lm_log_management', component: ScdLogManagementScdLmLogManagementFormdivsComponent },
+		{ path: 'scd_scd_javascript_code_grid', component: ScdJavascriptCodeScdScdJavascriptCodeGridGridComponent },
+		{ path: 'scd_piloted_list_selector_properties', component: ScdPilotedListSelectorPropertiesComponent },
+		{ path: 'scd_scd_diagram_diagram', component: ScdDiagramScdScdDiagramDiagramDiagramComponent },
+		{ path: 'scd_scd_icons_category_tree', component: ScdIconsCategoryScdScdIconsCategoryTreeTreeComponent },
+		{ path: 'scd_scd_icons_card', component: ScdIconsScdScdIconsCardCardComponent },
+		{ path: 'scd_scd_icons_form', component: ScdIconsScdScdIconsFormFormComponent },
+		{ path: 'scd_icons', component: ScdIconsComponent },
+		{ path: 'scd_symbolfactory', component: ScdSymbolfactoryComponent },
+		{ path: 'scd_scd_icons_form_query', component: ScdIconsScdScdIconsFormQueryFormComponent },
+		{ path: 'scd_symbolfactoryplus', component: ScdSymbolfactoryplusComponent },
+		{ path: 'scd_scd_application_tree', component: ScdApplicationScdScdApplicationTreeTreeComponent },
+		{ path: 'scd_appboard', component: ScdAppboardComponent },
+		{ path: 'scd_appselect', component: ScdAppselectComponent },
+		{ path: 'scd_appscada', component: ScdAppscadaComponent },
+		
+		{ path: 'scd_scd_diagram_menus_grid', component: ScdDiagramMenusScdScdDiagramMenusGridGridComponent },
+		{ path: 'scd_mdi_tabs', component: ScdMdiTabsComponent },
+		{ path: 'scd_mdi_win', component: ScdMdiWinComponent },
+		{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+		{ path: 'scd_app_main', component: ScdAppMainComponent },
+
+
+
+		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
+		{ path: 'scd_scd_app_tree_grid', component: ScdAppTreeScdScdAppTreeGridGridComponent },
+		{ path: 'scd_scd_app_tree_context_grid', component: ScdAppTreeContextScdScdAppTreeContextGridGridComponent },
+		{ path: 'scd_menus_maint', component: ScdMenusMaintComponent },
+];
+
+
+
+@NgModule({
+  declarations: [
+    // All scd components
+   
+		ScdExpressionEditorScdEeExpressionEditorFormComponent,
+		ScdExpressionEditorComponent,
+		ScdAppTreeScdAtApplicationTreeTreeComponent,
+		ScdApplicationTreeComponent,
+		ScdApplicationScdAdApplicationFormComponent,
+		ScdApplicationDefinitionComponent,
+		
+		ScdOpcuaServerDefinitionComponent,
+
+		ScdOpcuaServerRealTimeDiagnosticsComponent,
+		ScdTagScdAtTagsGridGridComponent,
+		ScdTagScdAtTagDetailsFormComponent,
+		ScdApplicationTagsComponent,
+		ScdDisplayScdAdDisplayFormComponent,
+		ScdApplicationDisplayComponent,
+
+		ScdLogManagementComponent,
+		ScdLogTriggerScdLtLogTriggersFormComponent,
+		ScdLogTriggersComponent,
+		ScdTagInModelScdTimTagToAddFormComponent,
+		ScdTagInModelScdTimTagsInModelListGridComponent,
+		ScdTagsInModelComponent,
+		ScdLogManagementScdAlmApplicationLogManagementFormtabsComponent,
+		ScdApplicationLogManagementComponent,
+		ScdLocalMessageScdAlmLocalMessagesGridComponent,
+		ScdApplicationLocalMessagesComponent,
+		ScdDerivedTagScdAdtDerivedTagFormComponent,
+		ScdDerivedTagChildScdAdtDerivedTagChildrenGridComponent,
+		ScdApplicationDerivedTagsComponent,
+		ScdEventScdAeEventFormComponent,
+		ScdEventChildScdAeEventChildrenGridComponent,
+		ScdApplicationEventsComponent,
+		ScdMacroScdAmMacrosGridComponent,
+		ScdMacroScdAmMacroDetailsFormComponent,
+		ScdApplicationMacrosComponent,
+		ScdAlarmScdAaAlarmFilterFormComponent,
+		ScdAlarmScdAaAlarmsListGridComponent,
+		ScdAllAlarmsComponent,
+		ScdMessageScdMMessagesGridComponent,
+		ScdMessagesComponent,
+		ScdTagUpdateRateScdTurTagUpdateRatesGridComponent,
+		ScdTagUpdateRatesComponent,
+		ScdAlarmScdAaaesApplicationAlarmAndEventSetupFormtabsComponent,
+		ScdApplicationAlarmAndEventSetupComponent,
+		ScdCommunicationSetupScdAcsServersTreeComponent,
+		ScdCommunicationSetupScdAcsCommunicationSetupDetailsFormComponent,
+		ScdApplicationCommunicationSetupComponent,
+		ScdActionGroupScdAagActionGroupFormComponent,
+		ScdApplicationActionGroupComponent,
+		ScdUserScdAuUserFormComponent,
+		ScdApplicationUsersComponent,
+		ScdGroupMembershipScdGmGroupFormComponent,
+		ScdGroupMembershipScdGmMembersGridComponent,
+		ScdGroupMembershipComponent,
+		ScdUserScdAumApplicationUsersManagementFormtabsComponent,
+		ScdApplicationUsersManagementComponent,
+		ScdDisplaySettingScdDssDisplaySettingsFormtabsComponent,
+		ScdDisplaySettingsScreenComponent,
+		ScdDisplayKeyScdDksKeyDetailFormComponent,
+		ScdDisplayKeyScdDksKeysListGridComponent,
+		ScdDisplayKeysScreenComponent,
+		ScdJavascriptCodeScdJcsJavascriptCodeFormComponent,
+		ScdJavascriptCodeScreenComponent,
+		ScdShapeScdCsCommonScreenFormdivsComponent,
+		ScdCommonScreenComponent,
+		ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent,
+		ScdShapeStatesDefComponent,
+		ScdTextGeneralScdTgTextGeneralFormComponent,
+		ScdTextGeneralComponent,
+		ScdShapeScdTpCommonScreenFormComponent,
+		ScdTextGeneralScdTgTextGeneral1FormComponent,
+		ScdTextPropertiesComponent,
+		ScdShapeGeneralScdSgShapeGeneralFormComponent,
+		ScdShapeGeneralComponent,
+		ScdShapeGeneralScdSgShapeGeneral1FormComponent,
+		ScdShapePropertiesComponent,
+		ScdButtonGeneralScdBgButtonGeneralFormdivsComponent,
+		ScdButtonGeneralComponent,
+		ScdButtonActionScdBaButtonActionFormdivsComponent,
+		ScdButtonActionComponent,
+		ScdButtonAppearanceScdBaButtonAppearanceFormdivsComponent,
+		ScdButtonAppearanceComponent,
+		ScdButtonGeneralScdBpButtonGeneralFormComponent,
+		ScdButtonPropertiesComponent,
+		ScdButtonPushGeneralScdPbgPushButtonGeneralFormdivsComponent,
+		ScdPushButtonGeneralComponent,
+		ScdShapeStateScdSslShapeStatesListGridComponent,
+		ScdShapeStatesListComponent,
+		ScdShapeStateScdSspShapeStateDefinitionFormComponent,
+		ScdShapeStatesPropertiesComponent,
+		ScdShapeConnectionScdScShapeConnectionsGridComponent,
+		ScdShapeConnectionsComponent,
+		ScdButtonPushGeneralScdPbpPushButtonGeneralFormComponent,
+		ScdPushButtonPropertiesComponent,
+		ScdShapeDisplayGeneralScdSdgShapeDisplayGeneralFormdivsComponent,
+		ScdShapeDisplayGeneralComponent,
+		ScdShapeDisplayGeneralScdNdpShapeDisplayGeneralFormComponent,
+		ScdNumericDisplayPropertiesComponent,
+		ScdShapeInputGeneralScdSigShapeInputGeneralFormdivsComponent,
+		ScdShapeInputGeneralComponent,
+		ScdShapeInputAppearanceScdSiaShapeInputAppearanceFormdivsComponent,
+		ScdShapeInputAppearanceComponent,
+		ScdShapeInputGeneralScdNipShapeInputGeneralFormComponent,
+		ScdNumericInputPropertiesComponent,
+		ScdStringDisplayPropertiesComponent,
+		ScdStringInputPropertiesComponent,
+		ScdMultistateIndicatorGeneralScdMigMultistateIndicatorGeneralFormComponent,
+		ScdMultistateIndicatorGeneralComponent,
+		ScdMultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1FormComponent,
+		ScdMultistateIndicatorPropertiesComponent,
+		ScdSymbolStateScdSsdSymbolStateDefinitionFormdivsComponent,
+		ScdSymbolStatesDefComponent,
+		ScdSymbolStateScdSspSymbolStatesListGridComponent,
+		ScdSymbolStateScdSspSymbolStateDefinitionFormComponent,
+		ScdSymbolStatesPropertiesComponent,
+		ScdSymbolGeneralScdSgSymbolGeneralFormdivsComponent,
+		ScdSymbolGeneralComponent,
+		ScdSymbolGeneralScdSpSymbolGeneralFormComponent,
+		ScdSymbolPropertiesComponent,
+		ScdListIndicatorStateScdLisdListIndicatorStateDefinitionFormdivsComponent,
+		ScdListIndicatorStatesDefComponent,
+		ScdListIndicatorStateScdLispListIndicatorStatesListGridComponent,
+		ScdListIndicatorStateScdLispListIndicatorStateDefinitionFormComponent,
+		ScdListIndicatorStatesPropertiesComponent,
+		ScdListIndicatorGeneralScdLigListIndicatorGeneralFormdivsComponent,
+		ScdListIndicatorGeneralComponent,
+		ScdListIndicatorGeneralScdLipListIndicatorGeneralFormComponent,
+		ScdListIndicatorPropertiesComponent,
+		ScdGraphGeneralScdGgGraphGeneralFormdivsComponent,
+		ScdGraphGeneralComponent,
+		ScdGraphGeneralScdBgpGraphGeneralFormComponent,
+		ScdBarGraphPropertiesComponent,
+		ScdGaugeDisplayScdGdGaugeDisplayFormdivsComponent,
+		ScdGaugeDisplayComponent,
+		ScdGaugeDisplayScdGpGaugeDisplayFormComponent,
+		ScdGaugePropertiesComponent,
+		ScdGraphGeneralScdBgpGraphGeneral1FormComponent,
+		ScdScalePropertiesComponent,
+		ScdArrowButtonGeneralScdAbgArrowButtonGeneralFormdivsComponent,
+		ScdArrowButtonGeneralComponent,
+		ScdArrowButtonLabelScdAblArrowButtonLabelFormdivsComponent,
+		ScdArrowButtonLabelComponent,
+		ScdArrowButtonGeneralScdAbpArrowButtonGeneralFormComponent,
+		ScdArrowButtonPropertiesComponent,
+		ScdArrowButtonTimingScdAbtArrowButtonTimingFormComponent,
+		ScdArrowButtonTimingComponent,
+		ScdArrowTimingPropertiesComponent,
+		ScdArrowGeneralScdAgArrowGeneralFormdivsComponent,
+		ScdArrowGeneralComponent,
+		ScdArrowGeneralScdApArrowGeneralFormComponent,
+		ScdArrowPropertiesComponent,
+		ScdControlListTimingScdLtControlListTimingFormComponent,
+		ScdListTimingComponent,
+		ScdControlListSelectorPropertiesComponent,
+		ScdDisplayListSelectorPropertiesComponent,
+		ScdMessageGeneralScdMgMessageGeneralFormdivsComponent,
+		ScdMessageGeneralComponent,
+		ScdMessageGeneralScdMdpMessageGeneralFormComponent,
+		ScdMessageDatePropertiesComponent,
+		ScdTagLabelGeneralScdTlgTagLabelGeneralFormdivsComponent,
+		ScdTagLabelGeneralComponent,
+		ScdTagLabelGeneralScdTlpTagLabelGeneralFormComponent,
+		ScdTagLabelPropertiesComponent,
+		ScdBrowserGeneralScdBgBrowserGeneralFormComponent,
+		ScdBrowserGeneralComponent,
+		ScdBrowserGeneralScdBgBrowserGeneral1FormComponent,
+		ScdBrowserPropertiesComponent,
+
+
+
+		ScdOpcuaServerScdScdOpcuaServerFormtabsComponent,
+		ScdOpcuaServerDiagnosticScdOsrtdOpcuaServerDiagnosticsFormtabsComponent,
+		ScdLogManagementScdLmLogManagementFormdivsComponent,
+		ScdJavascriptCodeScdScdJavascriptCodeGridGridComponent,
+		ScdPilotedListSelectorPropertiesComponent,
+		ScdDiagramScdScdDiagramDiagramDiagramComponent,
+		ScdIconsCategoryScdScdIconsCategoryTreeTreeComponent,
+		ScdIconsScdScdIconsCardCardComponent,
+		ScdIconsScdScdIconsFormFormComponent,
+		ScdIconsComponent,
+		ScdSymbolfactoryComponent,
+		ScdIconsScdScdIconsFormQueryFormComponent,
+		ScdSymbolfactoryplusComponent,
+		ScdApplicationScdScdApplicationTreeTreeComponent,
+		ScdAppboardComponent,
+		ScdAppselectComponent,
+		ScdAppscadaComponent,
+		WindowHostComponent,
+		
+		TabHostComponent,
+		
+		ScdDiagramMenusScdScdDiagramMenusGridGridComponent,
+		ScdMdiTabsComponent,
+		ScdMdiWinComponent,
+		ScdApplicationScdScdApplicationFormFormComponent,
+		ScdAppMainComponent,
+
+
+
+		
+
+		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
+		ScdAppTreeScdScdAppTreeGridGridComponent,
+		ScdAppTreeContextScdScdAppTreeContextGridGridComponent,
+		ScdMenusMaintComponent,
+  ],
+  
+  imports: [
+    AppSharedModule,   // Provides shared components
+    RouterModule.forChild(scdRoutes),
+		 KENDO_UTILS as any,        // ← ADD THIS
+		// KENDO_LAYOUT,       // ← ADD THIS
+		// KENDO_ICONS,        // ← ADD THIS
+	
+    RouterModule,
+        GridModule,
+        PDFModule,
+        PDFExportModule,
+        ExcelModule,
+        FormsModule,
+		DiagramModule,
+        LabelModule,
+
+        ChartsModule,
+        ButtonsModule,
+        InputsModule,
+        DropDownsModule,
+        LayoutModule,
+        DialogModule,
+        SortableModule,
+        WindowModule,
+        UploadModule,
+        DateInputsModule,
+        ToolBarModule,
+        NotificationModule,
+        TreeViewModule,
+        IconsModule,
+		
+
+        /////
+             QRCodeComponent,
+              // KeycloakAngularModule,
+                SchedulerModule ,
+                CommonModule,
+                WebcamModule,
+           
+            //BrowserAnimationsModule,
+            //BrowserModule,
+            
+            
+            
+            
+            DialogsModule,
+            DropDownListModule,
+            
+            
+            EditorModule,
+            
+            
+            
+            HttpClientModule,
+            IndicatorsModule,
+            ScrollViewModule,
+            
+            
+            
+            ListViewModule,
+            ReactiveFormsModule,
+            MenuModule,
+            MenusModule,
+            NgxToggleModule,
+            
+           
+            
+            MapModule,
+            ProgressBarModule,
+            
+            
+           
+         
+            WindowModule,
+            
+            
+            /////    
+            NgxDnDModule.forRoot(),
+  ],
+  providers: [
+     
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: UploadInterceptor,
+        multi: true
+      },
+     
+    ],
+  exports: []
+})
+export class scdModule { 
+      constructor() {
+    
+    // Log what components are in this module
+  }
+}

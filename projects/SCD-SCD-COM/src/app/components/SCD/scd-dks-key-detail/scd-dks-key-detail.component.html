@@ -1,0 +1,183 @@
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.component_title","Key Detail") }}</legend>
+<div class="form-toolbar"> </div>
+
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+ 
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+ <div class="form-borders" > 
+    <form class="form-layout" [ngClass]="isPhonePortrait ? 'k-form k-form-horizontal-star' : 'k-form k-form-horizontal' "
+     [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled && !isSearch"-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_KEY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_KEY_ID >
+		<kendo-label *ngIf="(!labelDISPLAY_KEY_IDTop && !isPhonePortrait) && labelDISPLAY_KEY_IDVisible" class="form-label" [for]="DISPLAY_KEY_ID" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_KEY_ID','Display Key Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelDISPLAY_KEY_IDTop || isPhonePortrait) && labelDISPLAY_KEY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_KEY_ID','Display Key Id') + ' *'}}</label>
+		<input   formControlName="DISPLAY_KEY_ID"
+ kendoTextBox #DISPLAY_KEY_ID 
+		[readonly]="primarKeyReadOnlyArr.isDISPLAY_KEY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_KEY_ID_Hint','Please enter Display Key Id.')"
+		(click)="ON_CLICK_DISPLAY_KEY_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DISPLAY_KEY_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelKEY_LABELTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleKEY_LABEL >
+		<kendo-label *ngIf="(!labelKEY_LABELTop && !isPhonePortrait) && labelKEY_LABELVisible" class="form-label" [for]="KEY_LABEL" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL','Key Label')"></kendo-label>
+		<label *ngIf="(labelKEY_LABELTop || isPhonePortrait) && labelKEY_LABELVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL','Key Label')}}</label>
+		<input   formControlName="KEY_LABEL"
+ kendoTextBox #KEY_LABEL  [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL_Hint','Please enter Key Label.')"
+		(click)="ON_CLICK_KEY_LABEL($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_KEY_LABEL($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ID >
+		<kendo-label *ngIf="(!labelDISPLAY_IDTop && !isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label" [for]="DISPLAY_ID" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_ID','Display Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelDISPLAY_IDTop || isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_ID','Display Id') + ' *'}}</label>
+		<kendo-combobox  #DISPLAY_ID class="form-field-combobox"  [formControlName]="'DISPLAY_ID'"
+		[data]="lkpArrDISPLAY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.DISPLAY_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isDISPLAY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_ID_Hint','Please enter Display Id.')"		(click)="ON_CLICK_DISPLAY_ID($event)"
+ (valueChange)="onValueChange_DISPLAY_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DISPLAY_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelPRESS_ACTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePRESS_ACTION >
+		<kendo-label *ngIf="(!labelPRESS_ACTIONTop && !isPhonePortrait) && labelPRESS_ACTIONVisible" class="form-label" [for]="PRESS_ACTION" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.PRESS_ACTION','Press Action')"></kendo-label>
+		<label *ngIf="(labelPRESS_ACTIONTop || isPhonePortrait) && labelPRESS_ACTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.PRESS_ACTION','Press Action')}}</label>
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="5" [cols]="15"  kendoTextBox  formControlName="PRESS_ACTION"
+ #PRESS_ACTION
+  [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.PRESS_ACTION_Hint','Please enter Press Action.')"		(click)="ON_CLICK_PRESS_ACTION($event)"
+     adaptiveMode="auto" ></kendo-textarea>
+	</kendo-formfield>
+
+		<button  (valueChange)="onValueChange_PRESS_COMMANDS($event)"  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.PRESS_COMMANDS_Hint','Please enter Press Commands.')" 
+ iconClass="fas fa-terminal"  *ngIf=visiblePRESS_COMMANDS 		(click)="ON_CLICK_PRESS_COMMANDS($event)"
+ >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.PRESS_COMMANDS','...')}}</button>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelREPEAT_ACTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleREPEAT_ACTION >
+		<kendo-label *ngIf="(!labelREPEAT_ACTIONTop && !isPhonePortrait) && labelREPEAT_ACTIONVisible" class="form-label" [for]="REPEAT_ACTION" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REPEAT_ACTION','Repeat Action')"></kendo-label>
+		<label *ngIf="(labelREPEAT_ACTIONTop || isPhonePortrait) && labelREPEAT_ACTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REPEAT_ACTION','Repeat Action')}}</label>
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="5" [cols]="15"  kendoTextBox  formControlName="REPEAT_ACTION"
+ #REPEAT_ACTION
+  [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REPEAT_ACTION_Hint','Please enter Repeat Action.')"		(click)="ON_CLICK_REPEAT_ACTION($event)"
+     adaptiveMode="auto" ></kendo-textarea>
+	</kendo-formfield>
+
+		<button  (valueChange)="onValueChange_REPEAT_COMMANDS($event)"  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REPEAT_COMMANDS_Hint','Please enter Repeat Commands.')" 
+ iconClass="fas fa-terminal"  *ngIf=visibleREPEAT_COMMANDS 		(click)="ON_CLICK_REPEAT_COMMANDS($event)"
+ >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REPEAT_COMMANDS','...')}}</button>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelRELEASE_ACTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleRELEASE_ACTION >
+		<kendo-label *ngIf="(!labelRELEASE_ACTIONTop && !isPhonePortrait) && labelRELEASE_ACTIONVisible" class="form-label" [for]="RELEASE_ACTION" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.RELEASE_ACTION','Release Action')"></kendo-label>
+		<label *ngIf="(labelRELEASE_ACTIONTop || isPhonePortrait) && labelRELEASE_ACTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.RELEASE_ACTION','Release Action')}}</label>
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="5" [cols]="15"  kendoTextBox  formControlName="RELEASE_ACTION"
+ #RELEASE_ACTION
+  [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.RELEASE_ACTION_Hint','Please enter Release Action.')"		(click)="ON_CLICK_RELEASE_ACTION($event)"
+     adaptiveMode="auto" ></kendo-textarea>
+	</kendo-formfield>
+
+		<button  (valueChange)="onValueChange_RELEASE_COMMANDS($event)"  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.RELEASE_COMMANDS_Hint','Please enter Release Commands.')" 
+ iconClass="fas fa-terminal"  *ngIf=visibleRELEASE_COMMANDS 		(click)="ON_CLICK_RELEASE_COMMANDS($event)"
+ >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.RELEASE_COMMANDS','...')}}</button>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+		<button  (valueChange)="onValueChange_ADD_KEY($event)"  style="margin-left : 10px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.ADD_KEY_Hint','Please enter Add Key.')" 
+ iconClass="fas fa-plus"  *ngIf=visibleADD_KEY 		(click)="ON_CLICK_ADD_KEY($event)"
+ >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.ADD_KEY','Add')}}</button>
+
+		<button  (valueChange)="onValueChange_MODIFY_KEY($event)"  style="margin-left : 10px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.MODIFY_KEY_Hint','Please enter Modify Key.')" 
+ iconClass="fas fa-edit"  *ngIf=visibleMODIFY_KEY 		(click)="ON_CLICK_MODIFY_KEY($event)"
+ >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.MODIFY_KEY','Modify')}}</button>
+
+		<button  (valueChange)="onValueChange_REMOVE_KEY($event)"  style="margin-left : 10px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REMOVE_KEY_Hint','Please enter Remove Key.')" 
+ iconClass="fas fa-minus"  *ngIf=visibleREMOVE_KEY 		(click)="ON_CLICK_REMOVE_KEY($event)"
+ >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REMOVE_KEY','Remove')}}</button>
+
+		<button  (valueChange)="onValueChange_REMOVE_ALL_KEYS($event)"  style="margin-left : 10px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REMOVE_ALL_KEYS_Hint','Please enter Remove All Keys.')" 
+ iconClass="fas fa-trash"  *ngIf=visibleREMOVE_ALL_KEYS 		(click)="ON_CLICK_REMOVE_ALL_KEYS($event)"
+ >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.REMOVE_ALL_KEYS','Remove All')}}</button>
+</div>
+
+    </fieldset>
+    </form>
+    </div>
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+      <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+  
+
+
+
+

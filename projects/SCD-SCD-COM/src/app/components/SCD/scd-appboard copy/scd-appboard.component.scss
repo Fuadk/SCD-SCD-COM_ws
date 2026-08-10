@@ -1,0 +1,331 @@
+// scd-appboard.component.scss
+.appboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-bar {
+  padding: 10px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  button {
+    margin-right: 4px;
+  }
+  
+  .tab-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+.tab-host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+
+  &.tab-host-dark {
+    background: #1e1e1e;
+    color: #fff;
+  }
+}
+
+// ===== GROUP TABSTRIP =====
+.group-tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 4px 8px 8px 8px;
+  min-height: 0;
+}
+
+.group-tabstrip {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  
+  // Override kendo styles
+  ::ng-deep {
+    .k-tabstrip {
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .k-tabstrip-items {
+      flex-shrink: 0 !important;
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #ddd !important;
+      
+      .k-tabstrip-item {
+        padding: 4px 12px !important;
+        
+        &.k-active {
+          background: white !important;
+          border-bottom: 2px solid #ff6358 !important;
+        }
+      }
+    }
+    
+    .k-tabstrip-content {
+      flex: 1 !important;
+      overflow: hidden !important;
+      padding: 0 !important;
+      height: auto !important;
+    }
+    
+    .k-tabstrip-content-wrapper {
+      flex: 1 !important;
+      overflow: hidden !important;
+      min-height: 0 !important;
+    }
+  }
+}
+
+.group-tab-title {
+  font-weight: 500;
+}
+
+.close-group-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 4px;
+  margin-left: 4px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+  }
+}
+
+// ===== GROUP CONTENT AREA =====
+.group-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 4px;
+  min-height: 0;
+}
+
+.group-tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.single-tab-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 4px 8px 8px 8px;
+  min-height: 0;
+}
+
+.tab-content {
+  height: 100%;
+  padding: 8px;
+  overflow: auto;
+}
+
+// ===== EMPTY STATES =====
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  
+  .empty-state-content {
+    text-align: center;
+    
+    .empty-icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 16px;
+    }
+    
+    h3 {
+      margin: 0 0 8px 0;
+      color: #666;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+.empty-group-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  padding: 20px;
+  
+  .empty-icon-small {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  
+  p {
+    margin: 0 0 12px 0;
+  }
+}
+
+// ===== KENDO OVERRIDES =====
+:host ::ng-deep {
+  .k-tabstrip {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .k-tabstrip-items {
+    flex-shrink: 0 !important;
+  }
+
+  .k-tabstrip-content {
+    flex: 1 !important;
+    overflow: auto !important;
+    padding: 8px !important;
+    height: auto !important;
+  }
+
+  .k-tabstrip-content-wrapper {
+    flex: 1 !important;
+    overflow: hidden !important;
+    min-height: 0 !important;
+  }
+
+  // Drag handle
+  .drag-handle {
+    cursor: grab;
+    margin-right: 6px;
+    display: inline-block;
+    user-select: none;
+    opacity: 0.5;
+    font-size: 14px;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  .tab-title {
+    vertical-align: middle;
+  }
+
+  // Drop indicators
+  .k-tabstrip-item {
+    position: relative;
+  }
+
+  .k-tabstrip-item.drop-indicator-before::before,
+  .k-tabstrip-item.drop-indicator-after::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: #ff6358;
+    z-index: 1000;
+    animation: pulse 0.6s ease-in-out infinite;
+  }
+
+  .k-tabstrip-item.drop-indicator-before::before {
+    left: -2px;
+  }
+
+  .k-tabstrip-item.drop-indicator-after::after {
+    right: -2px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .tabHint {
+    background-color: #f0f0f0;
+    border: 1px dashed #ccc;
+    padding: 8px 16px;
+    border-radius: 4px;
+    opacity: 0.8;
+    pointer-events: none;
+  }
+}
+
+// ===== DARK THEME =====
+.tab-host-dark {
+  .group-tabstrip ::ng-deep {
+    .k-tabstrip-items {
+      background: #2d2d2d !important;
+      border-bottom-color: #444 !important;
+      
+      .k-tabstrip-item {
+        color: #aaa !important;
+        
+        &.k-active {
+          background: #1e1e1e !important;
+          color: #fff !important;
+          border-bottom-color: #ff6358 !important;
+        }
+      }
+    }
+  }
+  
+  .close-group-btn {
+    color: #666;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+  }
+  
+  .empty-state {
+    color: #666;
+    
+    h3 {
+      color: #888;
+    }
+  }
+  
+  :host ::ng-deep {
+    .tabHint {
+      background-color: #3d3d3d;
+      border-color: #666;
+    }
+  }
+}

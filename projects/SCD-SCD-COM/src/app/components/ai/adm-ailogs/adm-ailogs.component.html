@@ -1,0 +1,35 @@
+    <div>   
+<kendo-tilelayout 
+[columns]="2" [gap]="gap" 
+[resizable]="true" 
+[reorderable]="true">
+<kendo-tilelayout-item [col]="1" [colSpan]="1" >
+        <app-adm-adm-ai-log-head-grid  
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      [setComponentConfig_Input]="ADM_AI_LOG_HEADGrid_0Config">
+        </app-adm-adm-ai-log-head-grid >
+
+</kendo-tilelayout-item>
+<kendo-tilelayout-item [col]="2" [colSpan]="1" >
+        <app-adm-adm-ai-log-detail-grid  [detail_Input]="grid_1_ADM_AI_LOG_DETAIL"  
+                      (readCompletedOutput)="readCompletedHandler2($event)"
+                      [setComponentConfig_Input]="ADM_AI_LOG_DETAILGrid_1Config">
+        </app-adm-adm-ai-log-detail-grid >
+
+</kendo-tilelayout-item>
+</kendo-tilelayout>
+<kendo-tilelayout 
+[columns]="2" [gap]="gap" 
+[resizable]="true" 
+[reorderable]="true">
+<kendo-tilelayout-item [col]="1" [colSpan]="2" >
+        <app-adm-adm-ai-log-detail-form  [detail_Input]="form_2_ADM_AI_LOG_DETAIL"  
+                      [setComponentConfig_Input]="ADM_AI_LOG_DETAILForm_2Config">
+        </app-adm-adm-ai-log-detail-form >
+
+</kendo-tilelayout-item>
+</kendo-tilelayout>
+
+    </div>   

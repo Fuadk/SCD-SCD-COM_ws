@@ -1,0 +1,142 @@
+<div>
+    <legend>{{ title }}</legend>
+
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar" >
+    <kendo-toolbar-button kendoButton [disabled]="isSearch"  [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)"></kendo-toolbar-button>
+    <kendo-toolbar-button  kendoButton [icon]="'print'" title="print" (click)="printScreen()" ></kendo-toolbar-button >
+
+
+    <kendo-toolbar-button  [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="Enter Query" (click)="enterQuery( form);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'" title="Cancel"  (click)="onCancel($event)" ></kendo-toolbar-button >
+
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="First Record" (click)="goRecord( 'first');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="Previous Record"  (click)="goRecord(  'prev');" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="Next Record"  (click)="goRecord('next')" *ngIf="!isSearch"></kendo-toolbar-button >
+    <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="Last Record" (click)="goRecord('last')" *ngIf="!isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="!isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf="!isSearch">Remove</kendo-toolbar-button>
+<kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>		
+</kendo-toolbar>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+	<div class="form-borders">
+
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" >
+    <fieldset class="k-form-fieldset">
+
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+<kendo-label class="form-label" [for]="USERNAME" text="User name" ></kendo-label>
+<input class="form-input" formControlName="USERNAME" kendoTextBox #USERNAME  
+required [readonly]="primarKeyReadOnlyArr.isUSERNAMEreadOnly" />
+</kendo-formfield>
+
+<kendo-formfield  class="form-field" [orientation]="'horizontal'">
+	<kendo-label class="form-label" [for]="GROUPNAME" text="Group"></kendo-label>
+	<kendo-combobox  #GROUPNAME  class="form-field-combobox" [formControlName]="'GROUPNAME'"
+		[data]="lkpArrGROUPNAME" [textField]="'FULLNAME'"  [valueField]="'GROUPNAME'"
+		[valuePrimitive]="true"  >
+	</kendo-combobox>
+</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="PASSWORD" text="Password"></kendo-label>
+		<input class="form-input" type="password" autocomplete=new-password  formControlName="PASSWORD" kendoTextBox #PASSWORD />
+		</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="DEPT" text="Department"></kendo-label>
+		<kendo-combobox  #DEPT class="form-field-combobox" [formControlName]="'DEPT'"
+			[data]="lkpArrDEPT" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+			[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		</kendo-combobox>
+	</kendo-formfield>
+	
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="DIVS" text="Div"></kendo-label>
+		<kendo-combobox  #DIVS class="form-field-combobox" [formControlName]="'DIVS'"
+		[data]="lkpArrDIV" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		</kendo-combobox>
+	</kendo-formfield>
+
+		<!--kendo-formfield class="form-field" [orientation]="'horizontal'">
+			<kendo-label class="form-label" [for]="TEAM" text="Team"></kendo-label>
+			<input class="form-input" formControlName="TEAM" kendoTextBox #TEAM />
+		</kendo-formfield-->
+
+		<kendo-formfield class="form-field" [orientation]="'horizontal'">
+			<kendo-label class="form-label" [for]="TEAM" text="Team"></kendo-label>
+			<kendo-combobox  #TEAM class="form-field-combobox" [formControlName]="'TEAM'"
+			[data]="lkpArrTEAM" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+			[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+			</kendo-combobox>
+		</kendo-formfield>	
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">	
+	<kendo-formfield  class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="FULLNAME" text="Full name"></kendo-label>
+		<input class="form-input-double" formControlName="FULLNAME" kendoTextBox #FULLNAME />
+	</kendo-formfield>
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="LEADER" text="Leader"></kendo-label>
+		<input class="form-input" formControlName="LEADER"  #LEADER kendoCheckBox type="checkbox"/>
+	</kendo-formfield>
+	<kendo-formfield class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="MANAGER" text="Manager"></kendo-label>
+		<input class="form-input" formControlName="MANAGER"  #MANAGER kendoCheckBox type="checkbox"/>
+	</kendo-formfield>
+</div>
+
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+
+	<kendo-formfield class="form-field-double" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="NOTES" text="Notes"></kendo-label>
+		<kendo-textarea kendoTextArea  style="width:300px;" class="form-input-double" formControlName="NOTES" kendoTextBox #NOTES ></kendo-textarea>
+	</kendo-formfield>
+
+		<kendo-formfield class="form-field" [orientation]="'horizontal'">
+			<kendo-label class="form-label" [for]="THEME_NAME" text="Theme Name"></kendo-label>
+			<kendo-combobox  #THEME_NAME class="form-field-combobox" [formControlName]="'THEME_NAME'"
+			[data]="lkpArrTHEME_NAME" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+			[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+			</kendo-combobox>
+		</kendo-formfield>	
+
+
+
+	<kendo-formfield  class="form-field" [orientation]="'horizontal'">
+		<kendo-label class="form-label" [for]="EMAIL" text="email"></kendo-label>
+		<input class="form-input" formControlName="EMAIL" kendoTextBox #EMAIL />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+		<kendo-formfield class="form-field" [orientation]="'horizontal'">
+			<kendo-label class="form-label" [for]="COMPANY_ID" text="Company Name"></kendo-label>
+			<kendo-combobox  #COMPANY_ID class="form-field-combobox" [formControlName]="'COMPANY_ID'"
+			[data]="lkpArrCOMPANY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+			[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+			</kendo-combobox>
+		</kendo-formfield>	
+</div>
+    </fieldset>
+	</form>
+	</div>
+	
+
+
+
+
+
+</kendo-pdf-export>
+</div>
+
+

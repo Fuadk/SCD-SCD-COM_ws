@@ -1,0 +1,224 @@
+<div>
+
+	<!-- <legend  class="k-form-legend">"eKYC"</legend> -->
+	<div class="form-toolbar">
+
+
+	</div>
+
+
+
+	<app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+		[setComponentConfig_Input]="DSP_UPLOADConfig">
+	</app-dsp-upload>
+
+</div>
+
+
+
+<div class="example" *ngIf="showStepper">
+	<kendo-stepper #stepper [steps]="steps" stepType="full" (click)="validateSteps(stepper)"
+		[(currentStep)]="currentStep" [style.width.px]="1800">
+	</kendo-stepper>
+	<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+		<kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}"
+			(click)="saveChanges( form)"
+			*ngIf="!isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+		<kendo-toolbar-button kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}"
+			(click)="printScreen()"></kendo-toolbar-button>
+
+		
+
+		<kendo-toolbar-button [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}"
+			title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery( form);"
+			*ngIf="componentConfig.queryable"></kendo-toolbar-button>
+		<kendo-toolbar-button [fillMode]="isSearch ? 'outline' : 'solid'" [icon]="'search'"
+			title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}" (click)="executeQuery( form.value);"
+			*ngIf="componentConfig.queryable"></kendo-toolbar-button>
+		<kendo-toolbar-button [fillMode]="isSearch ? 'outline' : 'solid' " [icon]="'cancel'"
+			title="{{starServices.getNLS([],'CANCEL','Cancel')}}" (click)="onCancel($event)"
+			*ngIf="componentConfig.queryable"></kendo-toolbar-button>
+
+		
+		<kendo-toolbar-button [disabled]="isSearch" [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'"
+			title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');"
+			*ngIf="componentConfig.navigable"></kendo-toolbar-button>
+		<kendo-toolbar-button [disabled]="isSearch" [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'"
+			title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}" (click)="goRecord(  'prev');"
+			*ngIf="componentConfig.navigable"></kendo-toolbar-button>
+		<kendo-toolbar-button [disabled]="isSearch" [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'"
+			title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}" (click)="goRecord('next')"
+			*ngIf="componentConfig.navigable"></kendo-toolbar-button>
+		<kendo-toolbar-button [disabled]="isSearch" [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'"
+			title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')"
+			*ngIf="componentConfig.navigable"></kendo-toolbar-button>
+
+		
+		<kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"
+			(click)="onNew($event);" *ngIf="componentConfig.insertable"></kendo-toolbar-button>
+		
+		<kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"
+			(click)="onRemove( form);" *ngIf="componentConfig.removeable">Remove</kendo-toolbar-button>
+
+
+	</kendo-toolbar>
+
+	<form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+		<fieldset class="k-form-fieldset" class="form-fieldset" [disabled]="!componentConfig.enabled">
+
+			<div *ngIf="currentStep === 0">
+				<div style="text-align:center">
+					<!-- <button kendoButton class="k-button k-primary" (click)="TestMatch()">
+						Test
+					</button> -->
+
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' " style="text-align:center">
+					
+	
+						<kendo-formfield class="form-field" [orientation]="'horizontal'" *ngIf="false"
+							style="text-align:center">
+							<kendo-label class="form-label" [for]="id"
+								[text]="starServices.getNLS([],'MyFirstApp_tickeit_y_FORM.tickeityMyfirstappTickeitYForm.id','Id')"></kendo-label>
+							<input class="form-input" formControlName="id" kendoTextBox #id
+								[placeholder]="starServices.getNLS([],'MyFirstApp_tickeit_y_FORM.tickeityMyfirstappTickeitYForm.id_Hint','Please enter value for Id')"
+								[readonly]="true" (change)="onChange_id($event)" />
+						</kendo-formfield>
+						<kendo-formfield class="form-field" [orientation]="'horizontal'">
+							<input style="display:none" class="form-input" formControlName="priority_id" #priority_id />
+					
+							<!-- <kendo-avatar shape="rectangle" [imageSrc]="this.starServices.att_img_getFileLink(priority_id.value,this)"
+								width="250px" height="250px" style="object-fit: fill;"
+								(click)="this.starServices.att_img_form_openUploadimage('priority_id',this)"></kendo-avatar> -->
+							<img class="img-size" [src]="this.starServices.att_img_getFileLink(priority_id.value,this)">
+								<div style="text-align:left">
+								<button kendoButton [icon]="'upload'" title="Upload"
+									(click)="this.starServices.att_img_form_openUploadimage('priority_id',this)">ID :
+									front page</button>
+								<!-- <h5 (click)="this.starServices.att_img_form_openUploadimage('priority_id',this)">Click above to upload ID "front page"</h5> -->
+								</div>
+						</kendo-formfield>
+
+
+					</div>
+
+
+				</div>
+
+			</div>
+			<div *ngIf="currentStep === 1">
+				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+					<kendo-formfield class="form-field" [orientation]="'horizontal'">
+						<input style="display:none" class="form-input" formControlName="status_id" #status_id />
+					
+						<!-- <kendo-avatar shape="rectangle"
+							[imageSrc]="this.starServices.att_img_getFileLink(status_id.value,this)" width="600px"
+							height="400px"
+							(click)="this.starServices.att_img_form_openUploadimage('status_id',this)"></kendo-avatar> -->
+						<img class="img-size" [src]="this.starServices.att_img_getFileLink(status_id.value,this)">
+							<div style="text-align:left">
+							<button kendoButton [icon]="'upload'" title="Upload"
+									(click)="this.starServices.att_img_form_openUploadimage('status_id',this)">ID :
+									back page</button>
+							<!-- <h5>Click above to upload ID "back page"</h5> -->
+							</div>
+					</kendo-formfield>
+				</div>
+
+			</div>
+
+			<div *ngIf="currentStep === 2">
+				<div style="text-align:center">
+					<div>
+						<webcam [height]="350" [width]="350" [trigger]="triggerObservable"
+							(imageCapture)="handleImage($event)" *ngIf="showWebcam"
+							[allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+							[videoOptions]="videoOptions" (cameraSwitched)="cameraWasSwitched($event)"
+							(initError)="handleInitError($event)"></webcam>
+						
+						<br />
+						<div class="actionBtn" (click)="triggerSnapshot();" title="Take Picture">📸</div>
+						<div>
+							<h4>Click camera icon to capture "face picture"</h4>
+						</div>
+						<div><kendo-avatar [imageSrc]="camImage" width="250px" height="250px"></kendo-avatar></div>
+						<!-- <div class="actionBtn" (click)="showNextWebcam(true);" title="Switch Camera">🔁</div> -->
+					</div>
+				</div>
+				<h4 *ngIf="errors.length > 0">Messages:</h4>
+				<ul *ngFor="let error of errors">
+					<li>{{error | json}}</li>
+				</ul>
+
+
+
+
+			</div>
+			<div *ngIf="currentStep === 3">
+
+				<!-- <kendo-avatar shape="rectangle" [imageSrc]="front_image1" width="400px" height="400px"></kendo-avatar>
+				<kendo-avatar shape="rectangle" [imageSrc]="back_image1" width="400px" height="400px"></kendo-avatar>
+				<kendo-avatar shape="rectangle" [imageSrc]="face_img1" width="400px" height="400px"></kendo-avatar> -->
+				<img class="img-size" [src]="front_image1">
+				<img class="img-size" [src]="back_image1">
+				<img class="img-size" [src]="face_img1">
+
+
+			</div>
+
+
+			<span class="k-form-separator"></span>
+
+			<div class="k-form-buttons k-buttons-end" style="text-align:center">
+				
+				<div>
+					<button class="prev" kendoButton class="k-button k-primary" *ngIf="currentStep !== 0"
+						(click)="prev()">
+						Previous
+					</button>
+					<span class="page">Step {{ currentStep + 1 }} of 4</span>
+					<button kendoButton class="k-button k-primary" (click)="next()" *ngIf="currentStep !== 3">
+						Next
+					</button>
+					<button kendoButton class="k-button k-primary" (click)="submit()" *ngIf="currentStep === 3">
+						Submit
+					</button>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+
+<div *ngIf="!showStepper">
+	<div *ngIf="showgridData" class="options-wrapper" style="text-align:center" class="k-block" class="example">
+		<kendo-grid [data]="gridData" [style.maxWidth.px]="500" [resizable]="true" [height]="400"
+			style="text-align:center">
+			<kendo-grid-column field="ID" title="ID" [width]="40"> </kendo-grid-column>
+			<kendo-grid-column field="VALUE" title="Name" [minResizableWidth]> </kendo-grid-column>
+		</kendo-grid>
+		<button kendoButton themeColor="primary" (click)="contiueOrder()" class="example">
+			Continue Order
+		</button>
+	</div>
+	<div class="k-block" *ngIf="loading" style="text-align:center">
+		<kendo-loader [type]="loader.type" [themeColor]="loader.themeColor" [size]="loader.size">
+		</kendo-loader>
+		<div style="text-align:center">
+			<h2> Processing data. Please wait..</h2>
+		</div>
+	</div>
+	
+
+	<!-- <div style="text-align:center" *ngIf="showRepeat">
+		<h2>{{repeatMsg}}</h2>
+		<button kendoButton themeColor="primary" (click)="tryAgain()" class="example">
+			Try Again
+		</button>
+	</div> -->
+
+	<div style="text-align:center" *ngIf="showError">
+		<h2>{{errMsg}}</h2>
+		<button kendoButton themeColor="primary" (click)="tryAgain()" class="example">
+			Try Again
+		</button>
+	</div>
+</div>

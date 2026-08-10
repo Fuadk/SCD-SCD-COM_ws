@@ -1,0 +1,95 @@
+<!-- window-host.component.html -->
+ 
+<div class="mdi-desktop" 
+     [class.mdi-desktop-dark]="isDarkTheme"
+     (dragover)="onDragOver($event)"
+     (drop)="onDrop($event)"
+     (contextmenu)="onContextMenu($event)">
+  
+  <!-- Toolbar - ADD BACK THE CLASS -->
+  <!-- <div class="mdi-toolbar">
+    <div class="mdi-toolbar-left">
+      <kendo-menu>
+        <kendo-menu-item text="File">
+          <kendo-menu-item text="Open Diagram" (click)="openDiagram()"></kendo-menu-item>
+          <kendo-menu-item text="Open Form" (click)="openForm()"></kendo-menu-item>
+          <kendo-menu-item text="Open Trend" (click)="openTrend()"></kendo-menu-item>
+          <kendo-menu-item text="Open Alarm" (click)="openAlarm()"></kendo-menu-item>
+          <kendo-menu-item text="Open Grid" (click)="openGrid()"></kendo-menu-item>
+          <kendo-menu-item text="New Tab Group" (click)="createTabGroup()"></kendo-menu-item>
+          <kendo-menu-item divider="true"></kendo-menu-item>
+          <kendo-menu-item text="Close All" (click)="closeAllWindows()"></kendo-menu-item>
+        </kendo-menu-item>
+        <kendo-menu-item text="Window">
+          <kendo-menu-item text="Cascade" (click)="cascadeWindows()"></kendo-menu-item>
+          <kendo-menu-item text="Tile" (click)="tileWindows()"></kendo-menu-item>
+        </kendo-menu-item>
+      </kendo-menu>
+    </div>
+    <div class="mdi-toolbar-right">
+      <span class="window-count">{{ getWindowCount() }} windows</span>
+    </div>
+  </div> -->
+
+  <!-- Tab Groups - Fix container -->
+  <div class="tab-groups-container" *ngIf="tabGroups.length > 0">
+    <div *ngFor="let group of tabGroups" class="tab-group">
+      <div class="tab-bar">
+        <div class="tabs">
+          <div *ngFor="let tab of group.windows" 
+               class="tab-item" 
+               [class.active]="group.activeWindowId === tab.id"
+               (click)="switchTab(group.id, tab.id)"
+               (dblclick)="floatWindow(tab.id)">
+            <span class="tab-title">{{ tab.title }}</span>
+            <span class="tab-close" (click)="$event.stopPropagation(); closeTab(group.id, tab.id)">×</span>
+          </div>
+        </div>
+        <div class="tab-actions">
+          <button kendoButton [icon]="'window'" (click)="floatAllWindows(group.id)">Float All</button>
+        </div>
+      </div>
+      <div class="tab-content">
+        <ng-container *ngFor="let tab of group.windows">
+          <div *ngIf="group.activeWindowId === tab.id" class="tab-content-inner">
+            <app-mdi-window
+              [window]="tab"
+              (closeWindow)="closeWindow($event)"
+              (bringToFrontWindow)="bringToFront($event)"
+              (activateWindow)="activateWindow($event)"
+              (minimizeWindow)="minimizeWindow($event)"
+              (maximizeWindow)="maximizeWindow($event)"
+              (dragWindow)="onDragStart($event)"
+              (resizeWindow)="onResizeStart($event)">
+            </app-mdi-window>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Windows container -->
+  <div class="floating-windows-container">
+    <app-mdi-window
+      *ngFor="let window of windows"
+      [window]="window"
+      (closeWindow)="closeWindow($event)"
+      (bringToFrontWindow)="bringToFront($event)"
+      (activateWindow)="activateWindow($event)"
+      (minimizeWindow)="minimizeWindow($event)"
+      (maximizeWindow)="maximizeWindow($event)"
+      (dragWindow)="onDragStart($event)"
+      (resizeWindow)="onResizeStart($event)">
+    </app-mdi-window>
+  </div>
+
+  <!-- Context Menu -->
+  <div class="mdi-context-menu" *ngIf="contextMenuVisible" 
+       [style.left.px]="contextMenuX"
+       [style.top.px]="contextMenuY"
+       (click)="$event.stopPropagation()">
+    <div class="menu-item" (click)="cascadeWindows()">Cascade</div>
+    <div class="menu-item" (click)="tileWindows()">Tile</div>
+    <div class="menu-item" (click)="closeAllWindows()">Close All</div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+    <div>   
+        <legend class="k-form-legend">{{ this.starServices.getNLS([],"mysecondapp_THEME_DEF.mysecondapp_THEME_DEF.component_title","Theme Definition") }}</legend> 
+<div class="wrap">
+
+        <app-adm-theme-def-form null 
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      [setComponentConfig_Input]="THEME_DEFForm_0Config">
+        </app-adm-theme-def-form >
+
+</div>
+<div class="wrap">
+
+        <app-adm-theme-detail-grid null [detail_Input]="grid_1_THEME_DETAIL"  
+                      [setComponentConfig_Input]="THEME_DETAILGrid_1Config">
+        </app-adm-theme-detail-grid >
+
+</div>
+
+    </div>   

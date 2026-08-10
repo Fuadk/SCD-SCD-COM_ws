@@ -1,0 +1,157 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+<legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.component_title","Keys List") }}</legend>
+	
+    <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight ? componentConfig.gridHeight : gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="componentConfig.showToolBar">
+
+
+        
+        
+
+        
+            <button  [icon]="'sliders'"  [disabled]="isSearch" kendoButton  title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="Cancel" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
+            <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isSearch && (componentConfig.updateable || componentConfig.insertable) "></button >
+            <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable && !isSearch"></button >
+
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"   (click)="toggleColumnMenu()" *ngIf="!isSearch && !isPhonePortrait"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "    >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DISPLAY_KEY_ID"
+ *ngIf=visibleDISPLAY_KEY_ID  [editable]=" !(disabledColumns.indexOf('DISPLAY_KEY_ID') > -1)  && !primarKeyReadOnlyArr.isDISPLAY_KEY_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('DISPLAY_KEY_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.DISPLAY_KEY_ID','Display Key Id') + ' *'}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.DISPLAY_KEY_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_DISPLAY_KEY_ID()"      [formControl]="formGroup.get('DISPLAY_KEY_ID')" [placeholder]="starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.DISPLAY_KEY_ID_Hint','Please enter Display Key Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DISPLAY_ID" title="{{starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.DISPLAY_ID','Display Id') + ' *'}}" [width]="100"   *ngIf=visibleDISPLAY_ID  [editable]=" !(disabledColumns.indexOf('DISPLAY_ID') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('DISPLAY_ID') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetDISPLAY_ID(dataItem.DISPLAY_ID)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrDISPLAY_ID"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeDISPLAY_ID($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('DISPLAY_ID')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="KEY_LABEL"
+ *ngIf=visibleKEY_LABEL  [editable]=" !(disabledColumns.indexOf('KEY_LABEL') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('KEY_LABEL') > -1" 		 title="{{starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.KEY_LABEL','Key Label')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.KEY_LABEL}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_KEY_LABEL()"      [formControl]="formGroup.get('KEY_LABEL')" [placeholder]="starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.KEY_LABEL_Hint','Please enter Key Label.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="PRESS_ACTION"
+ *ngIf=visiblePRESS_ACTION  [editable]=" !(disabledColumns.indexOf('PRESS_ACTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('PRESS_ACTION') > -1" 		 title="{{starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.PRESS_ACTION','Press Action')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.PRESS_ACTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_PRESS_ACTION()"      [formControl]="formGroup.get('PRESS_ACTION')" [placeholder]="starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.PRESS_ACTION_Hint','Please enter Press Action.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="REPEAT_ACTION"
+ *ngIf=visibleREPEAT_ACTION  [editable]=" !(disabledColumns.indexOf('REPEAT_ACTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('REPEAT_ACTION') > -1" 		 title="{{starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.REPEAT_ACTION','Repeat Action')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.REPEAT_ACTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_REPEAT_ACTION()"      [formControl]="formGroup.get('REPEAT_ACTION')" [placeholder]="starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.REPEAT_ACTION_Hint','Please enter Repeat Action.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="RELEASE_ACTION"
+ *ngIf=visibleRELEASE_ACTION  [editable]=" !(disabledColumns.indexOf('RELEASE_ACTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('RELEASE_ACTION') > -1" 		 title="{{starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.RELEASE_ACTION','Release Action')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.RELEASE_ACTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_RELEASE_ACTION()"      [formControl]="formGroup.get('RELEASE_ACTION')" [placeholder]="starServices.getNLS([],'SCD_DKS_KEYS_LIST.scddisplayKeyScdDksKeysList.RELEASE_ACTION_Hint','Please enter Release Action.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+

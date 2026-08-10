@@ -1,0 +1,254 @@
+/* You can add global styles to this file, and also import other style files */
+
+//$kendo-panelbar-bg: #1b56b8;
+//$kendo-body-bg : #1b56b8 !default;
+
+//$kendo-grid-bg: #1bb822;
+//$kendo-color-white : #1b56b8 !important;
+// $primary:#3C99DC; $base-bg:#D5F3FE !default;  $hovered-bg:#66D3FA !default; 
+// $base-text:#000000 !default; $link-text:#3C99DC !default; $text-color:#000000 !default;
+// // $body-bg:#FFFFFF !default; 
+// $bg-color:#FFFFFF !default; 
+// $app-bg:#D5F3FE !default; $app-text:#000000 !default; $line-height: (1) !default;
+//point1
+$base-border: rgba( black, .2 ) !default;
+
+
+$spacer: .5em !default;
+$padding-x: 4px !default;
+$padding-y: 2px !default;
+
+//$line-height: (16 / 14) !default;
+$icon-size: 16px !default;
+$font-size: 12px !default;
+$form-field-margin-top: .5rem !default;
+/* $kendo-checkbox-border-width : 4px !default; */
+
+//$kendo-app-bg:red;
+@import "@progress/kendo-theme-core/scss/functions/index.import.scss";
+$kendo-spacing: (     //$_default-spacing:
+  0: 0px,   //affects spacing between form
+  1: .25rem,  //affects the edges of buttons  
+  1.5: .375rem, //affects height of tabs
+  2: 8px,   //affecting spacing between buttons  
+  2.5: .625rem, //affects right margin after a label
+  3: .5rem,  //affects spacing between tabs , and height of toolbar
+  4: 1rem,
+
+
+);
+
+$kendo-enable-typography: true; // Enable the typography system.
+$kendo-line-height	: k-math-div( 20, 14 ) !default;
+
+$kendo-colors: (      //$_default_colors:
+  primary: #3C99DC,
+  base : #D5F3FE,
+  primary-hover: #66D3FA,
+
+  primary-subtle-hover: #66D3FA ,
+
+  primary-subtle: #ffeceb,
+  primary-subtle-active: #ffc8c4,
+
+primary-active: #d45349,
+primary-emphasis: #ff9d97,
+primary-on-subtle: #5c201c,
+on-primary: #ffffff,      //affects panel bar text when highlighted
+primary-on-surface: #ff6358,
+);
+@import "@progress/kendo-theme-default/dist/all.scss";
+
+// @import "@progress/kendo-theme-default/dist/all";
+// /*@import "~@progress/kendo-theme-default/scss/all";*/
+ @import "@swimlane/ngx-dnd/release/index.css";
+ @import "@progress/kendo-font-icons/dist/index.css";
+
+.wrap {
+  display: flex;
+  justify-content: flex-start;
+  padding:0px 0px 10px 0px;
+}
+.wrapyes {
+  display: flex;
+  flex-wrap: wrap
+}
+.wrapno {
+  display: flex;
+  flex-wrap: nowrap
+}
+legend {
+    font-size:1.2em;
+    padding: 0px 0px 0px 0px;
+}
+
+
+.k-form-legend
+  {margin:0 0 0rem;
+  background-color: $kendo-app-bg;
+   color: $kendo-app-text;
+}
+
+/* margin top, right, bottom, and left) */
+/*
+$header-cell-padding-x: 3px !default;
+$header-cell-padding-y: 2px !default;
+$cell-padding-x: 3px !default;
+$cell-padding-y: 2px !default;
+$cell-padding: 3px !default;
+*/
+
+/*
+.k-textbox{
+  font-size:8px;
+  height:"20";
+  padding:0px;
+}
+.k-combobox{
+  font-size:8px;
+  height:"20";
+  padding:0px;
+}
+.k-input{
+  padding:0px 0px;
+  padding-right:0px
+}
+.k-panel{
+  padding:0px 0px;
+}
+.k-form
+{
+  padding: 0;
+}
+k-grid-toolbar{
+  padding:0px 0px;
+}
+
+*/
+.k-grid td
+{
+  padding: 4px;
+}
+
+
+/*.k-textbox{width:100%;box-sizing:border-box}*/
+.form-borders{
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin-bottom: 10px;
+}
+.form-layout{
+
+}
+.card-format{
+  margin-left: 10px;
+}
+.form-toolbar  
+{
+  margin:0 0 0rem;
+  background-color: $kendo-base-bg;
+}
+.form-fieldset{
+/*flex-basis: 800px;*/
+width: 600px !important;
+}
+
+
+.form-field {
+  flex-basis: 300px;
+ }
+
+
+ .form-field-double{
+  flex-basis: 450px;
+}
+.form-field-combobox {
+  flex-basis: 200px;
+ /* width: 200px !important;*/
+
+}
+.form-field-date {
+  flex-basis: 200px;
+}
+
+.form-label {
+  flex-basis: 100px;
+  }
+.form-input {
+    flex-basis: 200px;
+}
+
+.form-input-double {
+  flex-basis: 400px; //form-input-double
+  resize: both;
+
+}
+.form-input-triple {
+  flex-basis: 800px;
+  height :200px;
+  resize: both;
+
+}
+.form-input-full {
+  flex-basis: 800px;
+  height :300px;
+  resize: both;
+
+}
+.disabled {
+  pointer-events: none !important;
+  opacity: .5 !important;
+}
+
+// @media print {
+//   body * {
+//     visibility: hidden;
+//   }
+//   kendo-pdf-export, kendo-pdf-export * {
+//     visibility: visible;
+//   }
+//   kendo-pdf-export {
+//     position: absolute;
+//     left: 0;
+//     top: 0;
+//   }
+// }
+
+signature-pad {
+  canvas {
+    border: solid thin #c1c1c1;
+  }
+}
+
+.content-pane {
+  flex: 1;
+  overflow-x: hidden;
+  background-color: $kendo-body-bg;
+}
+
+.k-searchbar {
+  align-items: center;
+  padding-left: 10px;
+}
+.input-upper{
+  text-transform: uppercase;
+}
+.Capitalize > .k-input-inner {
+  text-transform: capitalize;
+}
+.overlap {
+  position: absolute !important;
+  z-index: 100 !important;
+}
+
+.gold .codeColumn {
+  background-color: #ffba80;
+}
+.green .codeColumn {
+  background-color: #b2f699;
+}
+
+.fields-overflow {
+  overflow-y: auto;
+  overflow-x: auto;
+}

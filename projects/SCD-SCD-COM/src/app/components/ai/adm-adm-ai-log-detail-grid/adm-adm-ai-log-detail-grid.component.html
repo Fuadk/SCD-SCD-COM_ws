@@ -1,0 +1,217 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+    <kendo-grid [rowClass]="ROW_CLASS"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight ? componentConfig.gridHeight : gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="showToolBar">
+        <legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{ title }}</legend>
+
+
+        
+        
+        <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isChild && componentConfig.updateable"></button >
+        <button  kendoButton [icon]="'print'" title="print" (click)="printScreen()" *ngIf="componentConfig.toolsShow"></button >
+
+        
+            <button  [disabled]="isSearch" kendoButton  title="Enter Query" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable"></button >
+            <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable">Remove</button >
+
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"  (click)="toggleColumnMenu()" *ngIf="!isSearch"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "    >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="USERNAME"
+ *ngIf=false  [editable]=" !(disabledColumns.indexOf('USERNAME') > -1)  && !primarKeyReadOnlyArr.isUSERNAMEreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('USERNAME') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.USERNAME','Username')}}"  [width]="120">
+		 <ng-template kendoGridCellTemplate let-dataItem><span   >{{dataItem.USERNAME}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_USERNAME()"    [formControl]="formGroup.get('USERNAME')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.USERNAME_Hint','Please enter Username')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="APP_ID"
+ *ngIf=false  [editable]=" !(disabledColumns.indexOf('APP_ID') > -1)  && !primarKeyReadOnlyArr.isAP_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('APP_ID') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.APP_ID','Ap Id')}}"  [width]="120">
+		 <ng-template kendoGridCellTemplate let-dataItem><span   >{{dataItem.APP_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_AP_ID()"    [formControl]="formGroup.get('APP_ID')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.AP_ID_Hint','Please enter Ap Id')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="AI_ACTION_ID" title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.AI_ACTION_ID','Ai Action Id')}}" [width]="120"   *ngIf=false  [editable]=" !(disabledColumns.indexOf('AI_ACTION_ID') > -1)  && !primarKeyReadOnlyArr.isAI_ACTION_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('AI_ACTION_ID') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span   > {{lkpArrGetAI_ACTION_ID(dataItem.AI_ACTION_ID)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrAI_ACTION_ID"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeAI_ACTION_ID($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('AI_ACTION_ID')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="AI_ENTITY_ID"
+ *ngIf=false  [editable]=" !(disabledColumns.indexOf('AI_ENTITY_ID') > -1)  && !primarKeyReadOnlyArr.isAI_ENTITY_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('AI_ENTITY_ID') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.AI_ENTITY_ID','Ai Entity Id')}}"  [width]="120">
+		 <ng-template kendoGridCellTemplate let-dataItem><span   >{{dataItem.AI_ENTITY_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_AI_ENTITY_ID()"    [formControl]="formGroup.get('AI_ENTITY_ID')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.AI_ENTITY_ID_Hint','Please enter Ai Entity Id')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="REQUESTED_ON"  [width]="100"	filter="date"	 editor="date"  title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.REQUESTED_ON','Requested On')}}" *ngIf=false    
+ [editable]=" !(disabledColumns.indexOf('REQUESTED_ON') > -1)  && !primarKeyReadOnlyArr.isREQUESTED_ONreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('REQUESTED_ON') > -1" 		[format]="paramConfig.DateFormat">
+		<ng-template kendoGridEditTemplate  let-dataItem let-formGroup="formGroup">
+		<kendo-datepicker format={{paramConfig.DateFormat}}  #REQUESTED_ON
+		[value]="dataItem.REQUESTED_ON" [formControl]="formGroup.get('REQUESTED_ON')" >
+		 (valueChange)="valueChangeREQUESTED_ON($event)" >
+		</kendo-datepicker>
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="AI_SEQ"
+ [editable]=" !(disabledColumns.indexOf('AI_SEQ') > -1)  && !primarKeyReadOnlyArr.isAI_SEQreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('AI_SEQ') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.AI_SEQ','Seq')}}"  [width]="30">
+		 <ng-template kendoGridCellTemplate let-dataItem><span  style="height:50px;" >{{dataItem.AI_SEQ}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_AI_SEQ()"    [formControl]="formGroup.get('AI_SEQ')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.AI_SEQ_Hint','Please enter Ai Seq')" />
+		</ng-template>
+		</kendo-grid-column>
+
+		<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STAGE"
+ [editable]=" !(disabledColumns.indexOf('STAGE') > -1)  && !primarKeyReadOnlyArr.isSTAGEreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('STAGE') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.STAGE','Stage')}}"  [width]="30">
+		 <ng-template kendoGridCellTemplate let-dataItem><span  style="height:50px;" >{{dataItem.STAGE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_STAGE()"    [formControl]="formGroup.get('STAGE')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.STAGE_Hint','Please enter Ai Seq')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="QUESTION" *ngIf = "false"
+ [editable]=" !(disabledColumns.indexOf('QUESTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('QUESTION') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.QUESTION','Question')}}"  [width]="150" [height]="10">
+		 <ng-template kendoGridCellTemplate let-dataItem><span   style="height:50px;">{{dataItem.QUESTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_QUESTION()"    [formControl]="formGroup.get('QUESTION')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.QUESTION_Hint','Please enter Question')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ANSWER"
+ [editable]=" !(disabledColumns.indexOf('ANSWER') > -1)  "
+*ngIf="false"
+ [hidden]="hiddenColumns.indexOf('ANSWER') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.ANSWER','Answer')}}"  [width]="150" [height]="10">
+		 <ng-template kendoGridCellTemplate let-dataItem><span  style="height:50px;" >{{dataItem.ANSWER}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_ANSWER()"    [formControl]="formGroup.get('ANSWER')"  />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DURATION"
+ [editable]=" !(disabledColumns.indexOf('DURATION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('DURATION') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.DURATION','Duration')}}"  [width]="30">
+		 <ng-template kendoGridCellTemplate let-dataItem><span   >{{dataItem.DURATION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_DURATION()"    [formControl]="formGroup.get('DURATION')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.DURATION_Hint','Please enter Duration')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="LOGNAME"
+ *ngIf=false  [editable]=" !(disabledColumns.indexOf('LOGNAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('LOGNAME') > -1" 		 title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.LOGNAME','Logname')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span   >{{dataItem.LOGNAME}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_LOGNAME()"    [formControl]="formGroup.get('LOGNAME')" [placeholder]="starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.LOGNAME_Hint','Please enter Logname')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="LOGDATE"  [width]="100"	filter="date"	 editor="date"  title="{{starServices.getNLS([],'ADM_ADM_AI_LOG_DETAIL_GRID.admaiLogDetailAdmAdmAiLogDetailGrid.LOGDATE','Logdate')}}" *ngIf=false    
+ [editable]=" !(disabledColumns.indexOf('LOGDATE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('LOGDATE') > -1" 		[format]="paramConfig.DateFormat">
+		<ng-template kendoGridEditTemplate  let-dataItem let-formGroup="formGroup">
+		<kendo-datepicker format={{paramConfig.DateFormat}}  #LOGDATE
+		[value]="dataItem.LOGDATE" [formControl]="formGroup.get('LOGDATE')" >
+		 (valueChange)="valueChangeLOGDATE($event)" >
+		</kendo-datepicker>
+		</ng-template>
+		</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+

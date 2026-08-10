@@ -1,0 +1,182 @@
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.component_title","Control List Timing") }}</legend>
+<div class="form-toolbar"> </div>
+
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+ 
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+ <div class="form-borders" > 
+    <form class="form-layout" [ngClass]="isPhonePortrait ? 'k-form k-form-horizontal-star' : 'k-form k-form-horizontal' "
+     [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled && !isSearch"-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCONTROL_LIST_TIMING_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCONTROL_LIST_TIMING_ID >
+		<kendo-label *ngIf="(!labelCONTROL_LIST_TIMING_IDTop && !isPhonePortrait) && labelCONTROL_LIST_TIMING_IDVisible" class="form-label" [for]="CONTROL_LIST_TIMING_ID" [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.CONTROL_LIST_TIMING_ID','Control List Timing Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelCONTROL_LIST_TIMING_IDTop || isPhonePortrait) && labelCONTROL_LIST_TIMING_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.CONTROL_LIST_TIMING_ID','Control List Timing Id') + ' *'}}</label>
+		<input   formControlName="CONTROL_LIST_TIMING_ID"
+ kendoTextBox #CONTROL_LIST_TIMING_ID 
+		[readonly]="primarKeyReadOnlyArr.isCONTROL_LIST_TIMING_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.CONTROL_LIST_TIMING_ID_Hint','Please enter Control List Timing Id.')"
+		(click)="ON_CLICK_CONTROL_LIST_TIMING_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CONTROL_LIST_TIMING_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
+		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.SHAPE_ID','Shape Id') + ' *'}}</label>
+		<kendo-combobox  #SHAPE_ID class="form-field-combobox"  [formControlName]="'SHAPE_ID'"
+		[data]="lkpArrSHAPE_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SHAPE_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelENTER_KEY_CONTROL_DELAYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleENTER_KEY_CONTROL_DELAY >
+		<kendo-label *ngIf="(!labelENTER_KEY_CONTROL_DELAYTop && !isPhonePortrait) && labelENTER_KEY_CONTROL_DELAYVisible" class="form-label" [for]="ENTER_KEY_CONTROL_DELAY" [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_CONTROL_DELAY','Enter Key Control Delay')"></kendo-label>
+		<label *ngIf="(labelENTER_KEY_CONTROL_DELAYTop || isPhonePortrait) && labelENTER_KEY_CONTROL_DELAYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_CONTROL_DELAY','Enter Key Control Delay')}}</label>
+		<kendo-combobox  #ENTER_KEY_CONTROL_DELAY class="form-field-combobox"  [formControlName]="'ENTER_KEY_CONTROL_DELAY'"
+		[data]="lkpArrENTER_KEY_CONTROL_DELAY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_CONTROL_DELAY_Hint','Please enter Enter Key Control Delay.')"		(click)="ON_CLICK_ENTER_KEY_CONTROL_DELAY($event)"
+ (valueChange)="onValueChange_ENTER_KEY_CONTROL_DELAY($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'ENTER_KEY_CONTROL_DELAY')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelENTER_KEY_HOLD_TIMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleENTER_KEY_HOLD_TIME >
+		<kendo-label *ngIf="(!labelENTER_KEY_HOLD_TIMETop && !isPhonePortrait) && labelENTER_KEY_HOLD_TIMEVisible" class="form-label" [for]="ENTER_KEY_HOLD_TIME" [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_HOLD_TIME','Enter Key Hold Time')"></kendo-label>
+		<label *ngIf="(labelENTER_KEY_HOLD_TIMETop || isPhonePortrait) && labelENTER_KEY_HOLD_TIMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_HOLD_TIME','Enter Key Hold Time')}}</label>
+		<kendo-combobox  #ENTER_KEY_HOLD_TIME class="form-field-combobox"  [formControlName]="'ENTER_KEY_HOLD_TIME'"
+		[data]="lkpArrENTER_KEY_HOLD_TIME" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_HOLD_TIME_Hint','Please enter Enter Key Hold Time.')"		(click)="ON_CLICK_ENTER_KEY_HOLD_TIME($event)"
+ (valueChange)="onValueChange_ENTER_KEY_HOLD_TIME($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'ENTER_KEY_HOLD_TIME')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelENTER_KEY_HANDSHAKE_TIMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleENTER_KEY_HANDSHAKE_TIME >
+		<kendo-label *ngIf="(!labelENTER_KEY_HANDSHAKE_TIMETop && !isPhonePortrait) && labelENTER_KEY_HANDSHAKE_TIMEVisible" class="form-label" [for]="ENTER_KEY_HANDSHAKE_TIME" [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_HANDSHAKE_TIME','Enter Key Handshake Time')"></kendo-label>
+		<label *ngIf="(labelENTER_KEY_HANDSHAKE_TIMETop || isPhonePortrait) && labelENTER_KEY_HANDSHAKE_TIMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_HANDSHAKE_TIME','Enter Key Handshake Time')}}</label>
+		<kendo-combobox  #ENTER_KEY_HANDSHAKE_TIME class="form-field-combobox"  [formControlName]="'ENTER_KEY_HANDSHAKE_TIME'"
+		[data]="lkpArrENTER_KEY_HANDSHAKE_TIME" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.ENTER_KEY_HANDSHAKE_TIME_Hint','Please enter Enter Key Handshake Time.')"		(click)="ON_CLICK_ENTER_KEY_HANDSHAKE_TIME($event)"
+ (valueChange)="onValueChange_ENTER_KEY_HANDSHAKE_TIME($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'ENTER_KEY_HANDSHAKE_TIME')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelHANDSHAKE_RESET_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleHANDSHAKE_RESET_TYPE >
+		<kendo-label *ngIf="(!labelHANDSHAKE_RESET_TYPETop && !isPhonePortrait) && labelHANDSHAKE_RESET_TYPEVisible" class="form-label" [for]="HANDSHAKE_RESET_TYPE" [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.HANDSHAKE_RESET_TYPE','Handshake Reset Type')"></kendo-label>
+		<label *ngIf="(labelHANDSHAKE_RESET_TYPETop || isPhonePortrait) && labelHANDSHAKE_RESET_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.HANDSHAKE_RESET_TYPE','Handshake Reset Type')}}</label>
+		<kendo-combobox  #HANDSHAKE_RESET_TYPE class="form-field-combobox"  [formControlName]="'HANDSHAKE_RESET_TYPE'"
+		[data]="lkpArrHANDSHAKE_RESET_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.HANDSHAKE_RESET_TYPE_Hint','Please enter Handshake Reset Type.')"		(click)="ON_CLICK_HANDSHAKE_RESET_TYPE($event)"
+ (valueChange)="onValueChange_HANDSHAKE_RESET_TYPE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'HANDSHAKE_RESET_TYPE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+</div>
+
+    </fieldset>
+    </form>
+    </div>
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+      <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+  
+
+
+
+

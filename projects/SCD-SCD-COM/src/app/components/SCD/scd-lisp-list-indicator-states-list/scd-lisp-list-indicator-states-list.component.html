@@ -1,0 +1,219 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+<legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.component_title","List Indicator States List") }}</legend>
+	
+    <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight ? componentConfig.gridHeight : gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="componentConfig.showToolBar">
+
+
+        
+        
+
+        
+            <button  [icon]="'sliders'"  [disabled]="isSearch" kendoButton  title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="Cancel" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
+            <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isSearch && (componentConfig.updateable || componentConfig.insertable) "></button >
+            <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable && !isSearch"></button >
+
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"   (click)="toggleColumnMenu()" *ngIf="!isSearch && !isPhonePortrait"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "    >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="LIST_INDICATOR_STATE_ID"
+ *ngIf=visibleLIST_INDICATOR_STATE_ID  [editable]=" !(disabledColumns.indexOf('LIST_INDICATOR_STATE_ID') > -1)  && !primarKeyReadOnlyArr.isLIST_INDICATOR_STATE_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('LIST_INDICATOR_STATE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.LIST_INDICATOR_STATE_ID','List Indicator State Id') + ' *'}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.LIST_INDICATOR_STATE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_LIST_INDICATOR_STATE_ID()"      [formControl]="formGroup.get('LIST_INDICATOR_STATE_ID')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.LIST_INDICATOR_STATE_ID_Hint','Please enter List Indicator State Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetSHAPE_ID(dataItem.SHAPE_ID)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrSHAPE_ID"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeSHAPE_ID($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('SHAPE_ID')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STATE_ID"
+ *ngIf=visibleSTATE_ID  [editable]=" !(disabledColumns.indexOf('STATE_ID') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('STATE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.STATE_ID','State Id')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.STATE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_STATE_ID()"      [formControl]="formGroup.get('STATE_ID')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.STATE_ID_Hint','Please enter State Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STATE_NAME"
+ *ngIf=visibleSTATE_NAME  [editable]=" !(disabledColumns.indexOf('STATE_NAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('STATE_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.STATE_NAME','State Name')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.STATE_NAME}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_STATE_NAME()"      [formControl]="formGroup.get('STATE_NAME')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.STATE_NAME_Hint','Please enter State Name.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="VALUE"
+ *ngIf=visibleVALUE  [editable]=" !(disabledColumns.indexOf('VALUE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('VALUE') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.VALUE','Value')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.VALUE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_VALUE()"      [formControl]="formGroup.get('VALUE')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.VALUE_Hint','Please enter Value.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION"
+ *ngIf=visibleCAPTION  [editable]=" !(disabledColumns.indexOf('CAPTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION','Caption')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION()"      [formControl]="formGroup.get('CAPTION')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_Hint','Please enter Caption.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION_COLOR"
+ *ngIf=visibleCAPTION_COLOR  [editable]=" !(disabledColumns.indexOf('CAPTION_COLOR') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION_COLOR') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_COLOR','Caption Color')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION_COLOR}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION_COLOR()"      [formControl]="formGroup.get('CAPTION_COLOR')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_COLOR_Hint','Please enter Caption Color.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION_BACK_STYLE"
+ *ngIf=visibleCAPTION_BACK_STYLE  [editable]=" !(disabledColumns.indexOf('CAPTION_BACK_STYLE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION_BACK_STYLE') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_BACK_STYLE','Caption Back Style')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION_BACK_STYLE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION_BACK_STYLE()"      [formControl]="formGroup.get('CAPTION_BACK_STYLE')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_BACK_STYLE_Hint','Please enter Caption Back Style.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION_BACK_COLOR"
+ *ngIf=visibleCAPTION_BACK_COLOR  [editable]=" !(disabledColumns.indexOf('CAPTION_BACK_COLOR') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION_BACK_COLOR') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_BACK_COLOR','Caption Back Color')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION_BACK_COLOR}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION_BACK_COLOR()"      [formControl]="formGroup.get('CAPTION_BACK_COLOR')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_BACK_COLOR_Hint','Please enter Caption Back Color.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION_BLINK"
+ *ngIf=visibleCAPTION_BLINK  [editable]=" !(disabledColumns.indexOf('CAPTION_BLINK') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION_BLINK') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_BLINK','Caption Blink')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION_BLINK}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION_BLINK()"      [formControl]="formGroup.get('CAPTION_BLINK')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_BLINK_Hint','Please enter Caption Blink.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="INSERT_VARIABLE" title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.INSERT_VARIABLE','Insert variable')}}" [width]="50"   *ngIf=visibleINSERT_VARIABLE  [editable]=" !(disabledColumns.indexOf('INSERT_VARIABLE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('INSERT_VARIABLE') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetINSERT_VARIABLE(dataItem.INSERT_VARIABLE)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrINSERT_VARIABLE"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeINSERT_VARIABLE($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('INSERT_VARIABLE')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION_ALIGNMENT"
+ *ngIf=visibleCAPTION_ALIGNMENT  [editable]=" !(disabledColumns.indexOf('CAPTION_ALIGNMENT') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION_ALIGNMENT') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_ALIGNMENT','Caption Alignment')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION_ALIGNMENT}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION_ALIGNMENT()"      [formControl]="formGroup.get('CAPTION_ALIGNMENT')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.CAPTION_ALIGNMENT_Hint','Please enter Caption Alignment.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+

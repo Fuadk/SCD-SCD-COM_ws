@@ -1,0 +1,48 @@
+<div>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" >
+    <fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled">
+
+
+    </fieldset>
+    </form>
+	
+	<div *ngIf="uploadimage">
+		<kendo-dialog (close)="uploadimage = false" resizable="true" 
+		  title="webcam">
+		<div style="text-align:center">
+					<div>
+						<webcam [height]="isPhonePortrait ? 200 : 350 "  [trigger]="triggerObservable" 
+							(imageCapture)="handleImage($event)" *ngIf="showWebcam"
+							[allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+							[videoOptions]="videoOptions" (cameraSwitched)="cameraWasSwitched($event)"
+							(initError)="handleInitError($event)"></webcam>
+					
+							<div><kendo-avatar *ngIf="!showWebcam" shape="rounded" [imageSrc]="camImage" width="{{screenWidth}}" height="330px"></kendo-avatar></div>
+						
+						<div *ngIf="showWebcam"  class="actionBtn" (click)="triggerSnapshot();" title="Take Picture">📸</div>
+						<div *ngIf="!showWebcam" class="actionBtn" (click)="resetPic();" title="Reset Picture">🔄</div>
+						<!-- <div>
+							<h4>Click camera icon to capture</h4>
+						</div> -->
+						
+						<!-- <div class="actionBtn" (click)="showNextWebcam(true);" title="Switch Camera">🔁</div> -->
+					</div>
+				</div>
+				<h4 *ngIf="errors.length > 0">Messages:</h4>
+				<ul *ngFor="let error of errors">
+					<li>{{error | json}}</li>
+				</ul>
+		  <kendo-dialog-actions>
+			<button kendoButton (click)="cancelImage()">Cancel</button>
+			<button kendoButton (click)="InsertImage(imageID)" [primary]="true" *ngIf="!hideOthers">Accept</button>
+		  </kendo-dialog-actions>
+		  
+		</kendo-dialog>
+	  </div>
+
+
+</kendo-pdf-export>
+</div>
+

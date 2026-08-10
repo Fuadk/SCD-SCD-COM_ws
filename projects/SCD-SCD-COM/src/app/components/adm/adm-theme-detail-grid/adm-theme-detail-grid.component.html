@@ -1,0 +1,160 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+  <kendo-grid [rowClass]="ROW_CLASS"
+
+  id="grid" [sortable]="true" [height]="componentConfig.gridHeight"
+  [resizable] ="true"
+  (cellClick)="cellClickHandler($event)"
+  (add)="addHandler()"
+  (remove)="removeHandler($event)"
+  [filter]="state.filter"
+  [filterable]= "isFilterable"
+  [columnMenu]="isColumnMenu"
+  (dataStateChange)="dataStateChange($event)"
+  [resizable]="true"
+  [sortable]="true">
+
+
+
+      <ng-template kendoGridToolbarTemplate *ngIf="showToolBar">
+      <legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{ this.starServices.getNLS([],"MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.component_title","Theme Detail") }}</legend>
+
+
+      <kendo-toolbar *ngIf="showToolBar" kendoGridToolbarTemplate>
+      <kendo-toolbar-button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isChild && componentConfig.updateable"></kendo-toolbar-button >
+          <kendo-toolbar-button  kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}" (click)="printScreen()" *ngIf="componentConfig.toolsShow"></kendo-toolbar-button >
+
+
+          <kendo-toolbar-button [disabled]="isSearch"  text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+          <kendo-toolbar-button  [fillMode]="isSearch ? 'outline' : 'solid' "  [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+          <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></kendo-toolbar-button >
+
+
+<div *ngIf="componentConfig.toolsShow">
+    <kendo-toolbar-button  [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></kendo-toolbar-button >
+          <kendo-toolbar-button  [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"  (click)="toggleColumnMenu()" ></kendo-toolbar-button >
+          <kendo-toolbar-button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></kendo-toolbar-button >
+          <kendo-toolbar-button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></kendo-toolbar-button >
+
+</div>
+          <kendo-toolbar-button  [disabled]="isSearch" [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable"></kendo-toolbar-button >
+
+
+          <kendo-toolbar-button  [disabled]="isSearch" [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoGridRemoveCommand *ngIf="componentConfig.removeable">Remove</kendo-toolbar-button >
+
+
+  </kendo-toolbar>
+  </ng-template>
+
+
+<kendo-grid-column  *ngIf="false" [editable]=" !(disabledColumns.indexOf('THEME_NAME') > -1)  && !primarKeyReadOnlyArr.isTHEME_NAMEreadOnly  "
+
+[hidden]="hiddenColumns.indexOf('THEME_NAME') > -1" 		 title="{{starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_NAME','Theme Name')}}"  [width]="10">
+   <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.THEME_NAME}}</ng-template>
+  <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+  <input  (blur)="onBlur_THEME_NAME()"    [formControl]="formGroup.get('THEME_NAME')" [placeholder]="starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_NAME_Hint','Please enter Theme Name')" />
+  </ng-template>
+  </kendo-grid-column>
+
+  <!-- <kendo-grid-column  [editable]=" !(disabledColumns.indexOf('THEME_VARIABLE') > -1)  " -->
+    
+    <!-- <kendo-grid-column  
+[hidden]="hiddenColumns.indexOf('THEME_VARIABLE') > -1" 		 title="{{starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_VARIABLE','Theme Variable')}}"  [width]="10">
+   <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.THEME_VARIABLE}}</ng-template>
+  <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+  <input  (blur)="onBlur_THEME_VARIABLE()"    [formControl]="formGroup.get('THEME_VARIABLE')" [placeholder]="starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_VARIABLE_Hint','Please enter Theme Variable')" />
+  </ng-template>
+  </kendo-grid-column> -->
+
+  <kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="THEME_VARIABLE" title="{{starServices.getNLS([],'tickets_theme_detail_GRID.themedetailTicketsThemeDetailGrid.THEME_VARIABLE','Theme Variable')}}" 
+  [width]="50"     [editable]=" false &&  !(disabledColumns.indexOf('THEME_VARIABLE') > -1)  && !primarKeyReadOnlyArr.isTHEME_VARIABLEreadOnly  "
+
+    [hidden]="hiddenColumns.indexOf('THEME_VARIABLE') > -1" >
+       <ng-template kendoGridCellTemplate let-dataItem> {{lkpArrGetTHEME_VARIABLE(dataItem.THEME_VARIABLE)?.CODETEXT_LANG}} </ng-template>
+       <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+       <kendo-dropdownlist  [data]="lkpArrTHEME_VARIABLE"  textField="CODETEXT_LANG" valueField="CODE"
+        (valueChange)="valueChangeTHEME_VARIABLE($event)" 
+       [valuePrimitive]="true" [formControl]="formGroup.get('THEME_VARIABLE')">
+       </kendo-dropdownlist>
+       </ng-template>
+     </kendo-grid-column>
+
+<!-- <kendo-grid-column field="THEME_VARIABLE_VALUE"  [width]="10"	filter="date"	 editor="date"  title="{{starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_VARIABLE_VALUE','Theme Variable Value')}}"
+ [editable]=" !(disabledColumns.indexOf('THEME_VARIABLE_VALUE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('THEME_VARIABLE_VALUE') > -1" 		[format]="paramConfig.DateFormat">
+    <ng-template KendoGridEditTemplate  let-dataItem>
+    <kendo-datepicker [format]="this.paramConfig.DateFormat" ngDefaultControl	 #datepicker>
+     (valueChange)="valueChangeTHEME_VARIABLE_VALUE($event)"   		</kendo-datepicker>
+    </ng-template>
+    </kendo-grid-column> -->
+
+
+  <kendo-grid-column [editable]=" !(disabledColumns.indexOf('THEME_VARIABLE_VALUE') > -1)  "
+    [hidden]="hiddenColumns.indexOf('THEME_VARIABLE_VALUE') > -1"
+    title="{{starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_VARIABLE_VALUE','Theme Variable Value')}}"
+    [width]="30">
+    <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.THEME_VARIABLE_VALUE}}</ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+      <input (blur)="onBlur_THEME_VARIABLE_VALUE()" [formControl]="formGroup.get('THEME_VARIABLE_VALUE')"
+        [placeholder]="starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_VARIABLE_VALUE_Hint','Please enter Theme Variable Value')" />
+
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [editable]=" !(disabledColumns.indexOf('THEME_VARIABLE_VALUE') > -1)  " field="THEME_VARIABLE_VALUE"
+    [hidden]="hiddenColumns.indexOf('THEME_VARIABLE_VALUE') > -1"
+    title="{{starServices.getNLS([],'MySecondApp_THEME_DETAIL_GRID.themedetailMysecondappThemeDetailGrid.THEME_VARIABLE_VALUE','Theme Variable Value')}}"
+    [width]="30">
+    <!-- <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.THEME_VARIABLE_VALUE}}</ng-template> -->
+    <ng-template kendoGridCellTemplate let-dataItem let-formGroup="formGroup">
+      
+      <span class="whole-cell" [style.backgroundColor]="dataItem.THEME_VARIABLE_VALUE">
+        {{dataItem.THEME_VARIABLE_VALUE}}
+      </span>
+     
+    </ng-template>
+
+    
+    <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+      <kendo-colorpicker format="hex" [formControl]="formGroup.get('THEME_VARIABLE_VALUE')" required>
+      </kendo-colorpicker>
+    </ng-template>
+  </kendo-grid-column>
+
+                     <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                      <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                      <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                       <div class="page-template">
+                          <div class="header">
+                            <div style="float: center">{{ title }}</div>
+                          </div>
+                          <div class="footer">
+                            Page {{ pageNum }} of {{ totalPages }}
+                          </div>
+                        </div>
+                      </ng-template>
+                  </kendo-grid-pdf>
+                  <kendo-grid-excel [fileName]="ExcelfileName" ></kendo-grid-excel>
+
+  </kendo-grid>
+
+<!-- <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+    [setComponentConfig_Input]="DSP_UPLOADConfig">
+  </app-dsp-upload> -->
+
+  </kendo-pdf-export>
+<!--
+<div [hidden]="!showCodeDetails">
+<kendo-dialog
+(close)="showCodeDetails=false;setlookupArrDef();" resizable="true"  minWidth="800" width="700" height="500"
+  title="Add Code">
+  <app-som-tabs-codes-grid
+  [detail_Input]="grid_som_tabs_codes"
+  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+</app-som-tabs-codes-grid>
+
+</kendo-dialog>
+</div> -->
+
+

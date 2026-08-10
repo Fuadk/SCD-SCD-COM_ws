@@ -1,0 +1,42 @@
+
+<div class="wrapper fadeInDown">
+    <div class="bg-img" >
+    
+    </div>
+<div class="center">
+    <h2>Login</h2>
+ </div>
+   
+<form  [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="width:200px;">
+	<kendo-formfield class="fadeIn second" [orientation]="'horizontal'">
+        <kendo-label  [for]="username" text="User Name"></kendo-label>
+        <input  formControlName="username" kendoTextBox #username [ngClass]="{ 'is-invalid': submitted && f.username.errors }" 
+        style="text-align: left;" />
+                <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                    <div *ngIf="f.username.errors.required">Username is required</div>
+                </div>
+        </kendo-formfield>
+        
+        
+        <kendo-formfield class="fadeIn third" [orientation]="'horizontal'">
+            <kendo-label [for]="password" text="Password"></kendo-label>
+            <input  type="password" formControlName="password" kendoTextBox #password [ngClass]="{ 'is-invalid': submitted && f.password.errors }" 
+            style="text-align: left;"/>
+            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                <div *ngIf="f.password.errors.required">password is required</div>
+            </div>
+    </kendo-formfield>
+
+    
+    <div class="form-group">
+        <button [disabled]="loading" kendoButton  class="fadeIn fourth">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Login
+        </button>
+      <!-- <a routerLink="/register" class="btn btn-link">Register</a> -->
+    </div>
+
+
+
+</form>
+</div>

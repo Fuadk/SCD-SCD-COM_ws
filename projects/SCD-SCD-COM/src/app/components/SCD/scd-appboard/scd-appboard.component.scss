@@ -1,0 +1,268 @@
+// scd-appboard.component.scss
+.appboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-bar {
+  padding: 10px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  button {
+    margin-right: 4px;
+  }
+  
+  .window-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+.tab-host {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f0f2f5;
+  min-height: 0;
+
+  &.tab-host-dark {
+    background: #1a1a1a;
+  }
+}
+
+// ===== GROUP TABS =====
+.group-tabs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+ // height: 100%; // ← Add this
+}
+
+.group-tabstrip {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+//  height: 100%; // ← Add this
+
+  ::ng-deep {
+    .k-tabstrip {
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .k-tabstrip-items {
+      flex-shrink: 0 !important;
+      background: #f8f9fa !important;
+      border-bottom: 1px solid #ddd !important;
+      
+      .k-tabstrip-item {
+        padding: 4px 12px !important;
+        
+        &.k-active {
+          background: white !important;
+          border-bottom: 2px solid #ff6358 !important;
+        }
+      }
+    }
+    
+    .k-tabstrip-content {
+      flex: 1 !important;
+      overflow: hidden !important;
+      padding: 0 !important;
+      height: auto !important;
+      //min-height: 0 !important; // ← Add this
+    }
+    
+    .k-tabstrip-content-wrapper {
+      flex: 1 !important;
+      overflow: hidden !important;
+      min-height: 0 !important;
+     // height: 100% !important; // ← Add this
+    }
+  }
+}
+.group-tab-title {
+  font-weight: 500;
+}
+
+.close-group-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 4px;
+  margin-left: 4px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+  }
+}
+
+.group-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: #f5f5f5;
+  min-height: 0; // ← Change from 300px to 0
+  //height: 100%; // ← Add this
+}
+
+// ===== FLOATING WINDOWS =====
+.floating-windows-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 0; // ← Change from 250px to 0
+  height: 100%; // ← Add this
+  width: 100%; // ← Add this
+  background: #fafafa;
+
+  app-mdi-window {
+    position: absolute;
+    pointer-events: all;
+  }
+
+  &.full-height {
+    height: 100%;
+  }
+}
+
+// ===== EMPTY STATES =====
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  
+  .empty-state-content {
+    text-align: center;
+    
+    .empty-icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 16px;
+    }
+    
+    h3 {
+      margin: 0 0 8px 0;
+      color: #666;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+.empty-group-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  gap: 12px;
+  min-height: 200px;
+  background: #f5f5f5;
+
+  .empty-icon-small {
+    font-size: 32px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+// ===== CONTEXT MENU =====
+.mdi-context-menu {
+  position: fixed;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 9999;
+  min-width: 160px;
+  padding: 4px 0;
+
+  .menu-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+}
+
+// ===== DARK THEME =====
+.tab-host-dark {
+  .group-tabstrip ::ng-deep {
+    .k-tabstrip-items {
+      background: #2d2d2d !important;
+      border-bottom-color: #444 !important;
+      
+      .k-tabstrip-item {
+        color: #aaa !important;
+        
+        &.k-active {
+          background: #1e1e1e !important;
+          color: #fff !important;
+          border-bottom-color: #ff6358 !important;
+        }
+      }
+    }
+  }
+  
+  .group-content-area {
+    background: #1e1e1e;
+  }
+  
+  .close-group-btn {
+    color: #666;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+  }
+  
+  .empty-state {
+    color: #666;
+    
+    h3 {
+      color: #888;
+    }
+  }
+  
+  .empty-group-content {
+    color: #666;
+  }
+}

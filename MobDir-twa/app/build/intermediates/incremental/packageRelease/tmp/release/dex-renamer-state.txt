@@ -1,0 +1,4 @@
+#Sun Jan 04 05:16:41 CET 2026
+base.0=/home/star/dev/users/PALM-PALM-COM_ws/palm-twa/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

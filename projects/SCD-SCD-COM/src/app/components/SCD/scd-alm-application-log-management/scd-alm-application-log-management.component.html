@@ -1,0 +1,220 @@
+
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{ this.starServices.getNLS([],"SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.component_title","Application Log Management") }}</legend>
+<div class="form-toolbar"> </div>
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+
+
+  
+
+
+
+
+
+
+    
+
+           <div class="form-borders" > 
+    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+    <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
+      <kendo-tabstrip-tab  [selected]="true" >
+        <ng-template   kendoTabTitle>
+         <legend>{{FormStepsArr.length > 0   ? FormStepsArr[1].CODETEXT_LANG 
+			:  this.starServices.getNLS([],"SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.component_title","Application Log Management") }}
+			 </legend>
+
+        </ng-template>
+        <ng-template kendoTabContent>
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLOG_MANAGEMENT_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLOG_MANAGEMENT_ID >
+		<kendo-label *ngIf="(!labelLOG_MANAGEMENT_IDTop && !isPhonePortrait) && labelLOG_MANAGEMENT_IDVisible" class="form-label" [for]="LOG_MANAGEMENT_ID" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.LOG_MANAGEMENT_ID','Log Management Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelLOG_MANAGEMENT_IDTop || isPhonePortrait) && labelLOG_MANAGEMENT_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.LOG_MANAGEMENT_ID','Log Management Id') + ' *'}}</label>
+		<input   formControlName="LOG_MANAGEMENT_ID"
+ kendoTextBox #LOG_MANAGEMENT_ID 
+		[readonly]="primarKeyReadOnlyArr.isLOG_MANAGEMENT_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.LOG_MANAGEMENT_ID_Hint','Please enter Log Management Id.')"
+		(click)="ON_CLICK_LOG_MANAGEMENT_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LOG_MANAGEMENT_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_ID >
+		<kendo-label *ngIf="(!labelAPPLICATION_IDTop && !isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label" [for]="APPLICATION_ID" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.APPLICATION_ID','Application Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelAPPLICATION_IDTop || isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.APPLICATION_ID','Application Id') + ' *'}}</label>
+		<kendo-combobox  #APPLICATION_ID class="form-field-combobox"  [formControlName]="'APPLICATION_ID'"
+		[data]="lkpArrAPPLICATION_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.APPLICATION_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAPPLICATION_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.APPLICATION_ID_Hint','Please enter Application Id.')"		(click)="ON_CLICK_APPLICATION_ID($event)"
+ (valueChange)="onValueChange_APPLICATION_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APPLICATION_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTART_NEWTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTART_NEW >
+		<kendo-label *ngIf="(!labelSTART_NEWTop && !isPhonePortrait) && labelSTART_NEWVisible" class="form-label" [for]="START_NEW" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.START_NEW','Start New')"></kendo-label>
+		<label *ngIf="(labelSTART_NEWTop || isPhonePortrait) && labelSTART_NEWVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.START_NEW','Start New')}}</label>
+		<input   formControlName="START_NEW"
+ kendoTextBox #START_NEW  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.START_NEW_Hint','Please enter Start New.')"
+		(click)="ON_CLICK_START_NEW($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_START_NEW($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPERIODIC_OPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePERIODIC_OPTION >
+		<kendo-label *ngIf="(!labelPERIODIC_OPTIONTop && !isPhonePortrait) && labelPERIODIC_OPTIONVisible" class="form-label" [for]="PERIODIC_OPTION" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.PERIODIC_OPTION','Periodic Option')"></kendo-label>
+		<label *ngIf="(labelPERIODIC_OPTIONTop || isPhonePortrait) && labelPERIODIC_OPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.PERIODIC_OPTION','Periodic Option')}}</label>
+		<input   formControlName="PERIODIC_OPTION"
+ kendoTextBox #PERIODIC_OPTION  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.PERIODIC_OPTION_Hint','Please enter Periodic Option.')"
+		(click)="ON_CLICK_PERIODIC_OPTION($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PERIODIC_OPTION($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTART_TIMESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTART_TIMES >
+		<kendo-label *ngIf="(!labelSTART_TIMESTop && !isPhonePortrait) && labelSTART_TIMESVisible" class="form-label" [for]="START_TIMES" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.START_TIMES','Start Times')"></kendo-label>
+		<label *ngIf="(labelSTART_TIMESTop || isPhonePortrait) && labelSTART_TIMESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.START_TIMES','Start Times')}}</label>
+		<input   formControlName="START_TIMES"
+ kendoTextBox #START_TIMES  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.START_TIMES_Hint','Please enter Start Times.')"
+		(click)="ON_CLICK_START_TIMES($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_START_TIMES($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSIONSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSIONS >
+		<kendo-label *ngIf="(!labelEXPRESSIONSTop && !isPhonePortrait) && labelEXPRESSIONSVisible" class="form-label" [for]="EXPRESSIONS" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.EXPRESSIONS','Expressions')"></kendo-label>
+		<label *ngIf="(labelEXPRESSIONSTop || isPhonePortrait) && labelEXPRESSIONSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.EXPRESSIONS','Expressions')}}</label>
+		<input   formControlName="EXPRESSIONS"
+ kendoTextBox #EXPRESSIONS  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.EXPRESSIONS_Hint','Please enter Expressions.')"
+		(click)="ON_CLICK_EXPRESSIONS($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_EXPRESSIONS($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDELETE_OLDEST_AFTER_MAX_TIMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDELETE_OLDEST_AFTER_MAX_TIME >
+		<kendo-label *ngIf="(!labelDELETE_OLDEST_AFTER_MAX_TIMETop && !isPhonePortrait) && labelDELETE_OLDEST_AFTER_MAX_TIMEVisible" class="form-label" [for]="DELETE_OLDEST_AFTER_MAX_TIME" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.DELETE_OLDEST_AFTER_MAX_TIME','Delete Oldest After Max Time')"></kendo-label>
+		<label *ngIf="(labelDELETE_OLDEST_AFTER_MAX_TIMETop || isPhonePortrait) && labelDELETE_OLDEST_AFTER_MAX_TIMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.DELETE_OLDEST_AFTER_MAX_TIME','Delete Oldest After Max Time')}}</label>
+		<input   formControlName="DELETE_OLDEST_AFTER_MAX_TIME"
+ kendoTextBox #DELETE_OLDEST_AFTER_MAX_TIME  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.DELETE_OLDEST_AFTER_MAX_TIME_Hint','Please enter Delete Oldest After Max Time.')"
+		(click)="ON_CLICK_DELETE_OLDEST_AFTER_MAX_TIME($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DELETE_OLDEST_AFTER_MAX_TIME($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAX_TIMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAX_TIME >
+		<kendo-label *ngIf="(!labelMAX_TIMETop && !isPhonePortrait) && labelMAX_TIMEVisible" class="form-label" [for]="MAX_TIME" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_TIME','Max Time')"></kendo-label>
+		<label *ngIf="(labelMAX_TIMETop || isPhonePortrait) && labelMAX_TIMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_TIME','Max Time')}}</label>
+		<input   formControlName="MAX_TIME"
+ kendoTextBox #MAX_TIME  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_TIME_Hint','Please enter Max Time.')"
+		(click)="ON_CLICK_MAX_TIME($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAX_TIME($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAX_TIME_OPTIONSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAX_TIME_OPTIONS >
+		<kendo-label *ngIf="(!labelMAX_TIME_OPTIONSTop && !isPhonePortrait) && labelMAX_TIME_OPTIONSVisible" class="form-label" [for]="MAX_TIME_OPTIONS" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_TIME_OPTIONS','Max Time Options')"></kendo-label>
+		<label *ngIf="(labelMAX_TIME_OPTIONSTop || isPhonePortrait) && labelMAX_TIME_OPTIONSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_TIME_OPTIONS','Max Time Options')}}</label>
+		<input   formControlName="MAX_TIME_OPTIONS"
+ kendoTextBox #MAX_TIME_OPTIONS  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_TIME_OPTIONS_Hint','Please enter Max Time Options.')"
+		(click)="ON_CLICK_MAX_TIME_OPTIONS($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAX_TIME_OPTIONS($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDELETE_OLDEST_AFTER_MAX_FILESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDELETE_OLDEST_AFTER_MAX_FILES >
+		<kendo-label *ngIf="(!labelDELETE_OLDEST_AFTER_MAX_FILESTop && !isPhonePortrait) && labelDELETE_OLDEST_AFTER_MAX_FILESVisible" class="form-label" [for]="DELETE_OLDEST_AFTER_MAX_FILES" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.DELETE_OLDEST_AFTER_MAX_FILES','Delete Oldest After Max Files')"></kendo-label>
+		<label *ngIf="(labelDELETE_OLDEST_AFTER_MAX_FILESTop || isPhonePortrait) && labelDELETE_OLDEST_AFTER_MAX_FILESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.DELETE_OLDEST_AFTER_MAX_FILES','Delete Oldest After Max Files')}}</label>
+		<input   formControlName="DELETE_OLDEST_AFTER_MAX_FILES"
+ kendoTextBox #DELETE_OLDEST_AFTER_MAX_FILES  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.DELETE_OLDEST_AFTER_MAX_FILES_Hint','Please enter Delete Oldest After Max Files.')"
+		(click)="ON_CLICK_DELETE_OLDEST_AFTER_MAX_FILES($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DELETE_OLDEST_AFTER_MAX_FILES($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAX_FILESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAX_FILES >
+		<kendo-label *ngIf="(!labelMAX_FILESTop && !isPhonePortrait) && labelMAX_FILESVisible" class="form-label" [for]="MAX_FILES" [text]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_FILES','Max Files')"></kendo-label>
+		<label *ngIf="(labelMAX_FILESTop || isPhonePortrait) && labelMAX_FILESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_FILES','Max Files')}}</label>
+		<input   formControlName="MAX_FILES"
+ kendoTextBox #MAX_FILES  [placeholder]="starServices.getNLS([],'SCD_ALM_APPLICATION_LOG_MANAGEMENT.scdlogManagementScdAlmApplicationLogManagement.MAX_FILES_Hint','Please enter Max Files.')"
+		(click)="ON_CLICK_MAX_FILES($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAX_FILES($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+</div>
+
+
+        </ng-template>
+      </kendo-tabstrip-tab>
+      </kendo-tabstrip>
+      
+    </fieldset>
+    </form>
+    </div>
+ 
+
+
+
+
+
+
+
+
+</kendo-pdf-export>
+</div>
+
+   <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>

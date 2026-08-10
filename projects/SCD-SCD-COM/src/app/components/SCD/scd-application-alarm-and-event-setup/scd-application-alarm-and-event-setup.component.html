@@ -1,0 +1,59 @@
+<div style="height: calc(100vh - 200px); display: flex; flex-direction: column;">
+  <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_application_alarm_and_event_setup.SCD_application_alarm_and_event_setup.component_title","Application Alarm and Event Setup under AE Server") }}</legend>
+<kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment" style="flex: 1; min-height: 0;">
+<kendo-tabstrip-tab [selected]="true">
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"SCD_application_alarm_and_event_setup.SCD_application_alarm_and_event_setup.compsTitleID1","All Alarms") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+          <app-scd-all-alarms
+			[setComponentConfig_Input]="scd_all_alarms0_0Config">
+	 </app-scd-all-alarms >
+    </ng-template>
+  </kendo-tabstrip-tab>
+<kendo-tabstrip-tab>
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"SCD_application_alarm_and_event_setup.SCD_application_alarm_and_event_setup.compsTitleID2","Messages") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+          <app-scd-alm-local-messages 
+				[setComponentConfig_Input]="scd_alm_local_messages1_1Config">
+    </app-scd-alm-local-messages >
+    </ng-template>
+  </kendo-tabstrip-tab>
+<kendo-tabstrip-tab>
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"SCD_application_alarm_and_event_setup.SCD_application_alarm_and_event_setup.compsTitleID3","Tag Update Rates") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+          <app-scd-tur-tag-update-rates 
+				[setComponentConfig_Input]="scd_tur_tag_update_rates2_2Config">
+    </app-scd-tur-tag-update-rates >
+    </ng-template>
+  </kendo-tabstrip-tab>
+</kendo-tabstrip>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
+			iconClass="fas fa-save" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_OK($event)">{{starServices.getNLS([],'OK','Ok')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'CANCEL','Cancel')"
+			iconClass="fas fa-ban" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_CANCEL($event)">{{starServices.getNLS([],'CANCEL','Cancel')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'HELP','Help')"
+			iconClass="fas fa-question" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_HELP($event)">{{starServices.getNLS([],'HELP','Help')}}</button>
+	</div>
+	
+	<kendo-window [hidden]="!helpOpened" class="form-borders" [themeColor]="'primary'" [top]="0" [left]="0" title=""
+		state="maximized" (close)="helpOpened=false">
+		<app-dsp-upload [setComponentConfig_Input]="help_1Config">
+		</app-dsp-upload>
+		<button kendoButton [icon]="'close'" (click)="helpOpened=!helpOpened">
+			{{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+	</kendo-window>
+
+	
+	

@@ -1,0 +1,6 @@
+/* Removes internal max-height constraints so the tree wrapper expands seamlessly */
+.expandable-tree-popup .k-treeview,
+.expandable-tree-popup .k-list-scroller {
+  max-height: none !important;
+  overflow-y: visible !important;
+}

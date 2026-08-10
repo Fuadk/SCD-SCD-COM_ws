@@ -1,0 +1,14 @@
+    <div>   
+        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_application_tree.scd_application_tree.component_title","_del_Application Tree") }}</legend> 
+    <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">   
+    </div>   
+
+        <app-scd-ap-arrow-general style="border :  #d62424 6px ;width : 258px ;" 
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      [setComponentConfig_Input]="SCD_ARROW_GENERALForm_0Config">
+        </app-scd-ap-arrow-general >
+
+    </div>   

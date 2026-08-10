@@ -1,0 +1,211 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+<legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.component_title","Tags Grid") }}</legend>
+	
+    <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight ? componentConfig.gridHeight : gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="componentConfig.showToolBar">
+
+
+        
+        
+
+        
+            <button  [icon]="'sliders'"  [disabled]="isSearch" kendoButton  title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="Cancel" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
+            <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isSearch && (componentConfig.updateable || componentConfig.insertable) "></button >
+            <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable && !isSearch"></button >
+
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"   (click)="toggleColumnMenu()" *ngIf="!isSearch && !isPhonePortrait"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "    >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TAG_ID"
+ *ngIf=visibleTAG_ID  [editable]=" !(disabledColumns.indexOf('TAG_ID') > -1)  && !primarKeyReadOnlyArr.isTAG_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('TAG_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_ID','Tag Id') + ' *'}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.TAG_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_TAG_ID()"      [formControl]="formGroup.get('TAG_ID')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_ID_Hint','Please enter Tag Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="APPLICATION_ID" title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.APPLICATION_ID','Application Id') + ' *'}}" [width]="100"   *ngIf=visibleAPPLICATION_ID  [editable]=" !(disabledColumns.indexOf('APPLICATION_ID') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('APPLICATION_ID') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetAPPLICATION_ID(dataItem.APPLICATION_ID)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrAPPLICATION_ID"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeAPPLICATION_ID($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('APPLICATION_ID')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TAG_SOURCE" title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_SOURCE','Tag Source')}}" [width]="100"   *ngIf=visibleTAG_SOURCE  [editable]=" !(disabledColumns.indexOf('TAG_SOURCE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('TAG_SOURCE') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetTAG_SOURCE(dataItem.TAG_SOURCE)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrTAG_SOURCE"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeTAG_SOURCE($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('TAG_SOURCE')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TAG_NAME"
+ *ngIf=visibleTAG_NAME  [editable]=" !(disabledColumns.indexOf('TAG_NAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('TAG_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_NAME','Tag Name')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.TAG_NAME}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_TAG_NAME()"      [formControl]="formGroup.get('TAG_NAME')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_NAME_Hint','Please enter Tag Name.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TAG_TYPE" title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_TYPE','Tag Type')}}" [width]="100"   *ngIf=visibleTAG_TYPE  [editable]=" !(disabledColumns.indexOf('TAG_TYPE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('TAG_TYPE') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetTAG_TYPE(dataItem.TAG_TYPE)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrTAG_TYPE"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeTAG_TYPE($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('TAG_TYPE')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SECURITY"
+ *ngIf=visibleSECURITY  [editable]=" !(disabledColumns.indexOf('SECURITY') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SECURITY') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.SECURITY','Security')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SECURITY}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SECURITY()"      [formControl]="formGroup.get('SECURITY')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.SECURITY_Hint','Please enter Security.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DESCRIPTION"
+ *ngIf=visibleDESCRIPTION  [editable]=" !(disabledColumns.indexOf('DESCRIPTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('DESCRIPTION') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.DESCRIPTION','Description')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.DESCRIPTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_DESCRIPTION()"      [formControl]="formGroup.get('DESCRIPTION')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.DESCRIPTION_Hint','Please enter Description.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TAG_LENGTH"
+ *ngIf=visibleTAG_LENGTH  [editable]=" !(disabledColumns.indexOf('TAG_LENGTH') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('TAG_LENGTH') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_LENGTH','Tag Length')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.TAG_LENGTH}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_TAG_LENGTH()"      [formControl]="formGroup.get('TAG_LENGTH')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.TAG_LENGTH_Hint','Please enter Tag Length.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DATA_SOURCE"
+ *ngIf=visibleDATA_SOURCE  [editable]=" !(disabledColumns.indexOf('DATA_SOURCE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('DATA_SOURCE') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.DATA_SOURCE','Data Source')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.DATA_SOURCE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_DATA_SOURCE()"      [formControl]="formGroup.get('DATA_SOURCE')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.DATA_SOURCE_Hint','Please enter Data Source.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="INITIAL_ADDRESS"
+ *ngIf=visibleINITIAL_ADDRESS  [editable]=" !(disabledColumns.indexOf('INITIAL_ADDRESS') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('INITIAL_ADDRESS') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.INITIAL_ADDRESS','Initial Address')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.INITIAL_ADDRESS}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_INITIAL_ADDRESS()"      [formControl]="formGroup.get('INITIAL_ADDRESS')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.INITIAL_ADDRESS_Hint','Please enter Initial Address.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="RELATIVE"
+ *ngIf=visibleRELATIVE  [editable]=" !(disabledColumns.indexOf('RELATIVE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('RELATIVE') > -1" 		 title="{{starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.RELATIVE','Relative')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.RELATIVE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_RELATIVE()"      [formControl]="formGroup.get('RELATIVE')" [placeholder]="starServices.getNLS([],'SCD_AT_TAGS_GRID.scdtagScdAtTagsGrid.RELATIVE_Hint','Please enter Relative.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+

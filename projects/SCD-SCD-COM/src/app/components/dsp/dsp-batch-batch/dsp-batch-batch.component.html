@@ -1,0 +1,42 @@
+<div>
+  <legend class="k-form-legend">{{ this.starServices.getNLS([],"dsp_batch_batch.dsp_batch_batch.component_title","Batches") }}</legend>
+<kendo-tabstrip #tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
+<kendo-tabstrip-tab [selected]="true">
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"dsp_batch_batch.dsp_batch_batch.tab_title1","Files") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+      <app-dsp-batch-dsp-batch-file-def-form></app-dsp-batch-dsp-batch-file-def-form>
+          <!-- <app-dsp-batch-file-fields></app-dsp-batch-file-fields > -->
+    </ng-template>
+  </kendo-tabstrip-tab>
+  
+<kendo-tabstrip-tab>
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"dsp_batch_batch.dsp_batch_batch.tab_title2","Batch Processing") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+          <app-dsp-batch-batch-process></app-dsp-batch-batch-process >
+    </ng-template>
+  </kendo-tabstrip-tab>
+
+  <kendo-tabstrip-tab>
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"dsp_batch_batch.dsp_batch_batch.tab_title3","Orders") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+      <app-dsp-order-work-orders
+      [setComponentConfig_Input]="DSP_ORDER_WORK_ORDERS"
+      ></app-dsp-order-work-orders>
+          
+    </ng-template>
+  </kendo-tabstrip-tab>
+  
+</kendo-tabstrip>
+
+
+
+
+
+
+</div>

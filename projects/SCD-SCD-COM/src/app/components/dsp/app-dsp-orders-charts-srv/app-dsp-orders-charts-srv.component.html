@@ -1,0 +1,107 @@
+<legend>Request Status</legend>
+
+<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
+	<kendo-toolbar-button kendoButton [icon]="'print'" title="print" (click)="print()"></kendo-toolbar-button>
+
+	
+
+	<kendo-toolbar-button [fillMode]="isSearch ? 'outline' : 'solid'" 
+ [icon]="'search'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}" (click)="executeQuery(form.value)">
+	</kendo-toolbar-button>
+	<kendo-toolbar-button [fillMode]="isSearch ? 'outline' : 'solid' " [icon]="'cancel'" title="Cancel" (click)="onCancel($event)"></kendo-toolbar-button>
+</kendo-toolbar>
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+	<div class="form-borders">
+		<form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form">
+
+			<fieldset  class="k-form-fieldset" class="form-fieldset">
+
+				
+					<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+					
+					<kendo-formfield class="form-field" [orientation]="'horizontal'">
+						<kendo-label class="form-label" [for]="ORDER_TYPE" text="Type"></kendo-label>
+						<kendo-combobox #ORDER_TYPE class="form-field-combobox" [formControlName]="'ORDER_TYPE'"
+							[data]="lkpArrORDER_TYPE" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+							[valuePrimitive]="true" [kendoDropDownFilter]="{ operator: 'contains' }"
+							[ngClass]="{ 'ng-invalid-required ng-touched': submitted && form.value.ORDER_TYPE.errors }">
+						</kendo-combobox>
+					</kendo-formfield>
+					<kendo-formfield class="form-field" [orientation]="'horizontal'">
+						<kendo-label class="form-label" [for]="ORDER_STATUS" text="Status"></kendo-label>
+						<kendo-combobox #ORDER_STATUS class="form-field-combobox" [formControlName]="'ORDER_STATUS'"
+							[data]="lkpArrORDER_STATUS" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+							[valuePrimitive]="true" [kendoDropDownFilter]="{ operator: 'contains' }"
+							[ngClass]="{ 'ng-invalid-required ng-touched': submitted && form.value.ORDER_STATUS.errors }">
+						</kendo-combobox>
+					</kendo-formfield>
+					<button class="k-button k-primary" kendoButton (click)="executeQuery(form.value)" icon="search"
+					style="margin: 1px 15px 1px 20px;height:30px">Search</button>
+					<!-- <button  kendoButton class="k-button btn-rounded" 
+					style="float: right;" (click)="addNewRequest()" title="Add new order">+</button> -->
+				</div>
+				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' " *ngIf="false">
+					<kendo-formfield class="form-field" [orientation]="'horizontal'" *ngIf="false">
+						<kendo-label class="form-label" [for]="ASSIGNEE_TYPE" text="Assignee Type"></kendo-label>
+						<kendo-combobox #ASSIGNEE_TYPE class="form-field-combobox" [formControlName]="'ASSIGNEE_TYPE'"
+							[readonly]="isAsigneeTypeReadOnly" [data]="lkpArrASSIGNEE_TYPE"
+							[textField]="'CODETEXT_LANG'" [valueField]="'CODE'" [valuePrimitive]="true"
+							[kendoDropDownFilter]="{ operator: 'contains' }">
+						</kendo-combobox>
+					</kendo-formfield>
+
+					<kendo-formfield class="form-field" [orientation]="'horizontal'" *ngIf="false">
+						<kendo-label class="form-label" [for]="ASSIGNEE" text="Assignee"></kendo-label>
+						<kendo-combobox #ASSIGNEE class="form-field-combobox" [formControlName]="'ASSIGNEE'"
+							[readonly]="isAsigneeReadOnly" [data]="lkpArrASSIGNEE" [textField]="'CODETEXT_LANG'"
+							[valueField]="'CODE'" [valuePrimitive]="true"
+							[kendoDropDownFilter]="{ operator: 'contains' }">
+						</kendo-combobox>
+					</kendo-formfield>
+
+					<!-- <kendo-formfield class="form-field" [orientation]="'horizontal'">
+						<kendo-label class="form-label" [for]="ASSIGNEE_TYPE" text="Assignee Type"></kendo-label>
+						<kendo-combobox #ASSIGNEE_TYPE class="form-field-combobox" [formControlName]="'ASSIGNEE_TYPE'"
+							[data]="lkpArrASSIGNEE_TYPE" [textField]="'CODETEXT_LANG'" [valueField]="'CODE'"
+							[valuePrimitive]="true" [kendoDropDownFilter]="{ operator: 'contains' }"
+							[ngClass]="{ 'ng-invalid-required ng-touched': submitted && form.value.ASSIGNEE_TYPE.errors }">
+						</kendo-combobox>
+					</kendo-formfield>					 -->
+
+			
+				</div>
+				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' " *ngIf="false">
+					<!-- <button class="k-button k-primary" kendoButton (click)="addNewRequest()" icon="plus-outline"
+						style="margin: 1px 15px 1px 1px;">Add new request</button> -->
+						<!-- <button  kendoButton class="k-button btn-rounded" (click)="addNewRequest()" title="Add new request">+</button> -->
+						
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+	<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
+		<div style="width: 70%;">
+			<app-dsp-orders-grid [detail_Input]="grid_DSP_ORDERS" (readCompletedOutput)="readCompletedHandler($event)"
+				(clearCompletedOutput)="clearCompletedHandler($event)"
+				(saveCompletedOutput)="saveCompletedHandler($event)" [setComponentConfig_Input]="DSP_ORDERSGridConfig">
+			</app-dsp-orders-grid>
+		</div>
+
+
+
+		<div class="col-md-12" style="width: 30%;">
+			<app-dsp-dynamic-chart
+			[setComponentConfig_Input]="CRC_CRC_STATConfig">
+			</app-dsp-dynamic-chart >
+			<p></p>
+			<app-dsp-dynamic-chart [setComponentConfig_Input]="CRC_CRC_STATConfig2">
+			</app-dsp-dynamic-chart>
+
+		</div>
+
+
+	</div>
+
+</kendo-pdf-export>
