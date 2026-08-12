@@ -20,6 +20,7 @@ export interface WindowInfo {
   innerWidth?: number;
   order?: number;
   zIndex?: number;
+  outsideContainer?: boolean;
 }
 
 export interface TabGroup {
@@ -130,8 +131,8 @@ export class WindowManagerService {
 
   // ===== WINDOW MANAGEMENT =====
 
-  openWindow(windowData: Partial<WindowInfo>): string {
-    console.log("openWindow:windowData:",windowData);
+openWindow(windowData: Partial<WindowInfo>): string {
+  console.log("openWindow:windowData:", windowData);
   const windowId = windowData.id || `window_${++this.windowIdCounter}`;
   
   const position = windowData.left !== undefined && windowData.top !== undefined
@@ -144,7 +145,7 @@ export class WindowManagerService {
     component: windowData.component!,
     inputs: windowData.inputs || {},
     width: windowData.width || 800,
-    height: windowData.height || 600,
+    height: windowData.height || 650,
     left: position.left,
     top: position.top,
     isMinimized: false,
@@ -152,22 +153,23 @@ export class WindowManagerService {
     isTabbed: false,
     tabGroupId: undefined,
     isActive: true,
-    innerHeight: windowData.height || 600,
+    innerHeight: windowData.height || 650,
     innerWidth: windowData.width || 800,
     order: this.windows.length,
-    zIndex: ++this.zIndexCounter
+    zIndex: ++this.zIndexCounter,
+    outsideContainer: windowData.outsideContainer || false // IMPORTANT: Preserve the flag
   };
 
   const currentWindows = this.windowsSubject.getValue();
   
   const existingIndex = currentWindows.findIndex(w => w.id === windowId);
-  console.log("openWindow:existingIndex:",existingIndex, currentWindows, windowId)
+  console.log("openWindow:existingIndex:", existingIndex, currentWindows, windowId);
+  
   if (existingIndex !== -1) {
     this.activateWindow(windowId);
     return windowId;
   }
 
-  // FIX: Explicitly type the array as WindowInfo[]
   const updatedWindows: WindowInfo[] = currentWindows.map(w => ({ ...w, isActive: false }));
   updatedWindows.push(newWindow);
   
@@ -175,7 +177,6 @@ export class WindowManagerService {
   
   return windowId;
 }
-
   closeWindow(windowId: string): void {
     let currentWindows = this.windowsSubject.getValue();
     const windowToClose = currentWindows.find(w => w.id === windowId);
