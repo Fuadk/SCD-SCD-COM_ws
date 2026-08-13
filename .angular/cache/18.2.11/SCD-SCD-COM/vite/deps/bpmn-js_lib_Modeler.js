@@ -78,7 +78,7 @@ import {
   transform,
   translate,
   translate_default
-} from "./chunk-CF65GNNE.js";
+} from "./chunk-S7B6MDII.js";
 import {
   asBounds,
   asTRBL,
@@ -128,7 +128,7 @@ import {
   uniqueBy,
   values,
   without
-} from "./chunk-BBFZO2AM.js";
+} from "./chunk-VDCJNB4C.js";
 import {
   __objRest,
   __spreadProps,
@@ -472,7 +472,7 @@ var keyboard_move_default = {
 // node_modules/diagram-js/lib/util/Cursor.js
 var CURSOR_CLS_PATTERN = /^djs-cursor-.*$/;
 function set(mode) {
-  var classes3 = classes(document.body);
+  var classes3 = classes2(document.body);
   classes3.removeMatching(CURSOR_CLS_PATTERN);
   if (mode) {
     classes3.add("djs-cursor-" + mode);
@@ -982,7 +982,7 @@ ContextPad.prototype.trigger = function(action, event2, autoActivate) {
   if (!button) {
     return event2.preventDefault();
   }
-  entry = attr(button, "data-action");
+  entry = attr2(button, "data-action");
   originalEvent = event2.originalEvent || event2;
   if (action === "mouseover") {
     this._timeout = setTimeout(function() {
@@ -1045,11 +1045,11 @@ ContextPad.prototype._updateAndOpen = function(target) {
   var entries = this.getEntries(target), html = this._createHtml(target), image;
   forEach(entries, function(entry, id) {
     var grouping = entry.group || "default", control = domify$1(entry.html || '<div class="entry" draggable="true"></div>'), container;
-    attr(control, "data-action", id);
+    attr2(control, "data-action", id);
     container = query("[data-group=" + escapeCSS(grouping) + "]", html);
     if (!container) {
       container = domify$1('<div class="group"></div>');
-      attr(container, "data-group", grouping);
+      attr2(container, "data-group", grouping);
       html.appendChild(container);
     }
     container.appendChild(control);
@@ -1057,17 +1057,17 @@ ContextPad.prototype._updateAndOpen = function(target) {
       addClasses(control, entry.className);
     }
     if (entry.title) {
-      attr(control, "title", entry.title);
+      attr2(control, "title", entry.title);
     }
     if (entry.imageUrl) {
       image = domify$1("<img>");
-      attr(image, "src", entry.imageUrl);
+      attr2(image, "src", entry.imageUrl);
       image.style.width = "100%";
       image.style.height = "100%";
       control.appendChild(image);
     }
   });
-  classes(html).add("open");
+  classes2(html).add("open");
   this._current = {
     entries,
     html,
@@ -1148,13 +1148,13 @@ ContextPad.prototype.isOpen = function(target) {
   }
 };
 ContextPad.prototype.isShown = function() {
-  return this.isOpen() && classes(this._current.html).has("open");
+  return this.isOpen() && classes2(this._current.html).has("open");
 };
 ContextPad.prototype.show = function() {
   if (!this.isOpen()) {
     return;
   }
-  classes(this._current.html).add("open");
+  classes2(this._current.html).add("open");
   this._updatePosition();
   this._eventBus.fire("contextPad.show", {
     current: this._current
@@ -1164,7 +1164,7 @@ ContextPad.prototype.hide = function() {
   if (!this.isOpen()) {
     return;
   }
-  classes(this._current.html).remove("open");
+  classes2(this._current.html).remove("open");
   this._eventBus.fire("contextPad.hide", {
     current: this._current
   });
@@ -1251,7 +1251,7 @@ ContextPad.prototype._getTargetBounds = function(target) {
   });
 };
 function addClasses(element, classNames) {
-  var classes3 = classes(element);
+  var classes3 = classes2(element);
   classNames = isArray(classNames) ? classNames : classNames.split(/\s+/g);
   classNames.forEach(function(cls) {
     classes3.add(cls);
@@ -2293,7 +2293,7 @@ PopupMenu.prototype.close = function() {
 PopupMenu.prototype.reset = function() {
   const container = this._current.container;
   B(null, container);
-  remove(container);
+  remove2(container);
 };
 PopupMenu.prototype._emit = function(event2, payload) {
   this._eventBus.fire(`popupMenu.${event2}`, payload);
@@ -2459,7 +2459,7 @@ PopupMenu.prototype.trigger = function(event2, entry, action = "click") {
   event2.preventDefault();
   if (!entry) {
     let element = closest(event2.delegateTarget || event2.target, ".entry", true);
-    let entryId = attr(element, DATA_REF);
+    let entryId = attr2(element, DATA_REF);
     entry = __spreadValues({
       id: entryId
     }, this._getEntry(entryId));
@@ -3834,26 +3834,26 @@ function getConnectionIntersection(canvas, waypoints, event2) {
 }
 function addBendpoint(parentGfx, cls) {
   var groupGfx = create("g");
-  classes2(groupGfx).add(BENDPOINT_CLS);
+  classes(groupGfx).add(BENDPOINT_CLS);
   append(parentGfx, groupGfx);
   var visual = create("circle");
-  attr2(visual, {
+  attr(visual, {
     cx: 0,
     cy: 0,
     r: 4
   });
-  classes2(visual).add("djs-visual");
+  classes(visual).add("djs-visual");
   append(groupGfx, visual);
   var hit = create("circle");
-  attr2(hit, {
+  attr(hit, {
     cx: 0,
     cy: 0,
     r: 10
   });
-  classes2(hit).add("djs-hit");
+  classes(hit).add("djs-hit");
   append(groupGfx, hit);
   if (cls) {
-    classes2(groupGfx).add(cls);
+    classes(groupGfx).add(cls);
   }
   return groupGfx;
 }
@@ -3862,22 +3862,22 @@ function createParallelDragger(parentGfx, segmentStart, segmentEnd, alignment) {
   append(parentGfx, draggerGfx);
   var width = 18, height = 6, padding = 11, hitWidth = calculateHitWidth(segmentStart, segmentEnd, alignment), hitHeight = height + padding;
   var visual = create("rect");
-  attr2(visual, {
+  attr(visual, {
     x: -width / 2,
     y: -height / 2,
     width,
     height
   });
-  classes2(visual).add("djs-visual");
+  classes(visual).add("djs-visual");
   append(draggerGfx, visual);
   var hit = create("rect");
-  attr2(hit, {
+  attr(hit, {
     x: -hitWidth / 2,
     y: -hitHeight / 2,
     width: hitWidth,
     height: hitHeight
   });
-  classes2(hit).add("djs-hit");
+  classes(hit).add("djs-hit");
   append(draggerGfx, hit);
   rotate(draggerGfx, alignment === "v" ? 90 : 0, 0, 0);
   return draggerGfx;
@@ -3886,8 +3886,8 @@ function addSegmentDragger(parentGfx, segmentStart, segmentEnd) {
   var groupGfx = create("g"), mid4 = getMidPoint(segmentStart, segmentEnd), alignment = pointsAligned(segmentStart, segmentEnd);
   append(parentGfx, groupGfx);
   createParallelDragger(groupGfx, segmentStart, segmentEnd, alignment);
-  classes2(groupGfx).add(SEGMENT_DRAGGER_CLS);
-  classes2(groupGfx).add(alignment === "h" ? "horizontal" : "vertical");
+  classes(groupGfx).add(SEGMENT_DRAGGER_CLS);
+  classes(groupGfx).add(alignment === "h" ? "horizontal" : "vertical");
   translate(groupGfx, mid4.x, mid4.y);
   return groupGfx;
 }
@@ -3973,10 +3973,10 @@ function Bendpoints(eventBus, canvas, interactionEvents, bendpointMove, connecti
     var layer = canvas.getLayer("overlays"), gfx = query('.djs-bendpoints[data-element-id="' + escapeCSS(element.id) + '"]', layer);
     if (!gfx && create2) {
       gfx = create("g");
-      attr2(gfx, {
+      attr(gfx, {
         "data-element-id": element.id
       });
-      classes2(gfx).add("djs-bendpoints");
+      classes(gfx).add("djs-bendpoints");
       append(layer, gfx);
       bindInteractionEvents(gfx, "mousedown", element);
       bindInteractionEvents(gfx, "click", element);
@@ -4003,7 +4003,7 @@ function Bendpoints(eventBus, canvas, interactionEvents, bendpointMove, connecti
       segmentEnd = waypoints[i3];
       if (pointsAligned(segmentStart, segmentEnd)) {
         segmentDraggerGfx = addSegmentDragger(gfx, segmentStart, segmentEnd);
-        attr2(segmentDraggerGfx, {
+        attr(segmentDraggerGfx, {
           "data-segment-idx": i3
         });
         bindInteractionEvents(segmentDraggerGfx, "mousemove", connection);
@@ -4012,12 +4012,12 @@ function Bendpoints(eventBus, canvas, interactionEvents, bendpointMove, connecti
   }
   function clearBendpoints(gfx) {
     forEach(all("." + BENDPOINT_CLS, gfx), function(node) {
-      remove2(node);
+      remove(node);
     });
   }
   function clearSegmentDraggers(gfx) {
     forEach(all("." + SEGMENT_DRAGGER_CLS, gfx), function(node) {
-      remove2(node);
+      remove(node);
     });
   }
   function addHandles(connection) {
@@ -4069,7 +4069,7 @@ function Bendpoints(eventBus, canvas, interactionEvents, bendpointMove, connecti
   eventBus.on("connection.remove", function(event2) {
     var gfx = getBendpointsContainer(event2.element);
     if (gfx) {
-      remove2(gfx);
+      remove(gfx);
     }
   });
   eventBus.on("element.marker.update", function(event2) {
@@ -4079,9 +4079,9 @@ function Bendpoints(eventBus, canvas, interactionEvents, bendpointMove, connecti
     }
     bendpointsGfx = addHandles(element);
     if (event2.add) {
-      classes2(bendpointsGfx).add(event2.marker);
+      classes(bendpointsGfx).add(event2.marker);
     } else {
-      classes2(bendpointsGfx).remove(event2.marker);
+      classes(bendpointsGfx).remove(event2.marker);
     }
   });
   eventBus.on("element.mousemove", function(event2) {
@@ -4129,7 +4129,7 @@ function Bendpoints(eventBus, canvas, interactionEvents, bendpointMove, connecti
     if (element.waypoints) {
       var bendpointContainer = getBendpointsContainer(element);
       if (bendpointContainer) {
-        attr2(bendpointContainer, {
+        attr(bendpointContainer, {
           "data-element-id": newId
         });
       }
@@ -4318,7 +4318,7 @@ function BendpointMovePreview(bendpointMove, injector, eventBus, canvas) {
     }
     connection.waypoints = newWaypoints;
     var draggerGfx = context.draggerGfx = addBendpoint(canvas.getLayer("overlays"));
-    classes2(draggerGfx).add("djs-dragging");
+    classes(draggerGfx).add("djs-dragging");
     canvas.addMarker(connection, MARKER_DRAGGER);
     canvas.addMarker(connection, MARKER_CONNECT_UPDATING);
   });
@@ -4395,7 +4395,7 @@ function BendpointMovePreview(bendpointMove, injector, eventBus, canvas) {
   eventBus.on(["bendpoint.move.end", "bendpoint.move.cancel"], HIGH_PRIORITY2, function(event2) {
     var context = event2.context, connection = context.connection, draggerGfx = context.draggerGfx, hover = context.hover, target = context.target, waypoints = context.waypoints;
     connection.waypoints = waypoints;
-    remove2(draggerGfx);
+    remove(draggerGfx);
     canvas.removeMarker(connection, MARKER_CONNECT_UPDATING);
     canvas.removeMarker(connection, MARKER_DRAGGER);
     if (hover) {
@@ -4517,7 +4517,7 @@ function ConnectionSegmentMove(injector, eventBus, canvas, dragging, graphicsFac
     var context = event2.context, connection = event2.connection, layer = canvas.getLayer("overlays");
     context.originalWaypoints = connection.waypoints.slice();
     context.draggerGfx = addSegmentDragger(layer, context.segmentStart, context.segmentEnd);
-    classes2(context.draggerGfx).add("djs-dragging");
+    classes(context.draggerGfx).add("djs-dragging");
     canvas.addMarker(connection, MARKER_CONNECT_UPDATING2);
   });
   eventBus.on("connectionSegment.move.move", function(event2) {
@@ -4573,7 +4573,7 @@ function ConnectionSegmentMove(injector, eventBus, canvas, dragging, graphicsFac
   eventBus.on("connectionSegment.move.cleanup", function(event2) {
     var context = event2.context, connection = context.connection;
     if (context.draggerGfx) {
-      remove2(context.draggerGfx);
+      remove(context.draggerGfx);
     }
     canvas.removeMarker(connection, MARKER_CONNECT_UPDATING2);
   });
@@ -4964,7 +4964,7 @@ ConnectionPreview.prototype.drawPreview = function(context, canConnect2, hints) 
   if (!connectionPreviewGfx) {
     connectionPreviewGfx = context.connectionPreviewGfx = this.createConnectionPreviewGfx();
   }
-  clear2(connectionPreviewGfx);
+  clear(connectionPreviewGfx);
   if (!getConnection) {
     getConnection = context.getConnection = cacheReturnValues(function(canConnect3, source2, target2) {
       return self2.getConnection(canConnect3, source2, target2);
@@ -5013,7 +5013,7 @@ ConnectionPreview.prototype.cropWaypoints = function(start, end, source, target)
 };
 ConnectionPreview.prototype.cleanUp = function(context) {
   if (context && context.connectionPreviewGfx) {
-    remove2(context.connectionPreviewGfx);
+    remove(context.connectionPreviewGfx);
   }
 };
 ConnectionPreview.prototype.getConnection = function(canConnect2) {
@@ -5022,10 +5022,10 @@ ConnectionPreview.prototype.getConnection = function(canConnect2) {
 };
 ConnectionPreview.prototype.createConnectionPreviewGfx = function() {
   var gfx = create("g");
-  attr2(gfx, {
+  attr(gfx, {
     pointerEvents: "none"
   });
-  classes2(gfx).add(MARKER_CONNECTION_PREVIEW);
+  classes(gfx).add(MARKER_CONNECTION_PREVIEW);
   append(this._canvas.getActiveLayer(), gfx);
   return gfx;
 };
@@ -5083,12 +5083,12 @@ PreviewSupport.prototype.addDragger = function(element, group, gfx, className = 
   var dragger = clone(gfx);
   var bbox = gfx.getBoundingClientRect();
   this._cloneMarkers(getVisual(dragger), className);
-  attr2(dragger, this._styles.cls(className, [], {
+  attr(dragger, this._styles.cls(className, [], {
     x: bbox.top,
     y: bbox.left
   }));
   append(group, dragger);
-  attr2(dragger, "data-preview-support-element-id", element.id);
+  attr(dragger, "data-preview-support-element-id", element.id);
   return dragger;
 };
 PreviewSupport.prototype.addFrame = function(shape, group) {
@@ -5100,7 +5100,7 @@ PreviewSupport.prototype.addFrame = function(shape, group) {
     y: shape.y
   });
   append(group, frame);
-  attr2(frame, "data-preview-support-element-id", shape.id);
+  attr(frame, "data-preview-support-element-id", shape.id);
   return frame;
 };
 PreviewSupport.prototype._cloneMarkers = function(gfx, className = "djs-dragger", rootGfx = gfx) {
@@ -5114,7 +5114,7 @@ PreviewSupport.prototype._cloneMarkers = function(gfx, className = "djs-dragger"
     return;
   }
   MARKER_TYPES.forEach(function(markerType) {
-    if (attr2(gfx, markerType)) {
+    if (attr(gfx, markerType)) {
       var marker = getMarker(gfx, markerType, self2._canvas.getContainer());
       marker && self2._cloneMarker(rootGfx, gfx, marker, markerType, className);
     }
@@ -5126,7 +5126,7 @@ PreviewSupport.prototype._cloneMarker = function(parentGfx, gfx, marker, markerT
   parentGfx = parentGfx || this._canvas._svg;
   var clonedMarker = copiedMarker || clone(marker);
   clonedMarker.id = clonedMarkerId;
-  classes2(clonedMarker).add(className);
+  classes(clonedMarker).add(className);
   var defs = query(":scope > defs", parentGfx);
   if (!defs) {
     defs = create("defs");
@@ -5134,10 +5134,10 @@ PreviewSupport.prototype._cloneMarker = function(parentGfx, gfx, marker, markerT
   }
   append(defs, clonedMarker);
   var reference = idToReference(clonedMarker.id);
-  attr2(gfx, markerType, reference);
+  attr(gfx, markerType, reference);
 };
 function getMarker(node, markerType, parentNode) {
-  var id = referenceToId(attr2(node, markerType));
+  var id = referenceToId(attr(node, markerType));
   return query("marker#" + id, parentNode || document);
 }
 function referenceToId(reference) {
@@ -5227,7 +5227,7 @@ var ComplexPreview = class {
     });
   }
   cleanUp() {
-    clear2(this._canvas.getLayer(LAYER_NAME));
+    clear(this._canvas.getLayer(LAYER_NAME));
     this._markers.forEach(([element, marker]) => this._canvas.removeMarker(element, marker));
     this._markers = [];
   }
@@ -9685,7 +9685,7 @@ var LOW_PRIORITY12 = 750;
 function CreatePreview(canvas, eventBus, graphicsFactory, previewSupport, styles) {
   function createDragGroup(elements) {
     var dragGroup = create("g");
-    attr2(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
+    attr(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
     var childrenGfx = create("g");
     elements.forEach(function(element) {
       var gfx;
@@ -9717,13 +9717,13 @@ function CreatePreview(canvas, eventBus, graphicsFactory, previewSupport, styles
       }
       translate(dragGroup, event2.x, event2.y);
     } else {
-      remove2(dragGroup);
+      remove(dragGroup);
     }
   });
   eventBus.on("create.cleanup", function(event2) {
     var context = event2.context, dragGroup = context.dragGroup;
     if (dragGroup) {
-      remove2(dragGroup);
+      remove(dragGroup);
     }
   });
 }
@@ -11042,15 +11042,15 @@ function SpaceToolPreview(eventBus, elementRegistry, canvas, styles, previewSupp
       y: "M -10000,0 L 10000,0"
     };
     var crosshairGroup = create("g");
-    attr2(crosshairGroup, styles.cls("djs-crosshair-group", ["no-events"]));
+    attr(crosshairGroup, styles.cls("djs-crosshair-group", ["no-events"]));
     append(space, crosshairGroup);
     var pathX = create("path");
-    attr2(pathX, "d", orientation.x);
-    classes2(pathX).add("djs-crosshair");
+    attr(pathX, "d", orientation.x);
+    classes(pathX).add("djs-crosshair");
     append(crosshairGroup, pathX);
     var pathY = create("path");
-    attr2(pathY, "d", orientation.y);
-    classes2(pathY).add("djs-crosshair");
+    attr(pathY, "d", orientation.y);
+    classes(pathY).add("djs-crosshair");
     append(crosshairGroup, pathY);
     context.crosshairGroup = crosshairGroup;
   });
@@ -11061,7 +11061,7 @@ function SpaceToolPreview(eventBus, elementRegistry, canvas, styles, previewSupp
   eventBus.on("spaceTool.selection.cleanup", function(event2) {
     var context = event2.context, crosshairGroup = context.crosshairGroup;
     if (crosshairGroup) {
-      remove2(crosshairGroup);
+      remove(crosshairGroup);
     }
   });
   eventBus.on("spaceTool.move", LOW_PRIORITY15, function(event2) {
@@ -11072,12 +11072,12 @@ function SpaceToolPreview(eventBus, elementRegistry, canvas, styles, previewSupp
     if (!context.dragGroup) {
       var spaceLayer = canvas.getLayer("space");
       line = create("path");
-      attr2(line, "d", "M0,0 L0,0");
-      classes2(line).add("djs-crosshair");
+      attr(line, "d", "M0,0 L0,0");
+      classes(line).add("djs-crosshair");
       append(spaceLayer, line);
       context.line = line;
       var dragGroup = create("g");
-      attr2(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
+      attr(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
       append(canvas.getActiveLayer(), dragGroup);
       addPreviewGfx(movingShapes, dragGroup);
       var movingConnections = context.movingConnections = elementRegistry.filter(function(element) {
@@ -11120,7 +11120,7 @@ function SpaceToolPreview(eventBus, elementRegistry, canvas, styles, previewSupp
     }
     if (!context.frameGroup) {
       var frameGroup = create("g");
-      attr2(frameGroup, styles.cls("djs-frame-group", ["no-events"]));
+      attr(frameGroup, styles.cls("djs-frame-group", ["no-events"]));
       append(canvas.getActiveLayer(), frameGroup);
       var frames = [];
       forEach(resizingShapes, function(shape) {
@@ -11139,7 +11139,7 @@ function SpaceToolPreview(eventBus, elementRegistry, canvas, styles, previewSupp
       x: "M" + event2.x + ", -10000 L" + event2.x + ", 10000",
       y: "M -10000, " + event2.y + " L 10000, " + event2.y
     };
-    attr2(line, {
+    attr(line, {
       d: orientation[axis]
     });
     var opposite = {
@@ -11155,23 +11155,23 @@ function SpaceToolPreview(eventBus, elementRegistry, canvas, styles, previewSupp
     forEach(context.frames, function(frame) {
       var element = frame.element, initialBounds = frame.initialBounds, width, height;
       if (context.direction === "e") {
-        attr2(element, {
+        attr(element, {
           width: max6(initialBounds.width + delta2.x, 5)
         });
       } else {
         width = max6(initialBounds.width - delta2.x, 5);
-        attr2(element, {
+        attr(element, {
           width,
           x: initialBounds.x + initialBounds.width - width
         });
       }
       if (context.direction === "s") {
-        attr2(element, {
+        attr(element, {
           height: max6(initialBounds.height + delta2.y, 5)
         });
       } else {
         height = max6(initialBounds.height - delta2.y, 5);
-        attr2(element, {
+        attr(element, {
           height,
           y: initialBounds.y + initialBounds.height - height
         });
@@ -11187,14 +11187,14 @@ function SpaceToolPreview(eventBus, elementRegistry, canvas, styles, previewSupp
       canvas.removeMarker(connection, MARKER_DRAGGING);
     });
     if (dragGroup) {
-      remove2(line);
-      remove2(dragGroup);
+      remove(line);
+      remove(dragGroup);
     }
     forEach(resizingShapes, function(shape) {
       canvas.removeMarker(shape, MARKER_RESIZING);
     });
     if (frameGroup) {
-      remove2(frameGroup);
+      remove(frameGroup);
     }
   });
 }
@@ -15475,7 +15475,7 @@ TextBox.prototype._insertTextIE = function(text) {
       if (index === startContainerChildIndex) {
         childNode.textContent = startContainer.textContent.substring(0, startOffset) + text + endContainer.textContent.substring(endOffset);
       } else if (index > startContainerChildIndex && index <= endContainerChildIndex) {
-        remove(childNode);
+        remove2(childNode);
       }
     });
     container = startContainer;
@@ -15567,9 +15567,9 @@ TextBox.prototype.destroy = function() {
   event.unbind(content, "paste", this.handlePaste);
   if (resizeHandle) {
     resizeHandle.removeAttribute("style");
-    remove(resizeHandle);
+    remove2(resizeHandle);
   }
-  remove(parent);
+  remove2(parent);
 };
 TextBox.prototype.getValue = function() {
   return this.content.innerText.trim();
@@ -18452,27 +18452,27 @@ function ResizePreview(eventBus, canvas, previewSupport) {
       canvas.addMarker(shape, MARKER_RESIZING2);
     }
     if (bounds.width > 5) {
-      attr2(frame, {
+      attr(frame, {
         x: bounds.x,
         width: bounds.width
       });
     }
     if (bounds.height > 5) {
-      attr2(frame, {
+      attr(frame, {
         y: bounds.y,
         height: bounds.height
       });
     }
     if (context.canExecute) {
-      classes2(frame).remove(MARKER_RESIZE_NOT_OK);
+      classes(frame).remove(MARKER_RESIZE_NOT_OK);
     } else {
-      classes2(frame).add(MARKER_RESIZE_NOT_OK);
+      classes(frame).add(MARKER_RESIZE_NOT_OK);
     }
   }
   function removeFrame(context) {
     var shape = context.shape, frame = context.frame;
     if (frame) {
-      remove2(context.frame);
+      remove(context.frame);
     }
     canvas.removeMarker(shape, MARKER_RESIZING2);
   }
@@ -18524,27 +18524,27 @@ ResizeHandles.prototype._createResizer = function(element, x3, y3, direction) {
   var resizersParent = this._getResizersParent();
   var offset = getHandleOffset(direction);
   var group = create("g");
-  classes2(group).add(CLS_RESIZER);
-  classes2(group).add(CLS_RESIZER + "-" + element.id);
-  classes2(group).add(CLS_RESIZER + "-" + direction);
+  classes(group).add(CLS_RESIZER);
+  classes(group).add(CLS_RESIZER + "-" + element.id);
+  classes(group).add(CLS_RESIZER + "-" + direction);
   append(resizersParent, group);
   var visual = create("rect");
-  attr2(visual, {
+  attr(visual, {
     x: -HANDLE_SIZE / 2 + offset.x,
     y: -HANDLE_SIZE / 2 + offset.y,
     width: HANDLE_SIZE,
     height: HANDLE_SIZE
   });
-  classes2(visual).add(CLS_RESIZER + "-visual");
+  classes(visual).add(CLS_RESIZER + "-visual");
   append(group, visual);
   var hit = create("rect");
-  attr2(hit, {
+  attr(hit, {
     x: -HANDLE_HIT_SIZE / 2 + offset.x,
     y: -HANDLE_HIT_SIZE / 2 + offset.y,
     width: HANDLE_HIT_SIZE,
     height: HANDLE_HIT_SIZE
   });
-  classes2(hit).add(CLS_RESIZER + "-hit");
+  classes(hit).add(CLS_RESIZER + "-hit");
   append(group, hit);
   transform(group, x3, y3);
   return group;
@@ -18567,7 +18567,7 @@ ResizeHandles.prototype.addResizer = function(element) {
 };
 ResizeHandles.prototype.removeResizers = function() {
   var resizersParent = this._getResizersParent();
-  clear2(resizersParent);
+  clear(resizersParent);
 };
 ResizeHandles.prototype._getResizersParent = function() {
   return this._canvas.getLayer("resizers");
@@ -18904,7 +18904,7 @@ function LabelEditingPreview(eventBus, canvas, pathMap) {
         }
       });
       var path = self2.path = create("path");
-      attr2(path, {
+      attr(path, {
         d: textPathData,
         strokeWidth: 2,
         stroke: getStrokeColor(element)
@@ -18933,7 +18933,7 @@ function LabelEditingPreview(eventBus, canvas, pathMap) {
           my: 0
         }
       });
-      attr2(self2.path, {
+      attr(self2.path, {
         d: textPathData
       });
     }
@@ -18947,7 +18947,7 @@ function LabelEditingPreview(eventBus, canvas, pathMap) {
     element = void 0;
     absoluteElementBBox = void 0;
     if (gfx) {
-      remove2(gfx);
+      remove(gfx);
       gfx = void 0;
     }
   });
@@ -19033,7 +19033,7 @@ Tooltips.prototype.add = function(tooltip) {
 };
 Tooltips.prototype.trigger = function(action, event2) {
   var node = event2.delegateTarget || event2.target;
-  var tooltip = this.get(attr(node, "data-tooltip-id"));
+  var tooltip = this.get(attr2(node, "data-tooltip-id"));
   if (!tooltip) {
     return;
   }
@@ -19076,8 +19076,8 @@ Tooltips.prototype.setTimeout = function(tooltip) {
 Tooltips.prototype.remove = function(id) {
   var tooltip = this.get(id);
   if (tooltip) {
-    remove(tooltip.html);
-    remove(tooltip.htmlContainer);
+    remove2(tooltip.html);
+    remove2(tooltip.htmlContainer);
     delete tooltip.htmlContainer;
     delete this._tooltips[tooltip.id];
   }
@@ -19109,10 +19109,10 @@ Tooltips.prototype._addTooltip = function(tooltip) {
   });
   htmlContainer.appendChild(html);
   if (tooltip.type) {
-    classes(htmlContainer).add("djs-tooltip-" + tooltip.type);
+    classes2(htmlContainer).add("djs-tooltip-" + tooltip.type);
   }
   if (tooltip.className) {
-    classes(htmlContainer).add(tooltip.className);
+    classes2(htmlContainer).add(tooltip.className);
   }
   tooltip.htmlContainer = htmlContainer;
   tooltipRoot.appendChild(htmlContainer);
@@ -19275,7 +19275,7 @@ function MoveEvents(eventBus, dragging, modeling, selection, rules) {
     if (element.waypoints || !element.parent) {
       return;
     }
-    if (classes2(event2.target).has("djs-hit-no-move")) {
+    if (classes(event2.target).has("djs-hit-no-move")) {
       return;
     }
     var referencePoint = mid3(element);
@@ -19349,7 +19349,7 @@ function MovePreview(eventBus, canvas, styles, previewSupport) {
     var visuallyDraggedShapes = getVisualDragShapes(dragShapes);
     if (!context.dragGroup) {
       var dragGroup = create("g");
-      attr2(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
+      attr(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
       var activeLayer = canvas.getActiveLayer();
       append(activeLayer, dragGroup);
       context.dragGroup = dragGroup;
@@ -19393,7 +19393,7 @@ function MovePreview(eventBus, canvas, styles, previewSupport) {
       canvas.removeMarker(e4, MARKER_DRAGGING2);
     });
     if (dragGroup) {
-      remove2(dragGroup);
+      remove(dragGroup);
     }
   });
   this.makeDraggable = makeDraggable;
@@ -19486,7 +19486,7 @@ Palette.prototype._init = function() {
   var parentContainer = this._getParentContainer();
   var container = this._container = domify$1(Palette.HTML_MARKUP);
   parentContainer.appendChild(container);
-  classes(parentContainer).add(PALETTE_PREFIX + PALETTE_SHOWN_CLS);
+  classes2(parentContainer).add(PALETTE_PREFIX + PALETTE_SHOWN_CLS);
   delegate.bind(container, ELEMENT_SELECTOR, "click", function(event2) {
     var target = event2.delegateTarget;
     if (matches(target, TOGGLE_SELECTOR)) {
@@ -19518,7 +19518,7 @@ Palette.prototype._toggleState = function(state) {
   var parent = this._getParentContainer(), container = this._container;
   var eventBus = this._eventBus;
   var twoColumn;
-  var cls = classes(container), parentCls = classes(parent);
+  var cls = classes2(container), parentCls = classes2(parent);
   if ("twoColumn" in state) {
     twoColumn = state.twoColumn;
   } else {
@@ -19537,29 +19537,29 @@ Palette.prototype._toggleState = function(state) {
 };
 Palette.prototype._update = function() {
   var entriesContainer = query(".djs-palette-entries", this._container), entries = this._entries = this.getEntries();
-  clear(entriesContainer);
+  clear2(entriesContainer);
   forEach(entries, function(entry, id) {
     var grouping = entry.group || "default";
     var container = query("[data-group=" + escapeCSS(grouping) + "]", entriesContainer);
     if (!container) {
       container = domify$1('<div class="group"></div>');
-      attr(container, "data-group", grouping);
+      attr2(container, "data-group", grouping);
       entriesContainer.appendChild(container);
     }
     var html = entry.html || (entry.separator ? '<hr class="separator" />' : '<div class="entry" draggable="true"></div>');
     var control = domify$1(html);
     container.appendChild(control);
     if (!entry.separator) {
-      attr(control, "data-action", id);
+      attr2(control, "data-action", id);
       if (entry.title) {
-        attr(control, "title", entry.title);
+        attr2(control, "title", entry.title);
       }
       if (entry.className) {
         addClasses2(control, entry.className);
       }
       if (entry.imageUrl) {
         var image = domify$1("<img>");
-        attr(image, "src", entry.imageUrl);
+        attr2(image, "src", entry.imageUrl);
         control.appendChild(image);
       }
     }
@@ -19571,7 +19571,7 @@ Palette.prototype.trigger = function(action, event2, autoActivate) {
   if (!button) {
     return event2.preventDefault();
   }
-  entry = attr(button, "data-action");
+  entry = attr2(button, "data-action");
   originalEvent = event2.originalEvent || event2;
   return this.triggerEntry(entry, action, originalEvent, autoActivate);
 };
@@ -19640,7 +19640,7 @@ Palette.prototype.updateToolHighlight = function(name) {
     if (!actionName) {
       return;
     }
-    var toolClasses = classes(tool);
+    var toolClasses = classes2(tool);
     actionName = actionName.replace("-tool", "");
     if (toolClasses.contains("entry") && actionName === name) {
       toolClasses.add("highlighted-entry");
@@ -19650,14 +19650,14 @@ Palette.prototype.updateToolHighlight = function(name) {
   });
 };
 Palette.prototype.isOpen = function() {
-  return classes(this._container).has(PALETTE_OPEN_CLS);
+  return classes2(this._container).has(PALETTE_OPEN_CLS);
 };
 Palette.prototype._getParentContainer = function() {
   return this._canvas.getContainer();
 };
 Palette.HTML_MARKUP = '<div class="djs-palette"><div class="djs-palette-entries"></div><div class="djs-palette-toggle"></div></div>';
 function addClasses2(element, classNames) {
-  var classes3 = classes(element);
+  var classes3 = classes2(element);
   var actualClassNames = isArray(classNames) ? classNames : classNames.split(/\s+/g);
   actualClassNames.forEach(function(cls) {
     classes3.add(cls);
@@ -19691,7 +19691,7 @@ function LassoTool(eventBus, canvas, dragging, elementRegistry, selection, toolM
     create: function(context) {
       var container = canvas.getActiveLayer(), frame;
       frame = context.frame = create("rect");
-      attr2(frame, {
+      attr(frame, {
         class: "djs-lasso-overlay",
         width: 1,
         height: 1,
@@ -19702,7 +19702,7 @@ function LassoTool(eventBus, canvas, dragging, elementRegistry, selection, toolM
     },
     update: function(context) {
       var frame = context.frame, bbox = context.bbox;
-      attr2(frame, {
+      attr(frame, {
         x: bbox.x,
         y: bbox.y,
         width: bbox.width,
@@ -19711,7 +19711,7 @@ function LassoTool(eventBus, canvas, dragging, elementRegistry, selection, toolM
     },
     remove: function(context) {
       if (context.frame) {
-        remove2(context.frame);
+        remove(context.frame);
       }
     }
   };
@@ -20199,7 +20199,7 @@ function BpmnReplacePreview(eventBus, elementRegistry, elementFactory, canvas, p
       canvas.addShape(tempShape, element.parent);
       var gfx = query('[data-element-id="' + escapeCSS(element.id) + '"]', context.dragGroup);
       if (gfx) {
-        attr2(gfx, {
+        attr(gfx, {
           display: "none"
         });
       }
@@ -20213,7 +20213,7 @@ function BpmnReplacePreview(eventBus, elementRegistry, elementFactory, canvas, p
     forEach(visualReplacements, function(dragger, id) {
       var originalGfx = query('[data-element-id="' + escapeCSS(id) + '"]', context.dragGroup);
       if (originalGfx) {
-        attr2(originalGfx, {
+        attr(originalGfx, {
           display: "inline"
         });
       }
@@ -20806,25 +20806,25 @@ Snapping.prototype.snap = function(event2, snapPoints) {
 Snapping.prototype._createLine = function(orientation) {
   var root = this._canvas.getLayer("snap");
   var line = create("path");
-  attr2(line, {
+  attr(line, {
     d: "M0,0 L0,0"
   });
-  classes2(line).add("djs-snap-line");
+  classes(line).add("djs-snap-line");
   append(root, line);
   return {
     update: function(position) {
       if (!isNumber(position)) {
-        attr2(line, {
+        attr(line, {
           display: "none"
         });
       } else {
         if (orientation === "horizontal") {
-          attr2(line, {
+          attr(line, {
             d: "M-100000," + position + " L+100000," + position,
             display: ""
           });
         } else {
-          attr2(line, {
+          attr(line, {
             d: "M " + position + ",-100000 L " + position + ", +100000",
             display: ""
           });
@@ -21004,7 +21004,7 @@ SearchPad.prototype._scrollToNode = function(node) {
   }
 };
 SearchPad.prototype._clearResults = function() {
-  clear(this._resultsContainer);
+  clear2(this._resultsContainer);
   this._results = {};
   this._eventBus.fire("searchPad.cleared");
 };
@@ -21022,7 +21022,7 @@ SearchPad.prototype._createResultNode = function(result, id) {
     createInnerTextNode(node, result.primaryTokens, SearchPad.RESULT_PRIMARY_HTML);
   }
   createInnerTextNode(node, result.secondaryTokens, SearchPad.RESULT_SECONDARY_HTML);
-  attr(node, SearchPad.RESULT_ID_ATTRIBUTE, id);
+  attr2(node, SearchPad.RESULT_ID_ATTRIBUTE, id);
   this._resultsContainer.appendChild(node);
   return node;
 };
@@ -21041,8 +21041,8 @@ SearchPad.prototype.open = function() {
   this._cachedViewbox = this._canvas.viewbox();
   this._bindEvents();
   this._open = true;
-  classes(this._canvas.getContainer()).add("djs-search-open");
-  classes(this._container).add("open");
+  classes2(this._canvas.getContainer()).add("djs-search-open");
+  classes2(this._container).add("open");
   this._searchInput.focus();
   this._eventBus.fire("searchPad.opened");
 };
@@ -21067,8 +21067,8 @@ SearchPad.prototype.close = function(restoreCached = true) {
   this._cachedViewbox = null;
   this._unbindEvents();
   this._open = false;
-  classes(this._canvas.getContainer()).remove("djs-search-open");
-  classes(this._container).remove("open");
+  classes2(this._canvas.getContainer()).remove("djs-search-open");
+  classes2(this._container).remove("open");
   this._clearMarkers();
   this._clearResults();
   this._searchInput.value = "";
@@ -21088,11 +21088,11 @@ SearchPad.prototype._preselect = function(node) {
   }
   this._clearMarkers();
   if (selectedNode) {
-    classes(selectedNode).remove(SearchPad.RESULT_SELECTED_CLASS);
+    classes2(selectedNode).remove(SearchPad.RESULT_SELECTED_CLASS);
   }
-  var id = attr(node, SearchPad.RESULT_ID_ATTRIBUTE);
+  var id = attr2(node, SearchPad.RESULT_ID_ATTRIBUTE);
   var element = this._results[id].element;
-  classes(node).add(SearchPad.RESULT_SELECTED_CLASS);
+  classes2(node).add(SearchPad.RESULT_SELECTED_CLASS);
   this._canvas.scrollToElement(element, {
     top: SCROLL_TO_ELEMENT_PADDING
   });
@@ -21101,7 +21101,7 @@ SearchPad.prototype._preselect = function(node) {
   this._eventBus.fire("searchPad.preselected", element);
 };
 SearchPad.prototype._select = function(node) {
-  var id = attr(node, SearchPad.RESULT_ID_ATTRIBUTE);
+  var id = attr2(node, SearchPad.RESULT_ID_ATTRIBUTE);
   var element = this._results[id].element;
   this._cachedSelection = null;
   this._cachedViewbox = null;

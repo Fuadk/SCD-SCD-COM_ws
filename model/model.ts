@@ -1,3 +1,11 @@
+ export class scddisplayScdScdDisplayDiagram{
+	public DISPLAY_ID = '';
+	public APPLICATION_ID = '';
+	public DISPLAY_NAME = '';
+	public DISPLAY_DATA = '';
+
+}
+
  export class scdappTreeContextScdScdAppTreeContextGrid{
 	public MENU_ID = '';
 	public MENU_TYPE = '';
@@ -17,8 +25,12 @@
 	public LINE_NO = '';
 	public ID = '';
 	public ICON = '';
+	public MDI_ID = '';
+	public MAXIMIZED = '';
 
 }
+
+
 
  export class scdappTreeViewScdScdAppTreeViewTree{
 	public MENU_ID = '';
@@ -41,8 +53,12 @@
 	public LINE_NO = '';
 	public ID = '';
 	public ICON = '';
+	public MDI_ID = '';
+	public MAXIMIZED = '';
 
 }
+
+
 
 
  export class scdappTreeViewScdScdAppTreeViewGrid{
@@ -1632,8 +1648,10 @@
 	public DISPLAY_ID = '';
 	public APPLICATION_ID = '';
 	public DISPLAY_NAME = '';
+	public DISPLAY_DATA = '';
 
 }
+
 
  export class scdtagScdAtTagDetails{
 	public TAG_ID = '';
@@ -13844,6 +13862,8 @@ export class admaiLogHeadAdmAdmAiLogHeadGrid{
         public newRec=null;
 		public isSearchScreen = null;
 		public masterSelector = null;
+		public hideComponents = null;
+		public isDirty = null;
         
 
     }

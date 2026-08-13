@@ -29,7 +29,6 @@ import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scddiagramScdScdDiagramDiagram , componentConfigDef} from '@modeldir/model';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../../../services/scada-integration.service';
 import { ServerConfig } from '../../../services/scada.service';
-import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
 import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
 import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
 import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
@@ -49,6 +48,8 @@ import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-ta
 import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
 import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
 import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
+import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
+import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
 import {ScdShapePropertiesComponent} from '../scd-shape-properties/scd-shape-properties.component';
 import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
 import {ScdNumericDisplayPropertiesComponent} from '../scd-numeric-display-properties/scd-numeric-display-properties.component';
@@ -787,7 +788,6 @@ public printScreen(){
 if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
      && this.starServices.sessionParams['COPIED_SHAPE'] != ""){
         let copiedShape =this.starServices.sessionParams['COPIED_SHAPE'];
-        console.log ("kendoui_content:3:",copiedShape.kendoui_content);
         let kendoui_content =  JSON.parse(copiedShape.kendoui_content);
         this.starServices.sessionParams['COPIED_SHAPE'] = "";
         console.log ("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
@@ -812,8 +812,12 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
       console.log("ON_CLICK_MENU:rec:", rec)
       if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
-        this.starlib1.dialog_openDialog(this, Id);
+        let Maximize = rec.Maximize;
+        this.starlib1.dialog_openDialog(this, Id,Maximize);
       }
+      setTimeout(() => {
+           this.selectedShape = null;
+    });
 
     }
 
@@ -1959,11 +1963,15 @@ public valueChange(value: any): void {
   public propertyDialogShapeType: string = '';
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
-  public dialogProperties = [{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700"},{"Id":"","Component":"","Width":"","Height":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500"},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500"},{"Id":"11","Component":"Symbol_Properties","Width":"500","Height":"500"},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500"},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500"},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500"},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500"},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500"},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500"},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500"},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500"},{"Id":"2","Component":"Text_Properties","Width":"500","Height":"500"},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500"},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500"},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500"},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500"},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500"},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500"},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500"},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500"},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500"},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500"},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500"},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500"}]
-  dialog_getComponentToRender(shapeType: string): any {
+  public winState;
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""}]
+  dialog_getComponentToRender(shapeType: string,Maximize): any {
+    this.winState = null;
+    if (Maximize == 'Y'){
+      this.winState = "maximized";
+    }
+
     	switch (shapeType) {
-		case '28': 
-		return ScdDisplaySettingsScreenComponent; 
 		case '1': 
 		return ScdPushButtonPropertiesComponent; 
 		case '10': 
@@ -2002,6 +2010,10 @@ public valueChange(value: any): void {
 		return ScdPilotedListSelectorPropertiesComponent; 
 		case '27': 
 		return ScdNumericInputPropertiesComponent; 
+		case '28': 
+		return ScdDisplaySettingsScreenComponent; 
+		case '29': 
+		return ScdSymbolfactoryplusComponent; 
 		case '3': 
 		return ScdShapePropertiesComponent; 
 		case '4': 

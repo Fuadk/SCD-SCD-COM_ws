@@ -3927,6 +3927,7 @@ import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/
 import { ScdAppTreeScdScdAppTreeGridGridComponent } from '../components/SCD/scd-scd-app-tree-grid/scd-scd-app-tree-grid.component';
 import { ScdAppTreeContextScdScdAppTreeContextGridGridComponent } from '../components/SCD/scd-scd-app-tree-context-grid/scd-scd-app-tree-context-grid.component';
 import { ScdMenusMaintComponent } from '../components/SCD/scd-menus-maint/scd-menus-maint.component';
+import { ScdDisplayScdScdDisplayDiagramDiagramComponent } from '../components/SCD/scd-scd-display-diagram/scd-scd-display-diagram.component';
 //point1
 
 export const PanelbarRoutes: Routes = [
@@ -7940,6 +7941,7 @@ export const PanelbarRoutes: Routes = [
 	{ path: 'scd_scd_app_tree_grid', component: ScdAppTreeScdScdAppTreeGridGridComponent },
 	{ path: 'scd_scd_app_tree_context_grid', component: ScdAppTreeContextScdScdAppTreeContextGridGridComponent },
 	{ path: 'scd_menus_maint', component: ScdMenusMaintComponent },
+	{ path: 'scd_scd_display_diagram', component: ScdDisplayScdScdDisplayDiagramDiagramComponent },
   //point2
 
 ];

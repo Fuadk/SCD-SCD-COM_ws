@@ -1,42 +1,34 @@
     <div>   
         <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_app_main.scd_app_main.component_title","") }}</legend> 
-<kendo-tilelayout 
-[columns]="isPhonePortrait ? 1 : null" [gap]="gap" 
-[resizable]="true" 
-[reorderable]="true">
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 1" [colSpan]="1" >
-        <app-scd-scd-application-form  
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-scd-application-form  [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="setComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_APPLICATIONForm_0Config">
         </app-scd-scd-application-form >
 
-</kendo-tilelayout-item>
-</kendo-tilelayout>
-<kendo-tilelayout 
-[columns]="isPhonePortrait ? 1 : null" [gap]="gap" 
-[resizable]="true" 
-[reorderable]="true">
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 1" [colSpan]="1" >
-        <app-scd-scd-app-tree-view style="width : 200px ;" [detail_Input]="tree_1_SCD_APP_TREE_VIEW"  
-                      (readCompletedOutput)="readCompletedHandler2($event)"
-                      (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-scd-app-tree-view style="max-width: 250px;height: 100%;" [hidden]="hide_comp_2" [detail_Input]="tree_1_SCD_APP_TREE_VIEW"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="setComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_APP_TREE_VIEWTree_1Config">
         </app-scd-scd-app-tree-view >
 
-</kendo-tilelayout-item>
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 2" [colSpan]="8" >
-        <app-scd-mdi-win  [detail_Input]="formtabs_2_SCD_ALARM"  
-                      (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
+
+
+        <app-scd-mdi-win  [hidden]="hide_comp_3" [detail_Input]="formtabs_2_SCD_ALARM"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,3)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="setComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ALARMFormtabs_2Config">
         </app-scd-mdi-win >
 
-</kendo-tilelayout-item>
-</kendo-tilelayout>
+</div>
 
     </div>   
 <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">

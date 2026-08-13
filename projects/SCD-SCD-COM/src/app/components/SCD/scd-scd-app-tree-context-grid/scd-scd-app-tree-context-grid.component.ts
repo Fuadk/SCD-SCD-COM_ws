@@ -77,7 +77,7 @@ export class ScdAppTreeContextScdScdAppTreeContextGridGridComponent implements O
 
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
-  public  gridHeight = "";
+  public  gridHeight = "500";
 
   private masterKeyArr = [];
   private masterKeyNameArr = [];

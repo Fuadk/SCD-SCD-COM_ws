@@ -11,11 +11,15 @@ import { TabAlignment } from '@progress/kendo-angular-layout';
 
 declare function getParamConfig(): any;
 		
-	 import { ScdDiagramScdScdDiagramDiagramDiagramComponent } from '../scd-scd-diagram-diagram/scd-scd-diagram-diagram.component';
+	 import { ScdDisplayScdScdDisplayDiagramDiagramComponent } from '../scd-scd-display-diagram/scd-scd-display-diagram.component';
 		
 	 import { ScdApplicationUsersManagementComponent } from '../scd-application-users-management/scd-application-users-management.component';
 		
 	 import { ScdSymbolfactoryplusComponent } from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
+		
+	 import { ScdApplicationTagsComponent } from '../scd-application-tags/scd-application-tags.component';
+		
+	 import { ScdApplicationDisplayComponent } from '../scd-application-display/scd-application-display.component';
 		//
 	  
 	declare function getParamConfig(): any;
@@ -165,23 +169,15 @@ declare function getParamConfig(): any;
     {
       let masterParams = ComponentConfig.masterParams;
       console.log("masterParams:", masterParams)
-      let winId=0;
-      switch (masterParams.Id) {
-        case 'DIAGRAM':
-          winId= 1;
-          break;
-        case 'USER_NAME':
-          winId= 2;
-          break;
-        case 'SYMBOL_FACTORY':
-          winId= 3;
-          break;
-        default:
-              winId= 0;
-          }
-        if (winId != 0){
-          this.openWin(winId+'', masterParams);
-        }
+      let winId= '';
+	  let shouldOpenOutside = false; 
+      if (masterParams.MAXIMIZED == 'Y')
+        shouldOpenOutside = true; 
+      if (masterParams.MDI_ID != null)
+      winId = masterParams.MDI_ID;
+      if (winId != '' ){
+          this.openWin(winId+'', masterParams, shouldOpenOutside);
+      }
     }
     
   }
@@ -242,13 +238,19 @@ getComponentToRender(shapeType: string): any {
     switch (shapeType) {
 		
 	case '1':
-		return ScdDiagramScdScdDiagramDiagramDiagramComponent;
+		return ScdDisplayScdScdDisplayDiagramDiagramComponent;
 		
 	case '2':
 		return ScdApplicationUsersManagementComponent;
 		
 	case '3':
 		return ScdSymbolfactoryplusComponent;
+		
+	case '4':
+		return ScdApplicationTagsComponent;
+		
+	case '5':
+		return ScdApplicationDisplayComponent;
 	
       default:
         return null;
@@ -298,34 +300,58 @@ getComponentToRender(shapeType: string): any {
 
   // ===== WINDOW MANAGEMENT METHODS =====
 
-    openWin(winId: string, masterParams?: any): void {
-    console.log("openWin:masterParams:",masterParams)
-    let viewMode: 'edit';
-    let MENU_ID = null;
-    let WindowID = winId;
-    let title = "Window " + winId;
-    if (typeof masterParams != "undefined"){
-      viewMode = masterParams.action;
-      MENU_ID = masterParams.MENU_ID;
-      WindowID = masterParams.Id + "_" + masterParams.Item;
-      title = masterParams.Item;
+     openWin(winId: string, masterParams?: any, openOutsideContainer: boolean = false): void {
+  console.log("openWin:masterParams:", masterParams);
+  let viewMode: 'edit';
+  let MENU_ID = null;
+  let WindowID = winId;
+  let title = "Window " + winId;
+  
+  if (typeof masterParams != "undefined") {
+    viewMode = masterParams.action;
+    MENU_ID = masterParams.MENU_ID;
+    WindowID = masterParams.Id + "_" + masterParams.Item;
+    title = masterParams.Item;
+  }
+  
+  const componentConfig = new componentConfigDef();
+  componentConfig.masterParams = {
+    data: {
+      MENU_ID: MENU_ID,
+      viewMode: viewMode
     }
-    const componentConfig = new componentConfigDef();
-    
-    componentConfig.masterParams = {
-      data: {
-        MENU_ID: MENU_ID,
-        viewMode: viewMode
-      }
-    };
+  };
 
-    let componentToRender = this.getComponentToRender(winId);
-    console.log("openWin:componentToRender:",componentToRender);
-    if (!componentToRender) {
-      console.error("No component found for shapeType:",winId);
-      return;
-    }
-    console.log("openWin:componentToRender:",componentToRender, "componentConfig.masterParams:",componentConfig.masterParams);
+  let componentToRender = this.getComponentToRender(winId);
+  console.log("openWin:componentToRender:", componentToRender);
+  
+  if (!componentToRender) {
+    console.error("No component found for shapeType:", winId);
+    return;
+  }
+  
+  console.log("openWin:componentToRender:", componentToRender, "componentConfig.masterParams:", componentConfig.masterParams);
+  
+  // NEW: Handle window placement based on flag
+  if (openOutsideContainer) {
+    // Open as a floating window outside the container
+    // Use fixed position or position relative to viewport
+    this.windowManager.openWindow({
+    id: WindowID,
+    title: title,
+    component: componentToRender,
+    inputs: {
+      setComponentConfig_Input: componentConfig
+    },
+    width: window.innerWidth,
+    height: window.innerHeight,
+    left: 0,
+    top: 0,
+    outsideContainer: true,
+    isMaximized: true // Start maximized
+  });
+  } else {
+    // Existing logic - open inside container
     if (this.tabGroups.length > 0 && this.activeGroupId) {
       this.windowManager.addWindowToGroup(this.activeGroupId, {
         id: WindowID,
@@ -337,7 +363,7 @@ getComponentToRender(shapeType: string): any {
       });
     } else {
       this.windowManager.openWindow({
-        id: WindowID ,
+        id: WindowID,
         title: title,
         component: componentToRender,
         inputs: {
@@ -348,6 +374,7 @@ getComponentToRender(shapeType: string): any {
       });
     }
   }
+}
 
   createTabGroup(title: string): void {
     const groupId = this.windowManager.createTabGroup(title || 'New Tab Group', []);
@@ -367,7 +394,7 @@ getComponentToRender(shapeType: string): any {
     this.windowManager.addWindowToGroup(groupId, {
       id: id,
       title: "Window " + (this.getWindowsForGroup(groupId).length + 1),
-      component: ScdDiagramScdScdDiagramDiagramDiagramComponent,
+      component: ScdDisplayScdScdDisplayDiagramDiagramComponent,
       inputs: { 
         setComponentConfig_Input: componentConfig 
       }
@@ -564,9 +591,9 @@ cascadeWindows(): void {
 }
 
 		
-	 //      this.scd-scd-diagram-diagram0_0Config = new componentConfigDef();
+	 //      this.scd-scd-display-diagram0_0Config = new componentConfigDef();
 
-	 //      this.scd_scd_diagram_diagram0_0Config = ComponentConfig;
+	 //      this.scd_scd_display_diagram0_0Config = ComponentConfig;
  
 		
 	 //      this.scd-application-users-management1_1Config = new componentConfigDef();
@@ -577,5 +604,15 @@ cascadeWindows(): void {
 	 //      this.scd-symbolfactoryplus2_2Config = new componentConfigDef();
 
 	 //      this.scd_symbolfactoryplus2_2Config = ComponentConfig;
+ 
+		
+	 //      this.scd-application-tags3_3Config = new componentConfigDef();
+
+	 //      this.scd_application_tags3_3Config = ComponentConfig;
+ 
+		
+	 //      this.scd-application-display4_4Config = new componentConfigDef();
+
+	 //      this.scd_application_display4_4Config = ComponentConfig;
  
 	}

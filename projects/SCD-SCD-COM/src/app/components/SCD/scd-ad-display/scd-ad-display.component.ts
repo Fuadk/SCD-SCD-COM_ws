@@ -16,6 +16,7 @@ import { scddisplayScdAdDisplay , componentConfigDef} from '@modeldir/model';
  const createFormGroup = (dataItem:any) => new FormGroup({
 'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  , ) ,
 'APPLICATION_ID' : new FormControl(dataItem.APPLICATION_ID  ,   Validators.required ) ,
+'DISPLAY_DATA' : new FormControl(dataItem.DISPLAY_DATA  , ) ,
 'DISPLAY_NAME' : new FormControl(dataItem.DISPLAY_NAME  , ) 
 });
 
@@ -85,15 +86,19 @@ public labelDISPLAY_IDTop=false;
 public labelDISPLAY_IDVisible=true;
 public labelAPPLICATION_IDTop=false;
 public labelAPPLICATION_IDVisible=true;
+public labelDISPLAY_DATATop=false;
+public labelDISPLAY_DATAVisible=true;
 public labelDISPLAY_NAMETop=false;
 public labelDISPLAY_NAMEVisible=true;
 
 public visibleDISPLAY_ID = true;
 public visibleAPPLICATION_ID = false;
+public visibleDISPLAY_DATA = true;
 public visibleDISPLAY_NAME = true;
 
 public disableDISPLAY_ID = false;
 public disableAPPLICATION_ID = false;
+public disableDISPLAY_DATA = false;
 public disableDISPLAY_NAME = false;
 
 
@@ -104,6 +109,7 @@ public disableDISPLAY_NAME = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
 
    constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -485,6 +491,8 @@ return rec;
 onChanges(): void {
 this.form.get('DISPLAY_ID').valueChanges.subscribe(val => {
 });
+this.form.get('DISPLAY_DATA').valueChanges.subscribe(val => {
+});
 this.form.get('DISPLAY_NAME').valueChanges.subscribe(val => {
 });
 }
@@ -708,6 +716,26 @@ async WHEN_VALIDATE_ITEM_APPLICATION_ID(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_DISPLAY_DATA(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['DISPLAY_DATA'] != "undefined" ) 
+      this.form.controls['DISPLAY_DATA'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['DISPLAY_DATA'] != "undefined" ) 
+     this.form.get('DISPLAY_DATA').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_DISPLAY_DATA(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_DISPLAY_NAME(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -743,6 +771,15 @@ async WHEN_VALIDATE_ITEM_DISPLAY_NAME(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onChange_DISPLAY_DATA(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_DISPLAY_DATA(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onChange_DISPLAY_NAME(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	

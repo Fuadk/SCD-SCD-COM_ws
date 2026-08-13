@@ -36,6 +36,20 @@
 
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_NAME >
+		<kendo-label *ngIf="(!labelAPPLICATION_NAMETop && !isPhonePortrait) && labelAPPLICATION_NAMEVisible" class="form-label" [for]="APPLICATION_NAME" [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME','Application Name')"></kendo-label>
+		<label *ngIf="(labelAPPLICATION_NAMETop || isPhonePortrait) && labelAPPLICATION_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME','Application Name')}}</label>
+		<input   formControlName="APPLICATION_NAME"
+ kendoTextBox #APPLICATION_NAME  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME_Hint','Please enter Application Name.')"
+		(click)="ON_CLICK_APPLICATION_NAME($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_APPLICATION_NAME($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+		<button  (valueChange)="onValueChange_HIDE_BUT($event)"  style="font-size : 12px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.HIDE_BUT_Hint','Please enter Hide But.')" 
+ iconClass="fas fa-eye"  *ngIf=visibleHIDE_BUT 		(click)="ON_CLICK_HIDE_BUT($event)"
+ >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.HIDE_BUT','')}}</button>
+
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_ID >
 		<kendo-label *ngIf="(!labelAPPLICATION_IDTop && !isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label" [for]="APPLICATION_ID" [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_ID','Application Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelAPPLICATION_IDTop || isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_ID','Application Id') + ' *'}}</label>
@@ -54,15 +68,6 @@
 		 </div> 
 		 </ng-template> 
 		</kendo-combobox>
-	</kendo-formfield>
-
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_NAME >
-		<kendo-label *ngIf="(!labelAPPLICATION_NAMETop && !isPhonePortrait) && labelAPPLICATION_NAMEVisible" class="form-label" [for]="APPLICATION_NAME" [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME','Application Name')"></kendo-label>
-		<label *ngIf="(labelAPPLICATION_NAMETop || isPhonePortrait) && labelAPPLICATION_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME','Application Name')}}</label>
-		<input   formControlName="APPLICATION_NAME"
- kendoTextBox #APPLICATION_NAME  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME_Hint','Please enter Application Name.')"
-		(click)="ON_CLICK_APPLICATION_NAME($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_APPLICATION_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 

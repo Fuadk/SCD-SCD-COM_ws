@@ -14,8 +14,8 @@ import { scdapplicationScdScdApplicationForm , componentConfigDef} from '@modeld
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'APPLICATION_ID' : new FormControl(dataItem.APPLICATION_ID  , ) ,
 'APPLICATION_NAME' : new FormControl(dataItem.APPLICATION_NAME  , ) ,
+'APPLICATION_ID' : new FormControl(dataItem.APPLICATION_ID  , ) ,
 'DESCRIPTION' : new FormControl(dataItem.DESCRIPTION  , ) ,
 'APP_LANGUAGE' : new FormControl(dataItem.APP_LANGUAGE  , ) 
 });
@@ -82,25 +82,30 @@ export class ScdApplicationScdScdApplicationFormFormComponent {
   public PK_AUTO = 'APPLICATION_ID';
   public customerFacing = false;
   public FormStepsArr = [] ;
-public labelAPPLICATION_IDTop=true;
-public labelAPPLICATION_IDVisible=false;
 public labelAPPLICATION_NAMETop=true;
 public labelAPPLICATION_NAMEVisible=true;
+public labelHIDE_BUTTop=true;
+public labelHIDE_BUTVisible=false;
+public labelAPPLICATION_IDTop=true;
+public labelAPPLICATION_IDVisible=false;
 public labelDESCRIPTIONTop=true;
 public labelDESCRIPTIONVisible=true;
 public labelAPP_LANGUAGETop=true;
 public labelAPP_LANGUAGEVisible=true;
 
-public visibleAPPLICATION_ID = true;
 public visibleAPPLICATION_NAME = false;
+public visibleHIDE_BUT = true;
+public visibleAPPLICATION_ID = true;
 public visibleDESCRIPTION = false;
 public visibleAPP_LANGUAGE = false;
 
-public disableAPPLICATION_ID = false;
 public disableAPPLICATION_NAME = false;
+public disableHIDE_BUT = false;
+public disableAPPLICATION_ID = false;
 public disableDESCRIPTION = false;
 public disableAPP_LANGUAGE = false;
 
+public variableHIDE_BUT;
 
   
   //@Input()  
@@ -109,6 +114,7 @@ public disableAPP_LANGUAGE = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
 
    constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -676,6 +682,48 @@ this.onCancel(this.form)
 
 
 
+async WHEN_VALIDATE_ITEM_APPLICATION_NAME(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['APPLICATION_NAME'] != "undefined" ) 
+      this.form.controls['APPLICATION_NAME'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['APPLICATION_NAME'] != "undefined" ) 
+     this.form.get('APPLICATION_NAME').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_APPLICATION_NAME(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_HIDE_BUT(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['HIDE_BUT'] != "undefined" ) 
+      this.form.controls['HIDE_BUT'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['HIDE_BUT'] != "undefined" ) 
+     this.form.get('HIDE_BUT').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_HIDE_BUT(event){
+let componentConfig = new componentConfigDef();
+ componentConfig.hideComponents = [2]
+  this.setComponentConfig_Output.emit(componentConfig);
+}
+
 async WHEN_VALIDATE_ITEM_APPLICATION_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -694,26 +742,6 @@ this.readCompletedOutput.emit(this.form.getRawValue());
  }
 
  async ON_CLICK_APPLICATION_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_APPLICATION_NAME(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['APPLICATION_NAME'] != "undefined" ) 
-      this.form.controls['APPLICATION_NAME'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['APPLICATION_NAME'] != "undefined" ) 
-     this.form.get('APPLICATION_NAME').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APPLICATION_NAME(event){
 
 }
 
@@ -757,12 +785,6 @@ async WHEN_VALIDATE_ITEM_APP_LANGUAGE(value) {
 
 }
  
- async onValueChange_APPLICATION_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APPLICATION_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_APPLICATION_NAME(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -772,6 +794,18 @@ async WHEN_VALIDATE_ITEM_APP_LANGUAGE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onValueChange_HIDE_BUT(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_HIDE_BUT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_APPLICATION_ID(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_APPLICATION_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_DESCRIPTION(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	

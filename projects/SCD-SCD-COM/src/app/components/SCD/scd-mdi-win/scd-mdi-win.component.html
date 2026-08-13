@@ -1,21 +1,47 @@
 
 	
-	<!-- scd-appboard.component.html -->
+	<style>
+  .outside-container-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  
+  .outside-container-overlay app-mdi-window {
+    pointer-events: auto;
+  }
+  
+  .outside-container-overlay app-mdi-window .mdi-window-maximized {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
+  }
+</style>
+
+<!-- scd-appboard.component.html -->
 <div 
-style="height: 100vh;  display: flex;  flex-direction: column;">
+style="height: 100vh;  display: flex;  flex-direction: column;" class="form-borders">
   <legend class="k-form-legend screen-legend">
     {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.component_title","SCADA Application") }}
   </legend>
 
   <!-- Action Bar -->
   <div class="action-bar">
-    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('1')">
+    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('1', null, false)">
       {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Diagram") }}
     </button>
-    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('2')">
+    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('2', null, false)">
       {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID3","Diagram1") }}
     </button>
-    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('3')">
+    <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('3', null, true)">
       {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID4","Diagram 2") }}
     </button>
     
@@ -36,7 +62,7 @@ style="height: 100vh;  display: flex;  flex-direction: column;">
   </div>
 
   <!-- Tab Host -->
-  <div class="tab-host" [class.tab-host-dark]="isDarkTheme" style="flex: 1; display: flex;">
+  <div class="tab-host" [class.tab-host-dark]="isDarkTheme" style="flex: 1; display: flex; position: relative;">
     
     <!-- ===== GROUP TABS (TOP LEVEL) ===== -->
     <div class="group-tabs-container" *ngIf="tabGroups.length > 0" style="flex: 1;flex-direction: column;">
@@ -69,19 +95,22 @@ style="height: 100vh;  display: flex;  flex-direction: column;">
           <ng-template kendoTabContent>
             <!-- ===== FLOATING WINDOWS FOR SELECTED GROUP ===== -->
             <div class="group-content-area" style="position: relative; width: 100%; height: 100%;">
-              <!-- Show floating windows that belong to this group -->
+              <!-- Show floating windows that belong to this group (excluding outside-container windows) -->
               <div *ngIf="getWindowsForGroup(group.id).length > 0" class="floating-windows-container">
-                <app-mdi-window
-                  *ngFor="let window of getWindowsForGroup(group.id)"
-                  [window]="window"
-                  (closeWindow)="closeWindow($event)"
-                  (bringToFrontWindow)="bringToFront($event)"
-                  (activateWindow)="activateGroupWindow(group.id, $event)"
-                  (minimizeWindow)="minimizeWindow($event)"
-                  (maximizeWindow)="maximizeWindow($event)"
-                  (dragWindow)="onDragStart($event)"
-                  (resizeWindow)="onResizeStart($event)">
-                </app-mdi-window>
+                <!-- FIX: Use ng-container to separate ngFor and ngIf -->
+                <ng-container *ngFor="let window of getWindowsForGroup(group.id)">
+                  <app-mdi-window
+                    *ngIf="!window.outsideContainer"
+                    [window]="window"
+                    (closeWindow)="closeWindow($event)"
+                    (bringToFrontWindow)="bringToFront($event)"
+                    (activateWindow)="activateGroupWindow(group.id, $event)"
+                    (minimizeWindow)="minimizeWindow($event)"
+                    (maximizeWindow)="maximizeWindow($event)"
+                    (dragWindow)="onDragStart($event)"
+                    (resizeWindow)="onResizeStart($event)">
+                  </app-mdi-window>
+                </ng-container>
               </div>
               
               <!-- Empty state for group with no windows -->
@@ -99,8 +128,26 @@ style="height: 100vh;  display: flex;  flex-direction: column;">
       </kendo-tabstrip>
     </div>
 
-    <!-- ===== FLOATING WINDOWS (NO GROUPS - FALLBACK) ===== -->
-    <div class="floating-windows-container full-height" style="position: relative;" *ngIf="tabGroups.length === 0 && windows.length > 0">
+    <!-- ===== FLOATING WINDOWS (NO GROUPS - FALLBACK) =====  -->
+    <div class="floating-windows-container full-height" >
+      <!-- FIX: Use ng-container to separate ngFor and ngIf Fuad : check original below -->
+      <ng-container *ngFor="let window of windows">
+        <app-mdi-window
+          *ngIf="!window.outsideContainer"
+          [window]="window"
+          (closeWindow)="closeWindow($event)"
+          (bringToFrontWindow)="bringToFront($event)"
+          (activateWindow)="activateFloatingWindow($event)"
+          (minimizeWindow)="minimizeWindow($event)"
+          (maximizeWindow)="maximizeWindow($event)"
+          (dragWindow)="onDragStart($event)"
+          (resizeWindow)="onResizeStart($event)">
+        </app-mdi-window>
+      </ng-container>
+    </div>
+
+	<!-- Fuad Original where no 2 windows are shown inside a group-->
+	<!--div class="floating-windows-container full-height" style="position: relative;" *ngIf="tabGroups.length === 0 && windows.length > 0">
       <app-mdi-window
         *ngFor="let window of windows"
         [window]="window"
@@ -112,7 +159,8 @@ style="height: 100vh;  display: flex;  flex-direction: column;">
         (dragWindow)="onDragStart($event)"
         (resizeWindow)="onResizeStart($event)">
       </app-mdi-window>
-    </div>
+    </div-->
+
 
     <!-- Empty State -->
     <div class="empty-state" *ngIf="getTotalWindowCount() === 0 && tabGroups.length === 0">
@@ -122,6 +170,25 @@ style="height: 100vh;  display: flex;  flex-direction: column;">
         <p>Open a diagram from the buttons above or create a new tab group</p>
       </div>
     </div>
+  </div>
+
+  <!-- ===== NEW: OUTSIDE CONTAINER OVERLAY ===== -->
+  <!-- This renders windows outside the main container (e.g., Symbol Factory) -->
+  <div class="outside-container-overlay">
+    <!-- FIX: Use ng-container to separate ngFor and ngIf -->
+    <ng-container *ngFor="let window of windows">
+      <app-mdi-window
+        *ngIf="window.outsideContainer"
+        [window]="window"
+        (closeWindow)="closeWindow($event)"
+        (bringToFrontWindow)="bringToFront($event)"
+        (activateWindow)="activateFloatingWindow($event)"
+        (minimizeWindow)="minimizeWindow($event)"
+        (maximizeWindow)="maximizeWindow($event)"
+        (dragWindow)="onDragStart($event)"
+        (resizeWindow)="onResizeStart($event)">
+      </app-mdi-window>
+    </ng-container>
   </div>
 </div>
 

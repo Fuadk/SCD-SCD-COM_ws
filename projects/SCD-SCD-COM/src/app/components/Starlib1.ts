@@ -627,7 +627,7 @@ gridUserSelectionChange(object, selectedData) {
     object.propertyDialogVisible = true;
   }
   // Update dialog_openDialog method
-  public dialog_openDialog(object, comp: string): void {
+  public dialog_openDialog(object, comp: string, Maximize): void {
     // Create default definition based on type
     let definition: any = {};
     
@@ -636,7 +636,7 @@ gridUserSelectionChange(object, selectedData) {
   {
     definition = rec;
   }
-  object.componentToRender = object.dialog_getComponentToRender(comp);
+  object.componentToRender = object.dialog_getComponentToRender(comp,Maximize);
   
     // if (comp === 'TEXT') {
     //   definition = {

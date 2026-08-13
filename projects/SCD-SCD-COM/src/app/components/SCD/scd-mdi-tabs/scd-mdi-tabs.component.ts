@@ -10,7 +10,7 @@
 	import { TabAlignment } from '@progress/kendo-angular-layout';
 	import { TabManagerService, TabInfo, TabGroup } from '../../../services/tab-manager.service';
 		
-	 import { ScdDiagramScdScdDiagramDiagramDiagramComponent } from '../scd-scd-diagram-diagram/scd-scd-diagram-diagram.component';
+	 import { ScdDisplayScdScdDisplayDiagramDiagramComponent } from '../scd-scd-display-diagram/scd-scd-display-diagram.component';
 		
 	 import { ScdTextPropertiesComponent } from '../scd-text-properties/scd-text-properties.component';
 		//
@@ -47,9 +47,6 @@
   
     @ViewChild("wrapper", { read: ElementRef })
     wrapper!: ElementRef;
-	// Make components available for template
-	public diagramComponent = ScdDiagramScdScdDiagramDiagramDiagramComponent;
-	public textPropertiesComponent = ScdTextPropertiesComponent;
 
 
 
@@ -599,7 +596,7 @@ getComponentToRender(shapeType: string): any {
     switch (shapeType) {
 		
 	case '1':
-		return ScdDiagramScdScdDiagramDiagramDiagramComponent;
+		return ScdDisplayScdScdDisplayDiagramDiagramComponent;
 		
 	case '2':
 		return ScdTextPropertiesComponent;
@@ -648,7 +645,7 @@ openDiagram(diagramId?: string): void {
     this.tabManager.openTab({
       id: "diagram_" + id,
       title: "Diagram " + id,
-      component: ScdDiagramScdScdDiagramDiagramDiagramComponent,
+      component: ScdDisplayScdScdDisplayDiagramDiagramComponent,
       inputs: { 
         setComponentConfig_Input: componentConfig 
       },
@@ -686,7 +683,7 @@ openDiagram(diagramId?: string): void {
       {
         id: "tab1_" + Date.now(),
         title: 'Tab 1',
-        component: ScdDiagramScdScdDiagramDiagramDiagramComponent,
+        component: ScdDisplayScdScdDisplayDiagramDiagramComponent,
         inputs: { setComponentConfig_Input: componentConfig },
         closable: true,
         icon: '📊'
@@ -694,7 +691,7 @@ openDiagram(diagramId?: string): void {
       {
         id: "tab2_" + Date.now(),
         title: 'Tab 2',
-        component: ScdDiagramScdScdDiagramDiagramDiagramComponent,
+        component: ScdDisplayScdScdDisplayDiagramDiagramComponent,
         inputs: { setComponentConfig_Input: componentConfig },
         closable: true,
         icon: '📊'
@@ -716,7 +713,7 @@ addDiagramToGroup(groupId: string): void {
     this.tabManager.addTabToGroup(groupId, {
       id: "tab_" + Date.now(),
       title: 'Diagram',
-      component: ScdDiagramScdScdDiagramDiagramDiagramComponent,
+      component: ScdDisplayScdScdDisplayDiagramDiagramComponent,
       inputs: { setComponentConfig_Input: componentConfig },
       closable: true,
       icon: '📊'
@@ -833,9 +830,9 @@ addDiagramToGroup(groupId: string): void {
   public visibleOK_BTNS = false;
 
 		
-	 //      this.scd-scd-diagram-diagram0_0Config = new componentConfigDef();
+	 //      this.scd-scd-display-diagram0_0Config = new componentConfigDef();
 
-	 //      this.scd_scd_diagram_diagram0_0Config = ComponentConfig;
+	 //      this.scd_scd_display_diagram0_0Config = ComponentConfig;
  
 		
 	 //      this.scd-text-properties1_1Config = new componentConfigDef();

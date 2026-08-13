@@ -67,6 +67,15 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_DATA >
+		<kendo-label *ngIf="(!labelDISPLAY_DATATop && !isPhonePortrait) && labelDISPLAY_DATAVisible" class="form-label" [for]="DISPLAY_DATA" [text]="starServices.getNLS([],'SCD_AD_DISPLAY.scddisplayScdAdDisplay.DISPLAY_DATA','Display Data')"></kendo-label>
+		<label *ngIf="(labelDISPLAY_DATATop || isPhonePortrait) && labelDISPLAY_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AD_DISPLAY.scddisplayScdAdDisplay.DISPLAY_DATA','Display Data')}}</label>
+		<input   formControlName="DISPLAY_DATA"
+ kendoTextBox #DISPLAY_DATA  [placeholder]="starServices.getNLS([],'SCD_AD_DISPLAY.scddisplayScdAdDisplay.DISPLAY_DATA_Hint','Please enter Display Data.')"
+		(click)="ON_CLICK_DISPLAY_DATA($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DISPLAY_DATA($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">

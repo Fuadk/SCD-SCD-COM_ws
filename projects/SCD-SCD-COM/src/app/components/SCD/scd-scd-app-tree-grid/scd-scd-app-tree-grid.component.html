@@ -54,7 +54,7 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="MENU_ID"
  *ngIf=visibleMENU_ID  [editable]=" !(disabledColumns.indexOf('MENU_ID') > -1)  && !primarKeyReadOnlyArr.isMENU_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('MENU_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.MENU_ID','Menu Id') + ' *'}}"  [width]="100">
+ [hidden]="hiddenColumns.indexOf('MENU_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.MENU_ID','Menu Id') + ' *'}}"  [width]="40">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.MENU_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_MENU_ID()"      [formControl]="formGroup.get('MENU_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.MENU_ID_Hint','Please enter Menu Id.')" />
@@ -94,7 +94,7 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="LINE_NO"
  *ngIf=visibleLINE_NO  [editable]=" !(disabledColumns.indexOf('LINE_NO') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('LINE_NO') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.LINE_NO','Line No')}}"  [width]="100">
+ [hidden]="hiddenColumns.indexOf('LINE_NO') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.LINE_NO','Line No')}}"  [width]="40">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.LINE_NO}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_LINE_NO()"      [formControl]="formGroup.get('LINE_NO')" [placeholder]="starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.LINE_NO_Hint','Please enter Line No.')" />
@@ -120,6 +120,28 @@
 		<input  (blur)="onBlur_ICON()"      [formControl]="formGroup.get('ICON')" [placeholder]="starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.ICON_Hint','Please enter Icon.')" />
 		</ng-template>
 		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="MDI_ID"
+ *ngIf=visibleMDI_ID  [editable]=" !(disabledColumns.indexOf('MDI_ID') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('MDI_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.MDI_ID','Mdi Id')}}"  [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.MDI_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_MDI_ID()"      [formControl]="formGroup.get('MDI_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.MDI_ID_Hint','Please enter Mdi Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="MAXIMIZED" title="{{starServices.getNLS([],'SCD_SCD_APP_TREE_GRID.scdappTreeScdScdAppTreeGrid.MAXIMIZED','Maximized')}}" [width]="50"   *ngIf=visibleMAXIMIZED  [editable]=" !(disabledColumns.indexOf('MAXIMIZED') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('MAXIMIZED') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetMAXIMIZED(dataItem.MAXIMIZED)?.CODETEXT_LANG}}</span> </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<kendo-dropdownlist  [data]="lkpArrMAXIMIZED"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeMAXIMIZED($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('MAXIMIZED')">
+		</kendo-dropdownlist>
+		</ng-template>
+	</kendo-grid-column>
 
 
 

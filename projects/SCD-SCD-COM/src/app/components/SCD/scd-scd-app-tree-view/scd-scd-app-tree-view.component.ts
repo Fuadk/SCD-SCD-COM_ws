@@ -19,6 +19,8 @@ import { scdappTreeViewScdScdAppTreeView , componentConfigDef} from '@modeldir/m
  const createFormGroup = (dataItem:any) => new FormGroup({
 'MENU_ID' : new FormControl(dataItem.MENU_ID  , ) ,
 'APPLICATION_ID' : new FormControl(dataItem.APPLICATION_ID  ,   Validators.required ) ,
+'MDI_ID' : new FormControl(dataItem.MDI_ID  , ) ,
+'MAXIMIZED' : new FormControl(dataItem.MAXIMIZED  , ) ,
 'MENU_TYPE' : new FormControl(dataItem.MENU_TYPE  , ) ,
 'MENU' : new FormControl(dataItem.MENU  , ) ,
 'ITEM' : new FormControl(dataItem.ITEM  , ) ,
@@ -95,6 +97,10 @@ public labelMENU_IDTop=true;
 public labelMENU_IDVisible=true;
 public labelAPPLICATION_IDTop=true;
 public labelAPPLICATION_IDVisible=true;
+public labelMDI_IDTop=true;
+public labelMDI_IDVisible=true;
+public labelMAXIMIZEDTop=true;
+public labelMAXIMIZEDVisible=true;
 public labelMENU_TYPETop=true;
 public labelMENU_TYPEVisible=true;
 public labelMENUTop=true;
@@ -110,6 +116,8 @@ public labelICONVisible=true;
 
 public visibleMENU_ID = true;
 public visibleAPPLICATION_ID = true;
+public visibleMDI_ID = true;
+public visibleMAXIMIZED = true;
 public visibleMENU_TYPE = true;
 public visibleMENU = true;
 public visibleITEM = true;
@@ -119,6 +127,8 @@ public visibleICON = true;
 
 public disableMENU_ID = false;
 public disableAPPLICATION_ID = false;
+public disableMDI_ID = false;
+public disableMAXIMIZED = false;
 public disableMENU_TYPE = false;
 public disableMENU = false;
 public disableITEM = false;
@@ -602,9 +612,9 @@ public printScreen(){
     
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	// if (!this.isChild){
-	// 	this.executeQuery(this.form.value);
-	// }
+    	//if (!this.isChild){
+	//	this.executeQuery(this.form.value);
+	//}
 
     
   }
@@ -645,7 +655,9 @@ public printScreen(){
         Id : this.currentNode.Id,
         action:event.item.Id,
         Item : this.currentNode.Item,
-        MENU_ID :this.currentNode.dataItem.MENU_ID
+        MENU_ID :this.currentNode.dataItem.MENU_ID,
+        MDI_ID :this.currentNode.dataItem.MDI_ID,
+        MAXIMIZED :this.currentNode.dataItem.MAXIMIZED
     }
     console.log("ON_CLICK_MENU:masterParams:",masterParams)
     this.children = ['app-scd-mdi-win']
@@ -723,6 +735,46 @@ async WHEN_VALIDATE_ITEM_APPLICATION_ID(value) {
  }
 
  async ON_CLICK_APPLICATION_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_MDI_ID(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['MDI_ID'] != "undefined" ) 
+      this.form.controls['MDI_ID'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['MDI_ID'] != "undefined" ) 
+     this.form.get('MDI_ID').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_MDI_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_MAXIMIZED(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['MAXIMIZED'] != "undefined" ) 
+      this.form.controls['MAXIMIZED'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['MAXIMIZED'] != "undefined" ) 
+     this.form.get('MAXIMIZED').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_MAXIMIZED(event){
 
 }
 

@@ -25,7 +25,9 @@ import {   scdappTreeScdScdAppTreeGrid , componentConfigDef } from '@modeldir/mo
 'ITEM' : new FormControl(dataItem.ITEM  , ) ,
 'LINE_NO' : new FormControl(dataItem.LINE_NO  , ) ,
 'ID' : new FormControl(dataItem.ID  , ) ,
-'ICON' : new FormControl(dataItem.ICON  , ) 
+'ICON' : new FormControl(dataItem.ICON  , ) ,
+'MDI_ID' : new FormControl(dataItem.MDI_ID  , ) ,
+'MAXIMIZED' : new FormControl(dataItem.MAXIMIZED  , ) 
 });
 
 
@@ -77,7 +79,7 @@ export class ScdAppTreeScdScdAppTreeGridGridComponent implements OnInit,OnDestro
 
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
-  public  gridHeight = "";
+  public  gridHeight = "500";
 
   private masterKeyArr = [];
   private masterKeyNameArr = [];
@@ -118,6 +120,8 @@ public visibleITEM = true;
 public visibleLINE_NO = true;
 public visibleID = true;
 public visibleICON = true;
+public visibleMDI_ID = true;
+public visibleMAXIMIZED = true;
 
 public compSelector = 'app-scd-scd-app-tree-grid';
 
@@ -558,9 +562,17 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG FROM SOM_TABS_CODES WHERE CODENAME ='YES_OR_NO' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrMAXIMIZED"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
+}
+
+public lkpArrMAXIMIZED = [];
+
+public lkpArrGetMAXIMIZED(CODE: any): any {
+var rec = this.lkpArrMAXIMIZED.find((x:any) => x.CODE === CODE);
+return rec;
 }
 
 
@@ -847,6 +859,46 @@ async WHEN_VALIDATE_ITEM_ICON(formGroup) {
  async ON_CLICK_ICON(event){
 
 }
+
+async WHEN_VALIDATE_ITEM_MDI_ID(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['MDI_ID'] != "undefined" ) 
+      this.formGroup.controls['MDI_ID'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['MDI_ID'] != "undefined" ) 
+     this.formGroup.get('MDI_ID').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_MDI_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_MAXIMIZED(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['MAXIMIZED'] != "undefined" ) 
+      this.formGroup.controls['MAXIMIZED'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['MAXIMIZED'] != "undefined" ) 
+     this.formGroup.get('MAXIMIZED').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_MAXIMIZED(event){
+
+}
  
  async onBlur_MENU_ID() { 
   await this.WHEN_VALIDATE_ITEM_MENU_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
@@ -868,6 +920,12 @@ async WHEN_VALIDATE_ITEM_ICON(formGroup) {
  } 
  async onBlur_ICON() { 
   await this.WHEN_VALIDATE_ITEM_ICON(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_MDI_ID() { 
+  await this.WHEN_VALIDATE_ITEM_MDI_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async valueChangeMAXIMIZED(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_MAXIMIZED(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
 
 // For Adding new CODE
