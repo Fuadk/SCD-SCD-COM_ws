@@ -1,7 +1,22 @@
 // mdi-window.component.ts
-import { Component, Input, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+
+import { 
+  Component, 
+  Input, 
+  Output, 
+  EventEmitter, 
+  HostListener, 
+  ElementRef, 
+  ViewChild, 
+  ViewContainerRef, 
+  ComponentRef, 
+  AfterViewInit, 
+  OnDestroy,
+  ChangeDetectorRef,
+  OnInit
+} from '@angular/core';
 import { WindowInfo } from '../../../services/window-manager.service';
-//[style.z-index]="window.zIndex" //Fuad this was removed was causing windows on top of menu
+
 @Component({
   selector: 'app-mdi-window',
   template: `
@@ -15,7 +30,6 @@ import { WindowInfo } from '../../../services/window-manager.service';
          [style.top.px]="window.isMaximized ? 0 : window.top"
          [style.width.px]="window.isMaximized ? '100%' : window.width"
          [style.height.px]="window.isMaximized ? 'calc(100% - 40px)' : (window.isMinimized ? 30 : window.height)"
-        
          (mousedown)="bringToFront()"
          (click)="activate()">
       
@@ -26,7 +40,7 @@ import { WindowInfo } from '../../../services/window-manager.service';
         <div class="mdi-window-title">
           <span class="window-icon">{{ getIcon() }}</span>
           <span>{{ window.title }}</span>
-          <span class="window-status" *ngIf="window.inputs?.modified">*</span>
+          <span class="window-status" *ngIf="window.isDirty">*</span>
         </div>
         <div class="mdi-window-controls">
           <button class="window-control-btn" (click)="$event.stopPropagation(); toggleMaximize()" title="Maximize/Restore">
@@ -48,11 +62,9 @@ import { WindowInfo } from '../../../services/window-manager.service';
         </div>
       </div>
 
-      <!-- Window Body - Each window owns its content -->
+      <!-- Window Body - Using ViewContainerRef to manually create component -->
       <div class="mdi-window-body" *ngIf="!window.isMinimized">
-        <!-- Modern Angular way: ngComponentOutlet -->
-        <ng-container *ngComponentOutlet="window.component; inputs: window.inputs;">
-        </ng-container>
+        <ng-container #componentContainer></ng-container>
       </div>
 
       <!-- Window Resize Handle -->
@@ -104,7 +116,7 @@ import { WindowInfo } from '../../../services/window-manager.service';
 
     .mdi-window-maximized {
       border-radius: 0;
-      top: 0px !important; /*was 40 Fuad */
+      top: 0px !important;
       left: 0 !important;
       width: 100% !important;
       height: calc(100% - 40px) !important;
@@ -238,7 +250,7 @@ import { WindowInfo } from '../../../services/window-manager.service';
     }
   `]
 })
-export class MDIWindowComponent {
+export class MDIWindowComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() window!: WindowInfo;
   @Output() closeWindow = new EventEmitter<string>();
   @Output() bringToFrontWindow = new EventEmitter<string>();
@@ -247,11 +259,158 @@ export class MDIWindowComponent {
   @Output() maximizeWindow = new EventEmitter<string>();
   @Output() dragWindow = new EventEmitter<{ windowId: string, event: MouseEvent }>();
   @Output() resizeWindow = new EventEmitter<{ windowId: string, event: MouseEvent }>();
+  @Output() componentConfigChanged = new EventEmitter<any>();
 
+  @ViewChild('componentContainer', { read: ViewContainerRef, static: false }) 
+  componentContainer!: ViewContainerRef;
+
+  private componentRef: ComponentRef<any> | null = null;
   private dragData: any = null;
   private resizeData: any = null;
+  private outputSubscriptions: any[] = [];
+  private isComponentCreated = false;
 
-  constructor(private el: ElementRef) {}
+  constructor(
+    private el: ElementRef,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    // Initialize if component is already available
+  }
+
+  ngAfterViewInit(): void {
+    // Use setTimeout to ensure view is fully rendered
+    setTimeout(() => {
+      if (this.window && this.window.component && !this.isComponentCreated) {
+        this.createComponent();
+      }
+    }, 0);
+  }
+
+private createComponent(): void {
+  if (this.isComponentCreated) {
+    return;
+  }
+
+  if (!this.window || !this.window.component) {
+    console.warn('No component to create');
+    return;
+  }
+
+  if (!this.componentContainer) {
+    console.warn('componentContainer is undefined, retrying...');
+    setTimeout(() => {
+      if (!this.componentContainer) {
+        console.error('componentContainer still undefined after retry');
+        return;
+      }
+      this.createComponent();
+    }, 100);
+    return;
+  }
+
+  try {
+    console.log('MDIWindowComponent: Creating component:', this.window.component.name);
+    console.log('MDIWindowComponent: Window ID:', this.window.id);
+    
+    // Clear the container
+    this.componentContainer.clear();
+
+    // Create the component
+    this.componentRef = this.componentContainer.createComponent(this.window.component);
+    
+    // <<<<<<< CRITICAL: Store component instance in the window object >>>>>>>
+    this.window.componentInstance = this.componentRef.instance;
+    console.log('MDIWindowComponent: Stored component instance in window for ID:', this.window.id);
+    console.log('MDIWindowComponent: Component instance:', this.componentRef.instance);
+
+    // Set inputs
+    if (this.window.inputs) {
+      Object.keys(this.window.inputs).forEach(key => {
+        if (this.componentRef) {
+          console.log('MDIWindowComponent: Setting input:', key, this.window.inputs[key]);
+          this.componentRef.instance[key] = this.window.inputs[key];
+        }
+      });
+    }
+
+    // Set up output subscriptions
+    this.setupOutputs();
+
+    // Trigger change detection
+    if (this.componentRef) {
+      this.componentRef.changeDetectorRef.detectChanges();
+    }
+
+    this.isComponentCreated = true;
+    console.log('MDIWindowComponent: Component created successfully');
+  } catch (error) {
+    console.error('MDIWindowComponent: Error creating component:', error);
+  }
+}
+
+  private setupOutputs(): void {
+    if (!this.componentRef) return;
+
+    const instance = this.componentRef.instance;
+    console.log('MDIWindowComponent: Setting up outputs for instance:', instance);
+
+    // Clean up previous subscriptions
+    this.outputSubscriptions.forEach(sub => sub.unsubscribe());
+    this.outputSubscriptions = [];
+
+    // Check for setComponentConfig_Output
+    if (instance.setComponentConfig_Output instanceof EventEmitter) {
+      console.log('MDIWindowComponent: Found setComponentConfig_Output, subscribing...');
+      const sub = instance.setComponentConfig_Output.subscribe((config: any) => {
+        console.log('MDIWindowComponent: Received componentConfig from child:', config);
+        if (config) {
+          // Update window's dirty state
+          this.window.isDirty = config.isDirty === true;
+          // Forward the event to parent
+          this.componentConfigChanged.emit({
+            windowId: this.window.id,
+            componentConfig: config
+          });
+        }
+      });
+      this.outputSubscriptions.push(sub);
+    } else {
+      console.warn('MDIWindowComponent: setComponentConfig_Output not found on component instance');
+    }
+
+    // Check for other outputs
+    if (instance.saveCompletedOutput instanceof EventEmitter) {
+      const sub = instance.saveCompletedOutput.subscribe((value: any) => {
+        console.log('MDIWindowComponent: saveCompletedOutput received:', value);
+      });
+      this.outputSubscriptions.push(sub);
+    }
+  }
+
+  // Force recreate component if needed
+  refreshComponent(): void {
+    this.isComponentCreated = false;
+    this.componentContainer?.clear();
+    if (this.componentRef) {
+      this.componentRef.destroy();
+      this.componentRef = null;
+    }
+    this.createComponent();
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    this.outputSubscriptions.forEach(sub => sub.unsubscribe());
+    this.outputSubscriptions = [];
+
+    // Destroy the component
+    if (this.componentRef) {
+      this.componentRef.destroy();
+      this.componentRef = null;
+    }
+  }
 
   getIcon(): string {
     const componentMap: { [key: string]: string } = {
@@ -319,7 +478,6 @@ export class MDIWindowComponent {
     this.resizeData = null;
   }
 
-  // These methods are called from the parent component
   setDragData(startX: number, startY: number): void {
     this.dragData = {
       startX,

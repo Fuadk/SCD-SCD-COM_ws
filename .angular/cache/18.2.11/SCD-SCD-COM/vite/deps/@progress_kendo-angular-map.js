@@ -16,12 +16,12 @@ import {
   plusIcon
 } from "./chunk-KXMGKHT2.js";
 import {
-  IconsService
-} from "./chunk-3ZH7CTYC.js";
-import {
   POPUP_CONTAINER,
   PopupService
 } from "./chunk-NKWNDTJB.js";
+import {
+  IconsService
+} from "./chunk-3ZH7CTYC.js";
 import {
   ResizeBatchService,
   ResizeSensorComponent,

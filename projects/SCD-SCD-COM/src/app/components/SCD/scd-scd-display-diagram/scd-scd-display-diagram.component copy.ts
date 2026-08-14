@@ -29,33 +29,33 @@ import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scddisplayScdScdDisplayDiagram , componentConfigDef} from '@modeldir/model';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../../../services/scada-integration.service';
 import { ServerConfig } from '../../../services/scada.service';
-import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
-import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
-import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
-import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
-import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
-import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
-import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
-import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
-import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
-import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
+import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
+import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
+import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
 import {ScdListIndicatorPropertiesComponent} from '../scd-list-indicator-properties/scd-list-indicator-properties.component';
 import {ScdListIndicatorStatesPropertiesComponent} from '../scd-list-indicator-states-properties/scd-list-indicator-states-properties.component';
-import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
-import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
-import {ScdNumericDisplayPropertiesComponent} from '../scd-numeric-display-properties/scd-numeric-display-properties.component';
-import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
-import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
-import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
+import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
+import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
 import {ScdScalePropertiesComponent} from '../scd-scale-properties/scd-scale-properties.component';
+import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
+import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
+import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
+import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
+import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
+import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
+import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
+import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
+import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
+import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
+import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
+import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
+import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
 import {ScdShapePropertiesComponent} from '../scd-shape-properties/scd-shape-properties.component';
+import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
+import {ScdNumericDisplayPropertiesComponent} from '../scd-numeric-display-properties/scd-numeric-display-properties.component';
 import {ScdStringDisplayPropertiesComponent} from '../scd-string-display-properties/scd-string-display-properties.component';
 import {ScdStringInputPropertiesComponent} from '../scd-string-input-properties/scd-string-input-properties.component';
-import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
-import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
-import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
-import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
-import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
+import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
@@ -206,7 +206,7 @@ public disableDISPLAY_DATA = false;
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   @Output() setComponentConfig_Output = new EventEmitter<any>();
-  
+
   // Server management
   public availableServers: ServerConfig[] = [];
   public selectedServerId: number = 0;
@@ -308,7 +308,7 @@ public disableDISPLAY_DATA = false;
         this.selectedServerId = servers[0].id;
       }
     });
-    // Watch form changes to update isDirty in componentConfig
+  // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
@@ -321,9 +321,10 @@ public disableDISPLAY_DATA = false;
       }
     }
   });
-
+   
   }
-  private emitComponentConfig(): void {
+  
+private emitComponentConfig(): void {
   if (this.componentConfig) {
     this.componentConfig.eventFrom = this.compSelector;
     this.componentConfig.eventTo = ['any'];
@@ -335,6 +336,7 @@ public disableDISPLAY_DATA = false;
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
     this.scadaSubscriptions.forEach(sub => sub.unsubscribe());
+   
  }
 
   callStarNotify(componentConfig:any) {
@@ -770,9 +772,9 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
     
   }
@@ -1633,7 +1635,7 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
   }
   
   public diagramMenus;
-  public diagramMenu = "SCD_DIAGRAM_MENUS";
+  public diagramMenu = "";
   async getMenu() {
     if (this.diagramMenu == "") {
       return;
@@ -1985,7 +1987,7 @@ public valueChange(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"500","Height":"500","Maximize":""}]
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -1993,60 +1995,60 @@ public valueChange(value: any): void {
     }
 
     	switch (shapeType) {
-		case '17': 
-		return ScdArrowButtonPropertiesComponent; 
-		case '19': 
-		return ScdArrowPropertiesComponent; 
-		case '18': 
-		return ScdArrowTimingPropertiesComponent; 
-		case '14': 
-		return ScdBarGraphPropertiesComponent; 
-		case '24': 
-		return ScdBrowserPropertiesComponent; 
-		case '4': 
-		return ScdButtonPropertiesComponent; 
-		case '20': 
-		return ScdControlListSelectorPropertiesComponent; 
-		case '21': 
-		return ScdDisplayListSelectorPropertiesComponent; 
-		case '28': 
-		return ScdDisplaySettingsScreenComponent; 
-		case '15': 
-		return ScdGaugePropertiesComponent; 
+		case '1': 
+		return ScdPushButtonPropertiesComponent; 
+		case '10': 
+		return ScdSymbolStatesPropertiesComponent; 
+		case '11': 
+		return ScdSymbolPropertiesComponent; 
 		case '12': 
 		return ScdListIndicatorPropertiesComponent; 
 		case '13': 
 		return ScdListIndicatorStatesPropertiesComponent; 
-		case '22': 
-		return ScdMessageDatePropertiesComponent; 
-		case '9': 
-		return ScdMultistateIndicatorPropertiesComponent; 
-		case '5': 
-		return ScdNumericDisplayPropertiesComponent; 
-		case '27': 
-		return ScdNumericInputPropertiesComponent; 
-		case '25': 
-		return ScdPilotedListSelectorPropertiesComponent; 
-		case '1': 
-		return ScdPushButtonPropertiesComponent; 
+		case '14': 
+		return ScdBarGraphPropertiesComponent; 
+		case '15': 
+		return ScdGaugePropertiesComponent; 
 		case '16': 
 		return ScdScalePropertiesComponent; 
+		case '17': 
+		return ScdArrowButtonPropertiesComponent; 
+		case '18': 
+		return ScdArrowTimingPropertiesComponent; 
+		case '19': 
+		return ScdArrowPropertiesComponent; 
+		case '2': 
+		return ScdTextPropertiesComponent; 
+		case '20': 
+		return ScdControlListSelectorPropertiesComponent; 
+		case '21': 
+		return ScdDisplayListSelectorPropertiesComponent; 
+		case '22': 
+		return ScdMessageDatePropertiesComponent; 
+		case '23': 
+		return ScdTagLabelPropertiesComponent; 
+		case '24': 
+		return ScdBrowserPropertiesComponent; 
+		case '25': 
+		return ScdPilotedListSelectorPropertiesComponent; 
+		case '27': 
+		return ScdNumericInputPropertiesComponent; 
+		case '28': 
+		return ScdDisplaySettingsScreenComponent; 
+		case '29': 
+		return ScdSymbolfactoryplusComponent; 
 		case '3': 
 		return ScdShapePropertiesComponent; 
+		case '4': 
+		return ScdButtonPropertiesComponent; 
+		case '5': 
+		return ScdNumericDisplayPropertiesComponent; 
 		case '7': 
 		return ScdStringDisplayPropertiesComponent; 
 		case '8': 
 		return ScdStringInputPropertiesComponent; 
-		case '11': 
-		return ScdSymbolPropertiesComponent; 
-		case '10': 
-		return ScdSymbolStatesPropertiesComponent; 
-		case '29': 
-		return ScdSymbolfactoryplusComponent; 
-		case '23': 
-		return ScdTagLabelPropertiesComponent; 
-		case '2': 
-		return ScdTextPropertiesComponent; 
+		case '9': 
+		return ScdMultistateIndicatorPropertiesComponent; 
 	default:
 	return null;
 	}

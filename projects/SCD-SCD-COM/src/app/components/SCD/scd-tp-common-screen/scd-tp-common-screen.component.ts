@@ -174,6 +174,8 @@ public disableINSERT_VARIABLE = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  
 
    constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -247,8 +249,29 @@ public disableINSERT_VARIABLE = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();

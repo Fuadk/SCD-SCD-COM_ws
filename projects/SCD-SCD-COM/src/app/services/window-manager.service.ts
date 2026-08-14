@@ -7,6 +7,7 @@ export interface WindowInfo {
   title: string;
   component: Type<any>;
   inputs?: any;
+  outputs?: any;
   width?: number;
   height?: number;
   left?: number;
@@ -21,6 +22,8 @@ export interface WindowInfo {
   order?: number;
   zIndex?: number;
   outsideContainer?: boolean;
+  isDirty?:boolean;
+  componentInstance?: any;
 }
 
 export interface TabGroup {
@@ -144,6 +147,7 @@ openWindow(windowData: Partial<WindowInfo>): string {
     title: windowData.title || 'Untitled',
     component: windowData.component!,
     inputs: windowData.inputs || {},
+    outputs: windowData.outputs || {}, // <-- ADD THIS LINE
     width: windowData.width || 800,
     height: windowData.height || 650,
     left: position.left,
@@ -157,7 +161,8 @@ openWindow(windowData: Partial<WindowInfo>): string {
     innerWidth: windowData.width || 800,
     order: this.windows.length,
     zIndex: ++this.zIndexCounter,
-    outsideContainer: windowData.outsideContainer || false // IMPORTANT: Preserve the flag
+    outsideContainer: windowData.outsideContainer || false,
+    isDirty: false // <-- ADD THIS LINE
   };
 
   const currentWindows = this.windowsSubject.getValue();
@@ -525,5 +530,46 @@ openWindow(windowData: Partial<WindowInfo>): string {
   getGroupWindowCount(groupId: string): number {
     return this.windows.filter(w => w.tabGroupId === groupId).length;
   }
+
+  
+
+/**
+ * Check if a window's component has unsaved changes using componentConfig.isDirty
+ */
+async checkWindowHasUnsavedChanges(windowId: string): Promise<boolean> {
+  const window = this.getWindowById(windowId);
+  if (!window) return false;
+  
+  return window.isDirty === true;
+}
+
+/**
+ * Save a window's component changes by setting masterSaved = true
+ */
+
+
+updateWindowDirtyState(windowId: string, isDirty: boolean): void {
+  const currentWindows = this.windowsSubject.getValue();
+  const window = currentWindows.find(w => w.id === windowId);
+  
+  if (window) {
+    window.isDirty = isDirty;
+    this.windowsSubject.next([...currentWindows]);
+  }
+}
+
+
+
+/**
+ * Save a window's component changes by setting masterSaved = true
+ */
+async saveWindowChanges(windowId: string): Promise<void> {
+  const window = this.getWindowById(windowId);
+  if (!window) return;
+  
+  // The component will handle the save via componentConfig
+  // We'll emit an event or set a flag
+  // This will be handled by the parent component
+}
 
 }

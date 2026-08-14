@@ -7,6 +7,7 @@
      </ng-template>
     <ng-template kendoTabContent>
           <app-scd-au-user
+			(setComponentConfig_Output)="onComponentConfig_Output($event)"
 			[setComponentConfig_Input]="scd_au_user0_0Config">
 	 </app-scd-au-user >
     </ng-template>
@@ -17,6 +18,7 @@
      </ng-template>
     <ng-template kendoTabContent>
           <app-scd-group-membership 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
 				[setComponentConfig_Input]="scd_group_membership1_1Config">
     </app-scd-group-membership >
     </ng-template>

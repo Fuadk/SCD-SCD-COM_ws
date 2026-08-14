@@ -24,7 +24,8 @@ export class ScdGroupMembershipComponent implements OnInit {
   this.title =  this.starServices.getNLS([],"scd_group_membership.scd_group_membership.component_title","");
     this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
+    if (this.visibleOK_BTNS)
+	     this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
 	this.handleComponentConfig(this.componentConfig); 
   }
   public showToolBar = false;
@@ -47,7 +48,9 @@ export class ScdGroupMembershipComponent implements OnInit {
   public form_0_SCD_GROUP_MEMBERSHIP : scdgroupMembershipScdGmGroup;
   public grid_1_SCD_GROUP_MEMBERSHIP : scdgroupMembershipScdGmMembers;
   public  SCD_GROUP_MEMBERSHIPForm_0Config : componentConfigDef;
+  public  hide_comp_1 = false
   public  SCD_GROUP_MEMBERSHIPGrid_1Config : componentConfigDef;
+  public  hide_comp_2 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdGroupMembership";
 
@@ -100,6 +103,7 @@ export class ScdGroupMembershipComponent implements OnInit {
    this.SCD_GROUP_MEMBERSHIPGrid_1Config = new componentConfigDef();
    this.SCD_GROUP_MEMBERSHIPGrid_1Config.title = this.starServices.getNLS([],"scd_group_membership.scd_group_membership.compsTitleID2","Members");
    this.SCD_GROUP_MEMBERSHIPGrid_1Config.isChild = true;
+   this.SCD_GROUP_MEMBERSHIPGrid_1Config.masterSelector = 'app-scd-group-membership';
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_GROUP_MEMBERSHIPGrid_1Config.navigable = false;
      //this.SCD_GROUP_MEMBERSHIPGrid_1Config.insertable = true;
@@ -175,6 +179,7 @@ export class ScdGroupMembershipComponent implements OnInit {
   }
   public saveTriggerHandler(event){
         }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Input() public set detail_Input(form: any) {
     if (typeof form !== "undefined")
     {
@@ -191,6 +196,19 @@ export class ScdGroupMembershipComponent implements OnInit {
     }
     this.formValidationChangedOutput.emit(formValidation)
   }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 

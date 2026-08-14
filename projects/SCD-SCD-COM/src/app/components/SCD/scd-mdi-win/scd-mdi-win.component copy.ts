@@ -1,6 +1,6 @@
 	//
-import {   Component,   OnInit,   OnDestroy,  Output,   Input,   EventEmitter,   HostListener,  ChangeDetectorRef,  AfterViewInit,  Type} from '@angular/core';
-import { DialogService } from '@progress/kendo-angular-dialog';
+	import {   Component,   OnInit,   OnDestroy,  Output,   Input,   EventEmitter,   HostListener,  ChangeDetectorRef,  AfterViewInit,  Type} from '@angular/core';
+  import { DialogService } from '@progress/kendo-angular-dialog';
 import { Subscription } from 'rxjs';
 import { WindowManagerService, WindowInfo, TabGroup } from '../../../services/window-manager.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -81,7 +81,7 @@ declare function getParamConfig(): any;
     private windowManager: WindowManagerService,
     public starServices: starServices,
     private cdr: ChangeDetectorRef,
-	private dialogService: DialogService
+    private dialogService: DialogService
   ) {
     this.router = router;
     this.title = this.starServices.getNLS([], "scd_appboard.scd_appboard.component_title", "");
@@ -302,7 +302,7 @@ getComponentToRender(shapeType: string): any {
 
   // ===== WINDOW MANAGEMENT METHODS =====
 
-     openWin(winId: string, masterParams?: any, openOutsideContainer: boolean = false): void {
+openWin(winId: string, masterParams?: any, openOutsideContainer: boolean = false): void {
   console.log("openWin:masterParams:", masterParams);
   let viewMode: 'edit';
   let MENU_ID = null;
@@ -393,7 +393,6 @@ getComponentToRender(shapeType: string): any {
     this.activeGroupId = groupId;
   }
 
-
   addWindowToGroup(groupId: string): void {
     const id = "win_" + Date.now();
     const componentConfig = new componentConfigDef();
@@ -418,7 +417,6 @@ getComponentToRender(shapeType: string): any {
     this.windowManager.closeAllWindows();
     this.activeGroupId = '';
   }
-
 
 async onCloseWindow(windowId: string): Promise<void> {
   console.log('onCloseWindowDebug:onCloseWindow called for windowId:', windowId);
@@ -468,7 +466,7 @@ private showCloseConfirmationDialog(windowId: string): void {
       console.log('showCloseConfirmationDialog: User selected Save');
       this.handleSaveAction(windowId);
     } else if (result && result.text === "Don't Save") {
-      console.log('showCloseConfirmationDialog: User selected Dont Save');
+      console.log('showCloseConfirmationDialog: User selected Don\'t Save');
       this.windowManager.closeWindow(windowId);
     } else {
       // Cancel or closed without action
@@ -521,6 +519,9 @@ private async handleSaveAction(windowId: string): Promise<void> {
       console.error('handleSaveAction: Error during save:', error);
     }
   }
+
+
+
 async saveWindowChanges(windowId: string): Promise<void> {
   const window = this.windows.find(w => w.id === windowId);
   if (!window) return;
@@ -531,6 +532,7 @@ async saveWindowChanges(windowId: string): Promise<void> {
     // The component will handle the save via its handleComponentConfig method
   }
 }
+
   bringToFront(windowId: string): void {
     this.windowManager.bringToFront(windowId);
   }

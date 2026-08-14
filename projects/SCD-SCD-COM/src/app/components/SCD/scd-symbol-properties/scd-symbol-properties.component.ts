@@ -24,7 +24,8 @@ export class ScdSymbolPropertiesComponent implements OnInit {
   this.title =  this.starServices.getNLS([],"scd_symbol_properties.scd_symbol_properties.component_title","");
     this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
+    if (this.visibleOK_BTNS)
+	     this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
 	this.handleComponentConfig(this.componentConfig); 
   }
   public showToolBar = false;
@@ -48,8 +49,11 @@ export class ScdSymbolPropertiesComponent implements OnInit {
   public formtabs_1_SCD_ALARM : scdalarmScdSymbolStatesProperties;
   public formdivs_2_SCD_SYMBOL_GENERAL : scdsymbolGeneralScdSgSymbolGeneral;
   public  SCD_SHAPEForm_0Config : componentConfigDef;
+  public  hide_comp_1 = false
   public  SCD_ALARMFormtabs_1Config : componentConfigDef;
+  public  hide_comp_2 = false
   public  SCD_SYMBOL_GENERALFormdivs_2Config : componentConfigDef;
+  public  hide_comp_3 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdSymbolProperties";
 
@@ -213,6 +217,7 @@ export class ScdSymbolPropertiesComponent implements OnInit {
   }
   public saveTriggerHandler(event){
         }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Input() public set detail_Input(form: any) {
     if (typeof form !== "undefined")
     {
@@ -229,6 +234,19 @@ export class ScdSymbolPropertiesComponent implements OnInit {
     }
     this.formValidationChangedOutput.emit(formValidation)
   }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -268,11 +286,16 @@ export class ScdSymbolPropertiesComponent implements OnInit {
            }, 400);
        }
   
+       this.SCD_SHAPEForm_0Config = new componentConfigDef();
+       this.SCD_ALARMFormtabs_1Config = new componentConfigDef();
+       this.SCD_SYMBOL_GENERALFormdivs_2Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
+              this.SCD_SHAPEForm_0Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARMFormtabs_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_SYMBOL_GENERALFormdivs_2Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
        this.SCD_SHAPEForm_0Config = new componentConfigDef();
        this.SCD_SHAPEForm_0Config = ComponentConfig;
        this.SCD_ALARMFormtabs_1Config = new componentConfigDef();
@@ -321,7 +344,6 @@ export class ScdSymbolPropertiesComponent implements OnInit {
           }
        }
       }
-     }
     }
   }
    public formtabs_1_SCD_ALARMOpened = false;

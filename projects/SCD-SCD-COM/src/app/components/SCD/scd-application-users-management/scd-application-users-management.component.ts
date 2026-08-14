@@ -29,9 +29,11 @@ export class ScdApplicationUsersManagementComponent implements OnInit {
     this.title =  this.starServices.getNLS([],"SCD_application_users_management.SCD_application_users_management.component_title","Application Users Management");
     this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef(); 
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
+    if (this.visibleOK_BTNS)
+	    this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
 	this.handleComponentConfig(this.componentConfig); 
 }
+ @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
  @Input() public set detail_Input(form: any) { 
   }
 public ngAfterViewInit() {
@@ -51,7 +53,13 @@ public ngAfterViewInit() {
   public onSelect(e: SelectEvent): void { 
 	  }
   public  scd_au_user0_0Config : componentConfigDef;
+  public  hide_comp_1 = false;
   public  scd_group_membership1_1Config : componentConfigDef;
+  public  hide_comp_2 = false;
+  public onComponentConfig_Output(ComponentConfig) 
+{
+    this.setComponentConfig_Output.emit(ComponentConfig);
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -67,14 +75,13 @@ public ngAfterViewInit() {
            }, 400);
        }
   
+       this.scd_au_user0_0Config = new componentConfigDef();
+       this.scd_group_membership1_1Config = new componentConfigDef();
        if (ComponentConfig.masterParams != null) {
+              this.scd_au_user0_0Config.masterParams = ComponentConfig.masterParams;
+              this.scd_group_membership1_1Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.scd_au_user0_0Config = new componentConfigDef();
-       this.scd_au_user0_0Config = ComponentConfig;
-       this.scd_group_membership1_1Config = new componentConfigDef();
-       this.scd_group_membership1_1Config = ComponentConfig;
       if (ComponentConfig.masterSaved != null)
       {
        this.scd_au_user0_0Config.masterSaved = ComponentConfig.masterSaved;
@@ -113,7 +120,6 @@ public ngAfterViewInit() {
           }
        }
       }
-     }
     }
   }
  
