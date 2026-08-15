@@ -1,5 +1,11 @@
 <div class="mode-toggle">
-<button kendoButton [icon]="'hyperlink-open'" (click)="starlib1.dialog_openDialog(this,'1','')">">
+  <style>
+    .confirmation-dialog-on-top {
+      z-index: 999999 !important;
+    }
+
+  </style>
+<button kendoButton [icon]="'hyperlink-open'" (click)="openPropertyDialog(this,'1','')">">
       {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Text") }}
     </button>
 
@@ -102,30 +108,25 @@
 
 <!-- ===== PROPERTY DIALOG  ===== -->
 <kendo-window
-  *ngIf="propertyDialogVisible"
-  [title]=propertyDialogDefinition.Title
-  [minWidth]=propertyDialogDefinition?.Width || 800
-  [width]=propertyDialogDefinition?.Width || 700
-  [height]=propertyDialogDefinition?.Height || 500
-  [state]= "winState"
-  
+  *ngIf="propertyDialogData && propertyDialogData.isVisible"
+  [title]="propertyDialogData.title"
+  [minWidth]="propertyDialogData.width || 500"
+  [width]="propertyDialogData.width || 700"
+  [height]="propertyDialogData.height || 500"
+  [state]="propertyDialogData.state || 'default'"
   [resizable]="true"
-  (close)="propertyDialogVisible = false">
+  
+  (close)="onPropertyDialogClose()">
   
   <div class="property-dialog-content">
-    <!-- Dynamic property editor using ngComponentOutlet -->
-    <ng-container *ngIf="componentToRender">
-      <ng-container *ngComponentOutlet="componentToRender; inputs: starlib1.dialog_getComponentInputs(propertyDialogDefinition)"></ng-container>
-    </ng-container>
+    <!-- Dynamic property editor using ViewContainerRef -->
+    <div style="height: 100%; min-height: 300px;">
+      <ng-container #propertyDialogContainer></ng-container>
+    </div>
     
     <!-- Fallback when no component is found -->
-    <div *ngIf="!componentToRender" class="no-editor-message">
+    <div *ngIf="!propertyDialogData || !propertyDialogData.component" class="no-editor-message">
       <p>No property editor found for shape type: <strong>{{ propertyDialogShapeType }}</strong></p>
     </div>
   </div>
-  
-  <!-- <kendo-window-actions>
-    <button kendoButton (click)="propertyDialogVisible = false">Cancel</button>
-    <button kendoButton themeColor="primary" (click)="starlib1.dialog_onPropertySaved(this, propertyDialogDefinition)">OK</button>
-  </kendo-window-actions> -->
 </kendo-window>

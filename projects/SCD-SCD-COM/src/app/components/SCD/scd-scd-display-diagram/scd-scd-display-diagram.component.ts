@@ -1,5 +1,8 @@
-import { Component, Input, Output,ViewChild, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output,ViewChild, EventEmitter,
+   HostListener ,ViewContainerRef, ComponentRef, AfterViewInit, 
+   OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
+import { DialogService } from '@progress/kendo-angular-dialog';
 import {
   KENDO_DIAGRAM,
   ShapeOptions,
@@ -125,7 +128,7 @@ interface DiagramConnection {
 })
 
 
-export class ScdDisplayScdScdDisplayDiagramDiagramComponent {
+export class ScdDisplayScdScdDisplayDiagramDiagramComponent implements AfterViewInit, OnDestroy {
   @ViewChild('diagram')    diagramComponent!: DiagramComponent;
   public title =  this.starServices.getNLS([],"SCD_SCD_DISPLAY_DIAGRAM.scddisplayScdScdDisplayDiagram.component_title","SCD DISPLAY DIAGRAM");
   public compTitleMsg =  "SCD_SCD_DISPLAY_DIAGRAM.scddisplayScdScdDisplayDiagram";
@@ -217,7 +220,9 @@ public disableDISPLAY_DATA = false;
               private scadaIntegration: ScadaIntegrationService,
               private starNotify: StarNotifyService,   
               public starlib1: Starlib1,
-              public starServices: starServices) {
+              public starServices: starServices,
+              private dialogService: DialogService,
+              private cdr: ChangeDetectorRef) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -240,6 +245,10 @@ public disableDISPLAY_DATA = false;
     this.starServices.setRTL();
     this.disableFields();
     this.WHEN_NEW_FORM_INSTANCE();
+    // If there's a property dialog to render, create the component
+    if (this.propertyDialogData && this.propertyDialogData.isVisible) {
+      this.createPropertyDialogComponent();
+    }
     
   }
   public Comp_Config!: componentConfigDef;
@@ -834,7 +843,8 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
       if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
         let Maximize = rec.Maximize;
-        this.starlib1.dialog_openDialog(this, Id,Maximize);
+        //this.starlib1.dialog_openDialog(this, Id,Maximize);
+        this.openPropertyDialog(this, Id, Maximize);
       }
       setTimeout(() => {
            this.selectedShape = null;
@@ -2051,6 +2061,335 @@ public valueChange(value: any): void {
 	return null;
 	}
 
+  }
+  /////////
+  public propertyDialogData: {
+    id: string;
+    title: string;
+    component: any;
+    inputs: any;
+    outputs: any;
+    isVisible: boolean;
+    isDirty: boolean;
+    componentInstance: any;
+    width: number;
+    height: number;
+    state: 'default' | 'maximized'; // <-- FIX: Use specific type
+  } | null = null;
+
+  // Keep track of the last instance to avoid re-subscribing endlessly
+  private lastPropertyDialogInstance: any = null;
+
+  // Store component ref for cleanup
+  private propertyDialogComponentRef: ComponentRef<any> | null = null;
+
+  /**
+   * Open property dialog - Replacement for starlib1.dialog_openDialog
+   * Similar to openWin in scd-mdi-win.component.ts
+   */
+ public openPropertyDialog(object: any, comp: string, Maximize: string): void {
+  console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize);
+  
+  // Find the dialog properties
+  const dialogDef = this.dialogProperties.find(x => x.Id === comp);
+  
+  if (!dialogDef) {
+    console.error('Dialog definition not found for comp:', comp);
+    return;
+  }
+  
+  const componentToRender = this.dialog_getComponentToRender(comp, Maximize);
+  
+  if (!componentToRender) {
+    console.error('No component found for comp:', comp);
+    return;
+  }
+
+  // Create componentConfig for the dialog
+  const componentConfig = new componentConfigDef();
+  componentConfig.masterParams = {
+    data: {
+      comp: comp,
+      maximize: Maximize
+    }
+  };
+
+  // Get the component name for the title
+  const componentName = dialogDef.Component || comp;
+  const title = this.getDialogTitle(componentName);
+
+  // Set property dialog data
+  this.propertyDialogData = {
+    id: `property_${comp}_${Date.now()}`,
+    title: title,
+    component: componentToRender,
+    inputs: {
+      setComponentConfig_Input: componentConfig
+    },
+    outputs: {},
+    isVisible: true,
+    isDirty: false,
+    componentInstance: null,
+    width: parseInt(dialogDef.Width) || 700,
+    height: parseInt(dialogDef.Height) || 500,
+    state: Maximize === 'Y' ? 'maximized' : 'default'
+  };
+
+  // Reset flags
+  this.lastPropertyDialogInstance = null;
+  this.isPropertyDialogCreated = false;
+  
+  // Force change detection to render the window
+  this.cdr.detectChanges();
+  
+  // Create the component after the view is rendered
+  setTimeout(() => {
+    this.createPropertyDialogComponent();
+  }, 100);
+  
+  console.log('openPropertyDialog: Dialog opened:', dialogDef);
+}
+
+  /**
+   * Handle property dialog close - similar to onCloseWindow in scd-mdi-win.component.ts
+   */
+public onPropertyDialogClose(): void {
+  console.log('onPropertyDialogClose: Checking for unsaved changes...');
+  
+  if (this.propertyDialogData && this.propertyDialogData.isDirty) {
+    // Show confirmation dialog - same as MDI windows
+    this.showPropertyDialogSaveConfirmation();
+  } else {
+    // Close immediately
+    this.closePropertyDialog();
+  }
+}
+
+  /**
+   * Show save confirmation dialog - similar to showCloseConfirmationDialog in scd-mdi-win.component.ts
+   */
+ private showPropertyDialogSaveConfirmation(): void {
+  console.log('showPropertyDialogSaveConfirmation: Opening dialog for property dialog');
+  
+  const dialog = this.dialogService.open({
+    title: 'Unsaved Changes',
+    content: 'You have unsaved changes. What would you like to do?',
+    actions: [
+      { 
+        text: 'Save', 
+        themeColor: 'primary'
+      },
+      { 
+        text: "Don't Save",
+        themeColor: 'base'
+      },
+      { 
+        text: 'Cancel',
+        themeColor: 'base'
+      }
+    ],
+    width: 450,
+    minWidth: 300,
+    // You can also add custom CSS class for z-index
+    cssClass: 'confirmation-dialog-on-top'
+  });
+
+  // Subscribe to the result of the dialog - Same as MDI windows
+  dialog.result.subscribe((result: any) => {
+    console.log('showPropertyDialogSaveConfirmation: Dialog result:', result);
+    
+    // Check the text property of the action
+    if (result && result.text === 'Save') {
+      console.log('showPropertyDialogSaveConfirmation: User selected Save');
+      this.handlePropertyDialogSave();
+    } else if (result && result.text === "Don't Save") {
+      console.log('showPropertyDialogSaveConfirmation: User selected Don\'t Save');
+      this.closePropertyDialog();
+    } else {
+      // Cancel or closed without action
+      console.log('showPropertyDialogSaveConfirmation: User cancelled or closed dialog');
+    }
+  });
+}
+
+  /**
+   * Handle property dialog save - similar to handleSaveAction in scd-mdi-win.component.ts
+   */
+private async handlePropertyDialogSave(): Promise<void> {
+  if (!this.propertyDialogData || !this.propertyDialogData.componentInstance) {
+    console.error('handlePropertyDialogSave: No component instance found');
+    return;
+  }
+
+  const componentInstance = this.propertyDialogData.componentInstance;
+  console.log('handlePropertyDialogSave: Sending masterSaved to component:', componentInstance.constructor?.name);
+
+  // Create a new componentConfig with masterSaved = true
+  // This will trigger the @Input() setter in the child component
+  // Exactly like mdi-window's handleSaveAction
+  const config = new componentConfigDef();
+  config.masterSaved = true;
+
+  // Assign to the component's setComponentConfig_Input setter
+  // This calls handleComponentConfig which detects masterSaved and calls saveChanges
+  componentInstance.setComponentConfig_Input = config;
+
+  console.log('handlePropertyDialogSave: masterSaved sent to component');
+
+  // Wait a moment for the save to complete
+  await this.starServices.sleep(500);
+
+  // Close the dialog after save
+  this.closePropertyDialog();
+}
+
+  /**
+   * Close property dialog and cleanup
+   */
+private closePropertyDialog(): void {
+  console.log('closePropertyDialog: Closing property dialog');
+  
+  if (this.propertyDialogData) {
+    this.propertyDialogData.isVisible = false;
+  }
+  
+  // Destroy component ref
+  if (this.propertyDialogComponentRef) {
+    this.propertyDialogComponentRef.destroy();
+    this.propertyDialogComponentRef = null;
+  }
+  
+  // Clean up
+  this.lastPropertyDialogInstance = null;
+  this.isPropertyDialogCreated = false;
+  this.propertyDialogData = null;
+  
+  // Force change detection
+  this.cdr.detectChanges();
+}
+
+  /**
+   * Listen to outputs from the property dialog component
+   * Similar to the pattern in mdi-window but using ViewContainerRef
+   */
+  @ViewChild('propertyDialogContainer', { read: ViewContainerRef, static: false }) 
+  propertyDialogContainer!: ViewContainerRef;
+
+  private isPropertyDialogCreated = false;
+
+
+ private createPropertyDialogComponent(): void {
+  // Check if already created
+  if (this.isPropertyDialogCreated) {
+    console.log('Property dialog already created');
+    return;
+  }
+
+  if (!this.propertyDialogData || !this.propertyDialogData.isVisible) {
+    console.log('No property dialog data or not visible');
+    return;
+  }
+
+  if (!this.propertyDialogContainer) {
+    console.log('propertyDialogContainer not available, retrying...');
+    // Retry after a delay
+    setTimeout(() => {
+      this.createPropertyDialogComponent();
+    }, 200);
+    return;
+  }
+
+  try {
+    console.log('Creating property dialog component:', this.propertyDialogData.component.name);
+    
+    // Clear the container
+    this.propertyDialogContainer.clear();
+
+    // Create the component
+    this.propertyDialogComponentRef = this.propertyDialogContainer.createComponent(
+      this.propertyDialogData.component
+    );
+
+    console.log('Component created successfully:', this.propertyDialogComponentRef);
+
+    // Set inputs
+    if (this.propertyDialogData.inputs) {
+      Object.keys(this.propertyDialogData.inputs).forEach(key => {
+        if (this.propertyDialogComponentRef) {
+          console.log('Setting input:', key, this.propertyDialogData.inputs[key]);
+          this.propertyDialogComponentRef.instance[key] = this.propertyDialogData.inputs[key];
+        }
+      });
+    }
+
+    // Store component instance
+    if (this.propertyDialogComponentRef) {
+      this.propertyDialogData.componentInstance = this.propertyDialogComponentRef.instance;
+      console.log('Property dialog child component created:', this.propertyDialogData.componentInstance.constructor?.name);
+    }
+
+    // Set up output subscriptions
+    this.setupPropertyDialogOutputs();
+
+    // Trigger change detection
+    if (this.propertyDialogComponentRef) {
+      this.propertyDialogComponentRef.changeDetectorRef.detectChanges();
+    }
+
+    this.isPropertyDialogCreated = true;
+
+  } catch (error) {
+    console.error('Error creating property dialog component:', error);
+  }
+}
+
+private setupPropertyDialogOutputs(): void {
+  if (!this.propertyDialogComponentRef || !this.propertyDialogData) return;
+
+  const instance = this.propertyDialogComponentRef.instance;
+  console.log('Setting up outputs for instance:', instance);
+
+  // Check for setComponentConfig_Output
+  if (instance.setComponentConfig_Output instanceof EventEmitter) {
+    console.log('Property dialog: Found setComponentConfig_Output, subscribing...');
+    // Clean up previous subscription if exists
+    if ((instance.setComponentConfig_Output as any).__propertyDialogSub) {
+      (instance.setComponentConfig_Output as any).__propertyDialogSub.unsubscribe();
+    }
+    
+    const sub = instance.setComponentConfig_Output.subscribe((config: any) => {
+      console.log('Property dialog: Received componentConfig from child:', config);
+      if (this.propertyDialogData) {
+        this.propertyDialogData.isDirty = config.isDirty === true;
+      }
+    });
+    
+    (instance.setComponentConfig_Output as any).__propertyDialogSub = sub;
+  }
+
+  // Check for saveCompletedOutput
+  if (instance.saveCompletedOutput instanceof EventEmitter) {
+    console.log('Property dialog: Found saveCompletedOutput, subscribing...');
+    if ((instance.saveCompletedOutput as any).__propertyDialogSub) {
+      (instance.saveCompletedOutput as any).__propertyDialogSub.unsubscribe();
+    }
+    
+    const sub = instance.saveCompletedOutput.subscribe((data: any) => {
+      console.log('Property dialog: saveCompletedOutput received:', data);
+      if (this.propertyDialogData) {
+        this.propertyDialogData.isDirty = false;
+      }
+    });
+    
+    (instance.saveCompletedOutput as any).__propertyDialogSub = sub;
+  }
+}
+
+
+private getDialogTitle(componentName: string): string {
+    // Map component names to display titles
+    let titleMsg = componentName.split("_").join(" ");
+    return titleMsg;
   }
 
 }

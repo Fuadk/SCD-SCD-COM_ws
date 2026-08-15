@@ -1,5 +1,8 @@
-import { Component, Input, Output,ViewChild, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output,ViewChild, EventEmitter,
+   HostListener ,ViewContainerRef, ComponentRef, AfterViewInit, 
+   OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
+import { DialogService } from '@progress/kendo-angular-dialog';
 import {
   KENDO_DIAGRAM,
   ShapeOptions,
@@ -29,33 +32,33 @@ import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scddiagramScdScdDiagramDiagram , componentConfigDef} from '@modeldir/model';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../../../services/scada-integration.service';
 import { ServerConfig } from '../../../services/scada.service';
-import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
-import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
-import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
-import {ScdListIndicatorPropertiesComponent} from '../scd-list-indicator-properties/scd-list-indicator-properties.component';
-import {ScdListIndicatorStatesPropertiesComponent} from '../scd-list-indicator-states-properties/scd-list-indicator-states-properties.component';
-import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
-import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
-import {ScdScalePropertiesComponent} from '../scd-scale-properties/scd-scale-properties.component';
 import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
-import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
 import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
-import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
+import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
+import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
+import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
+import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
 import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
 import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
-import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
-import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
-import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
-import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
-import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
 import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
-import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
-import {ScdShapePropertiesComponent} from '../scd-shape-properties/scd-shape-properties.component';
-import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
+import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
+import {ScdListIndicatorPropertiesComponent} from '../scd-list-indicator-properties/scd-list-indicator-properties.component';
+import {ScdListIndicatorStatesPropertiesComponent} from '../scd-list-indicator-states-properties/scd-list-indicator-states-properties.component';
+import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
+import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
 import {ScdNumericDisplayPropertiesComponent} from '../scd-numeric-display-properties/scd-numeric-display-properties.component';
+import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
+import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
+import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
+import {ScdScalePropertiesComponent} from '../scd-scale-properties/scd-scale-properties.component';
+import {ScdShapePropertiesComponent} from '../scd-shape-properties/scd-shape-properties.component';
 import {ScdStringDisplayPropertiesComponent} from '../scd-string-display-properties/scd-string-display-properties.component';
 import {ScdStringInputPropertiesComponent} from '../scd-string-input-properties/scd-string-input-properties.component';
-import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
+import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
+import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
+import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
+import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
+import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
@@ -125,7 +128,7 @@ interface DiagramConnection {
 })
 
 
-export class ScdDiagramScdScdDiagramDiagramDiagramComponent {
+export class ScdDiagramScdScdDiagramDiagramDiagramComponent implements AfterViewInit, OnDestroy {
   @ViewChild('diagram')    diagramComponent!: DiagramComponent;
   public title =  this.starServices.getNLS([],"SCD_SCD_DIAGRAM_DIAGRAM.scddiagramScdScdDiagramDiagram.component_title","SCD DIAGRAM DIAGRAM");
   public compTitleMsg =  "SCD_SCD_DIAGRAM_DIAGRAM.scddiagramScdScdDiagramDiagram";
@@ -205,6 +208,7 @@ public disableNAME = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output = new EventEmitter<any>();
   
   // Server management
   public availableServers: ServerConfig[] = [];
@@ -216,7 +220,9 @@ public disableNAME = false;
               private scadaIntegration: ScadaIntegrationService,
               private starNotify: StarNotifyService,   
               public starlib1: Starlib1,
-              public starServices: starServices) {
+              public starServices: starServices,
+              private dialogService: DialogService,
+              private cdr: ChangeDetectorRef) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -239,6 +245,10 @@ public disableNAME = false;
     this.starServices.setRTL();
     this.disableFields();
     this.WHEN_NEW_FORM_INSTANCE();
+    // If there's a property dialog to render, create the component
+    if (this.propertyDialogData && this.propertyDialogData.isVisible) {
+      this.createPropertyDialogComponent();
+    }
     
   }
   public Comp_Config!: componentConfigDef;
@@ -307,9 +317,29 @@ public disableNAME = false;
         this.selectedServerId = servers[0].id;
       }
     });
+    // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
 
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -813,7 +843,8 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
       if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
         let Maximize = rec.Maximize;
-        this.starlib1.dialog_openDialog(this, Id,Maximize);
+        //this.starlib1.dialog_openDialog(this, Id,Maximize);
+        this.openPropertyDialog(this, Id, Maximize);
       }
       setTimeout(() => {
            this.selectedShape = null;
@@ -1964,7 +1995,7 @@ public valueChange(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""}]
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"500","Height":"500","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -1972,64 +2003,393 @@ public valueChange(value: any): void {
     }
 
     	switch (shapeType) {
-		case '1': 
-		return ScdPushButtonPropertiesComponent; 
-		case '10': 
-		return ScdSymbolStatesPropertiesComponent; 
-		case '11': 
-		return ScdSymbolPropertiesComponent; 
-		case '12': 
-		return ScdListIndicatorPropertiesComponent; 
-		case '13': 
-		return ScdListIndicatorStatesPropertiesComponent; 
-		case '14': 
-		return ScdBarGraphPropertiesComponent; 
-		case '15': 
-		return ScdGaugePropertiesComponent; 
-		case '16': 
-		return ScdScalePropertiesComponent; 
 		case '17': 
 		return ScdArrowButtonPropertiesComponent; 
-		case '18': 
-		return ScdArrowTimingPropertiesComponent; 
 		case '19': 
 		return ScdArrowPropertiesComponent; 
-		case '2': 
-		return ScdTextPropertiesComponent; 
+		case '18': 
+		return ScdArrowTimingPropertiesComponent; 
+		case '14': 
+		return ScdBarGraphPropertiesComponent; 
+		case '24': 
+		return ScdBrowserPropertiesComponent; 
+		case '4': 
+		return ScdButtonPropertiesComponent; 
 		case '20': 
 		return ScdControlListSelectorPropertiesComponent; 
 		case '21': 
 		return ScdDisplayListSelectorPropertiesComponent; 
-		case '22': 
-		return ScdMessageDatePropertiesComponent; 
-		case '23': 
-		return ScdTagLabelPropertiesComponent; 
-		case '24': 
-		return ScdBrowserPropertiesComponent; 
-		case '25': 
-		return ScdPilotedListSelectorPropertiesComponent; 
-		case '27': 
-		return ScdNumericInputPropertiesComponent; 
 		case '28': 
 		return ScdDisplaySettingsScreenComponent; 
-		case '29': 
-		return ScdSymbolfactoryplusComponent; 
-		case '3': 
-		return ScdShapePropertiesComponent; 
-		case '4': 
-		return ScdButtonPropertiesComponent; 
+		case '15': 
+		return ScdGaugePropertiesComponent; 
+		case '12': 
+		return ScdListIndicatorPropertiesComponent; 
+		case '13': 
+		return ScdListIndicatorStatesPropertiesComponent; 
+		case '22': 
+		return ScdMessageDatePropertiesComponent; 
+		case '9': 
+		return ScdMultistateIndicatorPropertiesComponent; 
 		case '5': 
 		return ScdNumericDisplayPropertiesComponent; 
+		case '27': 
+		return ScdNumericInputPropertiesComponent; 
+		case '25': 
+		return ScdPilotedListSelectorPropertiesComponent; 
+		case '1': 
+		return ScdPushButtonPropertiesComponent; 
+		case '16': 
+		return ScdScalePropertiesComponent; 
+		case '3': 
+		return ScdShapePropertiesComponent; 
 		case '7': 
 		return ScdStringDisplayPropertiesComponent; 
 		case '8': 
 		return ScdStringInputPropertiesComponent; 
-		case '9': 
-		return ScdMultistateIndicatorPropertiesComponent; 
+		case '11': 
+		return ScdSymbolPropertiesComponent; 
+		case '10': 
+		return ScdSymbolStatesPropertiesComponent; 
+		case '29': 
+		return ScdSymbolfactoryplusComponent; 
+		case '23': 
+		return ScdTagLabelPropertiesComponent; 
+		case '2': 
+		return ScdTextPropertiesComponent; 
 	default:
 	return null;
 	}
 
+  }
+  /////////
+  public propertyDialogData: {
+    id: string;
+    title: string;
+    component: any;
+    inputs: any;
+    outputs: any;
+    isVisible: boolean;
+    isDirty: boolean;
+    componentInstance: any;
+    width: number;
+    height: number;
+    state: 'default' | 'maximized'; // <-- FIX: Use specific type
+  } | null = null;
+
+  // Keep track of the last instance to avoid re-subscribing endlessly
+  private lastPropertyDialogInstance: any = null;
+
+  // Store component ref for cleanup
+  private propertyDialogComponentRef: ComponentRef<any> | null = null;
+
+  /**
+   * Open property dialog - Replacement for starlib1.dialog_openDialog
+   * Similar to openWin in scd-mdi-win.component.ts
+   */
+ public openPropertyDialog(object: any, comp: string, Maximize: string): void {
+  console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize);
+  
+  // Find the dialog properties
+  const dialogDef = this.dialogProperties.find(x => x.Id === comp);
+  
+  if (!dialogDef) {
+    console.error('Dialog definition not found for comp:', comp);
+    return;
+  }
+  
+  const componentToRender = this.dialog_getComponentToRender(comp, Maximize);
+  
+  if (!componentToRender) {
+    console.error('No component found for comp:', comp);
+    return;
+  }
+
+  // Create componentConfig for the dialog
+  const componentConfig = new componentConfigDef();
+  componentConfig.masterParams = {
+    data: {
+      comp: comp,
+      maximize: Maximize
+    }
+  };
+
+  // Get the component name for the title
+  const componentName = dialogDef.Component || comp;
+  const title = this.getDialogTitle(componentName);
+
+  // Set property dialog data
+  this.propertyDialogData = {
+    id: `property_${comp}_${Date.now()}`,
+    title: title,
+    component: componentToRender,
+    inputs: {
+      setComponentConfig_Input: componentConfig
+    },
+    outputs: {},
+    isVisible: true,
+    isDirty: false,
+    componentInstance: null,
+    width: parseInt(dialogDef.Width) || 700,
+    height: parseInt(dialogDef.Height) || 500,
+    state: Maximize === 'Y' ? 'maximized' : 'default'
+  };
+
+  // Reset flags
+  this.lastPropertyDialogInstance = null;
+  this.isPropertyDialogCreated = false;
+  
+  // Force change detection to render the window
+  this.cdr.detectChanges();
+  
+  // Create the component after the view is rendered
+  setTimeout(() => {
+    this.createPropertyDialogComponent();
+  }, 100);
+  
+  console.log('openPropertyDialog: Dialog opened:', dialogDef);
+}
+
+  /**
+   * Handle property dialog close - similar to onCloseWindow in scd-mdi-win.component.ts
+   */
+public onPropertyDialogClose(): void {
+  console.log('onPropertyDialogClose: Checking for unsaved changes...');
+  
+  if (this.propertyDialogData && this.propertyDialogData.isDirty) {
+    // Show confirmation dialog - same as MDI windows
+    this.showPropertyDialogSaveConfirmation();
+  } else {
+    // Close immediately
+    this.closePropertyDialog();
+  }
+}
+
+  /**
+   * Show save confirmation dialog - similar to showCloseConfirmationDialog in scd-mdi-win.component.ts
+   */
+ private showPropertyDialogSaveConfirmation(): void {
+  console.log('showPropertyDialogSaveConfirmation: Opening dialog for property dialog');
+  
+  const dialog = this.dialogService.open({
+    title: 'Unsaved Changes',
+    content: 'You have unsaved changes. What would you like to do?',
+    actions: [
+      { 
+        text: 'Save', 
+        themeColor: 'primary'
+      },
+      { 
+        text: "Don't Save",
+        themeColor: 'base'
+      },
+      { 
+        text: 'Cancel',
+        themeColor: 'base'
+      }
+    ],
+    width: 450,
+    minWidth: 300,
+    // You can also add custom CSS class for z-index
+    cssClass: 'confirmation-dialog-on-top'
+  });
+
+  // Subscribe to the result of the dialog - Same as MDI windows
+  dialog.result.subscribe((result: any) => {
+    console.log('showPropertyDialogSaveConfirmation: Dialog result:', result);
+    
+    // Check the text property of the action
+    if (result && result.text === 'Save') {
+      console.log('showPropertyDialogSaveConfirmation: User selected Save');
+      this.handlePropertyDialogSave();
+    } else if (result && result.text === "Don't Save") {
+      console.log('showPropertyDialogSaveConfirmation: User selected Don\'t Save');
+      this.closePropertyDialog();
+    } else {
+      // Cancel or closed without action
+      console.log('showPropertyDialogSaveConfirmation: User cancelled or closed dialog');
+    }
+  });
+}
+
+  /**
+   * Handle property dialog save - similar to handleSaveAction in scd-mdi-win.component.ts
+   */
+private async handlePropertyDialogSave(): Promise<void> {
+  if (!this.propertyDialogData || !this.propertyDialogData.componentInstance) {
+    console.error('handlePropertyDialogSave: No component instance found');
+    return;
+  }
+
+  const componentInstance = this.propertyDialogData.componentInstance;
+  console.log('handlePropertyDialogSave: Sending masterSaved to component:', componentInstance.constructor?.name);
+
+  // Create a new componentConfig with masterSaved = true
+  // This will trigger the @Input() setter in the child component
+  // Exactly like mdi-window's handleSaveAction
+  const config = new componentConfigDef();
+  config.masterSaved = true;
+
+  // Assign to the component's setComponentConfig_Input setter
+  // This calls handleComponentConfig which detects masterSaved and calls saveChanges
+  componentInstance.setComponentConfig_Input = config;
+
+  console.log('handlePropertyDialogSave: masterSaved sent to component');
+
+  // Wait a moment for the save to complete
+  await this.starServices.sleep(500);
+
+  // Close the dialog after save
+  this.closePropertyDialog();
+}
+
+  /**
+   * Close property dialog and cleanup
+   */
+private closePropertyDialog(): void {
+  console.log('closePropertyDialog: Closing property dialog');
+  
+  if (this.propertyDialogData) {
+    this.propertyDialogData.isVisible = false;
+  }
+  
+  // Destroy component ref
+  if (this.propertyDialogComponentRef) {
+    this.propertyDialogComponentRef.destroy();
+    this.propertyDialogComponentRef = null;
+  }
+  
+  // Clean up
+  this.lastPropertyDialogInstance = null;
+  this.isPropertyDialogCreated = false;
+  this.propertyDialogData = null;
+  
+  // Force change detection
+  this.cdr.detectChanges();
+}
+
+  /**
+   * Listen to outputs from the property dialog component
+   * Similar to the pattern in mdi-window but using ViewContainerRef
+   */
+  @ViewChild('propertyDialogContainer', { read: ViewContainerRef, static: false }) 
+  propertyDialogContainer!: ViewContainerRef;
+
+  private isPropertyDialogCreated = false;
+
+
+ private createPropertyDialogComponent(): void {
+  // Check if already created
+  if (this.isPropertyDialogCreated) {
+    console.log('Property dialog already created');
+    return;
+  }
+
+  if (!this.propertyDialogData || !this.propertyDialogData.isVisible) {
+    console.log('No property dialog data or not visible');
+    return;
+  }
+
+  if (!this.propertyDialogContainer) {
+    console.log('propertyDialogContainer not available, retrying...');
+    // Retry after a delay
+    setTimeout(() => {
+      this.createPropertyDialogComponent();
+    }, 200);
+    return;
+  }
+
+  try {
+    console.log('Creating property dialog component:', this.propertyDialogData.component.name);
+    
+    // Clear the container
+    this.propertyDialogContainer.clear();
+
+    // Create the component
+    this.propertyDialogComponentRef = this.propertyDialogContainer.createComponent(
+      this.propertyDialogData.component
+    );
+
+    console.log('Component created successfully:', this.propertyDialogComponentRef);
+
+    // Set inputs
+    if (this.propertyDialogData.inputs) {
+      Object.keys(this.propertyDialogData.inputs).forEach(key => {
+        if (this.propertyDialogComponentRef) {
+          console.log('Setting input:', key, this.propertyDialogData.inputs[key]);
+          this.propertyDialogComponentRef.instance[key] = this.propertyDialogData.inputs[key];
+        }
+      });
+    }
+
+    // Store component instance
+    if (this.propertyDialogComponentRef) {
+      this.propertyDialogData.componentInstance = this.propertyDialogComponentRef.instance;
+      console.log('Property dialog child component created:', this.propertyDialogData.componentInstance.constructor?.name);
+    }
+
+    // Set up output subscriptions
+    this.setupPropertyDialogOutputs();
+
+    // Trigger change detection
+    if (this.propertyDialogComponentRef) {
+      this.propertyDialogComponentRef.changeDetectorRef.detectChanges();
+    }
+
+    this.isPropertyDialogCreated = true;
+
+  } catch (error) {
+    console.error('Error creating property dialog component:', error);
+  }
+}
+
+private setupPropertyDialogOutputs(): void {
+  if (!this.propertyDialogComponentRef || !this.propertyDialogData) return;
+
+  const instance = this.propertyDialogComponentRef.instance;
+  console.log('Setting up outputs for instance:', instance);
+
+  // Check for setComponentConfig_Output
+  if (instance.setComponentConfig_Output instanceof EventEmitter) {
+    console.log('Property dialog: Found setComponentConfig_Output, subscribing...');
+    // Clean up previous subscription if exists
+    if ((instance.setComponentConfig_Output as any).__propertyDialogSub) {
+      (instance.setComponentConfig_Output as any).__propertyDialogSub.unsubscribe();
+    }
+    
+    const sub = instance.setComponentConfig_Output.subscribe((config: any) => {
+      console.log('Property dialog: Received componentConfig from child:', config);
+      if (this.propertyDialogData) {
+        this.propertyDialogData.isDirty = config.isDirty === true;
+      }
+    });
+    
+    (instance.setComponentConfig_Output as any).__propertyDialogSub = sub;
+  }
+
+  // Check for saveCompletedOutput
+  if (instance.saveCompletedOutput instanceof EventEmitter) {
+    console.log('Property dialog: Found saveCompletedOutput, subscribing...');
+    if ((instance.saveCompletedOutput as any).__propertyDialogSub) {
+      (instance.saveCompletedOutput as any).__propertyDialogSub.unsubscribe();
+    }
+    
+    const sub = instance.saveCompletedOutput.subscribe((data: any) => {
+      console.log('Property dialog: saveCompletedOutput received:', data);
+      if (this.propertyDialogData) {
+        this.propertyDialogData.isDirty = false;
+      }
+    });
+    
+    (instance.saveCompletedOutput as any).__propertyDialogSub = sub;
+  }
+}
+
+
+private getDialogTitle(componentName: string): string {
+    // Map component names to display titles
+    let titleMsg = componentName.split("_").join(" ");
+    return titleMsg;
   }
 
 }
