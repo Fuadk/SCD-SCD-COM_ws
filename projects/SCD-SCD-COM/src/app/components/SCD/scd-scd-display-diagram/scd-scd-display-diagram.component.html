@@ -54,8 +54,6 @@
   <kendo-diagram [shapes]="shapes" #diagram
       [connections]="connections"
       [shapeDefaults]="shapeDefaults" 
-      [style.height.px]="750" 
-      [style.width.px]="1000"
       (select)="ON_EVENT('select', $event)" 
       [editable]="editable" 
       (mouseEnter)="ON_EVENT('mouseEnter', $event)"

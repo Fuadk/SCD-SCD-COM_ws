@@ -823,7 +823,7 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
         this.starServices.sessionParams['COPIED_SHAPE'] = "";
         console.log ("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
         kendoui_content.id =  copiedShape.id;
-       this.add_new_shape(kendoui_content, copiedShape.type);
+        this.add_new_shape(kendoui_content, copiedShape.type);
        this.updateShapes();
      }
 
@@ -883,6 +883,7 @@ async ON_EVENT(type: string, event: any) {
 
        // ===== MOUSE ENTER =====
     if (type === "mouseEnter") {
+        
         const shape = event.item;
         if (shape && shape.id) {
             console.log(`🖱️ Hovering over: ${shape.id}`);
@@ -914,38 +915,42 @@ async ON_EVENT(type: string, event: any) {
     // ===== DRAG END =====
     if (type === "dragEnd") {
 
-    const shape = event.shapes?.[0];
-
-    if (!shape) {
-        return;
-    }
-
+    const shape = event.shapes[0];
     const bounds = shape.bounds();
 
-    const container = this.shapes.find(
-        s => s.id === shape.id
-    );
+    const container =
+        this.shapes.find(s => s.id === shape.id);
 
     if (container) {
-
-        // Drag changes position only.
         container.x = bounds.x;
         container.y = bounds.y;
-
-        
+        container.width = bounds.width;
+        container.height = bounds.height;
     }
 
-    // Keep the underlying dataItem position synchronized.
     if (shape.dataItem?.dataItem) {
+      console.log("shape.dataItem.dataItem:", shape.dataItem.dataItem, "event.bounds:", bounds, "this.currentZoom:",this.currentZoom)
         shape.dataItem.dataItem.x = bounds.x;
         shape.dataItem.dataItem.y = bounds.y;
+        shape.dataItem.dataItem.width = bounds.width;
+        shape.dataItem.dataItem.height = bounds.height;
     }
 
-    // Connections need to follow the moved shape.
+    // NEW
     shape.refreshConnections();
 
+    const idx =
+        this.shapes.findIndex(
+          s => s.id === shape.id
+        );
+      console.log("foundShape :", idx, shape.id)
+      if (idx >= 0) {
+        this.shapes[idx].x = bounds.x;
+        this.shapes[idx].y = bounds.y;
+        this.shapes[idx].width = bounds.width;
+        this.shapes[idx].height = bounds.height;
+      }
     this.updateShapes();
-
     return;
 }
 if (type === "shapeBoundsChange") {
@@ -1224,6 +1229,8 @@ public snapDistance = 6;
       rotate: true
     };
   }
+  // scd-scd-display-diagram.component.ts
+
 public drawDiagramFromDefinition(
   definition: DiagramDefinition,
   offsetX: number = 0,
@@ -1508,8 +1515,9 @@ public drawDiagramFromDefinition(
 
   return group;
 }
+
   // Visual template that uses the diagram definition
-  public visualTemplate = (options: any): Group => {
+public visualTemplate = (options: any): Group => {
 
   const dataItem = options.dataItem.dataItem;
 
@@ -2097,15 +2105,16 @@ public findPartAt(event): string | null {
     return part?.id ?? this.currentShapeId;
   }
   public updateShapes(){
-   if (this.isDiagramInitializing)
+    if (this.isDiagramInitializing)
       return;
     let DiagramData = this.mapperFrom.DiagramData;
     this.form.markAsDirty();
-    let shapes = {"shapes":this.shapes,  "connections": this.connections }
+    let shapes = {"shapes":this.shapes,  "connections": this.connections } //connections
     let object ={};
     object[DiagramData] = JSON.stringify(shapes);
     this.form.patchValue(object);
     this.form.updateValueAndValidity();
+    console.log("checking:shapeBoundsChange:shapeId: blower31283:2:this.shapes:", this.shapes[3])
 }
 public add_new_shape(kendoui_content, type) {
     let newShape = {
