@@ -23,10 +23,6 @@ export class ScdSymbolPropertiesComponent implements OnInit {
    this.router = router;
   this.title =  this.starServices.getNLS([],"scd_symbol_properties.scd_symbol_properties.component_title","");
     this.paramConfig = getParamConfig();
-    this.componentConfig = new componentConfigDef();
-    if (this.visibleOK_BTNS)
-	     this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
   }
   public showToolBar = false;
   public paramConfig; 
@@ -96,6 +92,7 @@ export class ScdSymbolPropertiesComponent implements OnInit {
    this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_symbol_properties.scd_symbol_properties.compsTitleID1","Common");
    this.SCD_SHAPEForm_0Config.isMaster = true;
    this.SCD_SHAPEForm_0Config.isSearchScreen = this.isSearchScreen;
+   this.SCD_SHAPEForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_SHAPEForm_0Config.queryable = false;
      this.SCD_SHAPEForm_0Config.removeable = false;
@@ -107,6 +104,7 @@ export class ScdSymbolPropertiesComponent implements OnInit {
    this.SCD_ALARMFormtabs_1Config.title = this.starServices.getNLS([],"scd_symbol_properties.scd_symbol_properties.compsTitleID2","States");
    this.SCD_ALARMFormtabs_1Config.isChild = true;
    this.SCD_ALARMFormtabs_1Config.masterSelector = 'app-scd-symbol-properties';
+   this.SCD_ALARMFormtabs_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_ALARMFormtabs_1Config.navigable = false;
      //this.SCD_ALARMFormtabs_1Config.insertable = true;
@@ -116,6 +114,7 @@ export class ScdSymbolPropertiesComponent implements OnInit {
    this.SCD_SYMBOL_GENERALFormdivs_2Config.title = this.starServices.getNLS([],"scd_symbol_properties.scd_symbol_properties.compsTitleID3","General");
    this.SCD_SYMBOL_GENERALFormdivs_2Config.isChild = true;
    this.SCD_SYMBOL_GENERALFormdivs_2Config.masterSelector = 'app-scd-symbol-properties';
+   this.SCD_SYMBOL_GENERALFormdivs_2Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_SYMBOL_GENERALFormdivs_2Config.navigable = false;
      //this.SCD_SYMBOL_GENERALFormdivs_2Config.insertable = true;
@@ -283,7 +282,7 @@ export class ScdSymbolPropertiesComponent implements OnInit {
              this.SCD_SYMBOL_GENERALFormdivs_2Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_SYMBOL_GENERALFormdivs_2Config.title = this.starServices.getNLS([],"scd_symbol_properties.scd_symbol_properties.compsTitleID3","General");
            this.setSteps(this);
-           }, 400);
+           }, 500);
        }
   
        this.SCD_SHAPEForm_0Config = new componentConfigDef();
@@ -296,12 +295,11 @@ export class ScdSymbolPropertiesComponent implements OnInit {
               this.SCD_SYMBOL_GENERALFormdivs_2Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       this.SCD_SHAPEForm_0Config = new componentConfigDef();
-       this.SCD_SHAPEForm_0Config = ComponentConfig;
-       this.SCD_ALARMFormtabs_1Config = new componentConfigDef();
-       this.SCD_ALARMFormtabs_1Config = ComponentConfig;
-       this.SCD_SYMBOL_GENERALFormdivs_2Config = new componentConfigDef();
-       this.SCD_SYMBOL_GENERALFormdivs_2Config = ComponentConfig;
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARMFormtabs_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_SYMBOL_GENERALFormdivs_2Config.showToolBar = ComponentConfig.showToolBar;
+       }
       if (ComponentConfig.masterSaved != null)
       {
        this.SCD_SHAPEForm_0Config.masterSaved = ComponentConfig.masterSaved;
@@ -364,14 +362,34 @@ export class ScdSymbolPropertiesComponent implements OnInit {
   
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

@@ -2360,7 +2360,25 @@ private setupPropertyDialogOutputs(): void {
     const sub = instance.setComponentConfig_Output.subscribe((config: any) => {
       console.log('Property dialog: Received componentConfig from child:', config);
       if (this.propertyDialogData) {
+        // Check for parentClose - close the dialog immediately
+        if (config.parentClose === true) {
+          console.log('Property dialog: parentClose received, closing dialog');
+          //this.closePropertyDialog();
+          this.onPropertyDialogClose();
+          return;
+        }
+        
+        // Update dirty state
         this.propertyDialogData.isDirty = config.isDirty === true;
+        
+        // Check for masterSaved - this means OK was clicked
+        if (config.masterSaved === true) {
+          console.log('Property dialog: masterSaved received, saving and closing');
+          // The component already saved, just close the dialog
+          setTimeout(() => {
+            this.closePropertyDialog();
+          }, 300);
+        }
       }
     });
     
@@ -2384,7 +2402,6 @@ private setupPropertyDialogOutputs(): void {
     (instance.saveCompletedOutput as any).__propertyDialogSub = sub;
   }
 }
-
 
 private getDialogTitle(componentName: string): string {
     // Map component names to display titles

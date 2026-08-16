@@ -13854,7 +13854,6 @@ export class admaiLogHeadAdmAdmAiLogHeadGrid{
         public clearScreen = null;
         public setScreen = null;
         public WEEKShow = null;
-        public showToolbar = null;
         public useAutoSave = null;
         public selectTab =null;
 		public showDiagram=null;
