@@ -3,6 +3,7 @@ import { Component, Input, Output,ViewChild, EventEmitter,
    OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { DialogService } from '@progress/kendo-angular-dialog';
+import { geometry } from '@progress/kendo-drawing';
 import {
   KENDO_DIAGRAM,
   ShapeOptions,
@@ -819,11 +820,50 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
      && this.starServices.sessionParams['COPIED_SHAPE'] != ""){
         let copiedShape =this.starServices.sessionParams['COPIED_SHAPE'];
         let kendoui_content =  JSON.parse(copiedShape.kendoui_content);
+        kendoui_content.id =  copiedShape.id;
         this.starServices.sessionParams['COPIED_SHAPE'] = "";
         console.log ("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
-        kendoui_content.id =  copiedShape.id;
+        let shapeType = "SYMPOL_FACTORY";
+        const diagramX =
+            (this.lastClickX - this.currentPan.x) / this.currentZoom;
+        const diagramY =
+            (this.lastClickY - this.currentPan.y) / this.currentZoom;
+        kendoui_content[diagramX] = diagramX;
+        kendoui_content[diagramY] = diagramY; 
+          let body = [
+            {
+              "_QUERY": "INSERT_SCD_SHAPE",
+              "DISPLAY_ID": this.form.value.DISPLAY_ID,
+              "SHAPE_TYPE": shapeType,
+              "HEIGHT" : 100,
+              "WIDTH" : 100,
+              "TOP": diagramY,
+              "LEFT": diagramX,
+              "NAME":kendoui_content.id,
+              "VISIBLE": 1,
+              "KEY_NAVIGATION":1,
+              "FOCUS_HIGHLIGHT":0,
+              "POINTER_HIGHLIGHT":1,
+              "TAB_INDEX":1,
+              "TOOLTIP_TEXT":kendoui_content.id
+            },
+            {
+              "_QUERY": "GET_LAST_ID"
+            }
+          ];
+          let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+          if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
+          if (typeof data[1].data != "undefined") {
+            let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
+            kendoui_content.id = last_insert_rowid + ":" + kendoui_content.id
+             if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
+          }
+            
+        
        this.add_new_shape(kendoui_content, copiedShape.type);
+       this.updateShapes();
      }
+
 
 }
 
@@ -912,66 +952,98 @@ async ON_EVENT(type: string, event: any) {
     // ===== DRAG END =====
     if (type === "dragEnd") {
 
-    const shape = event.shapes[0];
-    const bounds = shape.bounds();
+    const shape = event.shapes?.[0];
 
-    const container =
-        this.shapes.find(s => s.id === shape.id);
-
-    if (container) {
-        container.x = bounds.x;
-        container.y = bounds.y;
-        container.width = bounds.width;
-        container.height = bounds.height;
+    if (!shape) {
+        return;
     }
 
+    const bounds = shape.bounds();
+
+    const container = this.shapes.find(
+        s => s.id === shape.id
+    );
+
+    if (container) {
+
+        // Drag changes position only.
+        container.x = bounds.x;
+        container.y = bounds.y;
+
+        
+    }
+
+    // Keep the underlying dataItem position synchronized.
     if (shape.dataItem?.dataItem) {
         shape.dataItem.dataItem.x = bounds.x;
         shape.dataItem.dataItem.y = bounds.y;
-        shape.dataItem.dataItem.width = bounds.width;
-        shape.dataItem.dataItem.height = bounds.height;
     }
 
-    // NEW
+    // Connections need to follow the moved shape.
     shape.refreshConnections();
 
-    const idx =
-        this.shapes.findIndex(
-          s => s.id === shape.id
-        );
-      console.log("foundShape :", idx, shape.id)
-      if (idx >= 0) {
-        this.shapes[idx].x = bounds.x;
-        this.shapes[idx].y = bounds.y;
-        this.shapes[idx].width = bounds.width;
-        this.shapes[idx].height = bounds.height;
-      }
+    this.updateShapes();
 
     return;
 }
 if (type === "shapeBoundsChange") {
-    const shape = event.item;
-    const bounds = event.bounds;
+  const shape = event.item;
+  const bounds = event.bounds;
+  
+  if (!shape || !bounds) return;
+  
+  const shapeId = shape.id;
+  if (this.isDiagramInitializing) {
+        return;
+    }
+  
+  // Find the shape in your shapes array
+  const shapeInShapes = this.shapes.find(s => s.id === shapeId);
+  
+  if (shapeInShapes) {
+    console.log(
+    "📦 shapeBoundsChange:",
+    shapeId,
+    "bounds:",
+    bounds
+  );
+    // Update the shape's width and height
+    shapeInShapes.width = bounds.width;
+    shapeInShapes.height = bounds.height;
     
-    if (!shape || !bounds) return;
-    
-    const shapeId = shape.id;
-    
-    console.log(`🔍 checking:shapeBoundsChange:shapeId: ${shapeId}, bounds:`, bounds);
-    
-    // 🔑 Store the latest bounds, shape ID, and shape reference
-    
-    
-    const shapeInSahpes =
-      this.shapes.find(s => s.id === shapeId);
-
-    shapeInSahpes.x = event.bounds.x;
-    shapeInSahpes.y = event.bounds.y;
-    shapeInSahpes.width = event.bounds.width;
-    shapeInSahpes.height = event.bounds.height;
-
-    console.log(`📦 Pending resize for ${shapeId}: (${bounds.x}, ${bounds.y}) ${bounds.width}x${bounds.height}`);
-    return;
+    // IMPORTANT: Also update the dataItem's width and height
+    if (shapeInShapes.dataItem) {
+      shapeInShapes.dataItem.width = bounds.width;
+      shapeInShapes.dataItem.height = bounds.height;
+    }
+    console.log(
+    "📦 Stored dimensions:",
+    {
+      id: shapeId,
+      width: shapeInShapes.width,
+      height: shapeInShapes.height
+    }
+  );
+  console.log(
+  "📦 shapeBoundsChange DEBUG",
+  {
+    shapeId,
+    bounds,
+    currentShape: shapeInShapes
+      ? {
+          x: shapeInShapes.x,
+          y: shapeInShapes.y,
+          width: shapeInShapes.width,
+          height: shapeInShapes.height
+        }
+      : null
+  }
+);
+    console.log(`📦 Resized ${shapeId} to: ${bounds.width}x${bounds.height}`);
+  }
+  
+  this.updateShapes();
+  return;
 }
     // ===== SELECT =====
     if (type === "select" && event.selected) {
@@ -1190,154 +1262,323 @@ public snapDistance = 6;
       rotate: true
     };
   }
-    public drawDiagramFromDefinition(definition: DiagramDefinition, offsetX: number = 0, offsetY: number = 0): Group {
-    const group = new Group();
+public drawDiagramFromDefinition(
+  definition: DiagramDefinition,
+  offsetX: number = 0,
+  offsetY: number = 0,
+  targetWidth?: number,
+  targetHeight?: number
+): Group {
 
-    // Keep track of shape positions for connections
-    const shapePositions = new Map<string, { x: number; y: number; width: number; height: number }>();
+  // ------------------------------------------------------------
+  // IMPORTANT ARCHITECTURE
+  //
+  // The definition is ALWAYS drawn at its natural/original size.
+  //
+  // We do NOT:
+  //   - modify path strings
+  //   - scale shape.x / shape.y
+  //   - scale shape.width / shape.height
+  //   - scale text coordinates
+  //   - scale font sizes
+  //
+  // Kendo owns the outer shape:
+  //   x, y, width, height
+  //
+  // The Drawing Group owns the internal visual.
+  // ------------------------------------------------------------
 
-    // 1. Draw all shapes (rectangles and circles)
-    if (definition.shapes) {
-      definition.shapes.forEach((shape) => {
-        const x = shape.x + offsetX;
-        const y = shape.y + offsetY;
+  const group = new Group();
 
-        // Store shape position for connections
-        shapePositions.set(shape.id, {
+  // ------------------------------------------------------------
+  // 1. Draw shapes at their ORIGINAL coordinates and dimensions
+  // ------------------------------------------------------------
+
+  if (definition.shapes) {
+    definition.shapes.forEach((shape) => {
+
+      const x = shape.x + offsetX;
+      const y = shape.y + offsetY;
+
+      const width = shape.width;
+      const height = shape.height;
+
+      if (shape.shape === "circle") {
+
+        const circle = new Circle({
+          center: {
+            x: x + width / 2,
+            y: y + height / 2
+          },
+          radius: width / 2,
+          stroke: shape.stroke
+            ? {
+                width: shape.stroke.width,
+                color: shape.stroke.color
+              }
+            : undefined,
+          fill: {
+            color: shape.fill || "#fff"
+          }
+        });
+
+        if (shape.opacity !== undefined) {
+          circle.options.opacity = shape.opacity;
+        }
+
+        group.append(circle);
+
+      } else {
+
+        const rect = new Rectangle({
           x: x,
           y: y,
-          width: shape.width,
-          height: shape.height
+          width: width,
+          height: height,
+          cornerRadius: shape.cornerRadius || 0,
+          stroke: shape.stroke
+            ? {
+                width: shape.stroke.width,
+                color: shape.stroke.color
+              }
+            : undefined,
+          fill: {
+            color: shape.fill || "#fff"
+          }
         });
 
-        if (shape.shape === "circle") {
-          // Draw circle
-          const circle = new Circle({
-            center: { x: x + shape.width / 2, y: y + shape.height / 2 },
-            radius: shape.width / 2,
-            stroke: shape.stroke ? { width: shape.stroke.width, color: shape.stroke.color } : undefined,
-            fill: { color: shape.fill || "#fff" },
-          });
-          if (shape.opacity !== undefined) {
-            circle.options.opacity = shape.opacity;
-          }
-          group.append(circle);
-        } else {
-          // Draw rectangle (default)
-          const rect = new Rectangle({
-            x: x,
-            y: y,
-            width: shape.width,
-            height: shape.height,
-            cornerRadius: shape.cornerRadius || 0,
-            stroke: shape.stroke ? { width: shape.stroke.width, color: shape.stroke.color } : undefined,
-            fill: { color: shape.fill || "#fff" },
-          });
-          if (shape.opacity !== undefined) {
-            rect.options.opacity = shape.opacity;
-          }
-          group.append(rect);
-        }
-      });
-    }
-
-    // 2. Draw all lines (paths, straight lines, waves)
-    if (definition.lines) {
-      definition.lines.forEach((line) => {
-        if (line.path) {
-          // Draw path
-          const path = new Path({
-            data: line.path,
-            stroke: {
-              width: line.stroke?.width || 1,
-              color: line.stroke?.color || "#000",
-              dashType: line.stroke?.dashType as any,
-            },
-            fill: { color: line.fill || "transparent" },
-          });
-          if (line.opacity !== undefined) {
-            path.options.opacity = line.opacity;
-          }
-          group.append(path);
-        } else if (line.from && line.to) {
-          // Draw straight line
-          const straightLine = new Line({
-            start: { x: line.from.x + offsetX, y: line.from.y + offsetY },
-            end: { x: line.to.x + offsetX, y: line.to.y + offsetY },
-            stroke: {
-              width: line.stroke?.width || 1,
-              color: line.stroke?.color || "#000",
-              dashType: line.stroke?.dashType as any,
-            },
-          });
-          if (line.opacity !== undefined) {
-            straightLine.options.opacity = line.opacity;
-          }
-          group.append(straightLine);
-        }
-      });
-    }
-
-    // 3. Draw all text blocks
-    if (definition.textBlocks) {
-      definition.textBlocks.forEach((text) => {
-        const textBlock = new TextBlock({
-          text: text.text,
-          x: text.x + offsetX,
-          y: text.y + offsetY,
-          fill: text.fill || "#000",
-          opacity: text.opacity || 1,
-        });
-
-        // Parse font string (e.g., "bold 22px Arial, sans-serif")
-        if (text.font) {
-          const fontParts = text.font.split(" ");
-          let fontSize = 14;
-          let fontWeight = "normal";
-          let fontFamily = "Arial, sans-serif";
-
-          for (const part of fontParts) {
-            if (part.includes("px")) {
-              fontSize = parseInt(part);
-            } else if (part === "bold" || part === "normal" || part === "italic") {
-              fontWeight = part;
-            } else if (!part.match(/^\d+px$/) && !["bold", "normal", "italic"].includes(part)) {
-              fontFamily = part;
-            }
-          }
-
-          textBlock.options.fontSize = fontSize;
-          textBlock.options.fontWeight = fontWeight;
-          textBlock.options.fontFamily = fontFamily;
+        if (shape.opacity !== undefined) {
+          rect.options.opacity = shape.opacity;
         }
 
-        if (text.textAnchor) {
-          textBlock.options.textAnchor = text.textAnchor;
-        }
-
-        group.append(textBlock);
-      });
-    }
-
-    return group;
+        group.append(rect);
+      }
+    });
   }
 
+  // ------------------------------------------------------------
+  // 2. Draw lines at ORIGINAL coordinates
+  // ------------------------------------------------------------
+
+  if (definition.lines) {
+
+    definition.lines.forEach((line) => {
+
+      if (line.path) {
+
+        // IMPORTANT:
+        // Do NOT modify or scale the path data.
+        const path = new Path({
+          data: line.path,
+          stroke: {
+            width: line.stroke?.width || 1,
+            color: line.stroke?.color || "#000",
+            dashType: line.stroke?.dashType as any
+          },
+          fill: {
+            color: line.fill || "transparent"
+          }
+        });
+
+        if (line.opacity !== undefined) {
+          path.options.opacity = line.opacity;
+        }
+
+        group.append(path);
+
+      } else if (line.from && line.to) {
+
+        const straightLine = new Line({
+          start: {
+            x: line.from.x + offsetX,
+            y: line.from.y + offsetY
+          },
+          end: {
+            x: line.to.x + offsetX,
+            y: line.to.y + offsetY
+          },
+          stroke: {
+            width: line.stroke?.width || 1,
+            color: line.stroke?.color || "#000",
+            dashType: line.stroke?.dashType as any
+          }
+        });
+
+        if (line.opacity !== undefined) {
+          straightLine.options.opacity = line.opacity;
+        }
+
+        group.append(straightLine);
+      }
+    });
+  }
+
+  // ------------------------------------------------------------
+  // 3. Draw text at ORIGINAL coordinates
+  // ------------------------------------------------------------
+
+  if (definition.textBlocks) {
+
+    definition.textBlocks.forEach((text) => {
+
+      const x = text.x + offsetX;
+      const y = text.y + offsetY;
+
+      let fontSize = 14;
+      let fontWeight = "normal";
+      let fontFamily = "Arial, sans-serif";
+
+      if (text.font) {
+
+        const parts = text.font.split(" ");
+
+        for (const part of parts) {
+
+          if (part.includes("px")) {
+            fontSize = parseInt(part);
+
+          } else if (
+            part === "bold" ||
+            part === "normal" ||
+            part === "italic"
+          ) {
+            fontWeight = part;
+
+          } else if (
+            !part.match(/^\d+px$/) &&
+            !["bold", "normal", "italic"].includes(part)
+          ) {
+            fontFamily = part;
+          }
+        }
+      }
+
+      // IMPORTANT:
+      // No scaling of fontSize.
+      const textBlock = new TextBlock({
+        text: text.text,
+        x: x,
+        y: y,
+        fill: text.fill || "#000",
+        opacity: text.opacity || 1,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontFamily: fontFamily
+      });
+
+      if (text.textAnchor) {
+        textBlock.options.textAnchor = text.textAnchor;
+      }
+
+      group.append(textBlock);
+    });
+  }
+
+  // ------------------------------------------------------------
+  // 4. Resize the ENTIRE rendered visual if Kendo supplied
+  //    targetWidth / targetHeight.
+  //
+  //    We use the underlying Drawing Group.
+  // ------------------------------------------------------------
+
+  if (
+    targetWidth !== undefined &&
+    targetHeight !== undefined &&
+    targetWidth > 0 &&
+    targetHeight > 0
+  ) {
+
+    const drawingGroup: any = group.drawingElement;
+
+    if (drawingGroup) {
+
+      const naturalBounds = drawingGroup.bbox();
+
+  
+
+      if (
+        naturalBounds &&
+        naturalBounds.size &&
+        naturalBounds.origin &&
+        naturalBounds.size.width > 0 &&
+        naturalBounds.size.height > 0
+      ) {
+
+        const naturalWidth = naturalBounds.size.width;
+        const naturalHeight = naturalBounds.size.height;
+
+        const naturalX = naturalBounds.origin.x;
+        const naturalY = naturalBounds.origin.y;
+
+        const scaleX = targetWidth / naturalWidth;
+        const scaleY = targetHeight / naturalHeight;
+
+        console.log(
+          "VISUAL SCALE:",
+          {
+            naturalWidth,
+            naturalHeight,
+            naturalX,
+            naturalY,
+            targetWidth,
+            targetHeight,
+            scaleX,
+            scaleY
+          }
+        );
+
+        const transform = geometry
+          .transform()
+          .translate(
+            -naturalX,
+            -naturalY
+          )
+          .scale(
+            scaleX,
+            scaleY,
+            [0, 0]
+          );
+
+        drawingGroup.transform(transform);
+      }
+    }
+  }
+
+  return group;
+}
   // Visual template that uses the diagram definition
   public visualTemplate = (options: any): Group => {
-    const dataItem = options.dataItem.dataItem;
 
-    //if (dataItem.type === "boilerDiagram" && dataItem.definition)
+  const dataItem = options.dataItem.dataItem;
+
+  const shapeWidth =
+    options.width ??
+    dataItem.width ??
+    undefined;
+
+  const shapeHeight =
+    options.height ??
+    dataItem.height ??
+    undefined;
+
+  console.log(
+    "visualTemplate:",
     {
-      // Draw the diagram with optional offset
-      return this.drawDiagramFromDefinition(
-        dataItem.definition,
-        dataItem.offsetX || 0,
-        dataItem.offsetY || 0
-      );
+      id: options.dataItem.id,
+      shapeWidth,
+      shapeHeight
     }
+  );
 
-    return new Group();
-  };
+  return this.drawDiagramFromDefinition(
+    dataItem.definition,
+    dataItem.offsetX || 0,
+    dataItem.offsetY || 0,
+    shapeWidth,
+    shapeHeight
+  );
+};
+
   // Diagram properties
   public shapes: ShapeOptions[] = [];
   public connections: ConnectionOptions[] =[];
@@ -1366,22 +1607,50 @@ public performMapperFrom(In) {
     }
     return OutRec;
 }
+public isDiagramInitializing = true;
+async  removeUnusedShapes(){
+  let shapesIDs = "";
+  for (let i =0; i< this.shapes.length; i++){
+    let shapeID = this.shapes[i].id;
+    let array = shapeID.split(":");
+    shapeID = array[0];
+    if (shapesIDs != "")
+      shapesIDs = shapesIDs + ",";
+    shapesIDs = shapesIDs + shapeID;
+  }
+  if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:shapesIDs:", shapesIDs);
+  let statement = "SELECT * from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+    let body = [
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement
+      }
+    ];
+    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:body:", body);
+    let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:data[0].data:", data[0].data);
+}
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
     if (this.paramConfig.DEBUG_FLAG) console.log("OutRec:1:", OutRec)
 
     let dwg = JSON.parse(OutRec.DiagramData);
     if (this.paramConfig.DEBUG_FLAG) console.log("dwg:1:", dwg)
-
+    this.isDiagramInitializing = true;
     this.shapes = dwg.shapes;
     this.connections = dwg.connections;
     this.editable = this.buildEditable();
 
     // Generate the JSON
-const result = this.buildHierarchy(this.dbRows);
-this.items=result;
+    const result = this.buildHierarchy(this.dbRows);
+    this.items=result;
 
-
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            this.isDiagramInitializing = false;
+        });
+    });
+    this.removeUnusedShapes();
 }
 
 // Simulating your database results
@@ -1887,18 +2156,28 @@ public findPartAt(event): string | null {
 
     return part?.id ?? this.currentShapeId;
   }
-  
+  public updateShapes(){
+   if (this.isDiagramInitializing)
+      return;
+    let DiagramData = this.mapperFrom.DiagramData;
+    this.form.markAsDirty();
+    let shapes = {"shapes":this.shapes,  "connections": this.connections }
+    let object ={};
+    object[DiagramData] = JSON.stringify(shapes);
+    this.form.patchValue(object);
+    this.form.updateValueAndValidity();
+}
 public add_new_shape(kendoui_content, type) {
     let newShape = {
       "id": "boilerA",
-      "x": 80,
-      "y": 80,
-      "width": 400,
-      "height": 420,
+      "x": 80,                    //this.lastClickX
+      "y": 80,                    //this.lastClickY
+      //"width": 400,                 //copy from data
+      //"height": 420,                //copy from data
       "dataItem": {
-        "type": "boiler",
+        "type": "boiler",           //copy from type
         "definition": {
-          "shapeDefaults": {
+          "shapeDefaults": {        //copy from data
             "visual": null,
             "fill": "#f0f4f8",
             "stroke": {
@@ -1906,24 +2185,24 @@ public add_new_shape(kendoui_content, type) {
               "width": 1
             }
           },
-          "connectionDefaults": {
+          "connectionDefaults": {   //copy from data
             "stroke": {
               "color": "#555",
               "width": 2
             }
           },
-          "layout": {
+          "layout": {               //copy from data
             "type": "layered",
             "subtype": "vertical"
           },
-          "shapes": [
+          "shapes": [               //copy from data
 
           ],
-          "lines": [
+          "lines": [                //copy from data
 
           ]
         },
-        "title": "Boiler A (Primary)"
+        "title": "Boiler A (Primary)"   //copy from type
       }
     }
 
@@ -1947,8 +2226,10 @@ public add_new_shape(kendoui_content, type) {
     newShape.id = kendoui_content.id;
     newShape.dataItem.title = type;//Fuad kendoui_content.name;
     newShape.dataItem.type = type;
-    newShape.width = kendoui_content.width;
-    newShape.height = kendoui_content.height;
+    //newShape.width = kendoui_content.width;
+    //newShape.height = kendoui_content.height;
+    // const diagramX = kendoui_content.diagramX;
+    // const diagramY = kendoui_content.diagramY;
 
     newShape.x = this.lastClickX;
     newShape.y = this.lastClickY;
@@ -1956,10 +2237,10 @@ public add_new_shape(kendoui_content, type) {
     console.log("kendoui_content:newShape:", newShape);
     const options: ShapeOptions = {
       id: newShape.id,
-      x: newShape.x,
-      y: newShape.y,
-      width: newShape.width,
-      height: newShape.height,
+      x: this.lastClickX,
+      y: this.lastClickY,
+      //width: newShape.width,
+      //height: newShape.height,
       dataItem: newShape.dataItem,
       visual: (args) => {
         return this.drawDiagramFromDefinition(
@@ -1967,9 +2248,9 @@ public add_new_shape(kendoui_content, type) {
         );
       }
     };
-    this.diagramComponent.addShape(options);
-    this.shapes.push(newShape);
-  }
+    this.diagramComponent.addShape(options);    //Store to screen diagram
+    this.shapes.push(newShape);                 //Store to my memory
+}
 
 public popupVisible = false;
 
@@ -2360,7 +2641,25 @@ private setupPropertyDialogOutputs(): void {
     const sub = instance.setComponentConfig_Output.subscribe((config: any) => {
       console.log('Property dialog: Received componentConfig from child:', config);
       if (this.propertyDialogData) {
+        // Check for parentClose - close the dialog immediately
+        if (config.parentClose === true) {
+          console.log('Property dialog: parentClose received, closing dialog');
+          //this.closePropertyDialog();
+          this.onPropertyDialogClose();
+          return;
+        }
+        
+        // Update dirty state
         this.propertyDialogData.isDirty = config.isDirty === true;
+        
+        // Check for masterSaved - this means OK was clicked
+        if (config.masterSaved === true) {
+          console.log('Property dialog: masterSaved received, saving and closing');
+          // The component already saved, just close the dialog
+          setTimeout(() => {
+            this.closePropertyDialog();
+          }, 300);
+        }
       }
     });
     
@@ -2384,7 +2683,6 @@ private setupPropertyDialogOutputs(): void {
     (instance.saveCompletedOutput as any).__propertyDialogSub = sub;
   }
 }
-
 
 private getDialogTitle(componentName: string): string {
     // Map component names to display titles

@@ -780,9 +780,9 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
     
   }
@@ -820,9 +820,46 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
      && this.starServices.sessionParams['COPIED_SHAPE'] != ""){
         let copiedShape =this.starServices.sessionParams['COPIED_SHAPE'];
         let kendoui_content =  JSON.parse(copiedShape.kendoui_content);
+        kendoui_content.id =  copiedShape.id;
         this.starServices.sessionParams['COPIED_SHAPE'] = "";
         console.log ("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
-        kendoui_content.id =  copiedShape.id;
+        let shapeType = "SYMPOL_FACTORY";
+        const diagramX =
+            (this.lastClickX - this.currentPan.x) / this.currentZoom;
+        const diagramY =
+            (this.lastClickY - this.currentPan.y) / this.currentZoom;
+        kendoui_content[diagramX] = diagramX;
+        kendoui_content[diagramY] = diagramY; 
+          let body = [
+            {
+              "_QUERY": "INSERT_SCD_SHAPE",
+              "DISPLAY_ID": this.form.value.DISPLAY_ID,
+              "SHAPE_TYPE": shapeType,
+              "HEIGHT" : 100,
+              "WIDTH" : 100,
+              "TOP": diagramY,
+              "LEFT": diagramX,
+              "NAME":kendoui_content.id,
+              "VISIBLE": 1,
+              "KEY_NAVIGATION":1,
+              "FOCUS_HIGHLIGHT":0,
+              "POINTER_HIGHLIGHT":1,
+              "TAB_INDEX":1,
+              "TOOLTIP_TEXT":kendoui_content.id
+            },
+            {
+              "_QUERY": "GET_LAST_ID"
+            }
+          ];
+          let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+          if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
+          if (typeof data[1].data != "undefined") {
+            let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
+            kendoui_content.id = last_insert_rowid + ":" + kendoui_content.id
+             if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
+          }
+            
+        
        this.add_new_shape(kendoui_content, copiedShape.type);
        this.updateShapes();
      }
@@ -841,7 +878,7 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
     }
     if (Id != "") {
       let rec = this.dialogProperties.find(x => x.Component == Id);
-      console.log("ON_CLICK_MENU:rec:", rec)
+      console.log("ON_CLICK_MENU:rec:", this.selectedShape, rec)
       if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
         let Maximize = rec.Maximize;
@@ -1570,6 +1607,28 @@ public performMapperFrom(In) {
     return OutRec;
 }
 public isDiagramInitializing = true;
+async  removeUnusedShapes(){
+  let shapesIDs = "";
+  for (let i =0; i< this.shapes.length; i++){
+    let shapeID = this.shapes[i].id;
+    let array = shapeID.split(":");
+    shapeID = array[0];
+    if (shapesIDs != "")
+      shapesIDs = shapesIDs + ",";
+    shapesIDs = shapesIDs + shapeID;
+  }
+  if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:shapesIDs:", shapesIDs);
+  let statement = "DELETE  from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+    let body = [
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement
+      }
+    ];
+    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:body:", body);
+    let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:data[0].data:", data[0].data);
+}
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
     if (this.paramConfig.DEBUG_FLAG) console.log("OutRec:1:", OutRec)
@@ -1590,7 +1649,7 @@ public mapSampleData() {
             this.isDiagramInitializing = false;
         });
     });
-
+    this.removeUnusedShapes();
 }
 
 // Simulating your database results
@@ -2168,19 +2227,17 @@ public add_new_shape(kendoui_content, type) {
     newShape.dataItem.type = type;
     //newShape.width = kendoui_content.width;
     //newShape.height = kendoui_content.height;
-const diagramX =
-    (this.lastClickX - this.currentPan.x) / this.currentZoom;
-const diagramY =
-    (this.lastClickY - this.currentPan.y) / this.currentZoom;
+    // const diagramX = kendoui_content.diagramX;
+    // const diagramY = kendoui_content.diagramY;
 
-    newShape.x = diagramX;
-    newShape.y = diagramY;
+    newShape.x = this.lastClickX;
+    newShape.y = this.lastClickY;
     
     console.log("kendoui_content:newShape:", newShape);
     const options: ShapeOptions = {
       id: newShape.id,
-      x: newShape.x,
-      y: newShape.y,
+      x: this.lastClickX,
+      y: this.lastClickY,
       //width: newShape.width,
       //height: newShape.height,
       dataItem: newShape.dataItem,
