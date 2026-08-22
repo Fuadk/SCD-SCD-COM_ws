@@ -286,6 +286,8 @@ import { ScdAppTreeScdScdAppTreeGridGridComponent } from '../components/SCD/scd-
 import { ScdAppTreeContextScdScdAppTreeContextGridGridComponent } from '../components/SCD/scd-scd-app-tree-context-grid/scd-scd-app-tree-context-grid.component';
 import { ScdMenusMaintComponent } from '../components/SCD/scd-menus-maint/scd-menus-maint.component';
 import { ScdDisplayScdScdDisplayDiagramDiagramComponent } from '../components/SCD/scd-scd-display-diagram/scd-scd-display-diagram.component';
+
+import { ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent } from '../components/SCD/scd-scd-shape-defaults-grid/scd-scd-shape-defaults-grid.component';
 const scdRoutes: Routes = [
  
 
@@ -497,6 +499,8 @@ const scdRoutes: Routes = [
 		{ path: 'scd_scd_app_tree_context_grid', component: ScdAppTreeContextScdScdAppTreeContextGridGridComponent },
 		{ path: 'scd_menus_maint', component: ScdMenusMaintComponent },
 		{ path: 'scd_scd_display_diagram', component: ScdDisplayScdScdDisplayDiagramDiagramComponent },
+
+		{ path: 'scd_scd_shape_defaults_grid', component: ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent },
 ];
 
 
@@ -711,6 +715,8 @@ const scdRoutes: Routes = [
 		ScdAppTreeContextScdScdAppTreeContextGridGridComponent,
 		ScdMenusMaintComponent,
 		ScdDisplayScdScdDisplayDiagramDiagramComponent,
+
+		ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent,
   ],
   
   imports: [

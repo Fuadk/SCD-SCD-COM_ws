@@ -1,3 +1,12 @@
+ export class scdshapeDefaultsScdScdShapeDefaultsGrid{
+	public SHAPE_DEFAULT_ID = '';
+	public SHAPE_TYPE = '';
+	public FIELD_NAME = '';
+	public FIELD_VALUE = '';
+
+}
+
+
  export class scddisplayScdScdDisplayDiagram{
 	public DISPLAY_ID = '';
 	public APPLICATION_ID = '';
@@ -1250,8 +1259,10 @@
 	public WORD_WRAP = '';
 	public ALIGNMENT = '';
 	public BACK_STYLE = '';
+	public INSERT_VARIABLE = '';
 
 }
+
 
  export class scdshapeStateScdSsdShapeStateDefinition{
 	public SHAPE_STATE_ID = '';

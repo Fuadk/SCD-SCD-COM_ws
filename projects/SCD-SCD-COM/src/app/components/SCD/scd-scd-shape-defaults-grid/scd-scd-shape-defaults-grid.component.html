@@ -1,0 +1,135 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+<legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.component_title","SCD SHAPE DEFAULTS GRID") }}</legend>
+	
+    <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight ? componentConfig.gridHeight : gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="componentConfig.showToolBar">
+
+
+        
+        
+
+        
+            <button  [icon]="'sliders'"  [disabled]="isSearch" kendoButton  title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="Cancel" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
+            <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isSearch && (componentConfig.updateable || componentConfig.insertable) "></button >
+            <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable && !isSearch"></button >
+
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"   (click)="toggleColumnMenu()" *ngIf="!isSearch && !isPhonePortrait"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "    >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_DEFAULT_ID"
+ *ngIf=visibleSHAPE_DEFAULT_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_DEFAULT_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_DEFAULT_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('SHAPE_DEFAULT_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_DEFAULT_ID','Shape Default Id') + ' *'}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_DEFAULT_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SHAPE_DEFAULT_ID()"      [formControl]="formGroup.get('SHAPE_DEFAULT_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_DEFAULT_ID_Hint','Please enter Shape Default Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_TYPE"
+ *ngIf=visibleSHAPE_TYPE  [editable]=" !(disabledColumns.indexOf('SHAPE_TYPE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SHAPE_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_TYPE','Shape Type')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_TYPE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SHAPE_TYPE()"      [formControl]="formGroup.get('SHAPE_TYPE')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_TYPE_Hint','Please enter Shape Type.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FIELD_NAME"
+ *ngIf=visibleFIELD_NAME  [editable]=" !(disabledColumns.indexOf('FIELD_NAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('FIELD_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.FIELD_NAME','Field Name')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.FIELD_NAME}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_FIELD_NAME()"      [formControl]="formGroup.get('FIELD_NAME')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.FIELD_NAME_Hint','Please enter Field Name.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FIELD_VALUE"
+ *ngIf=visibleFIELD_VALUE  [editable]=" !(disabledColumns.indexOf('FIELD_VALUE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('FIELD_VALUE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.FIELD_VALUE','Field Value')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.FIELD_VALUE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_FIELD_VALUE()"      [formControl]="formGroup.get('FIELD_VALUE')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.FIELD_VALUE_Hint','Please enter Field Value.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+

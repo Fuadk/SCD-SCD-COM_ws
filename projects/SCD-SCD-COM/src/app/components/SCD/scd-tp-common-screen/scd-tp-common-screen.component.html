@@ -49,22 +49,12 @@
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ID >
 		<kendo-label *ngIf="(!labelDISPLAY_IDTop && !isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label" [for]="DISPLAY_ID" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.DISPLAY_ID','Display Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelDISPLAY_IDTop || isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.DISPLAY_ID','Display Id') + ' *'}}</label>
-		<kendo-combobox  #DISPLAY_ID class="form-field-combobox"  [formControlName]="'DISPLAY_ID'"
-		[data]="lkpArrDISPLAY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-
+		<input   formControlName="DISPLAY_ID"
+ kendoTextBox #DISPLAY_ID
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.DISPLAY_ID.errors }"  required 
-		[readonly]="primarKeyReadOnlyArr.isDISPLAY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.DISPLAY_ID_Hint','Please enter Display Id.')"		(click)="ON_CLICK_DISPLAY_ID($event)"
- (valueChange)="onValueChange_DISPLAY_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DISPLAY_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
+		[readonly]="primarKeyReadOnlyArr.isDISPLAY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.DISPLAY_ID_Hint','Please enter Display Id.')"
+		(click)="ON_CLICK_DISPLAY_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DISPLAY_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -160,7 +150,7 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="VISIBLE"
   #VISIBLE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.VISIBLE_Hint','Please enter Visible.')"		(click)="ON_CLICK_VISIBLE($event)"
  (change)="onChange_VISIBLE($event)"      adaptiveMode="auto" 
-	 name="VISIBLE"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="VISIBLE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  />
 	</kendo-formfield>
 
@@ -197,13 +187,13 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTOOLTIP_TEXTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTOOLTIP_TEXT >
+	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelTOOLTIP_TEXTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTOOLTIP_TEXT >
 		<kendo-label *ngIf="(!labelTOOLTIP_TEXTTop && !isPhonePortrait) && labelTOOLTIP_TEXTVisible" class="form-label" [for]="TOOLTIP_TEXT" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.TOOLTIP_TEXT','Tooltip Text')"></kendo-label>
 		<label *ngIf="(labelTOOLTIP_TEXTTop || isPhonePortrait) && labelTOOLTIP_TEXTVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.TOOLTIP_TEXT','Tooltip Text')}}</label>
-		<input   formControlName="TOOLTIP_TEXT"
- kendoTextBox #TOOLTIP_TEXT  [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.TOOLTIP_TEXT_Hint','Please enter Tooltip Text.')"
-		(click)="ON_CLICK_TOOLTIP_TEXT($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TOOLTIP_TEXT($event)"      adaptiveMode="auto"  />
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="4" [cols]="100"  kendoTextBox  formControlName="TOOLTIP_TEXT"
+ #TOOLTIP_TEXT
+  [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.TOOLTIP_TEXT_Hint','Please enter Tooltip Text.')"		(click)="ON_CLICK_TOOLTIP_TEXT($event)"
+     adaptiveMode="auto" ></kendo-textarea>
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAB_INDEXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAB_INDEX >
@@ -219,11 +209,11 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelINSERT_VARIABLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleINSERT_VARIABLE >
-		<kendo-label *ngIf="(!labelINSERT_VARIABLETop && !isPhonePortrait) && labelINSERT_VARIABLEVisible" class="form-label" [for]="INSERT_VARIABLE" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.INSERT_VARIABLE','Insert variable')"></kendo-label>
-		<label *ngIf="(labelINSERT_VARIABLETop || isPhonePortrait) && labelINSERT_VARIABLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.INSERT_VARIABLE','Insert variable')}}</label>
+		<kendo-label *ngIf="(!labelINSERT_VARIABLETop && !isPhonePortrait) && labelINSERT_VARIABLEVisible" class="form-label" [for]="INSERT_VARIABLE" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.INSERT_VARIABLE','')"></kendo-label>
+		<label *ngIf="(labelINSERT_VARIABLETop || isPhonePortrait) && labelINSERT_VARIABLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.INSERT_VARIABLE','')}}</label>
 		<kendo-combobox  #INSERT_VARIABLE class="form-field-combobox"  [formControlName]="'INSERT_VARIABLE'"
 		[data]="lkpArrINSERT_VARIABLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.INSERT_VARIABLE_Hint','Please enter Insert variable.')"		(click)="ON_CLICK_INSERT_VARIABLE($event)"
+  [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.INSERT_VARIABLE_Hint','Insert variable.')"		(click)="ON_CLICK_INSERT_VARIABLE($event)"
  (valueChange)="onValueChange_INSERT_VARIABLE($event)"  style="width : 200px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">

@@ -21,6 +21,8 @@ declare function getParamConfig(): any;
 	 import { ScdApplicationTagsComponent } from '../scd-application-tags/scd-application-tags.component';
 		
 	 import { ScdApplicationDisplayComponent } from '../scd-application-display/scd-application-display.component';
+		
+	 import { ScdOpcuaServerDefinitionComponent } from '../scd-opcua-server-definition/scd-opcua-server-definition.component';
 		//
 	  
 	declare function getParamConfig(): any;
@@ -91,7 +93,9 @@ declare function getParamConfig(): any;
       this.componentConfig.showToolBar = !this.visibleOK_BTNS;
     this.handleComponentConfig(this.componentConfig);
   }
- @Input() public set detail_Input(form: any) {}
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Input() public set detail_Input(form: any) {}
+ 
   ngOnInit(): void {
     console.log('[WINDOW-DEBUG] ngOnInit - Component initializing');
     
@@ -151,7 +155,10 @@ declare function getParamConfig(): any;
     }
     this.windowManager.closeAllWindows();
   }
-
+	//public onComponentConfig_Output(ComponentConfig) 
+	//{
+	//	this.setComponentConfig_Output.emit(ComponentConfig);
+	//}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
   }
@@ -253,6 +260,9 @@ getComponentToRender(shapeType: string): any {
 		
 	case '5':
 		return ScdApplicationDisplayComponent;
+		
+	case '6':
+		return ScdOpcuaServerDefinitionComponent;
 	
       default:
         return null;
@@ -725,6 +735,7 @@ onComponentConfig_Output(event: { windowId: string, componentConfig: any }): voi
       window.isDirty = event.componentConfig.isDirty === true;
     }
   }
+	this.setComponentConfig_Output.emit(event.componentConfig);
 }
 		
 	 //      this.scd-scd-display-diagram0_0Config = new componentConfigDef();
@@ -750,5 +761,10 @@ onComponentConfig_Output(event: { windowId: string, componentConfig: any }): voi
 	 //      this.scd-application-display4_4Config = new componentConfigDef();
 
 	 //      this.scd_application_display4_4Config = ComponentConfig;
+ 
+		
+	 //      this.scd-opcua-server-definition5_5Config = new componentConfigDef();
+
+	 //      this.scd_opcua_server_definition5_5Config = ComponentConfig;
  
 	}

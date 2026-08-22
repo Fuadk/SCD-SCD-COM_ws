@@ -322,6 +322,7 @@ public disableDISPLAY_DATA = false;
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.form.dirty;
       
       // Only emit if state changed
@@ -336,7 +337,7 @@ public disableDISPLAY_DATA = false;
   private emitComponentConfig(): void {
   if (this.componentConfig) {
     this.componentConfig.eventFrom = this.compSelector;
-    this.componentConfig.eventTo = ['any'];
+    //this.componentConfig.eventTo = ['any'];
     console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
     this.setComponentConfig_Output.emit(this.componentConfig);
   }
@@ -814,63 +815,66 @@ public printScreen(){
 
 }
  async ON_CLICK(formGroup){
-     console.log ("kendoui_content:1:",this.starServices.sessionParams['COPIED_SHAPE']);
+     console.log("kendoui_content:1:", this.starServices.sessionParams['COPIED_SHAPE']);
 
-if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
-     && this.starServices.sessionParams['COPIED_SHAPE'] != ""){
-        let copiedShape =this.starServices.sessionParams['COPIED_SHAPE'];
-        let kendoui_content =  JSON.parse(copiedShape.kendoui_content);
-        kendoui_content.id =  copiedShape.id;
-        this.starServices.sessionParams['COPIED_SHAPE'] = "";
-        console.log ("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
-        let shapeType = "SYMPOL_FACTORY";
-        const diagramX =
-            (this.lastClickX - this.currentPan.x) / this.currentZoom;
-        const diagramY =
-            (this.lastClickY - this.currentPan.y) / this.currentZoom;
-        kendoui_content[diagramX] = diagramX;
-        kendoui_content[diagramY] = diagramY; 
-          let body = [
-            {
-              "_QUERY": "INSERT_SCD_SHAPE",
-              "DISPLAY_ID": this.form.value.DISPLAY_ID,
-              "SHAPE_TYPE": shapeType,
-              "HEIGHT" : 100,
-              "WIDTH" : 100,
-              "TOP": diagramY,
-              "LEFT": diagramX,
-              "NAME":kendoui_content.id,
-              "VISIBLE": 1,
-              "KEY_NAVIGATION":1,
-              "FOCUS_HIGHLIGHT":0,
-              "POINTER_HIGHLIGHT":1,
-              "TAB_INDEX":1,
-              "TOOLTIP_TEXT":kendoui_content.id
-            },
-            {
-              "_QUERY": "GET_LAST_ID"
-            }
-          ];
-          let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
-          if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
-          if (typeof data[1].data != "undefined") {
-            let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
-            kendoui_content.id = last_insert_rowid + ":" + kendoui_content.id
-             if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
-          }
-            
-        
-       this.add_new_shape(kendoui_content, copiedShape.type);
-       this.updateShapes();
-     }
+    if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
+      && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
+      let copiedShape = this.starServices.sessionParams['COPIED_SHAPE'];
+      let kendoui_content = JSON.parse(copiedShape.kendoui_content);
+      kendoui_content.id = copiedShape.id;
+      this.starServices.sessionParams['COPIED_SHAPE'] = "";
+      console.log("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
+      let shapeType = "SYMPOL_FACTORY";
+      const diagramX =
+        (this.lastClickX - this.currentPan.x) / this.currentZoom;
+      const diagramY =
+        (this.lastClickY - this.currentPan.y) / this.currentZoom;
+      kendoui_content[diagramX] = diagramX;
+      kendoui_content[diagramY] = diagramY;
+      let body = [
+        {
+          "_QUERY": "INSERT_SCD_SHAPE",
+          "DISPLAY_ID": this.form.value.DISPLAY_ID,
+          "SHAPE_TYPE": shapeType,
+          "HEIGHT": 100,
+          "WIDTH": 100,
+          "TOP": diagramY,
+          "LEFT": diagramX,
+          "NAME": kendoui_content.id,
+          "VISIBLE": 1,
+          "KEY_NAVIGATION": 1,
+          "FOCUS_HIGHLIGHT": 0,
+          "POINTER_HIGHLIGHT": 1,
+          "TAB_INDEX": 1,
+          "TOOLTIP_TEXT": kendoui_content.id
+        },
+        {
+          "_QUERY": "GET_LAST_ID"
+        }
+      ];
+      let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+      if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
+      if (typeof data[1].data != "undefined") {
+        let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
+        kendoui_content.id =    kendoui_content.id + ":" + last_insert_rowid;
+        if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
+      }
+
+
+      this.add_new_shape(kendoui_content, copiedShape.type);
+      this.updateShapes();
+    }
 
 }
 
  async ON_CLICK_CONTEXT_MENU(menuType,event){
-        console.log("ON_CLICK_MENU:", event, menuType)
+     let shapeInfo = this.getShapeInfo();
+    let shapeType = shapeInfo['SHAPE_TYPE'];
+    console.log("DEBUG_IT:ON_CLICK_MENU:", event, menuType, this.currentShapeType,this.currentShapeId, shapeType)
     let Id = "";
     if (menuType == "DROPDOWN") {
       Id = event.Id;
+      shapeType = event.text;
     }
     else if (menuType == "CONTEXT_MENU") {
       Id = event.item.Id;
@@ -882,8 +886,16 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
       if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
         let Maximize = rec.Maximize;
+        switch(shapeType){
+          case 'SYMPOL_FACTORY': 
+		      //  Id='3';
+            break;
+          default:
+            break;
+        }
+
         //this.starlib1.dialog_openDialog(this, Id,Maximize);
-        this.openPropertyDialog(this, Id, Maximize);
+        this.openPropertyDialog(this, Id, Maximize, shapeType);
       }
       setTimeout(() => {
            this.selectedShape = null;
@@ -1074,31 +1086,35 @@ if (type === "shapeBoundsChange") {
 
 }
   private ON_RECEIVED(changes: any): void {
-    console.log("on received data from scada :changes:", changes);
-if (typeof this.diagramComponent == "undefined"){
-      return;
-    }
-    for (const change of changes) {
-      switch (change.type) {
-        case 'local':
-          switch (change.property) {
-            case 'temperature':
-              const liveShape = this.diagramComponent.getShapeById("boilerB");
-              if (liveShape) {
+    if (typeof this.diagramComponent == "undefined") {
+            return;
+        }
+        console.log("opcua:on received data from scada :changes:", changes);
+        for (const change of changes) {
+            console.log("opcua:on received data from scada :change:", change.type, change);
+            switch (change.type) {
+                case 'tag':
+                    console.log("opcua:on received data from scada :displayName:", change.newValue.displayName, change);
+                    switch (change.newValue.displayName) {
+                        case 'Tag_1001':
 
-                console.log("SCADA_DATA:liveShape", liveShape);
-                console.log("SCADA_DATA:options", liveShape.options);
-                console.log("SCADA_DATA:dataItem", liveShape.dataItem.dataItem.definition.textBlocks[0].text);
+                            const liveShape = this.diagramComponent.getShapeById("boilerB:2");
+                            console.log("opcua:on received data from scada :value:", change.newValue.value, liveShape);
+                            if (liveShape) {
 
-                liveShape.dataItem.dataItem.definition.textBlocks[0].text = change.newValue.toString();
-                console.log(liveShape);
-                 liveShape.redrawVisual();
-              }
-              break;
-          }
-          break;
-      }
-    }
+                                console.log("SCADA_DATA:liveShape", liveShape);
+                                console.log("SCADA_DATA:options", liveShape.options);
+                                console.log("SCADA_DATA:dataItem", liveShape.dataItem.dataItem.definition.textBlocks[0].text);
+                                console.log("opcua:on received data from scada :value:", change.newValue.value, change);
+                                liveShape.dataItem.dataItem.definition.textBlocks[0].text = change.newValue.value.toString();
+                                console.log(liveShape);
+                                liveShape.redrawVisual();
+                            }
+                            break;
+                    }
+                    break;
+            }
+        }
   }
 
   async  PRE_INSERT(formGroup){
@@ -1114,7 +1130,25 @@ if (typeof this.diagramComponent == "undefined"){
    
   }
   async  POST_QUERY(formGroup){
-    
+     console.log("POST_QUERY:formGroup:", formGroup)
+        let whereClause = "APPLICATION_ID =" + formGroup.APPLICATION_ID;
+        let body = [
+            {
+                "_QUERY": "GET_SCD_OPCUA_SERVER_QUERY",
+                "_WHERE": whereClause
+            }
+        ];
+
+        let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+        if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:data[0].data:", data[0].data);
+        if (typeof data[0].data != "undefined") {
+            let opcuaServers = data[0].data;
+            for (let i = 0; i < opcuaServers.length; i++) {
+                if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:opcuaServers:", opcuaServers);
+                await this.addNewServer(opcuaServers[i].SERVER_NAME, opcuaServers[i].ENDPOINT_URL)
+            }
+
+        }
     
   }
   async  PRE_DELETE(formGroup:any){
@@ -1612,22 +1646,42 @@ async  removeUnusedShapes(){
   for (let i =0; i< this.shapes.length; i++){
     let shapeID = this.shapes[i].id;
     let array = shapeID.split(":");
-    shapeID = array[0];
+    shapeID = array[1];
     if (shapesIDs != "")
       shapesIDs = shapesIDs + ",";
     shapesIDs = shapesIDs + shapeID;
   }
   if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:shapesIDs:", shapesIDs);
-  let statement = "DELETE  from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+  let statement_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let body_defs = [
+     {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_TEXT_GENERAL
+      }];
+  if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes_defs:body_defs:", body_defs);
+  let data_defs = await this.starServices.execSQLBody(this, body_defs, this.starServices.MASTER_DB);
+
+  let statement = "DELETE from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+  let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
     let body = [
       {
         "_QUERY": "EXECSQL",
         "_STMT": statement
+      },
+      {
+      "_QUERY": "GET_SCD_SHAPE_QUERY",
+      "_WHERE": whereClause
+              
       }
     ];
     if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:body:", body);
     let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
-    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:data[0].data:", data[0].data);
+    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:data[1].data:", data[1].data);
+    if (typeof data[1].data != "undefined"){
+      this.scdShapes = data[1].data;
+    } 
 }
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
@@ -1963,18 +2017,19 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
 
   // ============= Server Management Methods (using integration service) =============
   
-  async addNewServer(): Promise<void> {
-    const name = prompt('Enter server name:');
-    const endpoint = prompt('Enter OPC UA endpoint:');
-    if (name && endpoint) {
-      const result = await this.scadaIntegration.addServer(name, endpoint);
-      if (result) {
-        console.log('Server added:', result);
-      } else {
-        alert('Failed to add server');
-      }
+  async addNewServer(name, endpoint): Promise<void> {
+        // const name = prompt('Enter server name:');
+        // const endpoint = prompt('Enter OPC UA endpoint:');
+        if (name && endpoint) {
+            console.log("opcua:addNewServer:name", name, endpoint)
+            const result = await this.scadaIntegration.addServer(name, endpoint);
+            if (result) {
+                console.log('opcua:Server added:', result);
+            } else {
+                alert('opcua:Failed to add server');
+            }
+        }
     }
-  }
 
   async removeServer(serverId: number): Promise<void> {
     if (confirm('Remove this server?')) {
@@ -2275,7 +2330,7 @@ public valueChange(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"500","Height":"500","Maximize":""}]
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -2367,7 +2422,7 @@ public valueChange(value: any): void {
    * Open property dialog - Replacement for starlib1.dialog_openDialog
    * Similar to openWin in scd-mdi-win.component.ts
    */
- public openPropertyDialog(object: any, comp: string, Maximize: string): void {
+ public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType): void {
   console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize);
   
   // Find the dialog properties
@@ -2390,7 +2445,10 @@ public valueChange(value: any): void {
   componentConfig.masterParams = {
     data: {
       comp: comp,
-      maximize: Maximize
+      maximize: Maximize,
+      action : "new",
+      DISPLAY_ID:this.form.value.DISPLAY_ID,
+      SHAPE_TYPE: shapeType.toLowerCase()
     }
   };
 
@@ -2637,11 +2695,12 @@ private setupPropertyDialogOutputs(): void {
       (instance.setComponentConfig_Output as any).__propertyDialogSub.unsubscribe();
     }
     
-    const sub = instance.setComponentConfig_Output.subscribe((config: any) => {
-      console.log('Property dialog: Received componentConfig from child:', config);
+    const sub = instance.setComponentConfig_Output.subscribe((componentConfig: any) => {
+      console.log('Property dialog: Received componentConfig from child:', componentConfig, this.propertyDialogData);
       if (this.propertyDialogData) {
         // Check for parentClose - close the dialog immediately
-        if (config.parentClose === true) {
+        console.log("Property dialog: Received componentConfig from child:componentConfig.parentClose:",componentConfig.parentClose);
+        if (componentConfig.parentClose === true) {
           console.log('Property dialog: parentClose received, closing dialog');
           //this.closePropertyDialog();
           this.onPropertyDialogClose();
@@ -2649,16 +2708,24 @@ private setupPropertyDialogOutputs(): void {
         }
         
         // Update dirty state
-        this.propertyDialogData.isDirty = config.isDirty === true;
-        
+        this.propertyDialogData.isDirty = componentConfig.isDirty === true;
+        console.log("Property dialog: Received componentConfig from child:componentConfig.masterSaved:",componentConfig.masterSaved);
         // Check for masterSaved - this means OK was clicked
-        if (config.masterSaved === true) {
+        if (componentConfig.masterSaved === true) {
           console.log('Property dialog: masterSaved received, saving and closing');
           // The component already saved, just close the dialog
           setTimeout(() => {
             this.closePropertyDialog();
           }, 300);
         }
+        console.log("Property dialog: Received componentConfig from child:componentConfig.masterParams:",componentConfig.masterParams);
+        if (componentConfig.masterParams !== null){
+          if ( componentConfig.masterParams.action == "insert"){
+            console.log("Property dialog: Received componentConfig from child:componentConfig.masterParams:",componentConfig.masterParams);
+            this.insertShape (componentConfig.masterParams.data, componentConfig.masterParams.shapeType)
+          }
+        }
+
       }
     });
     
@@ -2689,5 +2756,33 @@ private getDialogTitle(componentName: string): string {
     return titleMsg;
   }
 
+onContextMenuSelect(event){
+  console.log("DEBUG_IT:onContextMenuSelect:event:",event)
+  this.ON_CLICK_CONTEXT_MENU('CONTEXT_MENU', event)
+   event.preventDefault();
+    event.stopPropagation();  
+}
+onDiagramContextMenu(event){
+  console.log("DEBUG_IT:onDiagramContextMenu:event:",event)
+}
+public scdShapes;
+public getShapeInfo(){
+  let array = this.currentShapeId.split(":");
+  let shapeID = array[1];
+  let shapeInfo ={};
+  if (typeof this.scdShapes != "undefined" ){
+    let rec = this.scdShapes.find(x => x.SHAPE_ID == shapeID);
+    if ( typeof rec != "undefined")
+      shapeInfo = rec;
+  }
+
+  return shapeInfo;
+}
+public insertShape (data, shapeType){
+  
+  console.log("insertShape:", shapeType,data )
+}
+
+//////////
 }
 

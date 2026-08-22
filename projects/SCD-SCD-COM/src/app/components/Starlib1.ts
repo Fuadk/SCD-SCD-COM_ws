@@ -617,6 +617,30 @@ gridUserSelectionChange(object, selectedData) {
   }
   object.sendToOrder(componentConfig);
 }
-
+ async setShapeDefaults(insertCMD){
+    let result ={};
+    insertCMD.split("_")
+    const shapeType = insertCMD.replace("INSERT_", "");
+    let whereClause = "SHAPE_TYPE ='" + shapeType.toUpperCase() + "'";
+        let body = [
+            {
+                "_QUERY": "GET_SCD_SHAPE_DEFAULTS_QUERY",
+                "_WHERE": whereClause
+            }
+        ];
+        let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+        
+        if (typeof data[0].data != "undefined") {
+            let ShapeDefaults = data[0].data;
+            
+            for (let i = 0; i < ShapeDefaults.length; i++) {
+              let object={};
+              object[ShapeDefaults[i].FIELD_NAME] = ShapeDefaults[i].FIELD_VALUE;
+               Object.assign(result, object);
+            }
+            
+        }
+        return result;
+  }
 
 }

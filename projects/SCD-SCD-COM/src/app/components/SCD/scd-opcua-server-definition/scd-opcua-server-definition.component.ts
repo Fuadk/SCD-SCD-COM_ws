@@ -18,6 +18,7 @@ export class ScdOpcuaServerDefinitionComponent implements OnInit {
   public isPhonePortrait = false;
   public customerFacing = false;
   public isSearchScreen = false;
+  public compSelector = 'app-scd-opcua-server-definition';
   public routineName = "ScdOpcuaServerDefinition";
   public alignment: TabAlignment = 'start';
   public gap: any = {
@@ -27,13 +28,12 @@ export class ScdOpcuaServerDefinitionComponent implements OnInit {
   constructor(public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices) {
     this.title =  this.starServices.getNLS([],"SCD_opcua_server_definition.SCD_opcua_server_definition.component_title","OPCUA Server Definition");
     this.paramConfig = getParamConfig();
-    this.componentConfig = new componentConfigDef(); 
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
+    this.componentConfig = new componentConfigDef();
 }
 public ngAfterViewInit() {
   this.starServices.setRTL();
  }
+ @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
  @Input() public set detail_Input(form: any) { 
   }
   ngOnInit(): void {
@@ -50,9 +50,21 @@ public ngAfterViewInit() {
 	//this.when_window_activated();
 	//this.when_new_form_instance();
  
+    this.initComponents();
   }
 
+  async initComponents(){
+    await this.starServices.sleep(200);
+    // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
+   this.scd_scd_opcua_server0_0Config = new componentConfigDef();
+   this.scd_scd_opcua_server0_0Config.showToolBar = !this.visibleOK_BTNS; 
+  }
   public  scd_scd_opcua_server0_0Config : componentConfigDef;
+  public  hide_comp_1 = false;
+  public onComponentConfig_Output(ComponentConfig) 
+{
+    this.setComponentConfig_Output.emit(ComponentConfig);
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -65,15 +77,18 @@ public ngAfterViewInit() {
            }, 400);
        }
   
+       this.scd_scd_opcua_server0_0Config = new componentConfigDef();
        if (ComponentConfig.masterParams != null) {
+              this.scd_scd_opcua_server0_0Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.scd_scd_opcua_server0_0Config = new componentConfigDef();
-       this.scd_scd_opcua_server0_0Config = ComponentConfig;
       if (ComponentConfig.masterSaved != null)
       {
        this.scd_scd_opcua_server0_0Config.masterSaved = ComponentConfig.masterSaved;
+      }
+      if (ComponentConfig.showToolBar != null)
+      {
+       this.scd_scd_opcua_server0_0Config.showToolBar = ComponentConfig.showToolBar;
       }
       if (ComponentConfig.newRec != null)
       {
@@ -95,24 +110,43 @@ public ngAfterViewInit() {
           }
        }
       }
-     }
     }
   }
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){
     	this.helpOpened = true;
 	}
-	public visibleOK_BTNS = false;
+	public visibleOK_BTNS = true;
 	
   }

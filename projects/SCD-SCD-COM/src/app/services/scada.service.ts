@@ -46,6 +46,7 @@ export interface WriteResult {
 @Injectable({
   providedIn: 'root'
 })
+
 export class SCADAService {
   private apiBase = 'http://localhost:3000/api';
   private tagValues = new BehaviorSubject<any>({});
@@ -60,7 +61,7 @@ export class SCADAService {
     private http: HttpClient,
     private ngZone: NgZone
   ) {
-    console.log('SCADAService constructor - using HTTP polling');
+    console.log('opcua:SCADAService constructor - using HTTP polling');
     this.loadInitialData();
     this.startPolling();
   }
@@ -72,7 +73,7 @@ export class SCADAService {
    */
   enablePolling(): void {
     if (!this.isPollingEnabled) {
-      console.log('✅ Enabling SCADA polling');
+      console.log('opcua:✅ Enabling SCADA polling');
       this.isPollingEnabled = true;
       this.startPolling();
     }
@@ -83,7 +84,7 @@ export class SCADAService {
    */
   disablePolling(): void {
     if (this.isPollingEnabled) {
-      console.log('⏸️ Disabling SCADA polling');
+      console.log('opcua:⏸️ Disabling SCADA polling');
       this.isPollingEnabled = false;
       if (this.pollingInterval) {
         clearInterval(this.pollingInterval);
@@ -103,7 +104,7 @@ export class SCADAService {
    * Manually refresh data (useful after edit mode)
    */
   async refreshData(): Promise<void> {
-    console.log('🔄 Manually refreshing SCADA data');
+    console.log('opcua:🔄 Manually refreshing SCADA data');
     await this.loadInitialData();
   }
 
@@ -115,7 +116,7 @@ export class SCADAService {
 
     // Only start if polling is enabled
     if (!this.isPollingEnabled) {
-      console.log('Polling is disabled, not starting');
+      console.log('opcua:Polling is disabled, not starting');
       return;
     }
 
@@ -138,12 +139,14 @@ export class SCADAService {
         }
         
         const servers = await this.http.get<ServerInfo[]>(`${this.apiBase}/servers`).toPromise();
+        console.log("opcua:startPolling:servers",servers)
         if (servers) {
           this.ngZone.run(() => {
             const serversWithConnected = servers.map(s => ({
               ...s,
               connected: s.status === 'connected'
             }));
+            console.log("opcua:startPolling:this.servers",this.servers, "serversWithConnected:",serversWithConnected)
             this.servers.next(serversWithConnected);
             this.connectionStatus.next(serversWithConnected.some(s => s.connected));
           });
@@ -180,6 +183,7 @@ export class SCADAService {
   // ============= Server Management APIs =============
   
   getServers(): Observable<ServerInfo[]> {
+    console.log("opcua:getServers:servers",this.servers)
     return this.servers.asObservable();
   }
 

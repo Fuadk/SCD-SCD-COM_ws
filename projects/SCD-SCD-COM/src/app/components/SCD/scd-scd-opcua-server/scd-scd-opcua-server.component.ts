@@ -114,7 +114,7 @@ export class ScdOpcuaServerScdScdOpcuaServerFormtabsComponent {
   public compSelector = 'app-scd-scd-opcua-server';
   public PK_AUTO = 'OPCUA_SERVER_ID';
   public customerFacing = false;
-  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":""},{"CODE":"1","CODETEXT_LANG":"General"},{"CODE":"2","CODETEXT_LANG":"Security"},{"CODE":"3","CODETEXT_LANG":"Array Data Access"},{"CODE":"4","CODETEXT_LANG":"OPC Subscriptions"},{"CODE":"5","CODETEXT_LANG":"Live Data"},{"CODE":"6","CODETEXT_LANG":"OPC Write Operations"},{"CODE":"7","CODETEXT_LANG":"OPC Server"},{"CODE":"8","CODETEXT_LANG":"Connector Service"}] ;
+  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"General","visible":true},{"CODE":"2","CODETEXT_LANG":"Security","visible":true},{"CODE":"3","CODETEXT_LANG":"Array Data Access","visible":true},{"CODE":"4","CODETEXT_LANG":"OPC Subscriptions","visible":true},{"CODE":"5","CODETEXT_LANG":"Live Data","visible":true},{"CODE":"6","CODETEXT_LANG":"OPC Write Operations","visible":true},{"CODE":"7","CODETEXT_LANG":"OPC Server","visible":true},{"CODE":"8","CODETEXT_LANG":"Connector Service","visible":true}] ;
 public labelOPCUA_SERVER_IDTop=true;
 public labelOPCUA_SERVER_IDVisible=true;
 public labelAPPLICATION_IDTop=true;
@@ -274,6 +274,8 @@ public disableFAILED_ENDPOINTS = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  
 
    constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -347,8 +349,29 @@ public disableFAILED_ENDPOINTS = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -639,7 +662,7 @@ public disableFAILED_ENDPOINTS = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM TST1_APPLICATION  order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM SCD_APPLICATION  order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrAPPLICATION_ID"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
@@ -837,12 +860,26 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    
+    if (ComponentConfig.masterParams != null) {
+      if (this.OPCUA_SERVER_ID == null){
+        setTimeout(() => {
+            let masterParams = ComponentConfig.masterParams;
+            console.log("User masterParams:", masterParams)
+  
+            this.isSearch = true;
+            let form: any = {};
+            form.OPCUA_SERVER_ID = masterParams.data.MENU_ID;
+            this.OPCUA_SERVER_ID = masterParams.data.MENU_ID
+            console.log("Server masterParams:", masterParams.data.DIAGRAM_ID, masterParams, form, this.form, "this.isSearch:", this.isSearch)
+            this.executeQuery(form);
+        }, 300);
+      }
+    }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
     
   }
@@ -1971,7 +2008,7 @@ async WHEN_VALIDATE_ITEM_FAILED_ENDPOINTS(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  }
-
+public  OPCUA_SERVER_ID = null;
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

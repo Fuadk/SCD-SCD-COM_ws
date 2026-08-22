@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -113,9 +114,9 @@ public labelTOPTop=true;
 public labelTOPVisible=true;
 public labelLEFTTop=true;
 public labelLEFTVisible=true;
-public labelNAMETop=true;
+public labelNAMETop=false;
 public labelNAMEVisible=true;
-public labelVISIBLETop=true;
+public labelVISIBLETop=false;
 public labelVISIBLEVisible=true;
 public labelKEY_NAVIGATIONTop=true;
 public labelKEY_NAVIGATIONVisible=true;
@@ -131,7 +132,7 @@ public labelINSERT_VARIABLETop=true;
 public labelINSERT_VARIABLEVisible=true;
 
 public visibleSHAPE_ID = false;
-public visibleDISPLAY_ID = false;
+public visibleDISPLAY_ID = true;
 public visibleSHAPE_TYPE = true;
 public visibleICON_ID = false;
 public visibleDG_SHAPE_ID = false;
@@ -177,7 +178,7 @@ public disableINSERT_VARIABLE = false;
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -253,6 +254,7 @@ public disableINSERT_VARIABLE = false;
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.form.dirty;
       
       // Only emit if state changed
@@ -267,7 +269,7 @@ public disableINSERT_VARIABLE = false;
   private emitComponentConfig(): void {
   if (this.componentConfig) {
     this.componentConfig.eventFrom = this.compSelector;
-    this.componentConfig.eventTo = ['any'];
+    //this.componentConfig.eventTo = ['any'];
     console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
     this.setComponentConfig_Output.emit(this.componentConfig);
   }
@@ -515,6 +517,17 @@ public disableINSERT_VARIABLE = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -562,22 +575,13 @@ public disableINSERT_VARIABLE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"INSERT_VARIABLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"INSERT_VARIABLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrINSERT_VARIABLE"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrINSERT_VARIABLE = [];
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetINSERT_VARIABLE(CODE: any): any {
 var rec = this.lkpArrINSERT_VARIABLE.find((x:any) => x.CODE === CODE);
@@ -586,6 +590,8 @@ return rec;
 
 onChanges(): void {
 this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
+});
+this.form.get('DISPLAY_ID').valueChanges.subscribe(val => {
 });
 this.form.get('SHAPE_TYPE').valueChanges.subscribe(val => {
 });
@@ -727,12 +733,52 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    
+    if (ComponentConfig.masterParams != null) {
+    console.log("WHEN_NOTIFY:ComponentConfig.masterParams:", ComponentConfig.masterParams.data.action)
+    this.shapeType = ComponentConfig.masterParams.data.SHAPE_TYPE;
+    if (ComponentConfig.masterParams.data.action == "new") {
+        let TableDefauls = await this.starlib1.setShapeDefaults(this.insertCMD);
+
+        const keys = Object.keys(TableDefauls);
+        if (keys.length > 0) {
+            setTimeout(() => {
+                this.isNew = true;
+                this.form.markAsDirty();
+                TableDefauls['DISPLAY_ID'] = ComponentConfig.masterParams.data.DISPLAY_ID;
+                TableDefauls['SHAPE_TYPE'] = ComponentConfig.masterParams.data.SHAPE_TYPE;
+                console.log("setShapeDefaults:TableDefauls:", TableDefauls)
+                this.form.patchValue(TableDefauls);
+                this.form.updateValueAndValidity();
+
+                console.log("setShapeDefaults:this.form:", this.form);
+
+                console.log("setShapeDefaults:this.form.value:", this.form.get('VISIBLE'), keys, keys.length, TableDefauls, this.form.value)
+            }, 300);
+        }
+
+    }
+    else {
+        if (ComponentConfig.masterParams.data.action == "open" && this.SHAPE_ID == null) {
+
+            let masterParams = ComponentConfig.masterParams;
+            console.log("Text masterParams:", masterParams)
+            setTimeout(() => {
+                this.isSearch = true;
+                let form: any = {};
+                form.SHAPE_ID = masterParams.data.MENU_ID;
+                this.SHAPE_ID = masterParams.data.MENU_ID
+                console.log("User masterParams:", masterParams.data.DIAGRAM_ID, masterParams, form, this.form, "this.isSearch:", this.isSearch)
+                this.executeQuery(form);
+            }, 300);
+
+        }
+    }
+}
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
     
   }
@@ -772,7 +818,15 @@ public printScreen(){
     
   }
   async  POST_INSERT(formGroup){
-    
+    this.componentConfig = new componentConfigDef();
+let masterParams = {
+    action: "insert",
+    shapeType: this.shapeType,
+    data: formGroup
+}
+this.componentConfig.eventFrom = this.compSelector;
+this.componentConfig.masterParams = masterParams;
+this.setComponentConfig_Output.emit(this.componentConfig);
    
   }
   async  PRE_QUERY (formGroup){
@@ -1143,12 +1197,15 @@ async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_DISPLAY_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_DISPLAY_ID(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  } 
+ } 
  async onChange_SHAPE_TYPE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1257,15 +1314,12 @@ async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_TOOLTIP_TEXT(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TOOLTIP_TEXT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onValueChange_TOOLTIP_TEXT(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_TOOLTIP_TEXT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
- } 
+  } 
  async onChange_TAB_INDEX(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1281,7 +1335,8 @@ async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }
-
+public SHAPE_ID = null;
+public shapeType = null;
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

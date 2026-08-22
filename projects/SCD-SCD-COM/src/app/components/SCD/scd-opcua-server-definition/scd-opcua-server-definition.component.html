@@ -1,12 +1,34 @@
 <div style ="display:block;width:100%;"> 
 <legend  class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_opcua_server_definition.SCD_opcua_server_definition.component_title","OPCUA Server Definition") }}</legend>
-<kendo-tilelayout 
-[columns]="isPhonePortrait ? 1 : null" [gap]="gap" 
-[resizable]="true" 
-[reorderable]="true">
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 1" [colSpan]="1" >
-          <app-scd-scd-opcua-server  ></app-scd-scd-opcua-server >
-</kendo-tilelayout-item>
-</kendo-tilelayout>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+			<app-scd-scd-opcua-server  [hidden]="hide_comp_1" 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
+				[setComponentConfig_Input]="scd_scd_opcua_server0_0Config">
+    		</app-scd-scd-opcua-server >
+</div>
 
 <div> 
+<div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
+			iconClass="fas fa-save" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_OK($event)">{{starServices.getNLS([],'OK','Ok')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'CANCEL','Cancel')"
+			iconClass="fas fa-ban" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_CANCEL($event)">{{starServices.getNLS([],'CANCEL','Cancel')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'HELP','Help')"
+			iconClass="fas fa-question" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_HELP($event)">{{starServices.getNLS([],'HELP','Help')}}</button>
+	</div>
+	
+	<kendo-window [hidden]="!helpOpened" class="form-borders" [themeColor]="'primary'" [top]="0" [left]="0" title=""
+		state="maximized" (close)="helpOpened=false">
+		<app-dsp-upload [setComponentConfig_Input]="help_1Config">
+		</app-dsp-upload>
+		<button kendoButton [icon]="'close'" (click)="helpOpened=!helpOpened">
+			{{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+	</kendo-window>
+
+	
+	

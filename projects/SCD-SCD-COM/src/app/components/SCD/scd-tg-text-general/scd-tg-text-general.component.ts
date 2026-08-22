@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -17,6 +18,7 @@ import { scdtextGeneralScdTgTextGeneral , componentConfigDef} from '@modeldir/mo
 'TEXT_GENERAL_ID' : new FormControl(dataItem.TEXT_GENERAL_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'TEXT_FIELD' : new FormControl(dataItem.TEXT_FIELD  , ) ,
+'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) ,
 'FONT_NAME' : new FormControl(dataItem.FONT_NAME  , ) ,
 'FONT_SIZE' : new FormControl(dataItem.FONT_SIZE  , ) ,
 'FONT_BOLD' : new FormControl(dataItem.FONT_BOLD  , ) ,
@@ -92,38 +94,41 @@ export class ScdTextGeneralScdTgTextGeneralFormComponent {
   public PK_AUTO = 'TEXT_GENERAL_ID';
   public customerFacing = false;
   public FormStepsArr = [] ;
-public labelTEXT_GENERAL_IDTop=true;
+public labelTEXT_GENERAL_IDTop=false;
 public labelTEXT_GENERAL_IDVisible=true;
-public labelSHAPE_IDTop=true;
+public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
 public labelTEXT_FIELDTop=true;
 public labelTEXT_FIELDVisible=true;
-public labelFONT_NAMETop=true;
+public labelINSERT_VARIABLETop=false;
+public labelINSERT_VARIABLEVisible=false;
+public labelFONT_NAMETop=false;
 public labelFONT_NAMEVisible=true;
-public labelFONT_SIZETop=true;
+public labelFONT_SIZETop=false;
 public labelFONT_SIZEVisible=true;
-public labelFONT_BOLDTop=true;
+public labelFONT_BOLDTop=false;
 public labelFONT_BOLDVisible=true;
-public labelFONT_ITALICTop=true;
+public labelFONT_ITALICTop=false;
 public labelFONT_ITALICVisible=true;
-public labelFONT_UNDERLINETop=true;
+public labelFONT_UNDERLINETop=false;
 public labelFONT_UNDERLINEVisible=true;
-public labelBACK_COLORTop=true;
+public labelBACK_COLORTop=false;
 public labelBACK_COLORVisible=true;
-public labelBACK_STYLETop=true;
+public labelBACK_STYLETop=false;
 public labelBACK_STYLEVisible=true;
-public labelFORE_COLORTop=true;
+public labelFORE_COLORTop=false;
 public labelFORE_COLORVisible=true;
-public labelSIZE_TO_FITTop=true;
+public labelSIZE_TO_FITTop=false;
 public labelSIZE_TO_FITVisible=true;
-public labelWORD_WRAPTop=true;
+public labelWORD_WRAPTop=false;
 public labelWORD_WRAPVisible=true;
-public labelALIGNMENTTop=true;
+public labelALIGNMENTTop=false;
 public labelALIGNMENTVisible=true;
 
 public visibleTEXT_GENERAL_ID = false;
 public visibleSHAPE_ID = false;
 public visibleTEXT_FIELD = true;
+public visibleINSERT_VARIABLE = true;
 public visibleFONT_NAME = true;
 public visibleFONT_SIZE = true;
 public visibleFONT_BOLD = true;
@@ -139,6 +144,7 @@ public visibleALIGNMENT = true;
 public disableTEXT_GENERAL_ID = false;
 public disableSHAPE_ID = false;
 public disableTEXT_FIELD = false;
+public disableINSERT_VARIABLE = false;
 public disableFONT_NAME = false;
 public disableFONT_SIZE = false;
 public disableFONT_BOLD = false;
@@ -159,8 +165,10 @@ public disableALIGNMENT = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -232,8 +240,29 @@ public disableALIGNMENT = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -477,6 +506,17 @@ public disableALIGNMENT = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -526,6 +566,8 @@ public lookupArrDef:any =[];
 public setlookupArrDef(){
 this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrSHAPE_ID"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"INSERT_VARIABLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrINSERT_VARIABLE"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FONT_NAME\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrFONT_NAME"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FONT_SIZE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
@@ -540,6 +582,8 @@ this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM
 
 public lkpArrSHAPE_ID = [];
 
+public lkpArrINSERT_VARIABLE = [];
+
 public lkpArrFONT_NAME = [];
 
 public lkpArrFONT_SIZE = [];
@@ -550,6 +594,11 @@ public lkpArrALIGNMENT = [];
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetINSERT_VARIABLE(CODE: any): any {
+var rec = this.lkpArrINSERT_VARIABLE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -695,9 +744,9 @@ public printScreen(){
     
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
+this.form.reset(this.formInitialValues);
+this.form.markAsDirty();
 
     
   }
@@ -816,6 +865,26 @@ async WHEN_VALIDATE_ITEM_TEXT_FIELD(value) {
  }
 
  async ON_CLICK_TEXT_FIELD(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
+      this.form.controls['INSERT_VARIABLE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
+     this.form.get('INSERT_VARIABLE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_INSERT_VARIABLE(event){
 
 }
 
@@ -1057,6 +1126,12 @@ async WHEN_VALIDATE_ITEM_ALIGNMENT(value) {
  async onValueChange_TEXT_FIELD(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_TEXT_FIELD(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_INSERT_VARIABLE(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 

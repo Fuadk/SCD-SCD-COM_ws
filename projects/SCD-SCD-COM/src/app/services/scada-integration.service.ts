@@ -1,6 +1,6 @@
 // scada-integration.service.ts
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { SCADAService, ServerInfo, ServerConfig, WriteResult } from './scada.service';
 
@@ -27,36 +27,32 @@ export interface ScadaDisplayConfig {
     production?: string;
   };
 }
-
 export interface ScadaData {
-  localTemperature: number;
-  localPressure: number;
-  localFlowRate: number;
-  localLevel: number;
-  localProduction: number;
-  remoteTemperature: number;
-  remotePressure: number;
-  remoteFlowRate: number;
-  remoteLevel: number;
-  remoteProduction: number;
+  // Raw tag values - no mapping
+  rawTagValues: any;
   connectionStatus: boolean;
   servers: ServerInfo[];
   currentServer: string;
-  rawTagValues: any;
 }
 
 export interface ScadaChangeEvent {
-  type: 'local' | 'remote' | 'connection';
-  property: string;
-  oldValue: number | boolean;
-  newValue: number | boolean;
+  type: 'tag' | 'connection' | 'server';
+  tagName?: string;
+  serverName?: string;
+  oldValue?: any;
+  newValue?: any;
   fullData?: any;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class ScadaIntegrationService {
+
+export class ScadaIntegrationService implements OnDestroy {
+  // ============= NEW: Raw data subject =============
+  private rawDataSubject = new BehaviorSubject<any>({});
+  public rawData$ = this.rawDataSubject.asObservable();
+  
   private previousValues = new WeakMap<any, any>();
   private serversSubject = new BehaviorSubject<ServerInfo[]>([]);
   private selectedServerIdSubject = new BehaviorSubject<number>(0);
@@ -64,402 +60,575 @@ export class ScadaIntegrationService {
   public servers$ = this.serversSubject.asObservable();
   public selectedServerId$ = this.selectedServerIdSubject.asObservable();
 
-  private defaultConfig: ScadaDisplayConfig = {
-    local: {
-      temperatureTag: 'Tag_1001',
-      pressureTag: 'Tag_1002',
-      flowRateTag: 'Tag_1003',
-      levelTag: 'Tag_1004',
-      productionTag: 'Tag_1005'
-    },
-    remote: {
-      temperatureTag: 'Tag_1001',
-      pressureTag: 'Tag_1002',
-      flowRateTag: 'Tag_1003',
-      levelTag: 'Tag_1004',
-      productionTag: 'Tag_1005'
-    },
-    units: {
-      temperature: '°C',
-      pressure: 'kPa',
-      flowRate: 'L/min',
-      level: '%',
-      production: ''
-    }
-  };
+  // ============= Persistence and Sync Properties =============
+  private readonly STORAGE_KEY = 'scada_servers_config';
+  private pendingSyncServers: ServerInfo[] = [];
+  private isSyncing = false;
+  private syncRetryInterval: any;
+  private backendAvailable = new BehaviorSubject<boolean>(true);
+  private readonly SYNC_INTERVAL = 3000; // 3 seconds
 
   constructor(private scadaService: SCADAService) {
-    // Auto-subscribe to servers and update subject
-    this.scadaService.getServers().subscribe(servers => {
-      this.serversSubject.next(servers);
+    // Initialize from storage
+    this.initializeFromStorage();
+    
+    // Monitor backend
+    this.monitorBackend();
+    
+    // Subscribe to raw tag values and pass through
+    this.scadaService.getTagValues().subscribe(values => {
+      console.log("opcua:rawTagValues", values);
+      this.rawDataSubject.next(values);
     });
+    
+    // Subscribe to servers and update subject
+    this.scadaService.getServers().subscribe(servers => {
+      console.log("opcua:getServers:servers", servers);
+      
+      if (servers && servers.length > 0) {
+        this.serversSubject.next(servers);
+        this.persistServersToStorage(servers);
+      } else {
+        this.handleEmptyServerList();
+      }
+    });
+  }
+
+  // ============= NEW: Raw Data Access Methods =============
+  
+  /**
+   * Get raw tag values as observable
+   */
+  getRawTagValues(): Observable<any> {
+    return this.rawData$;
+  }
+
+  /**
+   * Get current raw tag values
+   */
+  getCurrentRawTagValues(): any {
+    return this.rawDataSubject.getValue();
+  }
+
+  /**
+   * Get a specific tag value by its key
+   */
+  getTagValue(tagKey: string): any {
+    const rawData = this.rawDataSubject.getValue();
+    return rawData[tagKey] || null;
+  }
+
+  /**
+   * Get all tag keys (server:tag format)
+   */
+  getTagKeys(): string[] {
+    const rawData = this.rawDataSubject.getValue();
+    return Object.keys(rawData);
+  }
+
+  /**
+   * Get tags for a specific server
+   */
+  getTagsForServer(serverName: string): any {
+    const rawData = this.rawDataSubject.getValue();
+    const result: any = {};
+    const prefix = `${serverName}:`;
+    
+    for (const [key, value] of Object.entries(rawData)) {
+      if (key.startsWith(prefix)) {
+        const tagName = key.substring(prefix.length);
+        result[tagName] = value;
+      }
+    }
+    
+    return result;
+  }
+
+  /**
+   * Get all server names from tag data
+   */
+  getServerNamesFromTags(): string[] {
+    const rawData = this.rawDataSubject.getValue();
+    const serverNames = new Set<string>();
+    
+    for (const key of Object.keys(rawData)) {
+      const colonIndex = key.indexOf(':');
+      if (colonIndex > 0) {
+        serverNames.add(key.substring(0, colonIndex));
+      }
+    }
+    
+    return Array.from(serverNames);
+  }
+
+  // ============= Component Integration (Simplified) =============
+  
+  /**
+   * Initialize SCADA for component - now just sets up subscriptions
+   * Component is responsible for mapping data
+   */
+  public initScadaForComponent(
+  component: any,
+  configOrCallback?: Partial<ScadaDisplayConfig> | ((changes: ScadaChangeEvent[]) => void),
+  onDataChange?: (changes: ScadaChangeEvent[]) => void
+): Subscription[] {
+  // Determine if second param is config or callback
+  let config: Partial<ScadaDisplayConfig> | undefined;
+  let callback: ((changes: ScadaChangeEvent[]) => void) | undefined;
+  
+  if (typeof configOrCallback === 'function') {
+    // Called as: initScadaForComponent(component, callback)
+    callback = configOrCallback;
+  } else if (configOrCallback && typeof configOrCallback === 'object') {
+    // Called as: initScadaForComponent(component, config, callback)
+    config = configOrCallback;
+    callback = onDataChange;
+  } else if (configOrCallback === undefined) {
+    // Called as: initScadaForComponent(component)
+    // No config, no callback
+  }
+
+  const subscriptions: Subscription[] = [];
+
+  // Initialize previous values for change detection
+  this.previousValues.set(component, {
+    rawTagValues: {},
+    connectionStatus: false
+  });
+
+  // Initialize component SCADA properties
+  if (component.scadaData === undefined) {
+    component.scadaData = this.getDefaultScadaData();
+  }
+
+  // Subscribe to raw tag values - no mapping
+  subscriptions.push(
+    this.rawData$.subscribe(rawValues => {
+      const prev = this.previousValues.get(component);
+      const changes: ScadaChangeEvent[] = [];
+      
+      if (prev) {
+        const oldRaw = prev.rawTagValues || {};
+        const newRaw = rawValues || {};
+        
+        const allKeys = new Set([...Object.keys(oldRaw), ...Object.keys(newRaw)]);
+        
+        for (const key of allKeys) {
+          const oldValue = oldRaw[key];
+          const newValue = newRaw[key];
+          
+          if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+            changes.push({
+              type: 'tag',
+              tagName: key,
+              oldValue: oldValue,
+              newValue: newValue
+            });
+          }
+        }
+      }
+      
+      if (prev) {
+        prev.rawTagValues = rawValues;
+      }
+      
+      component.scadaData.rawTagValues = rawValues;
+      component.rawTagValues = rawValues;
+      
+      if (changes.length > 0 && callback) {
+        callback(changes);
+      }
+    })
+  );
+
+  // Subscribe to connection status
+  subscriptions.push(
+    this.scadaService.getConnectionStatus().subscribe(status => {
+      const prev = this.previousValues.get(component);
+      if (prev && prev.connectionStatus !== status) {
+        prev.connectionStatus = status;
+        component.scadaData.connectionStatus = status;
+        component.scadaConnectionStatus = status;
+        
+        if (callback) {
+          callback([{
+            type: 'connection',
+            oldValue: prev.connectionStatus,
+            newValue: status
+          }]);
+        }
+      }
+    })
+  );
+
+  return subscriptions;
+}
+
+  // ============= Storage Management Methods =============
+  
+  private initializeFromStorage(): void {
+    const stored = this.loadServersFromStorage();
+    if (stored && stored.length > 0) {
+      console.log(`📦 Loaded ${stored.length} servers from storage`);
+      this.serversSubject.next(stored);
+    }
+  }
+
+  private persistServersToStorage(servers: ServerInfo[]): void {
+    try {
+      if (servers && servers.length > 0) {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(servers));
+        console.log(`💾 Persisted ${servers.length} servers to storage`);
+      } else {
+        localStorage.removeItem(this.STORAGE_KEY);
+        console.log('🗑️ Removed servers from storage (empty list)');
+      }
+    } catch (error) {
+      console.error('Failed to persist servers to storage:', error);
+    }
+  }
+
+  private loadServersFromStorage(): ServerInfo[] {
+    try {
+      const data = localStorage.getItem(this.STORAGE_KEY);
+      if (data) {
+        const parsed = JSON.parse(data);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to load servers from storage:', error);
+      return [];
+    }
+  }
+
+  private clearServersFromStorage(): void {
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+      console.log('🗑️ Cleared servers from storage');
+    } catch (error) {
+      console.error('Failed to clear servers from storage:', error);
+    }
+  }
+
+  // ============= Backend Monitoring Methods =============
+  
+  private monitorBackend(): void {
+    const checkBackend = async () => {
+      try {
+        await this.scadaService.getServers().toPromise();
+        const wasDown = !this.backendAvailable.getValue();
+        this.backendAvailable.next(true);
+        
+        if (wasDown) {
+          console.log('🔄 Backend recovered - initiating sync...');
+          await this.syncServersToBackend();
+        }
+      } catch (error) {
+        const wasAvailable = this.backendAvailable.getValue();
+        this.backendAvailable.next(false);
+        if (wasAvailable) {
+          console.warn('⚠️ Backend became unavailable');
+        }
+      }
+    };
+
+    this.syncRetryInterval = setInterval(checkBackend, this.SYNC_INTERVAL);
+    checkBackend();
+  }
+
+  private async handleEmptyServerList(): Promise<void> {
+    const stored = this.loadServersFromStorage();
+    if (stored && stored.length > 0) {
+      console.log(`📋 Backend empty, restoring ${stored.length} servers from storage...`);
+      await this.syncServersToBackend(stored);
+    }
+  }
+
+  private async syncServersToBackend(servers?: ServerInfo[]): Promise<void> {
+    if (this.isSyncing) {
+      console.log('⏳ Sync already in progress, skipping...');
+      return;
+    }
+    
+    this.isSyncing = true;
+    console.log('🔄 Starting server sync to backend...');
+
+    const serversToSync = servers || this.serversSubject.getValue();
+    const syncedServers: ServerInfo[] = [];
+    const failedServers: ServerInfo[] = [];
+
+    for (const server of serversToSync) {
+      try {
+        const result = await this.scadaService.addServer(server.name, server.endpoint);
+        if (result) {
+          syncedServers.push(result);
+          console.log(`✅ Synced server: ${server.name} (${server.endpoint})`);
+        } else {
+          failedServers.push(server);
+          console.warn(`❌ Failed to sync server: ${server.name}`);
+        }
+      } catch (error) {
+        failedServers.push(server);
+        console.error(`❌ Error syncing server ${server.name}:`, error);
+      }
+    }
+
+    if (syncedServers.length > 0) {
+      this.serversSubject.next(syncedServers);
+      this.persistServersToStorage(syncedServers);
+      console.log(`✅ Synced ${syncedServers.length} servers successfully`);
+    }
+
+    if (failedServers.length > 0) {
+      console.warn(`⚠️ ${failedServers.length} servers failed to sync, will retry later`);
+      this.pendingSyncServers = failedServers;
+    } else {
+      this.pendingSyncServers = [];
+    }
+
+    this.isSyncing = false;
   }
 
   // ============= Server Management Methods =============
   
-  /**
-   * Get current list of servers
-   */
   getServers(): ServerInfo[] {
     return this.serversSubject.getValue();
   }
 
-  /**
-   * Get servers as observable
-   */
   getServersObservable(): Observable<ServerInfo[]> {
     return this.serversSubject.asObservable();
   }
 
-  /**
-   * Get selected server ID
-   */
   getSelectedServerId(): number {
     return this.selectedServerIdSubject.getValue();
   }
 
-  /**
-   * Set selected server ID
-   */
   setSelectedServerId(serverId: number): void {
     this.selectedServerIdSubject.next(serverId);
   }
 
-  /**
-   * Get selected server info
-   */
   getSelectedServer(): ServerInfo | null {
     const servers = this.serversSubject.getValue();
     const selectedId = this.selectedServerIdSubject.getValue();
     return servers.find(s => s.id === selectedId) || (servers.length > 0 ? servers[0] : null);
   }
 
-  /**
-   * Add a new server
-   */
   async addServer(name: string, endpoint: string): Promise<ServerInfo | null> {
-    const result = await this.scadaService.addServer(name, endpoint);
-    if (result) {
-      // Refresh the servers list
-      this.scadaService.getServers().subscribe(servers => {
-        this.serversSubject.next(servers);
-      });
+    const currentServers = this.serversSubject.getValue();
+    const existingServer = currentServers.find(
+      s => s.endpoint.toLowerCase() === endpoint.toLowerCase()
+    );
+    
+    if (existingServer) {
+      console.warn(`⚠️ Server with endpoint "${endpoint}" already exists (ID: ${existingServer.id})`);
+      return existingServer;
     }
-    return result;
+
+    if (!this.backendAvailable.getValue()) {
+      console.warn('⚠️ Backend is down, adding server to local storage...');
+      
+      const tempServer: ServerInfo = {
+        id: Date.now(),
+        name: name,
+        endpoint: endpoint,
+        status: 'pending',
+        connected: false,
+        tagsCount: 0,
+        createdAt: new Date().toISOString(),
+        errorCount: 0,
+        reconnectAttempts: 0,
+        lastUpdate: new Date().toISOString()
+      };
+      
+      const updatedServers = [...currentServers, tempServer];
+      this.serversSubject.next(updatedServers);
+      this.persistServersToStorage(updatedServers);
+      
+      console.log(`📝 Server "${name}" added locally (pending sync)`);
+      return tempServer;
+    }
+
+    try {
+      const result = await this.scadaService.addServer(name, endpoint);
+      
+      if (result) {
+        this.scadaService.getServers().subscribe(servers => {
+          if (servers && servers.length > 0) {
+            this.serversSubject.next(servers);
+            this.persistServersToStorage(servers);
+            console.log(`✅ Server "${name}" added successfully to backend`);
+          }
+        });
+        return result;
+      } else {
+        console.warn(`⚠️ Failed to add server "${name}" to backend`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`❌ Error adding server "${name}":`, error);
+      
+      const tempServer: ServerInfo = {
+        id: Date.now(),
+        name: name,
+        endpoint: endpoint,
+        status: 'pending',
+        connected: false,
+        tagsCount: 0,
+        createdAt: new Date().toISOString(),
+        errorCount: 1,
+        reconnectAttempts: 0,
+        lastUpdate: new Date().toISOString()
+      };
+      
+      const updatedServers = [...currentServers, tempServer];
+      this.serversSubject.next(updatedServers);
+      this.persistServersToStorage(updatedServers);
+      
+      console.log(`📝 Server "${name}" stored locally (pending sync)`);
+      return tempServer;
+    }
   }
 
-  /**
-   * Remove a server by ID
-   */
   async removeServer(serverId: number): Promise<boolean> {
-    const result = await this.scadaService.removeServer(serverId);
-    if (result) {
-      // Refresh the servers list
-      this.scadaService.getServers().subscribe(servers => {
-        this.serversSubject.next(servers);
-        
-        // If removed server was selected, select first available
-        if (this.selectedServerIdSubject.getValue() === serverId && servers.length > 0) {
-          this.selectedServerIdSubject.next(servers[0].id);
-        }
-      });
+    const serverToRemove = this.serversSubject.getValue().find(s => s.id === serverId);
+    
+    if (!serverToRemove) {
+      console.warn(`⚠️ Server with ID ${serverId} not found`);
+      return false;
     }
-    return result;
+
+    if (serverToRemove.status === 'pending') {
+      const currentServers = this.serversSubject.getValue();
+      const updatedServers = currentServers.filter(s => s.id !== serverId);
+      this.serversSubject.next(updatedServers);
+      this.persistServersToStorage(updatedServers);
+      console.log(`🗑️ Removed pending server "${serverToRemove.name}" from local storage`);
+      return true;
+    }
+
+    try {
+      const result = await this.scadaService.removeServer(serverId);
+      
+      if (result) {
+        this.scadaService.getServers().subscribe(servers => {
+          if (servers && servers.length > 0) {
+            this.serversSubject.next(servers);
+            this.persistServersToStorage(servers);
+          } else {
+            this.serversSubject.next([]);
+            this.clearServersFromStorage();
+          }
+          
+          if (this.selectedServerIdSubject.getValue() === serverId && servers.length > 0) {
+            this.selectedServerIdSubject.next(servers[0].id);
+          }
+        });
+        console.log(`✅ Server "${serverToRemove.name}" removed successfully`);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`❌ Error removing server "${serverToRemove.name}":`, error);
+      return false;
+    }
   }
 
-  /**
-   * Update a server
-   */
   async updateServer(serverId: number, name: string, endpoint: string): Promise<boolean> {
-    const result = await this.scadaService.updateServer(serverId, name, endpoint);
-    if (result) {
-      // Refresh the servers list
-      this.scadaService.getServers().subscribe(servers => {
-        this.serversSubject.next(servers);
-      });
+    const serverToUpdate = this.serversSubject.getValue().find(s => s.id === serverId);
+    
+    if (!serverToUpdate) {
+      console.warn(`⚠️ Server with ID ${serverId} not found`);
+      return false;
     }
-    return result;
+
+    if (serverToUpdate.status === 'pending') {
+      const currentServers = this.serversSubject.getValue();
+      const updatedServers = currentServers.map(s => 
+        s.id === serverId ? { ...s, name, endpoint } : s
+      );
+      this.serversSubject.next(updatedServers);
+      this.persistServersToStorage(updatedServers);
+      console.log(`📝 Updated pending server "${name}" locally`);
+      return true;
+    }
+
+    try {
+      const result = await this.scadaService.updateServer(serverId, name, endpoint);
+      
+      if (result) {
+        this.scadaService.getServers().subscribe(servers => {
+          if (servers && servers.length > 0) {
+            this.serversSubject.next(servers);
+            this.persistServersToStorage(servers);
+          }
+        });
+        console.log(`✅ Server "${name}" updated successfully`);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`❌ Error updating server "${name}":`, error);
+      return false;
+    }
   }
 
-  /**
-   * Write a value to a tag on a specific server
-   */
   async writeTag(serverIdOrName: number | string, tagName: string, value: any): Promise<WriteResult> {
     return this.scadaService.writeTag(serverIdOrName, tagName, value);
   }
 
-  /**
-   * Get tag history for a specific server
-   */
   async getTagHistory(serverIdOrName: number | string, tagName: string, hours: number = 24): Promise<any[]> {
     return this.scadaService.getTagHistory(serverIdOrName, tagName, hours);
   }
 
-  // ============= Original SCADA Integration Methods =============
-
-  public initScadaForComponent(
-    component: any,
-    config?: Partial<ScadaDisplayConfig>,
-    onDataChange?: (changes: ScadaChangeEvent[]) => void
-  ): Subscription[] {
-    const fullConfig = this.mergeConfig(config);
-    const subscriptions: Subscription[] = [];
-
-    // Initialize previous values for this component
-    this.previousValues.set(component, {
-      localTemperature: 0,
-      localPressure: 0,
-      localFlowRate: 0,
-      localLevel: 0,
-      localProduction: 0,
-      remoteTemperature: 0,
-      remotePressure: 0,
-      remoteFlowRate: 0,
-      remoteLevel: 0,
-      remoteProduction: 0,
-      connectionStatus: false
-    });
-
-    // Initialize component SCADA properties if not exist
-    if (component.scadaData === undefined) {
-      component.scadaData = this.getDefaultScadaData();
-    }
-    
-    // Create direct properties for template binding
-    component.scadaConnectionStatus = false;
-    component.localTemperature = 0;
-    component.localPressure = 0;
-    component.localFlowRate = 0;
-    component.localLevel = 0;
-    component.localProduction = 0;
-    component.remoteTemperature = 0;
-    component.remotePressure = 0;
-    component.remoteFlowRate = 0;
-    component.remoteLevel = 0;
-    component.remoteProduction = 0;
-
-    // Subscribe to tag values
-    subscriptions.push(
-      this.scadaService.getTagValues().subscribe(values => {
-        component.scadaData.rawTagValues = values;
-        const changes = this.updateScadaDataWithChanges(component, values, fullConfig);
-        
-        if (changes && changes.length > 0 && onDataChange) {
-          onDataChange(changes);
-        }
-      })
-    );
-
-    // Subscribe to connection status
-    subscriptions.push(
-      this.scadaService.getConnectionStatus().subscribe(status => {
-        const prev = this.previousValues.get(component);
-        if (prev && prev.connectionStatus !== status) {
-          prev.connectionStatus = status;
-          component.scadaData.connectionStatus = status;
-          component.scadaConnectionStatus = status;
-          
-          if (onDataChange) {
-            onDataChange([{
-              type: 'connection',
-              property: 'connectionStatus',
-              oldValue: prev.connectionStatus,
-              newValue: status
-            }]);
-          }
-        }
-      })
-    );
-
-    return subscriptions;
+  async forceSync(): Promise<void> {
+    console.log('🔄 Manual sync triggered...');
+    await this.syncServersToBackend();
   }
 
-  private updateScadaDataWithChanges(
-    component: any,
-    tagValues: any,
-    config: ScadaDisplayConfig
-  ): ScadaChangeEvent[] {
-    const changes: ScadaChangeEvent[] = [];
-    const prev = this.previousValues.get(component);
-    
-    if (!prev) return changes;
-
-    const checkChange = (
-      property: string,
-      newValue: number,
-      type: 'local' | 'remote'
-    ) => {
-      const oldValue = prev[property];
-      if (oldValue !== newValue) {
-        prev[property] = newValue;
-        changes.push({
-          type: type,
-          property: property.replace(type, '').toLowerCase(),
-          oldValue: oldValue,
-          newValue: newValue
-        });
-      }
-    };
-
-    // Local server values
-    const localTemp = tagValues[`Local:${config.local.temperatureTag}`]?.value || 0;
-    const localPressure = tagValues[`Local:${config.local.pressureTag}`]?.value || 0;
-    const localFlow = tagValues[`Local:${config.local.flowRateTag}`]?.value || 0;
-    const localLevel = tagValues[`Local:${config.local.levelTag}`]?.value || 0;
-    const localProd = tagValues[`Local:${config.local.productionTag}`]?.value || 0;
-
-    checkChange('localTemperature', localTemp, 'local');
-    checkChange('localPressure', localPressure, 'local');
-    checkChange('localFlowRate', localFlow, 'local');
-    checkChange('localLevel', localLevel, 'local');
-    checkChange('localProduction', localProd, 'local');
-
-    // Remote server values
-    const remoteTemp = tagValues[`Remote:${config.remote.temperatureTag}`]?.value || 0;
-    const remotePressure = tagValues[`Remote:${config.remote.pressureTag}`]?.value || 0;
-    const remoteFlow = tagValues[`Remote:${config.remote.flowRateTag}`]?.value || 0;
-    const remoteLevel = tagValues[`Remote:${config.remote.levelTag}`]?.value || 0;
-    const remoteProd = tagValues[`Remote:${config.remote.productionTag}`]?.value || 0;
-
-    checkChange('remoteTemperature', remoteTemp, 'remote');
-    checkChange('remotePressure', remotePressure, 'remote');
-    checkChange('remoteFlowRate', remoteFlow, 'remote');
-    checkChange('remoteLevel', remoteLevel, 'remote');
-    checkChange('remoteProduction', remoteProd, 'remote');
-
-    // Update component properties for template binding
-    component.localTemperature = localTemp;
-    component.localPressure = localPressure;
-    component.localFlowRate = localFlow;
-    component.localLevel = localLevel;
-    component.localProduction = localProd;
-    
-    component.remoteTemperature = remoteTemp;
-    component.remotePressure = remotePressure;
-    component.remoteFlowRate = remoteFlow;
-    component.remoteLevel = remoteLevel;
-    component.remoteProduction = remoteProd;
-    
-    // Update scadaData as well
-    component.scadaData.localTemperature = localTemp;
-    component.scadaData.localPressure = localPressure;
-    component.scadaData.localFlowRate = localFlow;
-    component.scadaData.localLevel = localLevel;
-    component.scadaData.localProduction = localProd;
-    component.scadaData.remoteTemperature = remoteTemp;
-    component.scadaData.remotePressure = remotePressure;
-    component.scadaData.remoteFlowRate = remoteFlow;
-    component.scadaData.remoteLevel = remoteLevel;
-    component.scadaData.remoteProduction = remoteProd;
-
-    return changes;
+  isBackendAvailable(): boolean {
+    return this.backendAvailable.getValue();
   }
 
-  private updateScadaData(
-    component: any,
-    tagValues: any,
-    config: ScadaDisplayConfig
-  ): void {
-    component.localTemperature = tagValues[`Local:${config.local.temperatureTag}`]?.value || 0;
-    component.localPressure = tagValues[`Local:${config.local.pressureTag}`]?.value || 0;
-    component.localFlowRate = tagValues[`Local:${config.local.flowRateTag}`]?.value || 0;
-    component.localLevel = tagValues[`Local:${config.local.levelTag}`]?.value || 0;
-    component.localProduction = tagValues[`Local:${config.local.productionTag}`]?.value || 0;
-
-    component.remoteTemperature = tagValues[`Remote:${config.remote.temperatureTag}`]?.value || 0;
-    component.remotePressure = tagValues[`Remote:${config.remote.pressureTag}`]?.value || 0;
-    component.remoteFlowRate = tagValues[`Remote:${config.remote.flowRateTag}`]?.value || 0;
-    component.remoteLevel = tagValues[`Remote:${config.remote.levelTag}`]?.value || 0;
-    component.remoteProduction = tagValues[`Remote:${config.remote.productionTag}`]?.value || 0;
-    
-    component.scadaData.localTemperature = component.localTemperature;
-    component.scadaData.localPressure = component.localPressure;
-    component.scadaData.localFlowRate = component.localFlowRate;
-    component.scadaData.localLevel = component.localLevel;
-    component.scadaData.localProduction = component.localProduction;
-    component.scadaData.remoteTemperature = component.remoteTemperature;
-    component.scadaData.remotePressure = component.remotePressure;
-    component.scadaData.remoteFlowRate = component.remoteFlowRate;
-    component.scadaData.remoteLevel = component.remoteLevel;
-    component.scadaData.remoteProduction = component.remoteProduction;
+  getPendingServersCount(): number {
+    return this.serversSubject.getValue().filter(s => s.status === 'pending').length;
   }
 
-  public refreshScadaData(component: any, config?: Partial<ScadaDisplayConfig>): void {
-    if (component.scadaData?.rawTagValues) {
-      const fullConfig = this.mergeConfig(config);
-      this.updateScadaData(component, component.scadaData.rawTagValues, fullConfig);
-    }
-  }
+  // ============= Polling Methods =============
 
-  public setCurrentServer(server: string): void {
-    this.scadaService.setCurrentServer(server);
-  }
-
-  private getDefaultScadaData(): ScadaData {
-    return {
-      localTemperature: 0,
-      localPressure: 0,
-      localFlowRate: 0,
-      localLevel: 0,
-      localProduction: 0,
-      remoteTemperature: 0,
-      remotePressure: 0,
-      remoteFlowRate: 0,
-      remoteLevel: 0,
-      remoteProduction: 0,
-      connectionStatus: false,
-      servers: [],
-      currentServer: 'Local',
-      rawTagValues: {}
-    };
-  }
-
-  private mergeConfig(config?: Partial<ScadaDisplayConfig>): ScadaDisplayConfig {
-    return {
-      local: {
-        temperatureTag: config?.local?.temperatureTag || this.defaultConfig.local.temperatureTag,
-        pressureTag: config?.local?.pressureTag || this.defaultConfig.local.pressureTag,
-        flowRateTag: config?.local?.flowRateTag || this.defaultConfig.local.flowRateTag,
-        levelTag: config?.local?.levelTag || this.defaultConfig.local.levelTag,
-        productionTag: config?.local?.productionTag || this.defaultConfig.local.productionTag
-      },
-      remote: {
-        temperatureTag: config?.remote?.temperatureTag || this.defaultConfig.remote.temperatureTag,
-        pressureTag: config?.remote?.pressureTag || this.defaultConfig.remote.pressureTag,
-        flowRateTag: config?.remote?.flowRateTag || this.defaultConfig.remote.flowRateTag,
-        levelTag: config?.remote?.levelTag || this.defaultConfig.remote.levelTag,
-        productionTag: config?.remote?.productionTag || this.defaultConfig.remote.productionTag
-      },
-      units: { ...this.defaultConfig.units, ...config?.units }
-    };
-  }
-  // Add these methods to ScadaIntegrationService
-
-  /**
-   * Enable real-time polling
-   */
   enablePolling(): void {
     this.scadaService.enablePolling();
   }
 
-  /**
-   * Disable real-time polling (use when entering edit mode)
-   */
   disablePolling(): void {
     this.scadaService.disablePolling();
   }
 
-  /**
-   * Check if polling is active
-   */
   isPollingActive(): boolean {
     return this.scadaService.isPollingActive();
   }
 
-  /**
-   * Manually refresh data
-   */
   async refreshData(): Promise<void> {
     await this.scadaService.refreshData();
+  }
+
+  // ============= Helper Methods =============
+  
+  private getDefaultScadaData(): any {
+    return {
+      rawTagValues: {},
+      connectionStatus: false,
+      servers: [],
+      currentServer: 'Local'
+    };
+  }
+
+  // ============= Cleanup =============
+  
+  ngOnDestroy(): void {
+    if (this.syncRetryInterval) {
+      clearInterval(this.syncRetryInterval);
+      console.log('🧹 Cleaned up sync interval');
+    }
   }
 }
