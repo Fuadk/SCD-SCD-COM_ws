@@ -3,33 +3,24 @@
     .confirmation-dialog-on-top {
       z-index: 999999 !important;
     }
-
   </style>
-<button kendoButton [icon]="'hyperlink-open'" (click)="openPropertyDialog(this,'1','','')">">
-      {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Text") }}
+  
+  <!-- Single line toolbar -->
+  <div class="diagram-toolbar">
+    <!-- Mode Controls - Always first -->
+    <!-- Run/Stop buttons -->
+    <button class="mode-btn" 
+            [class.active]="isEditMode"
+            [class.inactive]="!isEditMode"
+            kendoTooltip
+            [title]="isEditMode ? 'Stop Editing' : 'Start Editing'"
+            (click)="toggleMode()">
+      <span class="mode-icon">{{ isEditMode ? '▶' : '⏹' }}</span>
+     
     </button>
-
-  <div style="background: #1a1a2e; color: #00ff00; padding: 10px; font-family: monospace; font-size: 12px; border-bottom: 1px solid #e94560;">
-    <strong>🔌 SCADA</strong> 
-    <div style="background: #1a1a2e; color: #00ff00; padding: 10px;">
-      🔌 SCADA {{ scadaData.connectionStatus ? '● Connected' : '○ Disconnected' }} | 
-      Temp: {{ scadaData.localTemperature }}°C | 
-      Press: {{ scadaData.localPressure }} | 
-      Flow: {{ scadaData.localFlowRate }}
-    </div>
-  </div>
-
-  <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-    <label>
-      <input type="checkbox" [checked]="isEditMode" (change)="toggleMode()" />
-      Edit Mode
-    </label>
-    <span class="mode-status" [class.edit]="isEditMode" [class.view]="!isEditMode">
-      {{ isEditMode ? '✎ Edit Mode' : '▶ View Mode' }}
-    </span>
-    <button *ngIf="isEditMode" kendoButton (click)="handleAI()" style="margin: 5px 5px 5px 5px;">AI</button>
+    
     <kendo-dropdowntree 
-    kendoDropDownTreeExpandable 
+      kendoDropDownTreeExpandable 
       [kendoDropDownTreeHierarchyBinding]="ShapeMenu" 
       textField="text" 
       valueField="id"
@@ -38,9 +29,216 @@
       (valueChange)="ON_CLICK_CONTEXT_MENU('DROPDOWN', $event)"
       [(value)]="selectedShape"
       [popupSettings]="{ width: 300, popupClass: 'expandable-tree-popup' }"
+      class="shape-dropdown"
       style="display: inline-flex; width: 120px; vertical-align: middle;">
     </kendo-dropdowntree>
-    <!-- ✅ Tooltip Popup - Shows only in Edit Mode -->
+    
+    <!-- AI Button with Robot Icon -->
+<button *ngIf="isEditMode" 
+        kendoButton 
+        (click)="handleAI()" 
+        
+        kendoTooltip
+        title="AI Assistant">
+  <i class="fas fa-robot ai-icon"></i>
+ 
+</button>
+    
+    <!-- Separator -->
+    <span class="toolbar-separator"></span>
+
+    <!-- Group 1: Display Controls - Shown when no shape is selected -->
+    <ng-container *ngIf="currentShapeType == ''">
+      <!-- <span class="toolbar-group-label">{{ starServices.getNLS([], "SCD_DIAGRAM.toolbar.display", "Display") }}</span> -->
+      
+      <!-- Toggle Grid -->
+      <button kendoButton 
+              [style.background]="showGrid ? '#e94560' : 'transparent'"
+              [style.color]="showGrid ? '#ffffff' : '#555555'"
+              [style.border-color]="showGrid ? '#e94560' : '#d1d5db'"
+              kendoTooltip
+              [title]="showGrid ? 'Hide Grid' : 'Show Grid'"
+              (click)="toggleGrid()"
+              class="toolbar-btn">
+        <span class="button-icon">⊞</span>
+      </button>
+      
+      <!-- Toggle Snap -->
+      <button kendoButton 
+              [style.background]="snapEnabled ? '#e94560' : 'transparent'"
+              [style.color]="snapEnabled ? '#ffffff' : '#555555'"
+              [style.border-color]="snapEnabled ? '#e94560' : '#d1d5db'"
+              kendoTooltip
+              [title]="snapEnabled ? 'Snap Off' : 'Snap On'"
+              (click)="toggleSnap()"
+              class="toolbar-btn">
+        <span class="button-icon">⚡</span>
+      </button>
+      
+      <!-- Zoom to Fit -->
+      <button kendoButton 
+              kendoTooltip
+              title="Zoom to Fit"
+              (click)="zoomToFit()"
+              class="toolbar-btn">
+        <span class="button-icon">⊡</span>
+      </button>
+    </ng-container>
+
+    <!-- Group 2: Shape Controls - Shown when shape is selected -->
+    <ng-container *ngIf="currentShapeType != ''">
+      <!-- <span class="toolbar-group-label">{{ starServices.getNLS([], "SCD_DIAGRAM.toolbar.shapes", "Shapes") }}</span> -->
+      
+      <!-- Copy -->
+      <button kendoButton 
+              kendoTooltip
+              title="Copy Selected"
+              (click)="copySelected()"
+              class="toolbar-btn">
+        <span class="button-icon">📋</span>
+      </button>
+      
+      <!-- Paste -->
+      <button kendoButton 
+              kendoTooltip
+              title="Paste"
+              (click)="paste()"
+              class="toolbar-btn">
+        <span class="button-icon">📄</span>
+      </button>
+      
+      <!-- Delete -->
+      <button kendoButton 
+              kendoTooltip
+              title="Delete Selected"
+              (click)="deleteSelected()"
+              class="toolbar-btn">
+        <span class="button-icon">🗑️</span>
+      </button>
+      
+      <!-- Duplicate -->
+      <button kendoButton 
+              kendoTooltip
+              title="Duplicate Selected"
+              (click)="duplicateSelected()"
+              class="toolbar-btn">
+        <span class="button-icon">📑</span>
+      </button>
+      
+      <span class="toolbar-separator"></span>
+      
+      <!-- Send to Back -->
+      <button kendoButton 
+              kendoTooltip
+              title="Send to Back"
+              (click)="sendToBack()"
+              class="toolbar-btn">
+        <span class="button-icon">⬇️</span>
+      </button>
+      
+      <!-- Bring to Front -->
+      <button kendoButton 
+              kendoTooltip
+              title="Bring to Front"
+              (click)="bringToFront()"
+              class="toolbar-btn">
+        <span class="button-icon">⬆️</span>
+      </button>
+      
+      <!-- Align to Grid -->
+      <button kendoButton 
+              kendoTooltip
+              title="Align to Grid"
+              (click)="alignToGrid()"
+              class="toolbar-btn">
+        <span class="button-icon">⊞</span>
+      </button>
+      
+      <span class="toolbar-separator"></span>
+      
+      <!-- Flip Horizontal -->
+      <button kendoButton 
+              kendoTooltip
+              title="Flip Horizontal"
+              (click)="flipHorizontal()"
+              class="toolbar-btn">
+        <span class="button-icon">↔</span>
+      </button>
+      
+      <!-- Flip Vertical -->
+      <button kendoButton 
+              kendoTooltip
+              title="Flip Vertical"
+              (click)="flipVertical()"
+              class="toolbar-btn">
+        <span class="button-icon">↕</span>
+      </button>
+      
+      <!-- Rotation Input -->
+      <div class="rotation-control">
+        <input kendoNumericTextBox
+               [(value)]="rotationAngle"
+               [(ngModel)]="rotationAngle"
+               [min]="0"
+               [max]="360"
+               [step]="5"
+               kendoTooltip
+               title="Rotation Angle"
+               [style.width.px]="55"
+               (change)="applyRotation()">
+       
+      </div>
+      
+      <span class="toolbar-separator"></span>
+      
+      <!-- Stroke Color -->
+      <kendo-colorpicker
+        [(value)]="strokeColor"
+        [preview]="true"
+        kendoTooltip
+        title="Stroke Color"
+        (valueChange)="applyStrokeColor()"
+        class="color-picker-btn"
+        [style.width.px]="28"
+        [style.height.px]="26"
+        [style.padding.px]="2">
+      </kendo-colorpicker>
+      
+      <!-- Fill Color -->
+      <kendo-colorpicker
+        [(value)]="fillColor"
+        [preview]="true"
+        kendoTooltip
+        title="Fill Color"
+        (valueChange)="applyFillColor()"
+        class="color-picker-btn"
+        [style.width.px]="28"
+        [style.height.px]="26"
+        [style.padding.px]="2">
+      </kendo-colorpicker>
+      
+      <span class="toolbar-separator"></span>
+      
+      <!-- Group -->
+      <button kendoButton 
+              kendoTooltip
+              title="Group Selected"
+              (click)="groupSelected()"
+              class="toolbar-btn">
+        <span class="button-icon">🔲</span>
+      </button>
+      
+      <!-- Ungroup -->
+      <button kendoButton 
+              kendoTooltip
+              title="Ungroup Selected"
+              (click)="ungroupSelected()"
+              class="toolbar-btn">
+        <span class="button-icon">🔳</span>
+      </button>
+    </ng-container>
+    
+    <!-- Tooltip Popup - Shows only in Edit Mode -->
     <div *ngIf="isEditMode && tooltipVisible" 
          class="custom-tooltip-popup" 
          [style.left.px]="tooltipX" 
@@ -50,7 +248,20 @@
   </div>
 </div>
 
-<div #myTargetBox class="target-box">
+<div #myTargetBox class="target-box"
+        [class.grid-visible]="showGrid"
+        [class.freehand-active]="freehandMode"
+        (pointerdown)="onFreehandPointerDown($event)"
+        (pointermove)="onFreehandPointerMove($event)"
+        (pointerup)="onFreehandPointerUp($event)"
+        (pointercancel)="onFreehandPointerUp($event)"
+    >
+    <svg
+        *ngIf="freehandMode && freehandPreviewPath"
+        class="freehand-preview"
+        aria-hidden="true">
+        <path [attr.d]="freehandPreviewPath" [attr.stroke]="strokeColor"></path>
+      </svg>
   <kendo-diagram [shapes]="shapes" #diagram
       [connections]="connections"
       [shapeDefaults]="shapeDefaults" 
@@ -66,9 +277,10 @@
       (dragStart)="ON_EVENT('dragStart', $event)"
       (dragEnd)="ON_EVENT('dragEnd', $event)"
       (drag)="ON_EVENT('drag', $event)"
-       
-      (mouseLeave)="ON_EVENT('mouseLeave', $event)">
+      (mouseLeave)="ON_EVENT('mouseLeave', $event)"
+      >
   </kendo-diagram>
+  
   <div
     *ngIf="popupVisible"
     [ngStyle]="{
@@ -83,13 +295,8 @@
         'box-shadow': '0 3px 12px rgba(0,0,0,.25)',
         'z-index': 9999
     }">
-
     <h4>{{selectedPartId}}</h4>
-    <button
-        (click)="popupVisible=false">
-        Close
-    </button>
-
+    <button (click)="popupVisible=false">Close</button>
   </div>
 </div>
 
@@ -98,14 +305,13 @@
 </kendo-contextmenu>
 
 <kendo-window [hidden]="!AIFormOpened" title="Create Diagram" (close)="AIFormOpened = false" [minWidth]="500"
-  [width]="500" [height]="500" [state]="isPhonePortrait ? 'maximized' : 'default' ">
+  [width]="500" [height]="500" [state]="isPhonePortrait ? 'maximized' : 'default'">
   <app-ai-ai-form (saveCompletedOutput)="saveFormCompletedHandler($event)"
     [setComponentConfig_Input]="DSP_AIFormConfig">
   </app-ai-ai-form>
 </kendo-window>
 
-
-<!-- ===== PROPERTY DIALOG  ===== -->
+<!-- ===== PROPERTY DIALOG ===== -->
 <kendo-window
   *ngIf="propertyDialogData && propertyDialogData.isVisible"
   [title]="propertyDialogData.title"
@@ -114,16 +320,13 @@
   [height]="propertyDialogData.height || 500"
   [state]="propertyDialogData.state || 'default'"
   [resizable]="true"
-  
   (close)="onPropertyDialogClose()">
   
   <div class="property-dialog-content">
-    <!-- Dynamic property editor using ViewContainerRef -->
     <div style="height: 100%; min-height: 300px;">
       <ng-container #propertyDialogContainer></ng-container>
     </div>
     
-    <!-- Fallback when no component is found -->
     <div *ngIf="!propertyDialogData || !propertyDialogData.component" class="no-editor-message">
       <p>No property editor found for shape type: <strong>{{ propertyDialogShapeType }}</strong></p>
     </div>

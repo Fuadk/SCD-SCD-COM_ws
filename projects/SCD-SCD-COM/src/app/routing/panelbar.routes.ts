@@ -3708,7 +3708,7 @@ import { TstCaseDiagramTstTstCaseDiagramDiagramDiagramComponent } from '../compo
 
 
 
-import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
+
 import { ScdExpressionEditorComponent } from '../components/SCD/scd-expression-editor/scd-expression-editor.component';
 import { ScdAppTreeScdAtApplicationTreeTreeComponent } from '../components/SCD/scd-at-application-tree/scd-at-application-tree.component';
 import { ScdApplicationTreeComponent } from '../components/SCD/scd-application-tree/scd-application-tree.component';
@@ -3916,20 +3916,24 @@ import { TstCaseDiagramTstTstCaseDiagramDiagram2DiagramComponent } from '../comp
 import { ScdDiagramMenusScdScdDiagramMenusGridGridComponent } from '../components/SCD/scd-scd-diagram-menus-grid/scd-scd-diagram-menus-grid.component';
 import { ScdMdiTabsComponent } from '../components/SCD/scd-mdi-tabs/scd-mdi-tabs.component';
 import { ScdMdiWinComponent } from '../components/SCD/scd-mdi-win/scd-mdi-win.component';
-import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+
 import { ScdAppMainComponent } from '../components/SCD/scd-app-main/scd-app-main.component';
 
 
 
 
 
-import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
+
 import { ScdAppTreeScdScdAppTreeGridGridComponent } from '../components/SCD/scd-scd-app-tree-grid/scd-scd-app-tree-grid.component';
 import { ScdAppTreeContextScdScdAppTreeContextGridGridComponent } from '../components/SCD/scd-scd-app-tree-context-grid/scd-scd-app-tree-context-grid.component';
 import { ScdMenusMaintComponent } from '../components/SCD/scd-menus-maint/scd-menus-maint.component';
 import { ScdDisplayScdScdDisplayDiagramDiagramComponent } from '../components/SCD/scd-scd-display-diagram/scd-scd-display-diagram.component';
 
 import { ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent } from '../components/SCD/scd-scd-shape-defaults-grid/scd-scd-shape-defaults-grid.component';
+
+import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
+import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
 //point1
 
 export const PanelbarRoutes: Routes = [
@@ -7724,7 +7728,7 @@ export const PanelbarRoutes: Routes = [
 
 
 
-	{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
+
 	{ path: 'scd', loadChildren: () => import('../modules/scd.module').then(m => m.scdModule)  },
 	{ path: 'scd_expression_editor', component: ScdExpressionEditorComponent },
 	{ path: 'scd_at_application_tree', component: ScdAppTreeScdAtApplicationTreeTreeComponent },
@@ -7932,20 +7936,24 @@ export const PanelbarRoutes: Routes = [
 	{ path: 'scd_scd_diagram_menus_grid', component: ScdDiagramMenusScdScdDiagramMenusGridGridComponent },
 	{ path: 'scd_mdi_tabs', component: ScdMdiTabsComponent },
 	{ path: 'scd_mdi_win', component: ScdMdiWinComponent },
-	{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+
 	{ path: 'scd_app_main', component: ScdAppMainComponent },
 
 
 
 	
 
-	{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
+
 	{ path: 'scd_scd_app_tree_grid', component: ScdAppTreeScdScdAppTreeGridGridComponent },
 	{ path: 'scd_scd_app_tree_context_grid', component: ScdAppTreeContextScdScdAppTreeContextGridGridComponent },
 	{ path: 'scd_menus_maint', component: ScdMenusMaintComponent },
 	{ path: 'scd_scd_display_diagram', component: ScdDisplayScdScdDisplayDiagramDiagramComponent },
 
 	{ path: 'scd_scd_shape_defaults_grid', component: ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent },
+
+	{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
+	{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+	{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
   //point2
 
 ];

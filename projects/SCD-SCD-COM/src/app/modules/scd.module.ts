@@ -72,12 +72,15 @@ import {  DialogsModule} from '@progress/kendo-angular-dialog';
 
 import { UploadInterceptor } from '../app.component';
 import { ScrollViewModule } from "@progress/kendo-angular-scrollview";
+import { NumericTextBoxModule } from '@progress/kendo-angular-inputs';
+import { ColorPickerModule } from '@progress/kendo-angular-inputs';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 
 
 // Import all scd components
 
 //point1
-import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
+
 import { ScdExpressionEditorComponent } from '../components/SCD/scd-expression-editor/scd-expression-editor.component';
 import { ScdAppTreeScdAtApplicationTreeTreeComponent } from '../components/SCD/scd-at-application-tree/scd-at-application-tree.component';
 import { ScdApplicationTreeComponent } from '../components/SCD/scd-application-tree/scd-application-tree.component';
@@ -275,19 +278,23 @@ import { ScdMdiTabsComponent } from '../components/SCD/scd-mdi-tabs/scd-mdi-tabs
 // import { KENDO_ICONS } from '@progress/kendo-angular-icons'; 
 
 import { ScdMdiWinComponent } from '../components/SCD/scd-mdi-win/scd-mdi-win.component';
-import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+
 import { ScdAppMainComponent } from '../components/SCD/scd-app-main/scd-app-main.component';
 
 
 
 
-import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
+
 import { ScdAppTreeScdScdAppTreeGridGridComponent } from '../components/SCD/scd-scd-app-tree-grid/scd-scd-app-tree-grid.component';
 import { ScdAppTreeContextScdScdAppTreeContextGridGridComponent } from '../components/SCD/scd-scd-app-tree-context-grid/scd-scd-app-tree-context-grid.component';
 import { ScdMenusMaintComponent } from '../components/SCD/scd-menus-maint/scd-menus-maint.component';
 import { ScdDisplayScdScdDisplayDiagramDiagramComponent } from '../components/SCD/scd-scd-display-diagram/scd-scd-display-diagram.component';
 
 import { ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent } from '../components/SCD/scd-scd-shape-defaults-grid/scd-scd-shape-defaults-grid.component';
+
+import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
+import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
 const scdRoutes: Routes = [
  
 
@@ -298,7 +305,7 @@ const scdRoutes: Routes = [
       
 		
 		
-		{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
+
 		{ path: 'scd_expression_editor', component: ScdExpressionEditorComponent },
 		{ path: 'scd_at_application_tree', component: ScdAppTreeScdAtApplicationTreeTreeComponent },
 		{ path: 'scd_application_tree', component: ScdApplicationTreeComponent },
@@ -489,18 +496,22 @@ const scdRoutes: Routes = [
 		{ path: 'scd_scd_diagram_menus_grid', component: ScdDiagramMenusScdScdDiagramMenusGridGridComponent },
 		{ path: 'scd_mdi_tabs', component: ScdMdiTabsComponent },
 		{ path: 'scd_mdi_win', component: ScdMdiWinComponent },
-		{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+
 		{ path: 'scd_app_main', component: ScdAppMainComponent },
 
 
 
-		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
+
 		{ path: 'scd_scd_app_tree_grid', component: ScdAppTreeScdScdAppTreeGridGridComponent },
 		{ path: 'scd_scd_app_tree_context_grid', component: ScdAppTreeContextScdScdAppTreeContextGridGridComponent },
 		{ path: 'scd_menus_maint', component: ScdMenusMaintComponent },
 		{ path: 'scd_scd_display_diagram', component: ScdDisplayScdScdDisplayDiagramDiagramComponent },
 
 		{ path: 'scd_scd_shape_defaults_grid', component: ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent },
+
+		{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
+		{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
 ];
 
 
@@ -509,7 +520,7 @@ const scdRoutes: Routes = [
   declarations: [
     // All scd components
    
-		ScdExpressionEditorScdEeExpressionEditorFormComponent,
+
 		ScdExpressionEditorComponent,
 		ScdAppTreeScdAtApplicationTreeTreeComponent,
 		ScdApplicationTreeComponent,
@@ -703,20 +714,24 @@ const scdRoutes: Routes = [
 		ScdDiagramMenusScdScdDiagramMenusGridGridComponent,
 		ScdMdiTabsComponent,
 		ScdMdiWinComponent,
-		ScdApplicationScdScdApplicationFormFormComponent,
+
 		ScdAppMainComponent,
 
 
 
 		
 
-		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
+
 		ScdAppTreeScdScdAppTreeGridGridComponent,
 		ScdAppTreeContextScdScdAppTreeContextGridGridComponent,
 		ScdMenusMaintComponent,
 		ScdDisplayScdScdDisplayDiagramDiagramComponent,
 
 		ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent,
+
+		ScdExpressionEditorScdEeExpressionEditorFormComponent,
+		ScdApplicationScdScdApplicationFormFormComponent,
+		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
   ],
   
   imports: [
@@ -775,6 +790,9 @@ const scdRoutes: Routes = [
             HttpClientModule,
             IndicatorsModule,
             ScrollViewModule,
+			NumericTextBoxModule,
+			ColorPickerModule,
+			TooltipModule,
             
             
             
