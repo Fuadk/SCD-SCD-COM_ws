@@ -114,9 +114,9 @@ public labelTOPTop=true;
 public labelTOPVisible=true;
 public labelLEFTTop=true;
 public labelLEFTVisible=true;
-public labelNAMETop=false;
+public labelNAMETop=true;
 public labelNAMEVisible=true;
-public labelVISIBLETop=false;
+public labelVISIBLETop=true;
 public labelVISIBLEVisible=true;
 public labelKEY_NAVIGATIONTop=true;
 public labelKEY_NAVIGATIONVisible=true;
@@ -254,7 +254,7 @@ public disableINSERT_VARIABLE = false;
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
+      //this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.form.dirty;
       
       // Only emit if state changed

@@ -194,7 +194,7 @@ public variableHIDE_BUT;
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
+      //this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.form.dirty;
       
       // Only emit if state changed

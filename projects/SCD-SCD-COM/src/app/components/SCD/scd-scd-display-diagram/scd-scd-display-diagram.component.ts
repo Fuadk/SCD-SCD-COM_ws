@@ -1058,23 +1058,26 @@ if (type === "shapeBoundsChange") {
         }
         console.log("opcua:on received data from scada :changes:", changes);
         for (const change of changes) {
-            console.log("opcua:on received data from scada :change:", change.type, change);
+            //console.log("opcua:on received data from scada :change:", change.type, change);
             switch (change.type) {
                 case 'tag':
-                    console.log("opcua:on received data from scada :displayName:", change.newValue.displayName, change);
+                    //console.log("opcua:on received data from scada :displayName:", change.newValue.displayName, change);
                     switch (change.newValue.displayName) {
                         case 'Tag_1001':
 
                             const liveShape = this.diagram.getShapeById("boilerB:2");
-                            console.log("opcua:on received data from scada :value:", change.newValue.value, liveShape);
+                            //console.log("opcua:on received data from scada :value:", change.newValue.value, liveShape);
                             if (liveShape) {
 
-                                console.log("SCADA_DATA:liveShape", liveShape);
-                                console.log("SCADA_DATA:options", liveShape.options);
-                                console.log("SCADA_DATA:dataItem", liveShape.dataItem.dataItem.definition.textBlocks[0].text);
-                                console.log("opcua:on received data from scada :value:", change.newValue.value, change);
-                                liveShape.dataItem.dataItem.definition.textBlocks[0].text = change.newValue.value.toString();
-                                console.log(liveShape);
+                                // console.log("SCADA_DATA:liveShape", liveShape);
+                                // console.log("SCADA_DATA:options", liveShape.options);
+                                // console.log("SCADA_DATA:dataItem", liveShape.dataItem.dataItem.definition.textBlocks[0].text);
+                                // console.log("opcua:on received data from scada :value:", change.newValue.value, change);
+                                
+                                 liveShape.dataItem.dataItem.definition.textBlocks[0].text = change.newValue.value.toString();
+                                
+                                // console.log(liveShape);
+                                
                                 liveShape.redrawVisual();
                             }
                             break;
@@ -1098,25 +1101,38 @@ if (type === "shapeBoundsChange") {
    
   }
   async  POST_QUERY(formGroup){
-     console.log("POST_QUERY:formGroup:", formGroup)
-        let whereClause = "APPLICATION_ID =" + formGroup.APPLICATION_ID;
-        let body = [
-            {
-                "_QUERY": "GET_SCD_OPCUA_SERVER_QUERY",
-                "_WHERE": whereClause
-            }
-        ];
+    console.log("POST_QUERY:formGroup:", formGroup)
+let whereClause = "APPLICATION_ID =" + formGroup.APPLICATION_ID;
+let body = [
+    {
+        "_QUERY": "GET_SCD_OPCUA_SERVER_QUERY",
+        "_WHERE": whereClause
+    }
+];
 
-        let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
-        if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:data[0].data:", data[0].data);
-        if (typeof data[0].data != "undefined") {
-            let opcuaServers = data[0].data;
-            for (let i = 0; i < opcuaServers.length; i++) {
-                if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:opcuaServers:", opcuaServers);
-                await this.addNewServer(opcuaServers[i].SERVER_NAME, opcuaServers[i].ENDPOINT_URL)
-            }
-
+let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:data[0].data:", data[0].data);
+if (typeof data[0].data != "undefined") {
+    let opcuaServers = data[0].data;
+    for (let i = 0; i < opcuaServers.length; i++) {
+        if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:opcuaServers:", opcuaServers);
+        let result: any = await this.addNewServer(opcuaServers[i].SERVER_NAME, opcuaServers[i].ENDPOINT_URL)
+        console.log("server added: ", opcuaServers[i].OPCUA_SERVER_ID, result)
+        if (typeof result != "undefined") {
+            this.serversMapp[opcuaServers[i].OPCUA_SERVER_ID] = result.id;
         }
+
+        this.serversMappReversed = {};
+        for (const key in this.serversMapp) {
+            if (this.serversMapp.hasOwnProperty(key)) {
+                this.serversMappReversed[this.serversMapp[key]] = Number(key);
+            }
+            console.log("opcua:server added: ", this.serversMapp, this.serversMappReversed);
+        }
+    }
+
+}
+
     
   }
   async  PRE_DELETE(formGroup:any){
@@ -1210,7 +1226,9 @@ async WHEN_VALIDATE_ITEM_DISPLAY_DATA(value) {
 
 }
 
-public  DIAGRAM_ID = null;
+public DIAGRAM_ID = null;
+public serversMapp = {};
+public serversMappReversed = {};
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1412,7 +1430,14 @@ public snapDistance = 6;
 
     let group: Group;
     if (Array.isArray(dataItem.groupChildren)) {
-      group = this.drawGroupedChildren(dataItem.groupChildren, dataItem.editorStyle);
+      group = this.drawGroupedChildren(
+        dataItem.groupChildren,
+        dataItem.editorStyle,
+        0,
+        0,
+        Number(dataItem.groupOriginalWidth) || Number(dataItem.width) || undefined,
+        Number(dataItem.groupOriginalHeight) || Number(dataItem.height) || undefined
+      );
     } else if (dataItem.libraryKind) {
       group = this.drawLibraryShape(dataItem);
     } else if (dataItem.definition) {
@@ -1429,8 +1454,34 @@ public snapDistance = 6;
     this.applyDrawingTransform(group, dataItem.editorStyle);
     return group;
   };
-    private drawGroupedChildren(children: any[], parentStyle?: ShapeEditorStyle, baseX: number = 0, baseY: number = 0): Group {
+    private drawGroupedChildren(
+    children: any[],
+    parentStyle?: ShapeEditorStyle,
+    baseX: number = 0,
+    baseY: number = 0,
+    frameWidth?: number,
+    frameHeight?: number
+  ): Group {
     const group = new Group();
+
+    // Kendo scales a custom visual according to its own drawing bbox. Without
+    // an explicit frame, whitespace between children is excluded from that bbox
+    // and the visual gets non-uniformly normalized when grouping. A transparent
+    // frame makes the drawing bbox exactly equal to the original group bounds,
+    // preserving every child's size and relative position.
+    if (frameWidth && frameHeight) {
+      const frame = new Rectangle({
+        x: baseX, y: baseY, width: frameWidth, height: frameHeight,
+        stroke: { color: "transparent", width: 0 },
+        fill: { color: "transparent" }
+      });
+      // Do not use literal zero opacity here. Some Diagram sizing paths ignore
+      // fully invisible visuals. 0.001 is imperceptible but keeps the frame in
+      // the measured drawing bounds.
+      frame.options.opacity = 0.001;
+      group.append(frame);
+    }
+
     for (const child of children || []) {
       const dataItem = child?.dataItem?.dataItem ?? child?.dataItem ?? {};
       const x = baseX + (Number(child?.x) || 0);
@@ -1438,11 +1489,18 @@ public snapDistance = 6;
       let childGroup: Group;
 
       if (Array.isArray(dataItem.groupChildren)) {
-        childGroup = this.drawGroupedChildren(dataItem.groupChildren, parentStyle, x, y);
+        childGroup = this.drawGroupedChildren(
+          dataItem.groupChildren,
+          parentStyle,
+          x,
+          y,
+          Number(dataItem.groupOriginalWidth) || Number(child.width) || undefined,
+          Number(dataItem.groupOriginalHeight) || Number(child.height) || undefined
+        );
       } else if (dataItem.libraryKind) {
         childGroup = this.drawLibraryShape(dataItem, x, y, parentStyle);
       } else if (dataItem.definition) {
-        const mergedStyle:ShapeEditorStyle = {
+        const mergedStyle: ShapeEditorStyle = {
           ...(dataItem.editorStyle || {}),
           ...(parentStyle?.strokeColor ? { strokeColor: parentStyle.strokeColor } : {}),
           ...(parentStyle?.fillColor ? { fillColor: parentStyle.fillColor } : {})
@@ -1457,9 +1515,22 @@ public snapDistance = 6;
       const bbox = drawingElement?.bbox?.();
       if (drawingElement?.transform && bbox) {
         let tx = geometry.transform();
+
+        // A normal Kendo Shape scales its custom visual to the shape's stored
+        // width/height. Once shapes become children of our logical group there
+        // is no individual Kendo wrapper to do that scaling, so reproduce it
+        // here. This is what preserves resized custom/compound shapes exactly.
+        const targetWidth = Math.max(1, Number(child?.width) || Number(dataItem?.width) || bbox.width || 1);
+        const targetHeight = Math.max(1, Number(child?.height) || Number(dataItem?.height) || bbox.height || 1);
+        const scaleX = bbox.width > 0 ? targetWidth / bbox.width : 1;
+        const scaleY = bbox.height > 0 ? targetHeight / bbox.height : 1;
+        if (Math.abs(scaleX - 1) > 0.0001 || Math.abs(scaleY - 1) > 0.0001) {
+          tx = tx.scale(scaleX, scaleY, [bbox.x, bbox.y]);
+        }
+
         const flipX = childStyle.flipX ?? 1;
         const flipY = childStyle.flipY ?? 1;
-        const center = [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
+        const center = [bbox.x + targetWidth / 2, bbox.y + targetHeight / 2];
         if (flipX !== 1 || flipY !== 1) {
           tx = tx.scale(flipX, flipY, center);
         }
@@ -1537,11 +1608,20 @@ async  removeUnusedShapes(){
   let statement_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SHAPE_DISPLAY_GENERAL = "DELETE from SCD_SHAPE_DISPLAY_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
   let body_defs = [
      {
         "_QUERY": "EXECSQL",
         "_STMT": statement_TEXT_GENERAL
-      }];
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SHAPE_DISPLAY_GENERAL
+      }
+
+    ];
   if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes_defs:body_defs:", body_defs);
   let data_defs = await this.starServices.execSQLBody(this, body_defs, this.starServices.MASTER_DB);
 
@@ -1902,15 +1982,17 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
   async addNewServer(name, endpoint): Promise<void> {
         // const name = prompt('Enter server name:');
         // const endpoint = prompt('Enter OPC UA endpoint:');
+        let  result;
         if (name && endpoint) {
             console.log("opcua:addNewServer:name", name, endpoint)
-            const result = await this.scadaIntegration.addServer(name, endpoint);
+             result = await this.scadaIntegration.addServer(name, endpoint);
             if (result) {
                 console.log('opcua:Server added:', result);
             } else {
                 alert('opcua:Failed to add server');
             }
         }
+        return result;
     }
 
   async removeServer(serverId: number): Promise<void> {
@@ -2212,7 +2294,7 @@ public valueChange(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -2662,7 +2744,7 @@ public getShapeInfo(){
 }
 public insertShape (data, shapeType){
   const text = "Rich Text";
-  this.addLibraryShape("richText", { 
+  this.addLibraryShape("Text", { //richText
     text: text || "Rich Text", 
     width: 190, 
     height: 90, 
@@ -2677,6 +2759,8 @@ private freehandPoints: Array<{ x: number; y: number }> = [];
 private freehandPointerId: number | null = null;
 public freehandPreviewPath = "";
 private freehandPreviewPoints: Array<{ x: number; y: number }> = [];
+public richTextEditorOpen = false;
+public richTextHtml = '<p><strong>Rich Text</strong></p>';
 private addShapeCounter = 0;
 public readonly gridSize = 20;
 
@@ -2715,6 +2799,169 @@ private uniqueShapeId(prefix: string): string {
   }
   
   // 
+  public addRichText(): void {
+    this.richTextHtml = '<p><strong>Rich Text</strong></p>';
+    this.richTextEditorOpen = true;
+    this.statusMessage = "Use the Kendo Editor to format the Rich Text, then click Add to Diagram.";
+  }
+
+  public cancelRichText(): void {
+    this.richTextEditorOpen = false;
+    this.statusMessage = "Rich Text creation cancelled.";
+  }
+
+  public commitRichText(): void {
+    const blocks = this.htmlToRichTextBlocks(this.richTextHtml);
+    if (!blocks.length) {
+      this.statusMessage = "Enter some Rich Text before adding the shape.";
+      return;
+    }
+
+    this.richTextEditorOpen = false;
+    this.addLibraryShape("richText", {
+      richTextHtml: this.richTextHtml,
+      richTextBlocks: blocks,
+      width: 320,
+      height: 180,
+      fillColor: "#fffdf7"
+    });
+  }
+
+  /** Convert Kendo Editor HTML into Diagram ShapeRichTextContent blocks. */
+  private htmlToRichTextBlocks(html: string): any[] {
+    if (typeof DOMParser === "undefined") {
+      const text = String(html || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+      return text ? [{ children: [{ text }] }] : [];
+    }
+
+    const doc = new DOMParser().parseFromString(html || "", "text/html");
+    type RunStyle = {
+      bold?: boolean; italic?: boolean; underline?: boolean; color?: string;
+      fontSize?: number; fontFamily?: string;
+    };
+
+    const withElementStyle = (element: Element, inherited: RunStyle): RunStyle => {
+      const next: RunStyle = { ...inherited };
+      const tag = element.tagName.toLowerCase();
+      const style = (element as HTMLElement).style;
+      if (tag === "strong" || tag === "b" || style.fontWeight === "bold" || Number(style.fontWeight) >= 600) next.bold = true;
+      if (tag === "em" || tag === "i" || style.fontStyle === "italic") next.italic = true;
+      if (tag === "u" || style.textDecoration.includes("underline") || style.textDecorationLine.includes("underline")) next.underline = true;
+      if (style.color) next.color = style.color;
+      const legacyColor = element.getAttribute("color");
+      if (!next.color && legacyColor) next.color = legacyColor;
+      if (style.fontFamily) next.fontFamily = style.fontFamily;
+      if (style.fontSize) {
+        const numeric = Number.parseFloat(style.fontSize);
+        if (Number.isFinite(numeric)) next.fontSize = numeric;
+      }
+      if (/^h[1-6]$/.test(tag)) {
+        next.bold = true;
+        const headingSizes: Record<string, number> = { h1: 32, h2: 28, h3: 24, h4: 20, h5: 18, h6: 16 };
+        next.fontSize = headingSizes[tag] ?? next.fontSize;
+      }
+      return next;
+    };
+
+    const inlineRuns = (node: Node, inherited: RunStyle = {}): any[] => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent ?? "";
+        if (!text) return [];
+        const run: any = { text };
+        if (inherited.bold) run.bold = true;
+        if (inherited.italic) run.italic = true;
+        if (inherited.underline) run.underline = true;
+        if (inherited.color) run.color = inherited.color;
+        if (inherited.fontSize) run.fontSize = inherited.fontSize;
+        if (inherited.fontFamily) run.fontFamily = inherited.fontFamily;
+        return [run];
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return [];
+
+      const element = node as Element;
+      const tag = element.tagName.toLowerCase();
+      if (tag === "br") return [{ type: "break" }];
+      if (tag === "img") {
+        const src = element.getAttribute("src") || "";
+        if (!src) return [];
+        const image: any = { type: "image", src };
+        const width = Number.parseFloat(element.getAttribute("width") || (element as HTMLElement).style.width || "");
+        const height = Number.parseFloat(element.getAttribute("height") || (element as HTMLElement).style.height || "");
+        if (Number.isFinite(width) && width > 0) image.width = width;
+        if (Number.isFinite(height) && height > 0) image.height = height;
+        return [image];
+      }
+
+      const nextStyle = withElementStyle(element, inherited);
+      return Array.from(element.childNodes).flatMap(child => inlineRuns(child, nextStyle));
+    };
+
+    const blocks: any[] = [];
+    const blockTags = new Set(["p", "div", "li", "blockquote", "h1", "h2", "h3", "h4", "h5", "h6"]);
+    const appendBlock = (node: Node): void => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
+        const tag = element.tagName.toLowerCase();
+        if (tag === "ul" || tag === "ol") {
+          Array.from(element.children).forEach(child => appendBlock(child));
+          return;
+        }
+        if (blockTags.has(tag)) {
+          const children = inlineRuns(element, withElementStyle(element, {}));
+          if (children.some(item => item.type === "image" || item.type === "break" || String(item.text || "").trim())) {
+            blocks.push({ children });
+          }
+          return;
+        }
+      }
+      const children = inlineRuns(node);
+      if (children.some(item => item.type === "image" || item.type === "break" || String(item.text || "").trim())) {
+        blocks.push({ children });
+      }
+    };
+
+    Array.from(doc.body.childNodes).forEach(node => appendBlock(node));
+    return blocks;
+  }
+
+  public addImage(): void {
+    const source = typeof window !== "undefined"
+      ? window.prompt("Enter an image URL (http(s), data URL, or app asset path):", "")
+      : "";
+    if (source === null) {
+      return;
+    }
+    this.addLibraryShape("image", { source: source.trim(), width: 180, height: 120, fillColor: "#f6f7f8" });
+  }
+
+  public addEllipse(): void {
+    this.addLibraryShape("ellipse", { width: 150, height: 100, fillColor: "#d9e8f5" });
+  }
+
+  public addLine(): void {
+    this.addLibraryShape("line", { width: 180, height: 24, fillColor: "transparent" });
+  }
+
+  public addRectangle(): void {
+    this.addLibraryShape("rectangle", { width: 160, height: 100, fillColor: "#d9e8f5" });
+  }
+
+  public addRoundedRectangle(): void {
+    this.addLibraryShape("roundedRectangle", { width: 190, height: 100, fillColor: "#d9e8f5" });
+  }
+
+  public addArc(): void {
+    this.addLibraryShape("arc", { width: 170, height: 95, fillColor: "transparent" });
+  }
+
+  public addPolygon(): void {
+    this.addLibraryShape("polygon", { width: 140, height: 120, fillColor: "#e9defa" });
+  }
+
+  public addPolyline(): void {
+    this.addLibraryShape("polyline", { width: 180, height: 110, fillColor: "transparent" });
+  }
+ 
   public toggleFreehandMode(): void {
     this.freehandMode = !this.freehandMode;
     this.freehandPoints = [];
@@ -2829,70 +3076,79 @@ private uniqueShapeId(prefix: string): string {
     return { x: point.x, y: point.y };
   }
   private addLibraryShape(kind: string, options: any = {}, exactPosition: boolean = false): void {
-  if (!this.diagram) {
-    this.statusMessage = "The diagram is not ready yet.";
-    return;
+    if (!this.diagram) {
+      this.statusMessage = "The diagram is not ready yet.";
+      return;
+    }
+    const position = exactPosition
+      ? { x: Number(options.x) || 0, y: Number(options.y) || 0 }
+      : this.nextInsertPosition();
+    const width = Math.max(20, Number(options.width) || 140);
+    const height = Math.max(20, Number(options.height) || 90);
+    const id = this.uniqueShapeId(kind);
+    const dataItem: any = {
+      type: "libraryShape",
+      title: this.libraryShapeTitle(kind),
+      libraryKind: kind,
+      width,
+      height,
+      strokeColor: options.strokeColor || "#2f4858",
+      fillColor: options.fillColor || "#d9e8f5",
+      editorStyle: { flipX: 1, flipY: 1 },
+      ...options
+    };
+    delete dataItem.x;
+    delete dataItem.y;
+
+    const standardType = kind === "ellipse"
+      ? "circle"
+      : kind === "image"
+        ? "image"
+        : "rectangle";
+    const model: any = {
+      id,
+      type: standardType,
+      x: position.x,
+      y: position.y,
+      width,
+      height,
+      dataItem
+    };
+    if (kind === "roundedRectangle") {
+      model.cornerRadius = Math.min(22, height / 2);
+    }
+    if (kind === "image") {
+      model.source = dataItem.source;
+    }
+    if (kind === "richText") {
+      model.content = {
+        blocks: Array.isArray(dataItem.richTextBlocks) ? dataItem.richTextBlocks : [{ children: [{ text: "Rich Text" }] }],
+        align: "top left",
+        padding: 10,
+        margin: 2,
+        color: "#333333",
+        fontSize: 15
+      };
+    }
+         if (kind === "Text") {
+      model.content = {
+        blocks: Array.isArray(dataItem.TextBlocks) ? dataItem.TextBlocks : [{ children: [{ text: "Rich Text" }] }],
+        align: "top left",
+        padding: 10,
+        margin: 2,
+        color: "#333333",
+        fontSize: 15
+      };
+    }
+    (this.shapes as any[]).push(model);
+    const runtime = this.diagram.addShape(model, true);
+    this.diagram.deselect();
+    this.diagram.select(runtime);
+    this.syncRuntimeShapeToModel(runtime);
+    //this.schedulePersistState();
+    this.statusMessage = `${this.libraryShapeTitle(kind)} added to the diagram.`;
+    setTimeout(() => this.syncInspectorFromSelection(false));
   }
-  
-  const position = exactPosition
-    ? { x: Number(options.x) || 0, y: Number(options.y) || 0 }
-    : this.nextInsertPosition();
-  
-  const width = Math.max(20, Number(options.width) || 140);
-  const height = Math.max(20, Number(options.height) || 90);
-  const id = this.uniqueShapeId(kind);
-  
-  // Create library shape data
-  const dataItem: LibraryShapeData = {
-    type: 'libraryShape',
-    title: this.libraryShapeTitle(kind),
-    libraryKind: kind,
-    width,
-    height,
-    strokeColor: options.strokeColor || "#2f4858",
-    fillColor: options.fillColor || "#d9e8f5",
-    editorStyle: { flipX: 1, flipY: 1 },
-    ...(options.editorStyle ?? {})
-  };
-  
-  // Remove x/y from dataItem (they're on the shape)
-  delete (dataItem as any).x;
-  delete (dataItem as any).y;
-  
-  // Create the shape model
-  const model: any = {
-    id,
-    type: kind === "ellipse" ? "circle" : "rectangle",
-    x: position.x,
-    y: position.y,
-    width,
-    height,
-    dataItem
-  };
-  
-  if (kind === "roundedRectangle") {
-    model.cornerRadius = Math.min(22, height / 2);
-  }
-  if (kind === "image") {
-    model.source = dataItem.source;
-  }
-  
-  // Add to application model
-  (this.shapes as any[]).push(model);
-  
-  // Add to diagram - using the visual template from shapeDefaults
-  const runtime = this.diagram.addShape(model, true);
-  
-  // Select the new shape
-  this.diagram.deselect();
-  this.diagram.select(runtime);
-  
-  
-  // Update the display
-  this.updateShapes();
-  
-  this.statusMessage = `${this.libraryShapeTitle(kind)} added to the diagram.`;
-}
   // Add these methods to handle library shape rendering
   private drawLibraryShape(dataItem: any, offsetX: number = 0, offsetY: number = 0, parentStyle?: ShapeEditorStyle): Group {
     const group = new Group();
@@ -2910,13 +3166,35 @@ private uniqueShapeId(prefix: string): string {
     const kind = dataItem.libraryKind;
 
     if (kind === "richText") {
+      group.append(new Rectangle({
+        x, y, width, height, cornerRadius: 4,
+        stroke: { color: stroke, width: 1 },
+        fill: { color: fill }
+      }));
+
+      // The supplied project is on Kendo UI 21.x (Angular 18). Native Diagram
+      // rich-text blocks were introduced later, so keep the exact Kendo
+      // blocks model in model.content AND render those same blocks here for
+      // backwards-compatible visual output. When the project is upgraded, the
+      // stored data is already in the official ShapeRichTextContent format.
+      this.appendRichTextBlocks(
+        group,
+        Array.isArray(dataItem.richTextBlocks) ? dataItem.richTextBlocks : [],
+        x + 10,
+        y + 10,
+        Math.max(20, width - 20),
+        Math.max(20, height - 20)
+      );
+      return group;
+    }
+    if (kind === "Text") {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
         stroke: { color: stroke, width: 1 },
         fill: { color: fill }
       });
       const text = new TextBlock({
-        text: String(dataItem.text || "Rich Text"),
+        text: String(dataItem.text || "Text"),
         x: x + 10,
         y: y + 12,
         fill: style.strokeColor || dataItem.textColor || "#1f2937"
@@ -2926,6 +3204,7 @@ private uniqueShapeId(prefix: string): string {
       group.append(background);
       group.append(text);
       return group;
+      
     }
 
     if (kind === "image") {
@@ -2959,10 +3238,14 @@ private uniqueShapeId(prefix: string): string {
     }
 
     if (kind === "line") {
-      group.append(new Line({
-        start: { x, y: y + height / 2 },
-        end: { x: x + width, y: y + height / 2 },
-        stroke: { color: stroke, width: 3 }
+      // Render Line using the same lightweight Path approach as Arc.
+      // The Diagram shape model owns the selectable/resizable bounds; the
+      // visible geometry is only the line itself.
+      const centerY = y + height / 2;
+      group.append(new Path({
+        data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: "transparent" }
       }));
       return group;
     }
@@ -3720,6 +4003,15 @@ private clonePlain<T>(value: T): T {
 }
 
   private refreshCustomShape(shape: any): void {
+    // Preserve the Diagram model geometry before redrawing the custom visual.
+    // Kendo may otherwise recalculate bounds from the visible Path itself.
+    // That is especially destructive for Line and Arc, whose rendered stroke
+    // occupies only a few pixels of the full selectable shape bounds.
+    const previousBounds = typeof shape?.bounds === "function"
+      ? { ...shape.bounds() }
+      : null;
+    const previousRotation = this.readRotation(shape);
+
     // The custom visual reads editorStyle from the data item, so rerun the
     // visual template after a color/fill/flip change.
     if (typeof shape.redrawVisual === "function") {
@@ -3728,6 +4020,15 @@ private clonePlain<T>(value: T): T {
       shape.refresh();
     } else if (typeof shape.redraw === "function") {
       shape.redraw({});
+    }
+
+    // Put the logical shape bounds back exactly as they were before the visual
+    // refresh. Appearance changes must never resize or reposition the object.
+    if (previousBounds && typeof shape?.bounds === "function") {
+      shape.bounds(previousBounds);
+    }
+    if (previousRotation && typeof shape?.rotate === "function") {
+      shape.rotate(previousRotation);
     }
 
     shape.refreshConnections?.();
@@ -3762,8 +4063,8 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     ];
     
     for (const candidate of runtimeCandidates) {
-      if (candidate && typeof candidate === "object" && candidate.definition) {
-        candidate.editorStyle = style;
+      if (candidate && typeof candidate === "object") {
+        candidate.editorStyle = this.clonePlain(style);
       }
     }
     
@@ -3915,6 +4216,147 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
 
     this.shapes.splice(0, this.shapes.length, ...ordered);
     //this.schedulePersistState();
+  }
+  private appendRichTextBlocks(
+    group: Group,
+    blocks: any[],
+    startX: number,
+    startY: number,
+    maxWidth: number,
+    maxHeight: number
+  ): void {
+    let cursorY = startY;
+    const bottom = startY + maxHeight;
+    const defaultFontSize = 15;
+
+    const estimatedWidth = (text: string, fontSize: number, bold: boolean): number => {
+      // Kendo's Diagram TextBlock does not expose a synchronous measurement
+      // helper. This estimate is slightly generous, which gives stable wrapping
+      // across common fonts rather than clipping the next run.
+      return Math.max(1, text.length * fontSize * (bold ? 0.64 : 0.58));
+    };
+
+    for (const block of blocks || []) {
+      if (cursorY >= bottom) break;
+      let cursorX = startX;
+      let lineHeight = defaultFontSize * 1.45;
+      const children = Array.isArray(block?.children) ? block.children : [];
+
+      const newLine = (): void => {
+        cursorX = startX;
+        cursorY += lineHeight;
+        lineHeight = defaultFontSize * 1.45;
+      };
+
+      for (const child of children) {
+        if (cursorY >= bottom) break;
+        if (child?.type === "break") {
+          newLine();
+          continue;
+        }
+
+        if (child?.type === "image" && child?.src) {
+          const imageWidth = Math.max(12, Math.min(Number(child.width) || 48, maxWidth));
+          const imageHeight = Math.max(12, Number(child.height) || 36);
+          if (cursorX > startX && cursorX + imageWidth > startX + maxWidth) newLine();
+          if (cursorY + imageHeight <= bottom) {
+            group.append(new DiagramImage({
+              source: String(child.src),
+              x: cursorX,
+              y: cursorY,
+              width: imageWidth,
+              height: imageHeight
+            }));
+          }
+          cursorX += imageWidth + 5;
+          lineHeight = Math.max(lineHeight, imageHeight + 4);
+          continue;
+        }
+
+        const rawText = String(child?.text ?? "");
+        if (!rawText) continue;
+        const fontSize = Math.max(8, Number(child?.fontSize) || defaultFontSize);
+        const bold = child?.bold === true;
+        const italic = child?.italic === true;
+        const underline = child?.underline === true;
+        const color = String(child?.color || "#333333");
+        const fontFamily = String(child?.fontFamily || "sans-serif");
+        lineHeight = Math.max(lineHeight, fontSize * 1.45);
+
+        // Preserve whitespace while still allowing natural wrapping.
+        const pieces = rawText.split(/(\s+)/).filter(piece => piece.length > 0);
+        for (const piece of pieces) {
+          if (cursorY >= bottom) break;
+          const pieceWidth = estimatedWidth(piece, fontSize, bold);
+          const isOnlyWhitespace = /^\s+$/.test(piece);
+          if (!isOnlyWhitespace && cursorX > startX && cursorX + pieceWidth > startX + maxWidth) newLine();
+          if (cursorY >= bottom) break;
+
+          const textBlock = new TextBlock({
+            text: piece,
+            x: cursorX,
+            y: cursorY,
+            fill: color
+          });
+          textBlock.options.fontSize = fontSize;
+          textBlock.options.fontWeight = bold ? "bold" : "normal";
+          textBlock.options.fontStyle = italic ? "italic" : "normal";
+          textBlock.options.fontFamily = fontFamily;
+          group.append(textBlock);
+
+          if (underline && !isOnlyWhitespace) {
+            group.append(new Line({
+              start: { x: cursorX, y: cursorY + fontSize + 2 },
+              end: { x: Math.min(startX + maxWidth, cursorX + pieceWidth), y: cursorY + fontSize + 2 },
+              stroke: { color, width: 1 }
+            }));
+          }
+          cursorX += pieceWidth;
+        }
+      }
+
+      // Paragraph separation. Avoid double-advancing an empty block.
+      cursorY += Math.max(lineHeight, defaultFontSize * 1.45);
+    }
+  }
+  /**
+   * Debounce browser storage writes so resize/drag events do not synchronously
+   * serialize the whole diagram on every intermediate pixel.
+   */
+  /** Repair only the exact legacy Line/Arc shrink signature (20x20). */
+  private repairLegacyAppearanceShrink(savedShapes: any[]): void {
+    const repairOne = (model: any): void => {
+      const dataItem = model?.dataItem?.dataItem ?? model?.dataItem;
+      const kind = dataItem?.libraryKind;
+      const width = Number(model?.width ?? dataItem?.width);
+      const height = Number(model?.height ?? dataItem?.height);
+      const hasAppearanceOverride = Boolean(dataItem?.editorStyle?.strokeColor || dataItem?.editorStyle?.fillColor);
+
+      if (hasAppearanceOverride && width <= 20.01 && height <= 20.01) {
+        if (kind === "line") {
+          model.width = 180;
+          model.height = 24;
+          dataItem.width = 180;
+          dataItem.height = 24;
+        } else if (kind === "arc") {
+          model.width = 170;
+          model.height = 95;
+          dataItem.width = 170;
+          dataItem.height = 95;
+        }
+      }
+
+      const groupChildren = dataItem?.groupChildren;
+      if (Array.isArray(groupChildren)) {
+        for (const child of groupChildren) {
+          repairOne(child);
+        }
+      }
+    };
+
+    for (const shape of savedShapes) {
+      repairOne(shape);
+    }
   }
 }
 

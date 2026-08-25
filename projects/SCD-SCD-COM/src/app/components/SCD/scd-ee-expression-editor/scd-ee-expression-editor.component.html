@@ -47,13 +47,11 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_ID >
-		<kendo-label *ngIf="(!labelAPPLICATION_IDTop && !isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label" [for]="APPLICATION_ID" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.APPLICATION_ID','Application Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelAPPLICATION_IDTop || isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.APPLICATION_ID','Application Id') + ' *'}}</label>
+		<kendo-label *ngIf="(!labelAPPLICATION_IDTop && !isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label" [for]="APPLICATION_ID" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.APPLICATION_ID','Application Id')"></kendo-label>
+		<label *ngIf="(labelAPPLICATION_IDTop || isPhonePortrait) && labelAPPLICATION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.APPLICATION_ID','Application Id')}}</label>
 		<kendo-combobox  #APPLICATION_ID class="form-field-combobox"  [formControlName]="'APPLICATION_ID'"
 		[data]="lkpArrAPPLICATION_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-
-		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.APPLICATION_ID.errors }"  required 
-		[readonly]="primarKeyReadOnlyArr.isAPPLICATION_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.APPLICATION_ID_Hint','Please enter Application Id.')"		(click)="ON_CLICK_APPLICATION_ID($event)"
+  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.APPLICATION_ID_Hint','Please enter Application Id.')"		(click)="ON_CLICK_APPLICATION_ID($event)"
  (valueChange)="onValueChange_APPLICATION_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
@@ -106,7 +104,7 @@
 		#EXPRESSION
 		modelId="EXPRESSION" 
 		language="javascript" theme="vs-dark" 
-		width="100px" height="3px" >
+		width="800px" height="100px" >
  </app-code-editor> 
 	</kendo-formfield>
 

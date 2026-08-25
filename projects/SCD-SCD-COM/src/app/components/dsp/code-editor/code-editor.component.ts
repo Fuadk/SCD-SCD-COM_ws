@@ -21,18 +21,26 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         [theme]="theme"
         [style.height]="height"
         [style.width]="width"
+        
+        
         [codeModel]="codeModel"
         [options]="options"
         (valueChanged)="onValueChanged($event)"
         (loaded)="onEditorLoaded($event)">
       </ngs-code-editor>
-      <div *ngIf="hasError" class="error-message">{{ errorMessage }}</div>
-      <div style="text-align: right; font-size: 12px; padding: 3px 8px;">
+      
+    </div>
+    <div *ngIf="hasError" class="error-message">{{ errorMessage }}</div>
+      <div >
   Ln {{ currentLine }}, Col {{ currentColumn }}
 </div>
-    </div>
   `,
   styles: [`
+  ngs-code-editor {
+  display: block;      /* Required: tells Monaco to respect structural box models */
+  /*height: 100%;*/        /* Fluidly scales to fill available room */
+  min-height: 10px;   /* Guarantees it never squishes lower than 300px */
+}
     .code-editor-wrapper {
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -62,11 +70,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ]
 })
+
 export class CodeEditorComponent
   implements ControlValueAccessor, OnChanges, OnInit {
   @Input() theme: string = 'vs-dark';
   @Input() language: string = 'typescript';
-  @Input() height: string = '100px';
+  @Input() height: string = '450px';
   @Input() width: string = '100px';
   @Input() readOnly: boolean = false;
   @Input() placeholder: string = '';
@@ -78,7 +87,7 @@ export class CodeEditorComponent
 
   @Output() valueChange = new EventEmitter<string>();
   @Output() editorLoaded = new EventEmitter<any>();
-
+  //public height: string = '250px';
   private internalValue: string = '';
   private onChange: any = () => { };
   private onTouched: any = () => { };
@@ -161,7 +170,7 @@ writeValue(value: any): void {
   }
 
   onValueChanged(event: any): void {
-
+    
     const newValue = event || '';
 
     if (newValue === this.internalValue) {

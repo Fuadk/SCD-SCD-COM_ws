@@ -57,9 +57,6 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DISPLAY_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_TYPE >
 		<kendo-label *ngIf="(!labelSHAPE_TYPETop && !isPhonePortrait) && labelSHAPE_TYPEVisible" class="form-label" [for]="SHAPE_TYPE" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.SHAPE_TYPE','Shape Type')"></kendo-label>
 		<label *ngIf="(labelSHAPE_TYPETop || isPhonePortrait) && labelSHAPE_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.SHAPE_TYPE','Shape Type')}}</label>
@@ -78,9 +75,6 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ICON_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDG_SHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDG_SHAPE_ID >
 		<kendo-label *ngIf="(!labelDG_SHAPE_IDTop && !isPhonePortrait) && labelDG_SHAPE_IDVisible" class="form-label" [for]="DG_SHAPE_ID" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.DG_SHAPE_ID','Dg Shape Id')"></kendo-label>
 		<label *ngIf="(labelDG_SHAPE_IDTop || isPhonePortrait) && labelDG_SHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.DG_SHAPE_ID','Dg Shape Id')}}</label>
@@ -141,9 +135,6 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelVISIBLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleVISIBLE >
 		<kendo-label *ngIf="(!labelVISIBLETop && !isPhonePortrait) && labelVISIBLEVisible" class="form-label" [for]="VISIBLE" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.VISIBLE','Visible')"></kendo-label>
 		<label *ngIf="(labelVISIBLETop || isPhonePortrait) && labelVISIBLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.VISIBLE','Visible')}}</label>
@@ -154,6 +145,9 @@
  />
 	</kendo-formfield>
 
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelKEY_NAVIGATIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleKEY_NAVIGATION >
 		<kendo-label *ngIf="(!labelKEY_NAVIGATIONTop && !isPhonePortrait) && labelKEY_NAVIGATIONVisible" class="form-label" [for]="KEY_NAVIGATION" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.KEY_NAVIGATION','Key Navigation')"></kendo-label>
 		<label *ngIf="(labelKEY_NAVIGATIONTop || isPhonePortrait) && labelKEY_NAVIGATIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.KEY_NAVIGATION','Key Navigation')}}</label>
@@ -190,7 +184,7 @@
 	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelTOOLTIP_TEXTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTOOLTIP_TEXT >
 		<kendo-label *ngIf="(!labelTOOLTIP_TEXTTop && !isPhonePortrait) && labelTOOLTIP_TEXTVisible" class="form-label" [for]="TOOLTIP_TEXT" [text]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.TOOLTIP_TEXT','Tooltip Text')"></kendo-label>
 		<label *ngIf="(labelTOOLTIP_TEXTTop || isPhonePortrait) && labelTOOLTIP_TEXTVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.TOOLTIP_TEXT','Tooltip Text')}}</label>
-		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="4" [cols]="100"  kendoTextBox  formControlName="TOOLTIP_TEXT"
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="2" [cols]="100"  kendoTextBox  formControlName="TOOLTIP_TEXT"
  #TOOLTIP_TEXT
   [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.TOOLTIP_TEXT_Hint','Please enter Tooltip Text.')"		(click)="ON_CLICK_TOOLTIP_TEXT($event)"
      adaptiveMode="auto" ></kendo-textarea>

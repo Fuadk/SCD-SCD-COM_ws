@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -133,7 +134,7 @@ public visibleFIELD_LENGTH = true;
 public visibleSHOW_DIGIT_GROUPING = true;
 public visibleDECIMAL_PLACES = true;
 public visibleDYNAMIC_DECIMAL_PLACES = true;
-public visibleFIXED_DECIMAL_PLACES = true;
+public visibleFIXED_DECIMAL_PLACES = false;
 public visibleJUSTIFICATION = true;
 public visibleLEADING_CHARACTER = true;
 public visibleWIDTH = true;
@@ -164,8 +165,10 @@ public disableHEIGHT = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -237,8 +240,30 @@ public disableHEIGHT = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -482,6 +507,17 @@ public disableHEIGHT = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -737,9 +773,9 @@ if (ComponentConfig.masterSelector != null) {
 }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
+this.form.reset(this.formInitialValues);
+this.form.markAsDirty();
 
     
   }
@@ -787,7 +823,14 @@ if (ComponentConfig.masterSelector != null) {
    
   }
   async  POST_QUERY(formGroup){
-    
+    if (formGroup.DECIMAL_PLACES == "FIXED"){
+    this.visibleDYNAMIC_DECIMAL_PLACES = false;
+    this.visibleFIXED_DECIMAL_PLACES = true;
+}
+if (formGroup.DECIMAL_PLACES == "DYNAMIC"){
+    this.visibleDYNAMIC_DECIMAL_PLACES = true;
+    this.visibleFIXED_DECIMAL_PLACES = false;
+}
     
   }
   async  PRE_DELETE(formGroup:any){
@@ -947,7 +990,15 @@ async WHEN_VALIDATE_ITEM_DECIMAL_PLACES(value) {
  if (typeof this.form.controls['DECIMAL_PLACES'] != "undefined" ) 
       this.form.controls['DECIMAL_PLACES'].setErrors({invalid: true}); 
  // Code goes here 
- 
+console.log("WHEN_VALIDATE_ITEM:value:",value)
+if (value == "FIXED"){
+    this.visibleDYNAMIC_DECIMAL_PLACES = false;
+    this.visibleFIXED_DECIMAL_PLACES = true;
+}
+if (value == "DYNAMIC"){
+    this.visibleDYNAMIC_DECIMAL_PLACES = true;
+    this.visibleFIXED_DECIMAL_PLACES = false;
+} 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 

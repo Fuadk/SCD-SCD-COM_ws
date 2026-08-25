@@ -16,7 +16,7 @@ import { scdexpressionEditorScdEeExpressionEditor , componentConfigDef} from '@m
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'EXPRESSION_EDITOR_ID' : new FormControl(dataItem.EXPRESSION_EDITOR_ID  , ) ,
-'APPLICATION_ID' : new FormControl(dataItem.APPLICATION_ID  ,   Validators.required ) ,
+'APPLICATION_ID' : new FormControl(dataItem.APPLICATION_ID  , ) ,
 'AI_EXPRESSION' : new FormControl(dataItem.AI_EXPRESSION  , ) ,
 'AI_RESPONSE' : new FormControl(dataItem.AI_RESPONSE  , ) ,
 'EXPRESSION' : new FormControl(dataItem.EXPRESSION  , ) ,
@@ -63,7 +63,7 @@ export class ScdExpressionEditorScdEeExpressionEditorFormComponent {
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isAPPLICATION_IDEnable : boolean = true;
+  public  isEXPRESSION_EDITOR_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -74,12 +74,12 @@ export class ScdExpressionEditorScdEeExpressionEditorFormComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isEXPRESSION_EDITOR_IDreadOnly : false , isAPPLICATION_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isEXPRESSION_EDITOR_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="APPLICATION_ID";
+  public masterKeyName ="EXPRESSION_EDITOR_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -297,10 +297,10 @@ public variableSYNTAX_CHECK_KEY;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdExpressionEditorScdEeExpressionEditorForm form.APPLICATION_ID :' + form.APPLICATION_ID);
-    if ( (form.APPLICATION_ID != "") &&   (typeof form.APPLICATION_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdExpressionEditorScdEeExpressionEditorForm form.EXPRESSION_EDITOR_ID :' + form.EXPRESSION_EDITOR_ID);
+    if ( (form.EXPRESSION_EDITOR_ID != "") &&   (typeof form.EXPRESSION_EDITOR_ID != "undefined"))
     {
-      this.masterKey = form.APPLICATION_ID;
+      this.masterKey = form.EXPRESSION_EDITOR_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -321,7 +321,7 @@ public variableSYNTAX_CHECK_KEY;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.APPLICATION_ID != "undefined") &&   (form.APPLICATION_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.EXPRESSION_EDITOR_ID != "undefined") &&   (form.EXPRESSION_EDITOR_ID != ""))
     {
       
       this.isSearch = true;

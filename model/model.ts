@@ -1,3 +1,12 @@
+ export class scdshapeExpressionScdScdShapeExpressionGrid{
+	public SHAPE_EXPRESSIONS = '';
+	public SHAPE_ID = '';
+	public OPCUA_SERVER_ID = '';
+	public TAG_ID = '';
+	public EXPRESSION_DATA = '';
+
+}
+
  export class scdshapeDefaultsScdScdShapeDefaultsGrid{
 	public SHAPE_DEFAULT_ID = '';
 	public SHAPE_TYPE = '';

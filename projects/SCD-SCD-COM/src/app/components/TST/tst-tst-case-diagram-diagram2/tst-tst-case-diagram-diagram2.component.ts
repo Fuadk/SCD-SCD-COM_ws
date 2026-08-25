@@ -1587,18 +1587,18 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
 
   // ============= Server Management Methods (using integration service) =============
   
-  async addNewServer(): Promise<void> {
-    const name = prompt('Enter server name:');
-    const endpoint = prompt('Enter OPC UA endpoint:');
-    if (name && endpoint) {
-      const result = await this.scadaIntegration.addServer(name, endpoint);
-      if (result) {
-        console.log('Server added:', result);
-      } else {
-        alert('Failed to add server');
-      }
-    }
-  }
+  // async addNewServer(): Promise<void> {
+  //   const name = prompt('Enter server name:');
+  //   const endpoint = prompt('Enter OPC UA endpoint:');
+  //   if (name && endpoint) {
+  //     const result = await this.scadaIntegration.addServer(id, name, endpoint);
+  //     if (result) {
+  //       console.log('Server added:', result);
+  //     } else {
+  //       alert('Failed to add server');
+  //     }
+  //   }
+  // }
 
   async removeServer(serverId: number): Promise<void> {
     if (confirm('Remove this server?')) {

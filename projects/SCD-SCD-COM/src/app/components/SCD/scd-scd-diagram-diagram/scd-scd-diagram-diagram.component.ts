@@ -1882,12 +1882,12 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
 
   // ============= Server Management Methods (using integration service) =============
   
-  async addNewServer(name, endpoint): Promise<void> {
+  async addNewServer( name, endpoint): Promise<void> {
         // const name = prompt('Enter server name:');
         // const endpoint = prompt('Enter OPC UA endpoint:');
         if (name && endpoint) {
             console.log("opcua:addNewServer:name", name, endpoint)
-            const result = await this.scadaIntegration.addServer(name, endpoint);
+            const result = await this.scadaIntegration.addServer( name, endpoint);
             if (result) {
                 console.log('opcua:Server added:', result);
             } else {
