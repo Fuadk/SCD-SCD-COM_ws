@@ -183,7 +183,7 @@ export class SCADAService {
   // ============= Server Management APIs =============
   
   getServers(): Observable<ServerInfo[]> {
-    console.log("opcua:getServers:servers",this.servers)
+    //console.log("opcua:getServers:servers",this.servers)
     return this.servers.asObservable();
   }
 

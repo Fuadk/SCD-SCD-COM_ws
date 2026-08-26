@@ -292,10 +292,13 @@ import { ScdDisplayScdScdDisplayDiagramDiagramComponent } from '../components/SC
 
 import { ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent } from '../components/SCD/scd-scd-shape-defaults-grid/scd-scd-shape-defaults-grid.component';
 
+
+
+
+import { ScdShapeExpressionScdScdShapeExpressionGridGridComponent } from '../components/SCD/scd-scd-shape-expression-grid/scd-scd-shape-expression-grid.component';
+import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
 import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
 import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
-import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
-import { ScdShapeExpressionScdScdShapeExpressionGridGridComponent } from '../components/SCD/scd-scd-shape-expression-grid/scd-scd-shape-expression-grid.component';
 const scdRoutes: Routes = [
  
 
@@ -510,10 +513,13 @@ const scdRoutes: Routes = [
 
 		{ path: 'scd_scd_shape_defaults_grid', component: ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent },
 
+
+
+
+		{ path: 'scd_scd_shape_expression_grid', component: ScdShapeExpressionScdScdShapeExpressionGridGridComponent },
+		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
 		{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
 		{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
-		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
-		{ path: 'scd_scd_shape_expression_grid', component: ScdShapeExpressionScdScdShapeExpressionGridGridComponent },
 ];
 
 
@@ -731,10 +737,13 @@ const scdRoutes: Routes = [
 
 		ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent,
 
+
+
+
+		ScdShapeExpressionScdScdShapeExpressionGridGridComponent,
+		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
 		ScdExpressionEditorScdEeExpressionEditorFormComponent,
 		ScdApplicationScdScdApplicationFormFormComponent,
-		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
-		ScdShapeExpressionScdScdShapeExpressionGridGridComponent,
   ],
   
   imports: [

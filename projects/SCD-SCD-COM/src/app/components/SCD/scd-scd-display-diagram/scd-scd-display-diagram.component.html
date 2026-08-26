@@ -81,7 +81,7 @@
               title="Zoom to Fit"
               (click)="zoomToFit()"
               class="toolbar-btn">
-        <span class="button-icon">⊡</span>
+        <span class="button-icon">🔍⤢</span>
       </button>
     </ng-container>
 
@@ -172,6 +172,23 @@
               (click)="flipVertical()"
               class="toolbar-btn">
         <span class="button-icon">↕</span>
+      </button>
+       <!-- Rotate Right -->
+      <button kendoButton 
+              kendoTooltip
+              title="Rotate Right"
+              (click)="rotateRight()"
+              class="toolbar-btn">
+        <span class="button-icon">⟳</span>
+      </button>
+      
+      <!-- Rotate Left -->
+      <button kendoButton 
+              kendoTooltip
+              title="Rotate Left"
+              (click)="rotateLeft()"
+              class="toolbar-btn">
+        <span class="button-icon">⟲</span>
       </button>
       
       <!-- Rotation Input -->

@@ -79,9 +79,16 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_DATA >
+		<kendo-label *ngIf="(!labelEXPRESSION_DATATop && !isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label" [for]="EXPRESSION_DATA" [text]="starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.EXPRESSION_DATA','Expression Data')"></kendo-label>
+		<label *ngIf="(labelEXPRESSION_DATATop || isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.EXPRESSION_DATA','Expression Data')}}</label>
 		  <app-scd-ee-expression-editor [detail_Input]="formRec" 
- 			 [setComponentConfig_Input]="Comp_Config" >
+ 			 #EXPRESSION_DATA
+ 			 [setComponentConfig_Input]="Comp_Config" 
+			(valueChange)="onValueChange_EXPRESSION_DATA($event)" 
+ 			 >
 		 </app-scd-ee-expression-editor>
+	</kendo-formfield>
 
 
 </div>

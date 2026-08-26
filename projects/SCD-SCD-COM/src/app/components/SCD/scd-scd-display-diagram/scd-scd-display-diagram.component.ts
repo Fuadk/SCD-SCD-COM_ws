@@ -18,6 +18,7 @@ import {
   Image as DiagramImage,
   ConnectionOptions,
   DiagramComponent,
+  Rect,
 } from "@progress/kendo-angular-diagrams";
 
 import { starServices } from 'starlib';
@@ -236,6 +237,7 @@ public disableDISPLAY_DATA = false;
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   @Output() setComponentConfig_Output = new EventEmitter<any>();
+  @Output() valueChange = new EventEmitter<string>();
   
   // Server management
   public availableServers: ServerConfig[] = [];
@@ -1058,34 +1060,36 @@ if (type === "shapeBoundsChange") {
         }
         console.log("opcua:on received data from scada :changes:", changes);
         for (const change of changes) {
-            //console.log("opcua:on received data from scada :change:", change.type, change);
+            console.log("opcua:on received data from scada :change:", change.type, change);
             switch (change.type) {
                 case 'tag':
-                    //console.log("opcua:on received data from scada :displayName:", change.newValue.displayName, change);
-                    switch (change.newValue.displayName) {
-                        case 'Tag_1001':
-
-                            const liveShape = this.diagram.getShapeById("boilerB:2");
-                            //console.log("opcua:on received data from scada :value:", change.newValue.value, liveShape);
-                            if (liveShape) {
-
-                                // console.log("SCADA_DATA:liveShape", liveShape);
-                                // console.log("SCADA_DATA:options", liveShape.options);
-                                // console.log("SCADA_DATA:dataItem", liveShape.dataItem.dataItem.definition.textBlocks[0].text);
-                                // console.log("opcua:on received data from scada :value:", change.newValue.value, change);
-                                
-                                 liveShape.dataItem.dataItem.definition.textBlocks[0].text = change.newValue.value.toString();
-                                
-                                // console.log(liveShape);
-                                
-                                liveShape.redrawVisual();
-                            }
-                            break;
+                    console.log("opcua:on received data from scada :displayName:", change.newValue.displayName, change);
+                    let serverID = change.newValue.serverId;
+                    let displayName = change.newValue.displayName;
+                    let tagKey = "[" + serverID + "]" + displayName;
+                    let shapeInfo = this.expData[tagKey]; 
+                    let shape_id ="";
+                    let expressions = "";
+                    console.log("opcua:on received data from scada :displayName:", shapeInfo, tagKey, this.expData);
+                    if (typeof shapeInfo != "undefined"){
+                      shape_id = shapeInfo.shape_id;
+                      expressions = shapeInfo.expressions;
+                      
+                      const liveShape = this.diagram.getShapeById(shape_id);
+                      console.log("opcua:on received data from scada :pre shapeInfo:", shapeInfo, 
+                        "liveShape:",liveShape);
+                      //liveShape.dataItem.dataItem.text = change.newValue.value;
+                      //liveShape.dataItem.dataItem.text = "";
+                      console.log("opcua:liveShape.dataItem:", liveShape.dataItem.content.blocks[0].children[0].text);
+                      liveShape.dataItem.content.blocks[0].children[0].text = change.newValue.value.toString();
+                      liveShape.dataItem.dataItem.text = change.newValue.value.toString();
+                      console.log("opcua:on received data from scada :post shapeInfo:", shapeInfo, "liveShape:",liveShape);
+                      liveShape.redrawVisual();
                     }
+
                     break;
             }
         }
-  
   }
 
   async  PRE_INSERT(formGroup){
@@ -1127,7 +1131,7 @@ if (typeof data[0].data != "undefined") {
             if (this.serversMapp.hasOwnProperty(key)) {
                 this.serversMappReversed[this.serversMapp[key]] = Number(key);
             }
-            console.log("opcua:server added: ", this.serversMapp, this.serversMappReversed);
+            console.log("server added: ", this.serversMapp, this.serversMappReversed);
         }
     }
 
@@ -1592,7 +1596,30 @@ public performMapperFrom(In) {
     return OutRec;
 }
 public isDiagramInitializing = true;
-async  removeUnusedShapes(){
+public expData ={};
+async  prepareShapes(){
+  function formatData(input) {
+  const result = {};
+
+  for (const item of input) {
+    // Remove curly braces and the suffix (.VAL, .MAX, etc.)
+    // "{[1]Tag_1001.VAL}" -> "[1]Tag_1001"
+    const key = item.EXPRESSION_DATA
+      .replace(/[{}]/g, '')  // Remove { and }
+      .replace(/\.\w+$/, ''); // Remove .VAL, .MAX, etc.
+    
+    // Use "expressions" for the second item (or based on some condition)
+    // Since you want the second one to have "expressions", we'll check the SHAPE_ID
+    const expressionKey = item.SHAPE_ID === 189 ? 'expressions' : 'expression';
+    
+    result[key] = {
+      shape_id: `${item.SHAPE_TYPE}:${item.SHAPE_ID}`,
+      [expressionKey]: item.EXPRESSION_DATA
+    };
+  }
+
+  return result;
+}
   let shapesIDs = "";
   for (let i =0; i< this.shapes.length; i++){
     let shapeID = this.shapes[i].id;
@@ -1604,7 +1631,8 @@ async  removeUnusedShapes(){
         shapesIDs = shapesIDs + shapeID;
     }
   }
-  if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:shapesIDs:", shapesIDs);
+  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesIDs:", shapesIDs);
+  //removeUnusedShapes
   let statement_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
@@ -1622,11 +1650,17 @@ async  removeUnusedShapes(){
       }
 
     ];
-  if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes_defs:body_defs:", body_defs);
+  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
   let data_defs = await this.starServices.execSQLBody(this, body_defs, this.starServices.MASTER_DB);
 
   let statement = "DELETE from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
   let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
+  let statement_expressions = "SELECT A.SHAPE_ID, B.EXPRESSION_DATA , A.SHAPE_TYPE "
+                              +"    FROM SCD_SHAPE A, SCD_SHAPE_DISPLAY_GENERAL B "
+                              +"    WHERE A.SHAPE_ID = B.SHAPE_ID "
+                              +"    AND A.DISPLAY_ID = " + this.form.value.DISPLAY_ID
+                              +"    AND (B.EXPRESSION_DATA != '' or B.EXPRESSION_DATA is not null) ";
+
     let body = [
       {
         "_QUERY": "EXECSQL",
@@ -1635,14 +1669,23 @@ async  removeUnusedShapes(){
       {
       "_QUERY": "GET_SCD_SHAPE_QUERY",
       "_WHERE": whereClause
-              
-      }
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_expressions
+      },
     ];
-    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:body:", body);
+    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:body:", body);
     let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
-    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:data[1].data:", data[1].data);
+    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:data[1].data:", data[1].data);
     if (typeof data[1].data != "undefined"){
       this.scdShapes = data[1].data;
+    } 
+    if (typeof data[2].data != "undefined"){
+      let expData = data[2].data;
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", JSON.stringify(expData));
+      this.expData = formatData(expData);
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", this.expData);
     } 
 }
 public mapSampleData() {
@@ -1665,7 +1708,7 @@ public mapSampleData() {
             this.isDiagramInitializing = false;
         });
     });
-    this.removeUnusedShapes();
+    this.prepareShapes();
 }
 
 // Simulating your database results
@@ -2278,7 +2321,7 @@ public popupTop = 0;
 public selectedPartId = "";
 public ShapeMenu;
 public selectedShape;
-public valueChange(value: any): void {
+public valueChange_del(value: any): void {
   console.log ("valueChange:event:",event)
     // Only start a timer if a valid item was chosen (avoids loop on reset)
     if (value !== null && value !== undefined) {
@@ -2748,6 +2791,8 @@ public insertShape (data, shapeType){
     text: text || "Rich Text", 
     width: 190, 
     height: 90, 
+    SHAPE_ID :data.SHAPE_ID,
+    SHAPE_TYPE :data.SHAPE_TYPE,
     fillColor: "#fff7d6" 
   });
 }
@@ -2793,7 +2838,8 @@ private uniqueShapeId(prefix: string): string {
       arc: "Arc",
       freehand: "FreeHand",
       polygon: "Polygon",
-      polyline: "Polyline"
+      polyline: "Polyline",
+      container: "Container"
     };
     return titles[kind] || "Shape";
   }
@@ -3085,7 +3131,9 @@ private uniqueShapeId(prefix: string): string {
       : this.nextInsertPosition();
     const width = Math.max(20, Number(options.width) || 140);
     const height = Math.max(20, Number(options.height) || 90);
-    const id = this.uniqueShapeId(kind);
+    let id = this.uniqueShapeId(kind);
+    if (typeof options.SHAPE_ID != "undefined" )
+      id =  options.SHAPE_TYPE  + ":" +  options.SHAPE_ID ;
     const dataItem: any = {
       type: "libraryShape",
       title: this.libraryShapeTitle(kind),
@@ -3130,7 +3178,7 @@ private uniqueShapeId(prefix: string): string {
         fontSize: 15
       };
     }
-         if (kind === "Text") {
+    if (kind === "Text") {
       model.content = {
         blocks: Array.isArray(dataItem.TextBlocks) ? dataItem.TextBlocks : [{ children: [{ text: "Rich Text" }] }],
         align: "top left",
@@ -3145,11 +3193,16 @@ private uniqueShapeId(prefix: string): string {
     this.diagram.deselect();
     this.diagram.select(runtime);
     this.syncRuntimeShapeToModel(runtime);
-    //this.schedulePersistState();
+    this.schedulePersistState();
     this.statusMessage = `${this.libraryShapeTitle(kind)} added to the diagram.`;
     setTimeout(() => this.syncInspectorFromSelection(false));
   }
   // Add these methods to handle library shape rendering
+  private schedulePersistState(){
+  setTimeout(() => {
+        this.updateShapes();
+      }, 100);
+    }
   private drawLibraryShape(dataItem: any, offsetX: number = 0, offsetY: number = 0, parentStyle?: ShapeEditorStyle): Group {
     const group = new Group();
     const width = Math.max(20, Number(dataItem.width) || 140);
@@ -3257,6 +3310,100 @@ private uniqueShapeId(prefix: string): string {
         stroke: { color: stroke, width: 2 },
         fill: { color: fill }
       }));
+      return group;
+    }
+    if (kind === "container") {
+      // Fill percent = value / max, clamped to 0-100%. Drawn as a rounded tank
+      // body on a base band with two feet (matching the reference artwork):
+      // an always-visible header holds the "NN% full" label and a gauge line,
+      // and the liquid gauge fills the region below that from the bottom up.
+      const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
+      const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
+      const ratio = Math.max(0, Math.min(1, value / max));
+
+      const bodyColor = "#0d1fa8";
+      const liquidBorder = "#e53935";
+      const bandHeight = Math.min(height * 0.14, 34);
+      const bodyHeight = Math.max(10, height - bandHeight);
+      const radius = Math.min(width, height) * 0.22;
+      const inset = 6;
+      const headerHeight = Math.max(18, bodyHeight * 0.16);
+
+      // Body: rounded top corners, flat bottom (sits flush on the base band).
+      // Rectangle only supports one uniform cornerRadius on all four corners,
+      // so a mixed rounded-top/flat-bottom silhouette needs a hand-built path.
+      const bodyPath = radius > 0
+        ? `M ${x},${y + radius} A ${radius},${radius} 0 0 1 ${x + radius},${y} `
+          + `L ${x + width - radius},${y} A ${radius},${radius} 0 0 1 ${x + width},${y + radius} `
+          + `L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`
+        : `M ${x},${y} L ${x + width},${y} L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`;
+      group.append(new Path({
+        data: bodyPath,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: bodyColor }
+      }));
+
+      // Base band: rounded bottom corners, flat top (sits flush under the body).
+      const bandY = y + bodyHeight;
+      const bandRadius = Math.min(radius, bandHeight);
+      const bandPath = bandRadius > 0
+        ? `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight - bandRadius} `
+          + `A ${bandRadius},${bandRadius} 0 0 1 ${x + width - bandRadius},${bandY + bandHeight} `
+          + `L ${x + bandRadius},${bandY + bandHeight} A ${bandRadius},${bandRadius} 0 0 1 ${x},${bandY + bandHeight - bandRadius} Z`
+        : `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight} L ${x},${bandY + bandHeight} Z`;
+      group.append(new Path({
+        data: bandPath,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: bodyColor }
+      }));
+
+      // Two feet tabs on the band.
+      const footWidth = Math.max(6, width * 0.09);
+      const footHeight = Math.max(4, bandHeight * 0.45);
+      const footY = bandY + bandHeight - footHeight * 0.5;
+      [x + width * 0.28 - footWidth / 2, x + width * 0.72 - footWidth / 2].forEach(footX => {
+        group.append(new Rectangle({
+          x: footX, y: footY, width: footWidth, height: footHeight,
+          cornerRadius: 2,
+          stroke: { color: stroke, width: 1.5 },
+          fill: { color: bodyColor }
+        }));
+      });
+
+      // Gauge line separating the header from the liquid area, then the liquid
+      // itself, inset within the body and anchored to the body's flat bottom.
+      const gaugeTop = y + headerHeight;
+      group.append(new Path({
+        data: `M ${x + 4},${gaugeTop} L ${x + width - 4},${gaugeTop}`,
+        stroke: { color: stroke, width: 1.5 },
+        fill: { color: "transparent" }
+      }));
+
+      const gaugeBottom = y + bodyHeight - inset;
+      const gaugeHeight = Math.max(0, gaugeBottom - gaugeTop);
+      if (ratio > 0 && gaugeHeight > 0) {
+        const fillHeight = gaugeHeight * ratio;
+        group.append(new Rectangle({
+          x: x + inset,
+          y: gaugeBottom - fillHeight,
+          width: Math.max(0, width - inset * 2),
+          height: fillHeight,
+          stroke: { color: liquidBorder, width: 2 },
+          fill: { color: fill }
+        }));
+      }
+
+      const label = new TextBlock({
+        text: `${Math.round(ratio * 100)}% full`,
+        x: x + width / 2,
+        y: y + 6,
+        fill: "#ffffff"
+      });
+      label.options.fontSize = 13;
+      label.options.fontWeight = "bold";
+      label.options.textAnchor = "middle";
+      group.append(label);
+
       return group;
     }
 
@@ -3384,13 +3531,36 @@ private syncRuntimeShapeToModel(shape: any): void {
   });
   console.log("syncRuntimeShapeToModel:this.isDiagramInitializing:", this.isDiagramInitializing)
   
-}
-// Add these properties
+}// Add these properties
 public showGrid: boolean = false;
 public snapEnabled: boolean = true;
 public rotationAngle: number = 0;
 public strokeColor: string = "#333333";
 public fillColor: string = "#d9e8f5";
+public selectedRichTextFontFamily = "Arial";
+public selectedRichTextFontSize = 16;
+// Container fill: percentage shown = (value / max) * 100, clamped 0-100%.
+public selectedContainerValue = 30;
+public selectedContainerMax = 100;
+// Explicit Kendo Editor choices requested in review.
+  public readonly richTextFontFamilies = [
+    { text: "Arial", fontName: "Arial, Helvetica, sans-serif" },
+    { text: "Calibri", fontName: "Calibri, Arial, sans-serif" },
+    { text: "Times New Roman", fontName: "Times New Roman, Times, serif" },
+    { text: "Georgia", fontName: "Georgia, Times, serif" },
+    { text: "Courier New", fontName: "Courier New, Courier, monospace" }
+  ];
+
+  public readonly richTextFontSizes = [
+    { text: "10px", size: 10 },
+    { text: "12px", size: 12 },
+    { text: "14px", size: 14 },
+    { text: "16px", size: 16 },
+    { text: "18px", size: 18 },
+    { text: "20px", size: 20 },
+    { text: "24px", size: 24 },
+    { text: "32px", size: 32 }
+  ];
 
 // Add these methods for the toolbar functionality
 
@@ -3526,7 +3696,7 @@ public alignToGrid(): void {
     this.statusMessage = "Select at least one shape to align to the grid.";
     return;
   }
-  this.alignShapesToGrid(shapes);
+  this.alignShapesToGrid(shapes, true);
 }
 
 
@@ -3566,7 +3736,7 @@ public applyStrokeColor(): void {
     color: string
   ): void {
     const beforeBounds = typeof shape?.bounds === "function"
-      ? { ...shape.bounds() }
+      ? shape.bounds() //was ? { ...shape.bounds() }
       : null;
     const beforeRotation = this.readRotation(shape);
     const roots = [shape?.shapeVisual, shape?.visual].filter(Boolean);
@@ -3704,38 +3874,55 @@ public groupSelected(): void {
       return;
     }
 
-    // First capture every runtime edit in this.shapes. Grouping must use the
-    // application model, not a stale visual snapshot.
+    // Snapshot the LIVE runtime shapes. This is important for duplicated and
+    // compound/custom shapes: the clipboard can create a runtime item before
+    // application memory has a completely independent model for it. Building
+    // the group children from runtime bounds/data guarantees that every
+    // selected visual is represented exactly once.
     selected.forEach(shape => this.syncRuntimeShapeToModel(shape));
-    const selectedIds = new Set(selected.map(shape => this.runtimeShapeId(shape)).filter(Boolean));
-    const selectedModels = (this.shapes as any[]).filter(model => selectedIds.has(String(model?.id ?? "")));
-    if (selectedModels.length < 2) {
-      this.statusMessage = "Unable to resolve the selected shapes in application memory.";
-      return;
-    }
 
-    // Use the actual runtime shape bounds rather than Diagram.boundingBox().
-    // The latter can include custom-visual normalization and caused grouped
-    // objects to shift/squash in the reviewed build.
     const selectedBounds = selected.map(shape => shape.bounds());
     const minX = Math.min(...selectedBounds.map(bounds => bounds.x));
     const minY = Math.min(...selectedBounds.map(bounds => bounds.y));
     const maxX = Math.max(...selectedBounds.map(bounds => bounds.x + bounds.width));
     const maxY = Math.max(...selectedBounds.map(bounds => bounds.y + bounds.height));
-    const box = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+    // Rect (not a plain literal) - it is reused as the argument to
+    // shape.bounds(), which requires a real Rect (calls rect.topLeft()).
+    const box = new Rect(minX, minY, maxX - minX, maxY - minY);
     if (box.width <= 0 || box.height <= 0) {
       return;
     }
 
-    const children = selectedModels.map(model => {
-      const child = this.clonePlain(model);
-      child.x = (Number(child.x) || 0) - box.x;
-      child.y = (Number(child.y) || 0) - box.y;
+    const children = selected.map((shape, index) => {
+      const bounds = shape.bounds();
+      const model = this.modelForShape(shape);
+      const child: any = model
+        ? this.clonePlain(model)
+        : (this.createModelFromRuntimeShape(shape) || {});
+
+      child.id = String(child.id || `group-child-${index + 1}`);
+      child.x = bounds.x - box.x;
+      child.y = bounds.y - box.y;
+      child.width = bounds.width;
+      child.height = bounds.height;
+      child.rotation = { angle: this.readRotation(shape) };
+      child.dataItem = this.clonePlain(this.shapeDataItem(shape) ?? child.dataItem ?? {});
+
+      const childData = child.dataItem?.dataItem ?? child.dataItem;
+      if (childData && typeof childData === "object") {
+        childData.width = bounds.width;
+        childData.height = bounds.height;
+      }
+
       // Functions cannot be serialized and the shared visual template is
-      // supplied by shapeDefaults when the child is restored/ungrouped.
+      // supplied by shapeDefaults when the child is later restored.
       delete child.visual;
       return child;
     });
+
+    const selectedIds = selected
+      .map(shape => this.runtimeShapeId(shape))
+      .filter(Boolean);
 
     const groupId = this.uniqueShapeId("group");
     const groupModel: any = {
@@ -3758,23 +3945,34 @@ public groupSelected(): void {
     };
 
     this.diagram.remove(selected, true);
-    this.removeModelsByIds([...selectedIds]);
+    this.removeModelsByIds(selectedIds);
     (this.shapes as any[]).push(groupModel);
+
     const groupedShape = this.diagram.addShape(groupModel, true);
-    // Explicitly lock the runtime group to the union of the original bounds.
-    // This prevents Kendo's custom-visual auto-size pass from replacing the
-    // intended group geometry with the visual's content-only bbox.
-    groupedShape.bounds({ x: box.x, y: box.y, width: box.width, height: box.height });
-    groupedShape.redrawVisual?.();
+
+    // Kendo may re-measure a custom visual during creation. Apply the intended
+    // union bounds AFTER the visual exists, and once more on the next task, so
+    // non-simple/compound children cannot collapse to a content-only bbox.
+    groupedShape.bounds(box);
+    groupedShape.updateModel?.(true);
+
     this.diagram.deselect();
     this.diagram.select(groupedShape);
     this.syncRuntimeShapeToModel(groupedShape);
-   // this.schedulePersistState();
+    //this.schedulePersistState();
     this.statusMessage = `Grouped ${children.length} shapes into one shape.`;
-    setTimeout(() => this.syncInspectorFromSelection(false));
-  }
 
-  public ungroupSelected(): void {
+    setTimeout(() => {
+      if (typeof groupedShape?.bounds === "function") {
+        groupedShape.bounds(box);
+        groupedShape.updateModel?.(true);
+        groupedShape.refreshConnections?.();
+        this.syncRuntimeShapeToModel(groupedShape);
+      }
+      this.syncInspectorFromSelection(false);
+    });
+  }
+    public ungroupSelected(): void {
     if (!this.diagram) {
       return;
     }
@@ -3868,7 +4066,6 @@ public groupSelected(): void {
     this.statusMessage = `Ungrouped into ${restoredRuntime.length} separate shapes.`;
     setTimeout(() => this.syncInspectorFromSelection(false));
   }
-
 // ===== Helper methods =====
 private selectedShapes(): any[] {
   if (!this.diagram) {
@@ -3892,18 +4089,19 @@ private requireSelection(action: string): boolean {
   return true;
 }
 
-private alignShapesToGrid(shapes: any[]): void {
-  const gridSize = 20;
-  for (const shape of shapes) {
-    const bounds = shape.bounds();
-    const x = Math.round(bounds.x / gridSize) * gridSize;
-    const y = Math.round(bounds.y / gridSize) * gridSize;
-    shape.position({ x, y });
-    shape.refreshConnections?.();
-    this.syncRuntimeShapeToModel(shape);
+private alignShapesToGrid(shapes: any[], showStatus: boolean): void {
+    for (const shape of shapes) {
+      const bounds = shape.bounds();
+      const x = Math.round(bounds.x / this.gridSize) * this.gridSize;
+      const y = Math.round(bounds.y / this.gridSize) * this.gridSize;
+      this.moveShapePreservingBounds(shape, x, y, true);
+    }
+
+    if (showStatus) {
+      this.statusMessage = `Aligned ${shapes.length} shape${shapes.length === 1 ? "" : "s"} to the ${this.gridSize}px grid.`;
+    }
+    setTimeout(() => this.syncInspectorFromSelection(false));
   }
-  this.statusMessage = `Aligned ${shapes.length} shape${shapes.length === 1 ? "" : "s"} to the grid.`;
-}
 
 private isGroupRuntimeShape(shape: any): boolean {
   return Array.isArray(this.shapeDataItem(shape)?.groupChildren);
@@ -4008,7 +4206,7 @@ private clonePlain<T>(value: T): T {
     // That is especially destructive for Line and Arc, whose rendered stroke
     // occupies only a few pixels of the full selectable shape bounds.
     const previousBounds = typeof shape?.bounds === "function"
-      ? { ...shape.bounds() }
+      ? shape.bounds()
       : null;
     const previousRotation = this.readRotation(shape);
 
@@ -4357,6 +4555,190 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     for (const shape of savedShapes) {
       repairOne(shape);
     }
+  }
+
+  /**
+   * Move a shape without letting custom visuals alter width/height. Using the
+   * complete bounds rectangle is reliable for standard, compound, grouped,
+   * line/arc, and resized shapes.
+   */
+  private moveShapePreservingBounds(shape: any, x: number, y: number, syncModel: boolean): void {
+    if (!shape || typeof shape.bounds !== "function") {
+      return;
+    }
+
+    const bounds = shape.bounds();
+    // Shape.bounds() requires a Rect instance (it calls rect.topLeft()
+    // internally) - a plain {x,y,width,height} literal throws.
+    const nextBounds = new Rect(x, y, bounds.width, bounds.height);
+
+    shape.bounds(nextBounds);
+    shape.updateModel?.(true);
+    shape.refreshConnections?.();
+
+    if (syncModel) {
+      this.syncRuntimeShapeToModel(shape);
+    }
+  }
+  public addContainer(): void {
+    this.addLibraryShape("container", {
+      width: 140,
+      height: 240,
+      strokeColor: "#00bcd4",
+      fillColor: "#00e5ff",
+      containerValue: this.selectedContainerValue,
+      containerMax: this.selectedContainerMax
+    });
+  }
+  public applySelectedRichTextFontFamily(): void {
+    this.applySelectedRichTextFormatting({
+      fontFamily: this.selectedRichTextFontFamily
+    });
+  }
+
+  public applySelectedRichTextFontSize(): void {
+    this.applySelectedRichTextFormatting({
+      fontSize: Number(this.selectedRichTextFontSize)
+    });
+  }
+
+  private applySelectedRichTextFormatting(
+    patch: { fontFamily?: string; fontSize?: number }
+  ): void {
+    const shapes = this.selectedShapes().filter(
+      shape => this.shapeDataItem(shape)?.libraryKind === "richText"
+    );
+
+    if (!shapes.length) {
+      this.statusMessage = "Select a Rich Text shape first.";
+      return;
+    }
+
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      const model = this.modelForShape(shape);
+      const blocks = this.clonePlain<any[]>(
+        dataItem?.richTextBlocks
+        ?? model?.content?.blocks
+        ?? []
+      );
+
+      for (const block of blocks) {
+        for (const child of block?.children || []) {
+          if (typeof child?.text !== "string") {
+            continue;
+          }
+
+          if (patch.fontFamily) {
+            child.fontFamily = patch.fontFamily;
+          }
+
+          if (patch.fontSize) {
+            child.fontSize = patch.fontSize;
+          }
+        }
+      }
+
+      if (dataItem) {
+        dataItem.richTextBlocks = this.clonePlain(blocks);
+      }
+
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.richTextBlocks = this.clonePlain(blocks);
+        model.content = {
+          ...(model.content || {}),
+          blocks: this.clonePlain(blocks)
+        };
+      }
+
+      shape.redraw?.({ content: model?.content });
+      shape.refreshConnections?.();
+      this.syncRuntimeShapeToModel(shape);
+    }
+
+    //this.schedulePersistState();
+    this.statusMessage = "Rich Text formatting updated.";
+  }
+
+  public applySelectedContainerValue(): void {
+    this.applySelectedContainerFill({ value: Number(this.selectedContainerValue) });
+  }
+
+  public applySelectedContainerMax(): void {
+    this.applySelectedContainerFill({ max: Number(this.selectedContainerMax) });
+  }
+
+  private applySelectedContainerFill(patch: { value?: number; max?: number }): void {
+    const shapes = this.selectedShapes().filter(
+      shape => this.shapeDataItem(shape)?.libraryKind === "container"
+    );
+
+    if (!shapes.length) {
+      this.statusMessage = "Select a Container shape first.";
+      return;
+    }
+
+    let lastRatio = 0;
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      if (!dataItem) {
+        continue;
+      }
+
+      if (patch.value !== undefined && Number.isFinite(patch.value)) {
+        dataItem.containerValue = patch.value;
+      }
+      if (patch.max !== undefined && Number.isFinite(patch.max) && patch.max > 0) {
+        dataItem.containerMax = patch.max;
+      }
+
+      const model = this.modelForShape(shape);
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.containerValue = dataItem.containerValue;
+        modelData.containerMax = dataItem.containerMax;
+      }
+
+      const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
+      const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
+      lastRatio = Math.max(0, Math.min(1, value / max));
+
+      // redrawVisual()/refresh() re-run the visual template (picking up the new
+      // fill percentage) while refreshCustomShape puts bounds/rotation back
+      // afterward, since redrawing a custom visual can otherwise re-derive them
+      // from the redrawn content.
+      this.refreshCustomShape(shape);
+    }
+
+    this.statusMessage = `Container fill set to ${Math.round(lastRatio * 100)}%.`;
+  }
+  public rotateRight(): void {
+    this.rotateSelectedBy(90);
+  }
+
+  public rotateLeft(): void {
+    this.rotateSelectedBy(-90);
+  }
+  private rotateSelectedBy(delta: number): void {
+    const shapes = this.selectedShapes();
+    if (!shapes.length) {
+      this.statusMessage = `Select at least one shape to rotate ${delta > 0 ? "right" : "left"}.`;
+      return;
+    }
+
+    for (const shape of shapes) {
+      const currentAngle = this.readRotation(shape);
+      const nextAngle = ((currentAngle + delta) % 360 + 360) % 360;
+      shape.rotate(nextAngle, undefined, true);
+      shape.refreshConnections?.();
+      this.syncRuntimeShapeToModel(shape);
+    }
+
+    this.statusMessage = `Rotated ${shapes.length} shape${shapes.length === 1 ? "" : "s"} ${delta > 0 ? "right" : "left"} by 90°.`;
+    setTimeout(() => this.syncInspectorFromSelection(false));
   }
 }
 

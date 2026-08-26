@@ -116,7 +116,7 @@ public variableHIDE_BUT;
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
-  
+  @Output() valueChange = new EventEmitter<string>();
 
    constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -194,7 +194,7 @@ public variableHIDE_BUT;
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
-      //this.componentConfig = new componentConfigDef();
+      this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.form.dirty;
       
       // Only emit if state changed

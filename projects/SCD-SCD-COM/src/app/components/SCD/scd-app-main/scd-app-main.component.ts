@@ -22,11 +22,8 @@ export class ScdAppMainComponent implements OnInit {
   constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
    this.router = router;
   this.title =  this.starServices.getNLS([],"scd_app_main.scd_app_main.component_title","");
-    this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-    if (this.visibleOK_BTNS)
-	     this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
+    this.paramConfig = getParamConfig();
   }
   public showToolBar = false;
   public paramConfig; 
@@ -96,6 +93,7 @@ export class ScdAppMainComponent implements OnInit {
    this.SCD_APPLICATIONForm_0Config.title = this.starServices.getNLS([],"scd_app_main.scd_app_main.compsTitleID1","App");
    this.SCD_APPLICATIONForm_0Config.isMaster = true;
    this.SCD_APPLICATIONForm_0Config.isSearchScreen = this.isSearchScreen;
+   this.SCD_APPLICATIONForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_APPLICATIONForm_0Config.queryable = false;
      this.SCD_APPLICATIONForm_0Config.removeable = false;
@@ -107,6 +105,7 @@ export class ScdAppMainComponent implements OnInit {
    this.SCD_APP_TREE_VIEWTree_1Config.title = this.starServices.getNLS([],"scd_app_main.scd_app_main.compsTitleID2","Tree");
    this.SCD_APP_TREE_VIEWTree_1Config.isChild = true;
    this.SCD_APP_TREE_VIEWTree_1Config.masterSelector = 'app-scd-app-main';
+   this.SCD_APP_TREE_VIEWTree_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_APP_TREE_VIEWTree_1Config.navigable = false;
      //this.SCD_APP_TREE_VIEWTree_1Config.insertable = true;
@@ -116,6 +115,7 @@ export class ScdAppMainComponent implements OnInit {
    this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_app_main.scd_app_main.compsTitleID3","MDI");
    this.SCD_ALARMFormtabs_2Config.isChild = true;
    this.SCD_ALARMFormtabs_2Config.masterSelector = 'app-scd-app-main';
+   this.SCD_ALARMFormtabs_2Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_ALARMFormtabs_2Config.navigable = false;
      //this.SCD_ALARMFormtabs_2Config.insertable = true;
@@ -217,6 +217,7 @@ export class ScdAppMainComponent implements OnInit {
   }
   public saveTriggerHandler(event){
         }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Input() public set detail_Input(form: any) {
     if (typeof form !== "undefined")
     {
@@ -233,9 +234,10 @@ export class ScdAppMainComponent implements OnInit {
     }
     this.formValidationChangedOutput.emit(formValidation)
   }
-  public setComponentConfig_Output(ComponentConfig)
+  public onComponentConfig_Output(ComponentConfig)
   {
   if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
     if (ComponentConfig.hideComponents != null) { 
       for (let i=0; i < ComponentConfig.hideComponents.length;i++){
         let comp = ComponentConfig.hideComponents[i];
@@ -281,25 +283,27 @@ export class ScdAppMainComponent implements OnInit {
              this.SCD_ALARMFormtabs_2Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_app_main.scd_app_main.compsTitleID3","MDI");
            this.setSteps(this);
-           }, 400);
+           }, 500);
        }
   
+       this.SCD_APPLICATIONForm_0Config = new componentConfigDef();
+       this.SCD_APP_TREE_VIEWTree_1Config = new componentConfigDef();
+       this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
+              this.SCD_APPLICATIONForm_0Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_APP_TREE_VIEWTree_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARMFormtabs_2Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.SCD_APPLICATIONForm_0Config = new componentConfigDef();
-       this.SCD_APPLICATIONForm_0Config = ComponentConfig;
-       this.SCD_APP_TREE_VIEWTree_1Config = new componentConfigDef();
-       this.SCD_APP_TREE_VIEWTree_1Config = ComponentConfig;
-       this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-       this.SCD_ALARMFormtabs_2Config = ComponentConfig;
-      if (ComponentConfig.masterSaved != null)
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_APPLICATIONForm_0Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_APP_TREE_VIEWTree_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARMFormtabs_2Config.showToolBar = ComponentConfig.showToolBar;
+       }
+      if (ComponentConfig.masterSaved != null)//here1
       {
        this.SCD_APPLICATIONForm_0Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_APP_TREE_VIEWTree_1Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_ALARMFormtabs_2Config.masterSaved = ComponentConfig.masterSaved;
       }
       if (ComponentConfig.newRec != null)
       {
@@ -337,7 +341,6 @@ export class ScdAppMainComponent implements OnInit {
           }
        }
       }
-     }
     }
   }
    public tree_1_SCD_APP_TREE_VIEWOpened = false;
@@ -358,14 +361,34 @@ export class ScdAppMainComponent implements OnInit {
   
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

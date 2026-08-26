@@ -6,7 +6,7 @@
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
-                      (setComponentConfig_Output)="setComponentConfig_Output($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_APPLICATIONForm_0Config">
         </app-scd-scd-application-form >
 
@@ -15,7 +15,7 @@
         <app-scd-scd-app-tree-view style="max-width: 250px;height: 100%;" [hidden]="hide_comp_2" [detail_Input]="tree_1_SCD_APP_TREE_VIEW"  
                       (formValidationChangedOutput)="formValidationChangedMD($event,2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
-                      (setComponentConfig_Output)="setComponentConfig_Output($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_APP_TREE_VIEWTree_1Config">
         </app-scd-scd-app-tree-view >
 
@@ -24,7 +24,7 @@
         <app-scd-mdi-win  [hidden]="hide_comp_3" [detail_Input]="formtabs_2_SCD_ALARM"  
                       (formValidationChangedOutput)="formValidationChangedMD($event,3)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
-                      (setComponentConfig_Output)="setComponentConfig_Output($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ALARMFormtabs_2Config">
         </app-scd-mdi-win >
 

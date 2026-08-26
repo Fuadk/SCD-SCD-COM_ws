@@ -166,7 +166,7 @@ public disableHEIGHT = false;
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
-  
+  @Output() valueChange = new EventEmitter<string>();
 
    constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -889,6 +889,8 @@ async WHEN_VALIDATE_ITEM_EXPRESSION_DATA(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['EXPRESSION_DATA'] != "undefined" ) 
       this.form.controls['EXPRESSION_DATA'].setErrors({invalid: true}); 
+ this.valueChange.emit(value);
+ this.form.get('EXPRESSION_DATA')?.setValue(value);
  // Code goes here 
  
 
