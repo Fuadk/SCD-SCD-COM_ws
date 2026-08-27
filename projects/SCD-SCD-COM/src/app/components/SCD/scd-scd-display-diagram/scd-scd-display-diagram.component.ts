@@ -3495,43 +3495,48 @@ private readRotation(shape: any): number {
     return 0;
   }
 private syncRuntimeShapeToModel(shape: any): void {
-  // Skip if still initializing
-  if (this.isDiagramInitializing) {
+      if (this.isDiagramInitializing) {
     return;
   }
+    const model = this.modelForShape(shape);
+    if (!model || typeof shape?.bounds !== "function") {
+      return;
+    }
 
-  const model = this.modelForShape(shape);
-  if (!model || typeof shape.bounds !== "function") {
-    return;
+    const bounds = shape.bounds();
+    model.x = bounds.x;
+    model.y = bounds.y;
+    model.width = bounds.width;
+    model.height = bounds.height;
+    model.rotation = { angle: this.readRotation(shape) };
+
+    const runtimeData = this.shapeDataItem(shape);
+    if (runtimeData && typeof runtimeData === "object") {
+      runtimeData.width = bounds.width;
+      runtimeData.height = bounds.height;
+    }
+    if (runtimeData?.editorStyle) {
+      model.dataItem ??= {};
+      const modelData = model.dataItem?.dataItem ?? model.dataItem;
+      modelData.editorStyle = this.clonePlain(runtimeData.editorStyle);
+    }
+
+    // The runtime shape's dataItem is not always the same object reference as
+    // this.shapes' own dataItem (this.shapes is what gets persisted), so a
+    // library shape's (ellipse/rectangle/etc.) size read via dataItem.width by
+    // drawLibraryShape can silently go stale relative to the persisted model
+    // unless it is written here too.
+    if (model.dataItem && typeof model.dataItem === "object") {
+      const modelData = model.dataItem?.dataItem ?? model.dataItem;
+      if (modelData && typeof modelData === "object" && "width" in modelData) {
+        modelData.width = bounds.width;
+        modelData.height = bounds.height;
+      }
+    }
+
+    this.schedulePersistState();
   }
-
-  const bounds = shape.bounds();
-
-  // Update the application model
-  model.x = bounds.x;
-  model.y = bounds.y;
-  model.width = bounds.width;
-  model.height = bounds.height;
-  model.rotation = { angle: this.readRotation(shape) };
-
-  // Update the runtime data item
-  const runtimeData = this.shapeDataItem(shape);
-  if (runtimeData && typeof runtimeData === "object") {
-    runtimeData.width = bounds.width;
-    runtimeData.height = bounds.height;
-    runtimeData.rotation = { angle: this.readRotation(shape) };
-  }
-
-  console.log("SYNC RUNTIME → MODEL:", {
-    id: model.id,
-    x: model.x,
-    y: model.y,
-    width: model.width,
-    height: model.height
-  });
-  console.log("syncRuntimeShapeToModel:this.isDiagramInitializing:", this.isDiagramInitializing)
-  
-}// Add these properties
+// Add these properties
 public showGrid: boolean = false;
 public snapEnabled: boolean = true;
 public rotationAngle: number = 0;
@@ -3959,7 +3964,7 @@ public groupSelected(): void {
     this.diagram.deselect();
     this.diagram.select(groupedShape);
     this.syncRuntimeShapeToModel(groupedShape);
-    //this.schedulePersistState();
+    this.schedulePersistState();
     this.statusMessage = `Grouped ${children.length} shapes into one shape.`;
 
     setTimeout(() => {
@@ -4062,7 +4067,7 @@ public groupSelected(): void {
       this.diagram.select(restoredRuntime);
     }
     this.synchronizeModelsWithRuntime();
-    //this.schedulePersistState();
+    this.schedulePersistState();
     this.statusMessage = `Ungrouped into ${restoredRuntime.length} separate shapes.`;
     setTimeout(() => this.syncInspectorFromSelection(false));
   }
@@ -4273,7 +4278,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       modelData.editorStyle = this.clonePlain(style);
     }
 
-    //this.schedulePersistState();
+    this.schedulePersistState();
   }
   public flipHorizontal(): void {
     this.toggleFlip("horizontal");
@@ -4413,7 +4418,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       : [...selectedModels, ...otherModels];
 
     this.shapes.splice(0, this.shapes.length, ...ordered);
-    //this.schedulePersistState();
+    this.schedulePersistState();
   }
   private appendRichTextBlocks(
     group: Group,
@@ -4658,7 +4663,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       this.syncRuntimeShapeToModel(shape);
     }
 
-    //this.schedulePersistState();
+    this.schedulePersistState();
     this.statusMessage = "Rich Text formatting updated.";
   }
 
