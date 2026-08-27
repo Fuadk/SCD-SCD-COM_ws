@@ -131,12 +131,12 @@ export class SCADAService {
           });
         }
         
-        const alarms = await this.http.get<Alarm[]>(`${this.apiBase}/alarms`).toPromise();
-        if (alarms) {
-          this.ngZone.run(() => {
-            this.alarms.next(alarms);
-          });
-        }
+        // const alarms = await this.http.get<Alarm[]>(`${this.apiBase}/alarms`).toPromise();
+        // if (alarms) {
+        //   this.ngZone.run(() => {
+        //     this.alarms.next(alarms);
+        //   });
+        // }
         
         const servers = await this.http.get<ServerInfo[]>(`${this.apiBase}/servers`).toPromise();
         console.log("opcua:startPolling:servers",servers)

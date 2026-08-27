@@ -173,6 +173,7 @@ export class ScdDisplayScdScdDisplayDiagramDiagramComponent implements AfterView
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -940,6 +941,14 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
+  if (type === "select" || type === "shapeBoundsChange" || type === "change") {
+      setTimeout(() => this.syncInspectorFromSelection());
+    }
+    if (type === "change") {
+      // Paste/duplicate/delete can add or remove runtime shapes. Reconcile
+      // those changes with this.shapes as well.
+      this.applyDiagramChangeToAppMemory(event);
+    }
     // ===== ZOOM TRACKING =====
     if (type === "zoomStart") {
         this.zoomLevel = event.zoom || 1;
@@ -1072,19 +1081,24 @@ if (type === "shapeBoundsChange") {
                     let expressions = "";
                     console.log("opcua:on received data from scada :displayName:", shapeInfo, tagKey, this.expData);
                     if (typeof shapeInfo != "undefined"){
-                      shape_id = shapeInfo.shape_id;
-                      expressions = shapeInfo.expressions;
+                      for (let i=0; i<shapeInfo.length;i++){
+                        shape_id = shapeInfo[i].shape_id;
+                        expressions = shapeInfo[i].expressions;
+                        
+                        const liveShape = this.diagram.getShapeById(shape_id);
+                        console.log("opcua:on received data from scada :pre shapeInfo:", shapeInfo[i], 
+                          "liveShape:",liveShape);
+                        //liveShape.dataItem.dataItem.text = change.newValue.value;
+                        //liveShape.dataItem.dataItem.text = "";
+                        
+                        // console.log("opcua:liveShape.dataItem:", liveShape.dataItem.content.blocks[0].children[0].text);
+                        // liveShape.dataItem.content.blocks[0].children[0].text = change.newValue.value.toString();
+                        
+                        liveShape.dataItem.dataItem.text = change.newValue.value.toString();
+                        console.log("opcua:on received data from scada :post shapeInfo:", shapeInfo[i], "liveShape:",liveShape);
+                        liveShape.redrawVisual();
+                      }
                       
-                      const liveShape = this.diagram.getShapeById(shape_id);
-                      console.log("opcua:on received data from scada :pre shapeInfo:", shapeInfo, 
-                        "liveShape:",liveShape);
-                      //liveShape.dataItem.dataItem.text = change.newValue.value;
-                      //liveShape.dataItem.dataItem.text = "";
-                      console.log("opcua:liveShape.dataItem:", liveShape.dataItem.content.blocks[0].children[0].text);
-                      liveShape.dataItem.content.blocks[0].children[0].text = change.newValue.value.toString();
-                      liveShape.dataItem.dataItem.text = change.newValue.value.toString();
-                      console.log("opcua:on received data from scada :post shapeInfo:", shapeInfo, "liveShape:",liveShape);
-                      liveShape.redrawVisual();
                     }
 
                     break;
@@ -1362,6 +1376,14 @@ public snapDistance = 6;
           if (line.opacity !== undefined) {
             path.options.opacity = line.opacity;
           }
+          // Compound/path-only shapes must respect the child offset while grouped.
+          // Path (the diagram model wrapper) has no transform() of its own; the
+          // transformable drawing element lives at path.drawingElement.
+          if (offsetX !== 0 || offsetY !== 0) {
+            (path as any).drawingElement?.transform(
+              geometry.transform().translate(offsetX, offsetY)
+            );
+          }
           group.append(path);
         } else if (line.from && line.to) {
           // Draw straight line
@@ -1529,12 +1551,12 @@ public snapDistance = 6;
         const scaleX = bbox.width > 0 ? targetWidth / bbox.width : 1;
         const scaleY = bbox.height > 0 ? targetHeight / bbox.height : 1;
         if (Math.abs(scaleX - 1) > 0.0001 || Math.abs(scaleY - 1) > 0.0001) {
-          tx = tx.scale(scaleX, scaleY, [bbox.x, bbox.y]);
+          tx = tx.scale(scaleX, scaleY, [x, y]);
         }
 
         const flipX = childStyle.flipX ?? 1;
         const flipY = childStyle.flipY ?? 1;
-        const center = [bbox.x + targetWidth / 2, bbox.y + targetHeight / 2];
+        const center = [x + targetWidth / 2, y + targetHeight / 2];
         if (flipX !== 1 || flipY !== 1) {
           tx = tx.scale(flipX, flipY, center);
         }
@@ -1573,9 +1595,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   public shapeDefaults: ShapeDefaults = {
     visual: this.visualTemplate,
   };
-onEvent(type: string, event: any): void {
-    console.log("Event:", type, event, event.item?.type, event.item?.shape, event.item?.content?.text || event.item?.id);
-}
+
 public markers:any = [];
 public performMapperFrom(In) {
     
@@ -1600,24 +1620,23 @@ public expData ={};
 async  prepareShapes(){
   function formatData(input) {
   const result = {};
-
-  for (const item of input) {
-    // Remove curly braces and the suffix (.VAL, .MAX, etc.)
-    // "{[1]Tag_1001.VAL}" -> "[1]Tag_1001"
-    const key = item.EXPRESSION_DATA
-      .replace(/[{}]/g, '')  // Remove { and }
-      .replace(/\.\w+$/, ''); // Remove .VAL, .MAX, etc.
+  
+  input.forEach(item => {
+    // Extract tag by removing .VAL and the outer curly braces
+    const tag = item.EXPRESSION_DATA
+      .replace('.VAL', '')      // Remove .VAL
+      .replace(/[{}]/g, '');   // Remove { and }
     
-    // Use "expressions" for the second item (or based on some condition)
-    // Since you want the second one to have "expressions", we'll check the SHAPE_ID
-    const expressionKey = item.SHAPE_ID === 189 ? 'expressions' : 'expression';
+    if (!result[tag]) {
+      result[tag] = [];
+    }
     
-    result[key] = {
+    result[tag].push({
       shape_id: `${item.SHAPE_TYPE}:${item.SHAPE_ID}`,
-      [expressionKey]: item.EXPRESSION_DATA
-    };
-  }
-
+      expression: item.EXPRESSION_DATA
+    });
+  });
+  
   return result;
 }
   let shapesIDs = "";
@@ -2786,9 +2805,9 @@ public getShapeInfo(){
   return shapeInfo;
 }
 public insertShape (data, shapeType){
-  const text = "Rich Text";
+  const text = "Text";
   this.addLibraryShape("Text", { //richText
-    text: text || "Rich Text", 
+    text: text || "Text", 
     width: 190, 
     height: 90, 
     SHAPE_ID :data.SHAPE_ID,
@@ -3180,7 +3199,7 @@ private uniqueShapeId(prefix: string): string {
     }
     if (kind === "Text") {
       model.content = {
-        blocks: Array.isArray(dataItem.TextBlocks) ? dataItem.TextBlocks : [{ children: [{ text: "Rich Text" }] }],
+       // blocks: Array.isArray(dataItem.TextBlocks) ? dataItem.TextBlocks : [{ children: [{ text: "Rich Text" }] }],
         align: "top left",
         padding: 10,
         margin: 2,
@@ -4744,6 +4763,26 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
 
     this.statusMessage = `Rotated ${shapes.length} shape${shapes.length === 1 ? "" : "s"} ${delta > 0 ? "right" : "left"} by 90°.`;
     setTimeout(() => this.syncInspectorFromSelection(false));
+  }
+    private applyDiagramChangeToAppMemory(event: any): void {
+    const removed = this.eventItems(event?.removed);
+    console.log("removed:",removed)
+    if (removed.length) {
+      this.removeModelsByIds(
+        removed.map(item => this.runtimeShapeId(item)).filter(Boolean)
+      );
+    }
+
+    if (this.eventItems(event?.added).length || removed.length) {
+      // Let Kendo finish assigning IDs/data to pasted shapes first.
+      setTimeout(() => this.synchronizeModelsWithRuntime());
+    }
+  }
+    private eventItems(value: any): any[] {
+    if (!value) {
+      return [];
+    }
+    return Array.isArray(value) ? value : [value];
   }
 }
 

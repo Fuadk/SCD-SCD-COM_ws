@@ -60,6 +60,7 @@ export class ScdShapeScdTpCommonScreenFormComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -176,7 +177,7 @@ public disableINSERT_VARIABLE = false;
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
-  
+  @Output() valueChange = new EventEmitter<string>();
 
    constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -254,7 +255,7 @@ public disableINSERT_VARIABLE = false;
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
-      //this.componentConfig = new componentConfigDef();
+      this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.form.dirty;
       
       // Only emit if state changed
@@ -818,15 +819,16 @@ public printScreen(){
     
   }
   async  POST_INSERT(formGroup){
-    this.componentConfig = new componentConfigDef();
-let masterParams = {
-    action: "insert",
-    shapeType: this.shapeType,
-    data: formGroup
-}
-this.componentConfig.eventFrom = this.compSelector;
-this.componentConfig.masterParams = masterParams;
-this.setComponentConfig_Output.emit(this.componentConfig);
+    this.componentConfig_output = new componentConfigDef();
+    let masterParams = {
+
+      action: "insert",
+      shapeType: this.shapeType,
+      data: formGroup
+    }
+    this.componentConfig_output.eventFrom = this.compSelector;
+    this.componentConfig_output.masterParams = masterParams;
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
    
   }
   async  PRE_QUERY (formGroup){
