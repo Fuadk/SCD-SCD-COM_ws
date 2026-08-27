@@ -246,18 +246,22 @@ export class ScadaIntegrationService implements OnDestroy {
     this.scadaService.getConnectionStatus().subscribe(status => {
       const prev = this.previousValues.get(component);
       if (prev && prev.connectionStatus !== status) {
-        prev.connectionStatus = status;
-        component.scadaData.connectionStatus = status;
-        component.scadaConnectionStatus = status;
-        
-        if (callback) {
-          callback([{
+
+    const oldStatus = prev.connectionStatus;
+
+    prev.connectionStatus = status;
+
+    component.scadaData.connectionStatus = status;
+    component.scadaConnectionStatus = status;
+
+    if (callback) {
+        callback([{
             type: 'connection',
-            oldValue: prev.connectionStatus,
+            oldValue: oldStatus,
             newValue: status
-          }]);
-        }
-      }
+        }]);
+    }
+}
     })
   );
 
