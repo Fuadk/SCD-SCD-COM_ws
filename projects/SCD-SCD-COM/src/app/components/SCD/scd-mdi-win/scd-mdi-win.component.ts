@@ -72,7 +72,7 @@ declare function getParamConfig(): any;
   public PDFfileName = this.title + ".PDF";
   public routineAuth = 'ScdMdiWin';
   public compSelector = 'app-scd-mdi-win';
-  public visibleOK_BTNS = false;
+  public visibleOK_BTNS = true;
   public help_1Config: componentConfigDef;
   public helpOpened = false;
 
@@ -89,7 +89,7 @@ declare function getParamConfig(): any;
     this.title = this.starServices.getNLS([], "scd_appboard.scd_appboard.component_title", "");
     this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-    if (this.visibleOK_BTNS)
+    //if (this.visibleOK_BTNS)
       this.componentConfig.showToolBar = !this.visibleOK_BTNS;
     this.handleComponentConfig(this.componentConfig);
   }

@@ -394,6 +394,6 @@ export class ScdAppMainComponent implements OnInit {
 	public ON_CLICK_HELP(event){
     	this.helpOpened = true;
 	}
-	public visibleOK_BTNS = false;
+	public visibleOK_BTNS = true;
 	
   }

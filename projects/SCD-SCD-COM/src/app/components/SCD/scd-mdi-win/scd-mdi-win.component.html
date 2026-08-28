@@ -31,12 +31,12 @@
 <!-- scd-appboard.component.html -->
 <div 
 style="height: 100vh;  display: flex;  flex-direction: column;" class="form-borders">
-  <legend class="k-form-legend screen-legend">
+  <legend class="k-form-legend screen-legend" *ngIf="componentConfig.showToolBar">
     {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.component_title","SCADA Application") }}
   </legend>
 
   <!-- Action Bar -->
-  <div class="action-bar">
+  <div class="action-bar" *nfIf="false">
     <button kendoButton [icon]="'hyperlink-open'" (click)="openWin('1', null, false)">
       {{ this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Diagram") }}
     </button>

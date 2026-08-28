@@ -1,430 +1,521 @@
-// scd-appboard.component.ts - Simplified
-import {   Component,   OnInit,   OnDestroy,  Output,   Input,   EventEmitter,   HostListener,  ChangeDetectorRef,  AfterViewInit,  Type} from '@angular/core';
-import { Subscription } from 'rxjs';
-import { WindowManagerService, WindowInfo, TabGroup } from '../../../services/window-manager.service';
+import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
+import {  scdapplicationScdAdApplication  ,scddiagramScdScdDiagramDiagram      ,scdalarmScdGroupMembership  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
+import { Router } from '@angular/router';
 import { StarNotifyService } from '../../../services/starnotification.service';
-import { componentConfigDef } from '@modeldir/model';
-import { ScdDiagramScdScdDiagramDiagramDiagramComponent } from '../scd-scd-diagram-diagram/scd-scd-diagram-diagram.component';
-import { ScdTextPropertiesComponent } from '../scd-text-properties/scd-text-properties.component';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-
-declare function getParamConfig(): any;
+declare function getParamConfig():any;
 
 @Component({
+
   selector: 'app-scd-appboard',
   templateUrl: './scd-appboard.component.html',
   styleUrls: ['./scd-appboard.component.scss'],
-  providers: [WindowManagerService]
+  standalone: false
 })
-export class ScdAppboardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ScdAppboardComponent implements OnInit {
   @Output() saveTriggerOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
-  @Output() cancelClicked = new EventEmitter<void>();
-  public routineName = "scd_appboard";
-  
-  // Make components available for template
-  public diagramComponent = ScdDiagramScdScdDiagramDiagramDiagramComponent;
-  public textPropertiesComponent = ScdTextPropertiesComponent;
-
-  // Window Management Properties (read from service)
-  windows: WindowInfo[] = [];
-  tabGroups: TabGroup[] = [];
-  activeGroupId: string = '';
-  isDarkTheme = false;
-  contextMenuVisible = false;
-  contextMenuX = 0;
-  contextMenuY = 0;
-
-  private windowsSubscription!: Subscription;
-  private tabGroupsSubscription!: Subscription;
-  private componentConfigChangeEvent!: Subscription;
-  private dragData: { windowId: string, startX: number, startY: number } | null = null;
-  private resizeData: { windowId: string, startX: number, startY: number } | null = null;
-
-  // Original Properties
-  public paramConfig;
+  constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
+   this.router = router;
+  this.title =  this.starServices.getNLS([],"scd_appboard.scd_appboard.component_title","");
+    this.componentConfig = new componentConfigDef();
+    this.paramConfig = getParamConfig();
+  }
+  public showToolBar = false;
+  public paramConfig; 
   public title = '';
   public isPhonePortrait = false;
-  
+  public customerFacing = false;
+  public isSearchScreen = false;
+  public routineName = "scd_appboard";
   public alignment: TabAlignment = 'start';
+  public selectedTab = 2;
   public masterParams;
+  public gap: any = {
+  	rows: 1,
+  	columns: 1,
+    };
+
   public componentConfig: componentConfigDef;
+
+  public form_0_SCD_APPLICATION : scdapplicationScdAdApplication;
+  public diagram_1_SCD_DIAGRAM : scddiagramScdScdDiagramDiagram;
+  public diagram_2_SCD_DIAGRAM : scddiagramScdScdDiagramDiagram;
+  public diagram_3_SCD_DIAGRAM : scddiagramScdScdDiagramDiagram;
+  public formtabs_4_SCD_ALARM : scdalarmScdGroupMembership;
+  public  SCD_APPLICATIONForm_0Config : componentConfigDef;
+  public  hide_comp_1 = false
+  public  SCD_DIAGRAMDiagram_1Config : componentConfigDef;
+  public  hide_comp_2 = false
+  public  SCD_DIAGRAMDiagram_2Config : componentConfigDef;
+  public  hide_comp_3 = false
+  public  SCD_DIAGRAMDiagram_3Config : componentConfigDef;
+  public  hide_comp_4 = false
+  public  SCD_ALARMFormtabs_4Config : componentConfigDef;
+  public  hide_comp_5 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdAppboard";
-  public compSelector = 'app-scd-appboard';
-  public visibleOK_BTNS = false;
-  public help_1Config: componentConfigDef;
-  public helpOpened = false;
 
-  constructor(
-    public router: Router,
-    public responsive: BreakpointObserver,
-    private starNotify: StarNotifyService,
-    private windowManager: WindowManagerService,
-    public starServices: starServices,
-    private cdr: ChangeDetectorRef
-  ) {
-    this.router = router;
-    this.title = this.starServices.getNLS([], "scd_appboard.scd_appboard.component_title", "");
-    this.paramConfig = getParamConfig();
-    this.componentConfig = new componentConfigDef();
-    if (this.visibleOK_BTNS)
-      this.componentConfig.showToolBar = !this.visibleOK_BTNS;
-    this.handleComponentConfig(this.componentConfig);
-  }
-
-  ngOnInit(): void {
-    console.log('[WINDOW-DEBUG] ngOnInit - Component initializing');
-    
-    this.starServices.actOnParamConfig(this, this.routineName);
-    this.responsive
-      .observe([Breakpoints.HandsetPortrait])
-      .subscribe((state: BreakpointState) => {
-        this.isPhonePortrait = false;
-        if (state.matches) {
-          this.isPhonePortrait = true;
-        }
-      });
-    this.componentConfigChangeEvent = this.starNotify.subscribeEvent<componentConfigDef>('componentConfigDef', componentConfig => {
-      if (componentConfig.eventFrom != this.compSelector) {
-        if (componentConfig.eventTo.includes(this.compSelector) || componentConfig.eventTo.includes('any')) {
-          this.handleComponentConfig(componentConfig);
-        }
-      }
-    });
-    this.initComponents();
-
-    // Window Management initialization
-    this.windowsSubscription = this.windowManager.windows$.subscribe(windows => {
-      this.windows = windows;
-      this.cdr.detectChanges();
-    });
-
-    this.tabGroupsSubscription = this.windowManager.tabGroups$.subscribe(groups => {
-      this.tabGroups = groups;
-      if (groups.length > 0 && !this.activeGroupId) {
-        this.activeGroupId = groups[0].id;
-      }
-      this.cdr.detectChanges();
-    });
-  }
-
-  ngAfterViewInit(): void {
+  public ngAfterViewInit() {
     this.starServices.setRTL();
-    if (this.tabGroups.length > 0 && !this.activeGroupId) {
-      this.activeGroupId = this.tabGroups[0].id;
+  }
+  private componentConfigChangeEvent!: Subscription;
+  public compSelector = 'app-scd-appboard';
+  public masterKeyNameArr = ["APPLICATION_ID"];
+
+  public masterINSERT = 'INSERT_SCD_APPLICATION';
+  public masterDataSource = 'SCD_APPLICATION';
+  public showForm=false;
+  public showApproveReject:boolean = false;
+  public DSP_ORDERSFormConfig: componentConfigDef;
+  ngOnInit(): void {
+    this.starServices.actOnParamConfig(this, this.routineName );
+      this.responsive 
+      .observe([Breakpoints.HandsetPortrait]) 
+      .subscribe((state: BreakpointState) => { 
+      this.isPhonePortrait = false; 
+        if (state.matches) { 
+       this.isPhonePortrait = true; 
+        } 
+      }); 
+  this.componentConfigChangeEvent = this.starNotify.subscribeEvent<componentConfigDef>('componentConfigDef', componentConfig => {
+  	if (componentConfig.eventFrom != this.compSelector) {
+  	   if (componentConfig.eventTo.includes(this.compSelector)|| componentConfig.eventTo.includes('any'))  {
+  		  this.handleComponentConfig(componentConfig);
+  	   }
+  	}
+   });
+    this.initComponents();
+  }
+
+  async initComponents(){
+    await this.starServices.sleep(200);
+    // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
+   this.SCD_APPLICATIONForm_0Config = new componentConfigDef();
+   this.SCD_APPLICATIONForm_0Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID1","Application");
+   this.SCD_APPLICATIONForm_0Config.isMaster = true;
+   this.SCD_APPLICATIONForm_0Config.isSearchScreen = this.isSearchScreen;
+   this.SCD_APPLICATIONForm_0Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_APPLICATIONForm_0Config.queryable = false;
+     this.SCD_APPLICATIONForm_0Config.removeable = false;
+     this.SCD_APPLICATIONForm_0Config.updateable = false;
+     this.SCD_APPLICATIONForm_0Config.navigable = false;
+     this.SCD_APPLICATIONForm_0Config.insertable = false;
+   }
+   this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef();
+   this.SCD_DIAGRAMDiagram_1Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Diagram");
+   this.SCD_DIAGRAMDiagram_1Config.isChild = true;
+   this.SCD_DIAGRAMDiagram_1Config.masterSelector = 'app-scd-appboard';
+   this.SCD_DIAGRAMDiagram_1Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_DIAGRAMDiagram_1Config.navigable = false;
+     //this.SCD_DIAGRAMDiagram_1Config.insertable = true;
+     //this.SCD_DIAGRAMDiagram_1Config.removeable = true;
+   }
+   this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef();
+   this.SCD_DIAGRAMDiagram_2Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID3","Diagram1");
+   this.SCD_DIAGRAMDiagram_2Config.isChild = true;
+   this.SCD_DIAGRAMDiagram_2Config.masterSelector = 'app-scd-appboard';
+   this.SCD_DIAGRAMDiagram_2Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_DIAGRAMDiagram_2Config.navigable = false;
+     //this.SCD_DIAGRAMDiagram_2Config.insertable = true;
+     //this.SCD_DIAGRAMDiagram_2Config.removeable = true;
+   }
+   this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef();
+   this.SCD_DIAGRAMDiagram_3Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID4","Diagram 2");
+   this.SCD_DIAGRAMDiagram_3Config.isChild = true;
+   this.SCD_DIAGRAMDiagram_3Config.masterSelector = 'app-scd-appboard';
+   this.SCD_DIAGRAMDiagram_3Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_DIAGRAMDiagram_3Config.navigable = false;
+     //this.SCD_DIAGRAMDiagram_3Config.insertable = true;
+     //this.SCD_DIAGRAMDiagram_3Config.removeable = true;
+   }
+   this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
+   this.SCD_ALARMFormtabs_4Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID5","Groups");
+   this.SCD_ALARMFormtabs_4Config.isChild = true;
+   this.SCD_ALARMFormtabs_4Config.masterSelector = 'app-scd-appboard';
+   this.SCD_ALARMFormtabs_4Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_ALARMFormtabs_4Config.navigable = false;
+     //this.SCD_ALARMFormtabs_4Config.insertable = true;
+     //this.SCD_ALARMFormtabs_4Config.removeable = true;
+   }
+  }
+  public ngOnDestroy(): void {
+     // Unsubscribe the event once not needed.
+     if (typeof this.componentConfigChangeEvent !== 'undefined') this.componentConfigChangeEvent.unsubscribe();
+  }
+  public readCompletedHandler( form_SCD_APPLICATION) {
+    let masterKeyArr = [form_SCD_APPLICATION.APPLICATION_ID];
+    let masterKeyNameArr = ["APPLICATION_ID"];
+     if (this.isSearchScreen == true) 
+	  {
+    	this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef();
+    	this.SCD_DIAGRAMDiagram_1Config.formattedWhere  = form_SCD_APPLICATION;
+    	this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef();
+    	this.SCD_DIAGRAMDiagram_2Config.formattedWhere  = form_SCD_APPLICATION;
+    	this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef();
+    	this.SCD_DIAGRAMDiagram_3Config.formattedWhere  = form_SCD_APPLICATION;
+    	this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
+    	this.SCD_ALARMFormtabs_4Config.formattedWhere  = form_SCD_APPLICATION;
+    	return;
+	  }
+    //this.diagram_1_SCD_DIAGRAM = new scddiagramScdScdDiagramDiagram();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.diagram_1_SCD_DIAGRAM[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef();
+    this.SCD_DIAGRAMDiagram_1Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_DIAGRAMDiagram_1Config.masterKeyNameArr =  ["APPLICATION_ID"];
+    this.SCD_DIAGRAMDiagram_1Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_DIAGRAMDiagram_1Config.queryable = false;
+     //this.SCD_DIAGRAMDiagram_1Config.removeable = true;
+     //this.SCD_DIAGRAMDiagram_1Config.updateable = true;
+   }
+    //this.diagram_2_SCD_DIAGRAM = new scddiagramScdScdDiagramDiagram();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.diagram_2_SCD_DIAGRAM[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef();
+    this.SCD_DIAGRAMDiagram_2Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_DIAGRAMDiagram_2Config.masterKeyNameArr =  ["APPLICATION_ID"];
+    this.SCD_DIAGRAMDiagram_2Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_DIAGRAMDiagram_2Config.queryable = false;
+     //this.SCD_DIAGRAMDiagram_2Config.removeable = true;
+     //this.SCD_DIAGRAMDiagram_2Config.updateable = true;
+   }
+    //this.diagram_3_SCD_DIAGRAM = new scddiagramScdScdDiagramDiagram();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.diagram_3_SCD_DIAGRAM[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef();
+    this.SCD_DIAGRAMDiagram_3Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_DIAGRAMDiagram_3Config.masterKeyNameArr =  ["APPLICATION_ID"];
+    this.SCD_DIAGRAMDiagram_3Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_DIAGRAMDiagram_3Config.queryable = false;
+     //this.SCD_DIAGRAMDiagram_3Config.removeable = true;
+     //this.SCD_DIAGRAMDiagram_3Config.updateable = true;
+   }
+    //this.formtabs_4_SCD_ALARM = new scdalarmScdGroupMembership();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.formtabs_4_SCD_ALARM[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_4Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_ALARMFormtabs_4Config.masterKeyNameArr =  ["APPLICATION_ID"];
+    this.SCD_ALARMFormtabs_4Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_ALARMFormtabs_4Config.queryable = false;
+     //this.SCD_ALARMFormtabs_4Config.removeable = true;
+     //this.SCD_ALARMFormtabs_4Config.updateable = true;
+   }
+  }
+  async clearCompletedHandler( form_SCD_APPLICATION) {
+     await this.starServices.sleep(200);
+    this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
+  }
+  public keyNameArr = ["APPLICATION_ID"];
+
+  public callreadSavedMaster( ) {
+    let masterTable = 'SCD_APPLICATION' 
+     }
+  public sendToMaster(componentConfig){ 
+  	this.SCD_APPLICATIONForm_0Config = new componentConfigDef(); 
+  	this.SCD_APPLICATIONForm_0Config = componentConfig; 
+ } 
+  public sendToOrder(componentConfig){  
+  	this.DSP_ORDERSFormConfig = new componentConfigDef();  
+  	this.DSP_ORDERSFormConfig = componentConfig;  
+    }  
+  public closeApproveReject() {
+      this.showApproveReject = false;
     }
-  }
-
-  async initComponents() {
-    // Original init logic
-  }
-
-  ngOnDestroy(): void {
-    if (typeof this.componentConfigChangeEvent !== 'undefined') {
-      this.componentConfigChangeEvent.unsubscribe();
-    }
-    if (this.windowsSubscription) {
-      this.windowsSubscription.unsubscribe();
-    }
-    if (this.tabGroupsSubscription) {
-      this.tabGroupsSubscription.unsubscribe();
-    }
-    this.windowManager.closeAllWindows();
-  }
-
-  @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
-    this.handleComponentConfig(ComponentConfig);
-  }
-
-  public handleComponentConfig(ComponentConfig: any) {
-    if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdAppboardComponent:", ComponentConfig);
-    if (typeof ComponentConfig !== "undefined") {
-      this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
-      if (ComponentConfig.masterParams != null) {
-        // Handle master params if needed
-      }
-    }
-  }
-
-  // ===== TRACK BY FUNCTIONS =====
-
-  trackGroup(index: number, group: TabGroup): string {
-    return group.id;
-  }
-
-  // ===== HOST LISTENERS =====
-
-  @HostListener('document:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent): void {
-    if (this.dragData) {
-      const window = this.windows.find(w => w.id === this.dragData!.windowId);
-      if (window && !window.isMaximized) {
-        const deltaX = event.clientX - this.dragData.startX;
-        const deltaY = event.clientY - this.dragData.startY;
-        window.left = Math.max(0, (window.left || 0) + deltaX);
-        window.top = Math.max(0, (window.top || 0) + deltaY);
-        this.dragData.startX = event.clientX;
-        this.dragData.startY = event.clientY;
-        this.windowManager['windowsSubject'].next([...this.windows]);
-      }
-    }
-
-    if (this.resizeData) {
-      const window = this.windows.find(w => w.id === this.resizeData!.windowId);
-      if (window && !window.isMaximized) {
-        const deltaX = event.clientX - this.resizeData.startX;
-        const deltaY = event.clientY - this.resizeData.startY;
-        window.width = Math.max(200, (window.width || 800) + deltaX);
-        window.height = Math.max(150, (window.height || 600) + deltaY);
-        this.resizeData.startX = event.clientX;
-        this.resizeData.startY = event.clientY;
-        this.windowManager['windowsSubject'].next([...this.windows]);
-      }
-    }
-  }
-
-  @HostListener('document:mouseup')
-  onMouseUp(): void {
-    this.dragData = null;
-    this.resizeData = null;
-  }
-
-  @HostListener('document:click')
-  onDocumentClick(): void {
-    this.contextMenuVisible = false;
-  }
-
-  // ===== COMPONENT RENDERING =====
-
-  getComponentToRender(shapeType: string): any {
-    switch (shapeType) {
-      case '1':
-      case '2':
-        return ScdDiagramScdScdDiagramDiagramDiagramComponent;
-      case '3':
-        return ScdTextPropertiesComponent;
-      default:
-        return null;
-    }
-  }
-
-  // ===== GROUP TABS MANAGEMENT =====
-
-  onGroupTabSelect(event: any): void {
-    let groupId: string | null = null;
-    
-    if (event && event.index !== undefined) {
-      const index = event.index;
-      if (this.tabGroups[index]) {
-        groupId = this.tabGroups[index].id;
-      }
-    } else if (event && event.tab) {
-      const group = this.tabGroups.find(g => g.title === event.tab.title);
-      if (group) {
-        groupId = group.id;
-      }
-    }
-    
-    if (groupId) {
-      this.activeGroupId = groupId;
-    }
-  }
-
-  closeGroup(groupId: string, event?: MouseEvent): void {
-    if (event) {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-    this.windowManager.removeGroup(groupId);
-    if (this.activeGroupId === groupId) {
-      const remainingGroups = this.tabGroups.filter(g => g.id !== groupId);
-      this.activeGroupId = remainingGroups.length > 0 ? remainingGroups[0].id : '';
-    }
-  }
-
-  // ===== GET WINDOWS FOR GROUP =====
-
-  getWindowsForGroup(groupId: string): WindowInfo[] {
-    return this.windowManager.getWindowsForGroup(groupId);
-  }
-
-  // ===== WINDOW MANAGEMENT METHODS =====
-
-  openWin(winId: string): void {
-    const componentConfig = new componentConfigDef();
-    componentConfig.masterParams = {
-      data: {
-        DIAGRAM_ID: winId,
-        viewMode: 'edit'
-      }
-    };
-
-    let componentToRender = this.getComponentToRender(winId);
-    if (!componentToRender) {
-      console.error(`No component found for shapeType: ${winId}`);
-      return;
-    }
-    
-    if (this.tabGroups.length > 0 && this.activeGroupId) {
-      this.windowManager.addWindowToGroup(this.activeGroupId, {
-        id: `win_${winId}`,
-        title: `Window ${winId}`,
-        component: componentToRender,
-        inputs: {
-          setComponentConfig_Input: componentConfig
-        }
-      });
-    } else {
-      this.windowManager.openWindow({
-        id: `win_${winId}`,
-        title: `Window ${winId}`,
-        component: componentToRender,
-        inputs: {
-          setComponentConfig_Input: componentConfig
-        },
-        width: 900,
-        height: 650
-      });
-    }
-  }
-
-  createTabGroup(title: string): void {
-    const groupId = this.windowManager.createTabGroup(title || 'New Tab Group', []);
-    this.activeGroupId = groupId;
-  }
-
-  addWindowToGroup(groupId: string): void {
-    const id = `win_${Date.now()}`;
-    const componentConfig = new componentConfigDef();
-    componentConfig.masterParams = {
-      data: {
-        DIAGRAM_ID: id,
-        viewMode: 'edit'
-      }
-    };
-
-    this.windowManager.addWindowToGroup(groupId, {
-      id: id,
-      title: `Window ${this.getWindowsForGroup(groupId).length + 1}`,
-      component: ScdDiagramScdScdDiagramDiagramDiagramComponent,
-      inputs: { 
-        setComponentConfig_Input: componentConfig 
-      }
-    });
-  }
-
-  closeAllWindows(): void {
-    this.windowManager.closeAllWindows();
-    this.activeGroupId = '';
-  }
-
-  closeWindow(windowId: string): void {
-    this.windowManager.closeWindow(windowId);
-  }
-
-  bringToFront(windowId: string): void {
-    this.windowManager.bringToFront(windowId);
-  }
- cascadeWindows(): void {
-    this.windowManager.cascadeWindows();
-  }
-
-  tileWindows(): void {
-    this.windowManager.tileWindows();
-  }
+  public sendToChildren(componentConfig, pageNo){ 
+   if ( (pageNo + 1) == 2){
+  	this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef(); 
+  	this.SCD_DIAGRAMDiagram_1Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 3){
+  	this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef(); 
+  	this.SCD_DIAGRAMDiagram_2Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 4){
+  	this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef(); 
+  	this.SCD_DIAGRAMDiagram_3Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 5){
+  	this.SCD_ALARMFormtabs_4Config = new componentConfigDef(); 
+  	this.SCD_ALARMFormtabs_4Config = componentConfig; 
+   }
+ } 
+  public saveCompletedHandler( form_SCD_APPLICATION) {
+ let key:any = [form_SCD_APPLICATION.APPLICATION_ID]; 
+ if ( key != '') { 
+    this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef();
+    this.SCD_DIAGRAMDiagram_1Config.masterSaved = form_SCD_APPLICATION;
+    this.SCD_DIAGRAMDiagram_1Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_DIAGRAMDiagram_1Config.masterKeyNameArr =  ["APPLICATION_ID"];
   
-  activateFloatingWindow(windowId: string): void {
-    this.windowManager.bringToFront(windowId);
-    this.windowManager.activateWindow(windowId);
-  }
-
-  activateGroupWindow(groupId: string, windowId: string): void {
-    this.windowManager.activateGroupWindow(groupId, windowId);
-  }
-
-  minimizeWindow(windowId: string): void {
-    const windows = this.windowManager.windows;
-    const window = windows.find(w => w.id === windowId);
-    if (window) {
-      window.isMinimized = !window.isMinimized;
-      if (window.isMinimized) {
-        window.height = 30;
-      } else {
-        window.height = window.innerHeight || 600;
+    this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef();
+    this.SCD_DIAGRAMDiagram_2Config.masterSaved = form_SCD_APPLICATION;
+    this.SCD_DIAGRAMDiagram_2Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_DIAGRAMDiagram_2Config.masterKeyNameArr =  ["APPLICATION_ID"];
+  
+    this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef();
+    this.SCD_DIAGRAMDiagram_3Config.masterSaved = form_SCD_APPLICATION;
+    this.SCD_DIAGRAMDiagram_3Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_DIAGRAMDiagram_3Config.masterKeyNameArr =  ["APPLICATION_ID"];
+  
+    this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_4Config.masterSaved = form_SCD_APPLICATION;
+    this.SCD_ALARMFormtabs_4Config.masterKeyArr =  [form_SCD_APPLICATION.APPLICATION_ID];
+    this.SCD_ALARMFormtabs_4Config.masterKeyNameArr =  ["APPLICATION_ID"];
+  
+    this.saveTriggerOutput.emit(form_SCD_APPLICATION);
+  } 
       }
-      this.windowManager['windowsSubject'].next([...windows]);
+  public saveCompletedHandler2( event) {
+      this.saveTriggerOutput.emit(event)
+  }
+  public saveTriggerHandler(event){
+        }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Input() public set detail_Input(form: any) {
+    if (typeof form !== "undefined")
+    {
+        this.form_0_SCD_APPLICATION = form;
     }
   }
 
-  maximizeWindow(windowId: string): void {
-    this.windowManager.toggleMaximize(windowId);
-  }
-
-  getTotalWindowCount(): number {
-    return this.windowManager.getTotalWindowCount();
-  }
-
-  // ===== DRAG AND DROP HANDLERS =====
-
-  onDragStart(event: { windowId: string, event: MouseEvent }): void {
-    const window = this.windows.find(w => w.id === event.windowId);
-    if (window && !window.isMaximized) {
-      this.dragData = {
-        windowId: event.windowId,
-        startX: event.event.clientX,
-        startY: event.event.clientY
-      };
-      event.event.preventDefault();
-      event.event.stopPropagation();
+  public validForms =[true,true,true,true,true,true,true]; //length should be number of components
+  public formValidationChangedMD(e,fornNum) { //check if any component is not valid and emit screen status
+    this.validForms[fornNum-1] = e;
+    let formValidation = true;
+    for (let i =0; i< this.validForms.length; i++) {
+      formValidation = formValidation && this.validForms[i];
     }
+    this.formValidationChangedOutput.emit(formValidation)
   }
-
-  onResizeStart(event: { windowId: string, event: MouseEvent }): void {
-    const window = this.windows.find(w => w.id === event.windowId);
-    if (window && !window.isMaximized) {
-      this.resizeData = {
-        windowId: event.windowId,
-        startX: event.event.clientX,
-        startY: event.event.clientY
-      };
-      event.event.preventDefault();
-      event.event.stopPropagation();
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
     }
-  }
-
-  onContextMenu(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.contextMenuVisible = true;
-    this.contextMenuX = event.clientX;
-    this.contextMenuY = event.clientY;
-  }
-
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-  }
-
-  onDrop(event: DragEvent): void {
-    event.preventDefault();
-  }
-
-  // ===== ORIGINAL EVENT HANDLERS =====
-
-  public ON_CLICK_OK(event) {
-    this.componentConfig = new componentConfigDef();
-    this.componentConfig.masterSaved = true;
-    this.handleComponentConfig(this.componentConfig);
-  }
-
-  public ON_CLICK_CANCEL(event) {
-    this.cancelClicked.emit();
-  }
-
-  public ON_CLICK_HELP(event) {
-    this.helpOpened = true;
   }
 }
+  @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
+    this.handleComponentConfig(ComponentConfig);
+    } 
+    public setSteps(object){
+    if (typeof object.steps != 'undefined'){
+    		let newSteps=[];
+    		for (let i =object.showafter; i<object.steps.length;i++){
+    		let key = 'etr_ent_tem_wf.etr_ent_tem_wf.compsTitleID' + (i+ 1);
+    		let defaultVal = object.steps[i].label;
+    		let val = object.starServices.getNLS([],key ,defaultVal);
+    		let rec = {
+    	 		label : val,
+    	 		compNo : object.steps[i].compNo
+    		}
+    		console.log('setSteps:',key, val,object.steps[i] ,rec )
+    		newSteps.push(rec);
+    		}
+    	object.steps = newSteps;
+   	 }
+    }
+    public handleComponentConfig(ComponentConfig:any) {
+    if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdAppboardComponent:",ComponentConfig);
+    if (typeof ComponentConfig !== "undefined"){
+       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig  );
+       if (ComponentConfig.languageChanged != null) { 
+           setTimeout(() => {
+             this.SCD_APPLICATIONForm_0Config = new componentConfigDef();
+             this.SCD_APPLICATIONForm_0Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_APPLICATIONForm_0Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID1","Application");
+             this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef();
+             this.SCD_DIAGRAMDiagram_1Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_DIAGRAMDiagram_1Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID2","Diagram");
+             this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef();
+             this.SCD_DIAGRAMDiagram_2Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_DIAGRAMDiagram_2Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID3","Diagram1");
+             this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef();
+             this.SCD_DIAGRAMDiagram_3Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_DIAGRAMDiagram_3Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID4","Diagram 2");
+             this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
+             this.SCD_ALARMFormtabs_4Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARMFormtabs_4Config.title = this.starServices.getNLS([],"scd_appboard.scd_appboard.compsTitleID5","Groups");
+           this.setSteps(this);
+           }, 500);
+       }
+  
+       this.SCD_APPLICATIONForm_0Config = new componentConfigDef();
+       this.SCD_DIAGRAMDiagram_1Config = new componentConfigDef();
+       this.SCD_DIAGRAMDiagram_2Config = new componentConfigDef();
+       this.SCD_DIAGRAMDiagram_3Config = new componentConfigDef();
+       this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
+   		
+       if (ComponentConfig.masterParams != null) {
+              this.SCD_APPLICATIONForm_0Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_DIAGRAMDiagram_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_DIAGRAMDiagram_2Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_DIAGRAMDiagram_3Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARMFormtabs_4Config.masterParams = ComponentConfig.masterParams;
+   		
+       }
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_APPLICATIONForm_0Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_DIAGRAMDiagram_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_DIAGRAMDiagram_2Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_DIAGRAMDiagram_3Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARMFormtabs_4Config.showToolBar = ComponentConfig.showToolBar;
+       }
+      if (ComponentConfig.masterSaved != null)//here1
+      {
+       this.SCD_APPLICATIONForm_0Config.masterSaved = ComponentConfig.masterSaved;
+      }
+      if (ComponentConfig.newRec != null)
+      {
+       this.SCD_APPLICATIONForm_0Config.newRec = ComponentConfig.newRec;
+       this.SCD_DIAGRAMDiagram_1Config.newRec = ComponentConfig.newRec;
+       this.SCD_DIAGRAMDiagram_2Config.newRec = ComponentConfig.newRec;
+       this.SCD_DIAGRAMDiagram_3Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARMFormtabs_4Config.newRec = ComponentConfig.newRec;
+      }
+      if (ComponentConfig.clearScreen != null)
+      {
+       this.SCD_APPLICATIONForm_0Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_DIAGRAMDiagram_1Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_DIAGRAMDiagram_2Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_DIAGRAMDiagram_3Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARMFormtabs_4Config.clearScreen = ComponentConfig.clearScreen;
+	   }
+      if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
+      {
+       if ((ComponentConfig.masterKeyArr.length != 0) && (ComponentConfig.masterKeyNameArr.length != 0) )
+       {
+         this.SCD_APPLICATIONForm_0Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_APPLICATIONForm_0Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_APPLICATIONForm_0Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_DIAGRAMDiagram_1Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_DIAGRAMDiagram_1Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_DIAGRAMDiagram_1Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_DIAGRAMDiagram_2Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_DIAGRAMDiagram_2Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_DIAGRAMDiagram_2Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_DIAGRAMDiagram_3Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_DIAGRAMDiagram_3Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_DIAGRAMDiagram_3Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_ALARMFormtabs_4Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARMFormtabs_4Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_ALARMFormtabs_4Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+       }
+      }
+    }
+  }
+   public diagram_1_SCD_DIAGRAMOpened = false;
+  public  diagram_1_SCD_DIAGRAMClose() { 
+    this.diagram_1_SCD_DIAGRAMOpened = false;  
+  }
+  public  diagram_1_SCD_DIAGRAMOpen() { 
+    this.diagram_1_SCD_DIAGRAMOpened = true;  
+  }
+  
+  public diagram_2_SCD_DIAGRAMOpened = false;
+  public  diagram_2_SCD_DIAGRAMClose() { 
+    this.diagram_2_SCD_DIAGRAMOpened = false;  
+  }
+  public  diagram_2_SCD_DIAGRAMOpen() { 
+    this.diagram_2_SCD_DIAGRAMOpened = true;  
+  }
+  
+  public diagram_3_SCD_DIAGRAMOpened = false;
+  public  diagram_3_SCD_DIAGRAMClose() { 
+    this.diagram_3_SCD_DIAGRAMOpened = false;  
+  }
+  public  diagram_3_SCD_DIAGRAMOpen() { 
+    this.diagram_3_SCD_DIAGRAMOpened = true;  
+  }
+  
+  public formtabs_4_SCD_ALARMOpened = false;
+  public  formtabs_4_SCD_ALARMClose() { 
+    this.formtabs_4_SCD_ALARMOpened = false;  
+  }
+  public  formtabs_4_SCD_ALARMOpen() { 
+    this.formtabs_4_SCD_ALARMOpened = true;  
+  }
+  
+ 
+	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
+		this.componentConfig = new componentConfigDef(); 
+		this.componentConfig.masterSaved = true;
+		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
+	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
+	public  help_1Config : componentConfigDef;
+  	public helpOpened = false;
+	public ON_CLICK_HELP(event){
+    	this.helpOpened = true;
+	}
+	public visibleOK_BTNS = true;
+	
+  }

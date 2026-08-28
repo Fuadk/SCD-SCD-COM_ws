@@ -75,7 +75,7 @@ export class ScadaIntegrationService implements OnDestroy {
     // Monitor backend
     this.monitorBackend();
     
-    // Subscribe to raw tag values and pass through
+    // Subscribe to raw tag values and pass through (Push Style)
     this.scadaService.getTagValues().subscribe(values => {
       console.log("opcua:rawTagValues", values);
       this.rawDataSubject.next(values);

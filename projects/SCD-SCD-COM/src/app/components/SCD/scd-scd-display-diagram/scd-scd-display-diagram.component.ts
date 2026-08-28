@@ -941,6 +941,8 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
+  if (!this.isEditMode)
+    return;
   if (type === "select" || type === "shapeBoundsChange" || type === "change") {
       setTimeout(() => this.syncInspectorFromSelection());
     }
@@ -1292,11 +1294,16 @@ public mapperFromOrg = {
 public mapperFrom = {"DiagramID":"DISPLAY_ID","name":"DISPLAY_NAME","DiagramData":"DISPLAY_DATA"};
 public snapDistance = 6;
   public editable: DiagramEditable = this.buildEditable();
-
+  public isDrag = true;
+  public isRotate = true;
+  public isResize = true;
+  public isRemove = true;
   private buildEditable(): DiagramEditable {
     return {
-      drag: true,
-      rotate: true
+      drag: this.isDrag,
+      rotate: this.isRotate,
+      resize: this.isResize,
+      remove: this.isRemove
     };
   }
   public drawDiagramFromDefinition(
@@ -1363,7 +1370,7 @@ public snapDistance = 6;
           const path = new Path({
             data: line.path,
             stroke: {
-              width: line.stroke?.width || 1,
+              //width: line.stroke?.width || 1,
               color: editorStyle?.strokeColor || line.stroke?.color || "#000",
               dashType: line.stroke?.dashType as any,
             },
@@ -1391,7 +1398,7 @@ public snapDistance = 6;
             start: { x: line.from.x + offsetX, y: line.from.y + offsetY },
             end: { x: line.to.x + offsetX, y: line.to.y + offsetY },
             stroke: {
-              width: line.stroke?.width || 1,
+              //width: line.stroke?.width || 1,
               color: editorStyle?.strokeColor || line.stroke?.color || "#000",
               dashType: line.stroke?.dashType as any,
             },
@@ -1498,7 +1505,7 @@ public snapDistance = 6;
     if (frameWidth && frameHeight) {
       const frame = new Rectangle({
         x: baseX, y: baseY, width: frameWidth, height: frameHeight,
-        stroke: { color: "transparent", width: 0 },
+        stroke: { color: "transparent"},
         fill: { color: "transparent" }
       });
       // Do not use literal zero opacity here. Some Diagram sizing paths ignore
@@ -2138,10 +2145,21 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
   this.isEditMode = !this.isEditMode;
   
   if (this.isEditMode) {
+      this.isDrag = true;
+       this.isRotate = true;
+       this.isResize = true;
+       this.isRemove = true;
+       this.editable = this.buildEditable();
+
     // Disable polling when entering edit mode
     this.scadaIntegration.disablePolling();
     console.log('Edit mode: SCADA polling stopped');
   } else {
+       this.isDrag = false;
+       this.isRotate = false;
+       this.isResize = false;
+       this.isRemove = false;
+       this.editable = this.buildEditable();
     // Re-enable polling when exiting edit mode
     this.scadaIntegration.enablePolling();
     // Optionally refresh data immediately
@@ -3240,7 +3258,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "richText") {
       group.append(new Rectangle({
         x, y, width, height, cornerRadius: 4,
-        stroke: { color: stroke, width: 1 },
+        stroke: { color: stroke},
         fill: { color: fill }
       }));
 
@@ -3262,7 +3280,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "Text") {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
-        stroke: { color: stroke, width: 1 },
+        stroke: { color: stroke},
         fill: { color: fill }
       });
       const text = new TextBlock({
@@ -3282,7 +3300,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "image") {
       const background = new Rectangle({
         x, y, width, height,
-        stroke: { color: stroke, width: 1 },
+        stroke: { color: stroke},
         fill: { color: fill }
       });
       group.append(background);
@@ -3303,7 +3321,7 @@ private uniqueShapeId(prefix: string): string {
       const cy = y + ry;
       group.append(new Path({
         data: `M ${cx - rx},${cy} A ${rx},${ry} 0 1 0 ${cx + rx},${cy} A ${rx},${ry} 0 1 0 ${cx - rx},${cy} Z`,
-        stroke: { color: stroke, width: 2 },
+        stroke: { color: stroke },
         fill: { color: fill }
       }));
       return group;
@@ -3316,7 +3334,7 @@ private uniqueShapeId(prefix: string): string {
       const centerY = y + height / 2;
       group.append(new Path({
         data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
-        stroke: { color: stroke, width: 2 },
+        stroke: { color: stroke },
         fill: { color: "transparent" }
       }));
       return group;
@@ -3326,7 +3344,7 @@ private uniqueShapeId(prefix: string): string {
       group.append(new Rectangle({
         x, y, width, height,
         cornerRadius: kind === "roundedRectangle" ? Math.min(22, height / 2) : 0,
-        stroke: { color: stroke, width: 2 },
+        stroke: { color: stroke },
         fill: { color: fill }
       }));
       return group;
@@ -3358,7 +3376,7 @@ private uniqueShapeId(prefix: string): string {
         : `M ${x},${y} L ${x + width},${y} L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`;
       group.append(new Path({
         data: bodyPath,
-        stroke: { color: stroke, width: 2 },
+        stroke: { color: stroke },
         fill: { color: bodyColor }
       }));
 
@@ -3372,7 +3390,7 @@ private uniqueShapeId(prefix: string): string {
         : `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight} L ${x},${bandY + bandHeight} Z`;
       group.append(new Path({
         data: bandPath,
-        stroke: { color: stroke, width: 2 },
+        stroke: { color: stroke },
         fill: { color: bodyColor }
       }));
 
@@ -3384,7 +3402,7 @@ private uniqueShapeId(prefix: string): string {
         group.append(new Rectangle({
           x: footX, y: footY, width: footWidth, height: footHeight,
           cornerRadius: 2,
-          stroke: { color: stroke, width: 1.5 },
+          stroke: { color: stroke},
           fill: { color: bodyColor }
         }));
       });
@@ -3394,7 +3412,7 @@ private uniqueShapeId(prefix: string): string {
       const gaugeTop = y + headerHeight;
       group.append(new Path({
         data: `M ${x + 4},${gaugeTop} L ${x + width - 4},${gaugeTop}`,
-        stroke: { color: stroke, width: 1.5 },
+        stroke: { color: stroke },
         fill: { color: "transparent" }
       }));
 
@@ -3407,7 +3425,7 @@ private uniqueShapeId(prefix: string): string {
           y: gaugeBottom - fillHeight,
           width: Math.max(0, width - inset * 2),
           height: fillHeight,
-          stroke: { color: liquidBorder, width: 2 },
+          stroke: { color: liquidBorder},
           fill: { color: fill }
         }));
       }
@@ -3429,7 +3447,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "arc") {
       group.append(new Path({
         data: `M ${x + 5},${y + height - 5} Q ${x + width / 2},${y - height * 0.15} ${x + width - 5},${y + height - 5}`,
-        stroke: { color: stroke, width: 3 },
+        stroke: { color: stroke },
         fill: { color: "transparent" }
       }));
       return group;
@@ -3442,7 +3460,7 @@ private uniqueShapeId(prefix: string): string {
       ).join(" ");
       group.append(new Path({
         data: pathData,
-        stroke: { color: stroke, width: 3 },
+        stroke: { color: stroke},
         fill: { color: "transparent" }
       }));
       return group;
@@ -3451,7 +3469,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "polygon") {
       group.append(new Path({
         data: `M ${x + width / 2},${y} L ${x + width},${y + height * 0.38} L ${x + width * 0.82},${y + height} L ${x + width * 0.18},${y + height} L ${x},${y + height * 0.38} Z`,
-        stroke: { color: stroke, width: 2 },
+        stroke: { color: stroke},
         fill: { color: fill }
       }));
       return group;
@@ -3460,7 +3478,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "polyline") {
       group.append(new Path({
         data: `M ${x},${y + height * 0.8} L ${x + width * 0.28},${y + height * 0.2} L ${x + width * 0.56},${y + height * 0.72} L ${x + width},${y + height * 0.15}`,
-        stroke: { color: stroke, width: 3 },
+        stroke: { color: stroke },
         fill: { color: "transparent" }
       }));
       return group;
@@ -4530,7 +4548,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
             group.append(new Line({
               start: { x: cursorX, y: cursorY + fontSize + 2 },
               end: { x: Math.min(startX + maxWidth, cursorX + pieceWidth), y: cursorY + fontSize + 2 },
-              stroke: { color, width: 1 }
+              stroke: { color}
             }));
           }
           cursorX += pieceWidth;

@@ -939,6 +939,8 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
+    if (!this.isEditMode)
+    return;
     // ===== ZOOM TRACKING =====
     if (type === "zoomStart") {
         this.zoomLevel = event.zoom || 1;
@@ -1007,6 +1009,7 @@ async ON_EVENT(type: string, event: any) {
     return;
 }
 if (type === "shapeBoundsChange") {
+
   const shape = event.item;
   const bounds = event.bounds;
   
@@ -3063,15 +3066,15 @@ private syncRuntimeShapeToModel(shape: any): void {
   // Update the application model
   model.x = bounds.x;
   model.y = bounds.y;
-  model.width = bounds.width;
-  model.height = bounds.height;
+  // model.width = bounds.width;
+  // model.height = bounds.height;
   model.rotation = { angle: this.readRotation(shape) };
 
   // Update the runtime data item
   const runtimeData = this.shapeDataItem(shape);
   if (runtimeData && typeof runtimeData === "object") {
-    runtimeData.width = bounds.width;
-    runtimeData.height = bounds.height;
+    // runtimeData.width = bounds.width;
+    // runtimeData.height = bounds.height;
     runtimeData.rotation = { angle: this.readRotation(shape) };
   }
 
