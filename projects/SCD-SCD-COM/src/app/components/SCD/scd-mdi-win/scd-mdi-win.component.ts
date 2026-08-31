@@ -330,6 +330,7 @@ getComponentToRender(shapeType: string): any {
   componentConfig.masterParams = {
     data: {
       MENU_ID: MENU_ID,
+	  masterParams:masterParams,
       viewMode: viewMode
     }
   };
@@ -728,6 +729,9 @@ onComponentConfig_Output(event: { windowId: string, componentConfig: any }): voi
       event.windowId, 
       event.componentConfig.isDirty === true
     );
+	if (event.componentConfig.parentClose == true){
+      this.onCloseWindow(event.windowId);
+    }
     
     // Also update the local window object
     const window = this.windows.find(w => w.id === event.windowId);

@@ -1,201 +1,218 @@
-<div>
-	<legend *ngIf="showToolBar" class="k-form-legend">{{
-		this.starServices.getNLS([],"AI_AI_FORM.aiaiAiForm.component_title","AI FORM") }}</legend>
-	<div class="form-toolbar"> </div>
-	<kendo-toolbar class="form-toolbar" *ngIf="showToolBar">
-		<kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}"
-			(click)="saveChanges( form)"
-			*ngIf="!isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
-		<kendo-toolbar-button kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}"
-			(click)="printScreen()" *ngIf="componentConfig.toolsShow"></kendo-toolbar-button>
+<div class="ai-form-container">
+  <!-- Header Section - Reduced Height -->
+  <div class="ai-header">
+    <div class="ai-header-content">
+      <div class="ai-header-icon">
+        <span class="icon-robot">🤖</span>
+      </div>
+      <div class="ai-header-text">
+        <h1 class="ai-title">{{ starServices.getNLS([],"AI_AI_FORM.aiaiAiForm.component_title","AI Diagram Generator") }}</h1>
+        <p class="ai-subtitle">Describe your diagram or upload an image for AI to analyze</p>
+      </div>
+    </div>
+  </div>
 
+  <!-- Main Content -->
+  <div class="ai-content">
+    <!-- Toolbar -->
+    <kendo-toolbar class="ai-toolbar" *ngIf="showToolBar">
+      <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}"
+        (click)="saveChanges( form)"
+        *ngIf="!isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+      <kendo-toolbar-button kendoButton [icon]="'print'" title="{{starServices.getNLS([],'PRINT','Print')}}"
+        (click)="printScreen()" *ngIf="componentConfig.toolsShow"></kendo-toolbar-button>
+      
+      <kendo-toolbar-button [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}"
+        title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery( form);"
+        *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+      <kendo-toolbar-button [icon]="'search'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"
+        (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+      <kendo-toolbar-button [icon]="'cancel'" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"
+        (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+      
+      <kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'"
+        title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');"
+        *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+      <kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"
+        title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}" (click)="goRecord(  'prev');"
+        *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+      <kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'"
+        title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}" (click)="goRecord('next')"
+        *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+      <kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'"
+        title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')"
+        *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+      
+      <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"
+        (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+      <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"
+        (click)="onRemove( form);" *ngIf="componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+      <kendo-toolbar-button kendoButton *ngIf="starServices.helpMsg !=='' "
+        text="{{starServices.helpMsg}}"></kendo-toolbar-button>
+    </kendo-toolbar>
 
+    <div class="ai-card">
+      <form [formGroup]="form" (click)="ON_CLICK(form.value)">
+        <div class="ai-form-grid">
+          <!-- Left Column: Input -->
+          <div class="ai-form-column ai-input-column">
+            <div class="ai-input-group">
+              <div class="ai-input-header">
+                <span class="ai-input-icon">💬</span>
+                <label class="ai-input-label">Describe Your Diagram</label>
+              </div>
+              <kendo-textarea 
+                style="width: 100%;" 
+                resizable="both" 
+                [rows]="8" 
+                [cols]="600" 
+                kendoTextBox
+                formControlName="question" 
+                #question
+                [ngClass]="{'ng-invalid-required ng-touched': submitted && f.question.errors}" 
+                required
+                [readonly]="primarKeyReadOnlyArr.isquestionreadOnly" 
+                [placeholder]="questionPlaceholder || 'Describe the diagram you want to create...'"
+                (click)="ON_CLICK_question($event)"
+                class="ai-textarea">
+              </kendo-textarea>
+              
+              <div class="ai-input-hint">
+                <span>💡 Example: "Create a flowchart for user authentication"</span>
+              </div>
+            </div>
 
-		<kendo-toolbar-button [disabled]="isSearch" text="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}"
-			title="{{starServices.getNLS([],'ENTER_QUERY','Enter Query')}}" (click)="enterQuery( form);"
-			*ngIf="componentConfig.queryable"></kendo-toolbar-button>
-		<kendo-toolbar-button [icon]="'search'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"
-			(click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
-		<kendo-toolbar-button [icon]="'cancel'" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"
-			(click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+            <!-- Options -->
+            <div class="ai-options-row">
+              <div class="ai-option-item" *ngIf="!hideSubmit">
+                <input 
+                  class="ai-checkbox" 
+                  formControlName="STANDARD_SHAPES" 
+                  #STANDARD_SHAPES 
+                  kendoCheckBox 
+                  type="checkbox"
+                  [ngClass]="{'ng-invalid-required ng-touched': submitted && f.STANDARD_SHAPES.errors}" 
+                  (click)="ON_CLICK_STANDARD_SHAPES($event)" 
+                  (change)="onChange_STANDARD_SHAPES($event)" 
+                  name="STANDARD_SHAPES"
+                  id="standardShapes">
+                <label for="standardShapes" class="ai-option-label">Use Standard Shapes</label>
+              </div>
+              
+              <div class="ai-option-item" *ngIf="showLog || simulate">
+                <button class="ai-log-btn k-button" kendoButton (click)="submitshowAiLog()">
+                  📋 View Logs
+                </button>
+              </div>
+            </div>
 
+            <!-- Submit Button -->
+            <div class="ai-submit-row" *ngIf="!hideSubmit">
+              <button 
+                class="ai-submit-btn k-button k-primary" 
+                kendoButton 
+                (click)="submit()"
+                [disabled]="form.invalid">
+                <span class="ai-btn-icon">🚀</span>
+                Generate Diagram
+              </button>
+            </div>
 
-		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'"
-			title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');"
-			*ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
-		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'"
-			title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}" (click)="goRecord(  'prev');"
-			*ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
-		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'"
-			title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}" (click)="goRecord('next')"
-			*ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
-		<kendo-toolbar-button [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'"
-			title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')"
-			*ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+          
+          </div>
 
-		<kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"
-			(click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
-		<kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"
-			(click)="onRemove( form);" *ngIf="componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
-		<kendo-toolbar-button kendoButton *ngIf="starServices.helpMsg !=='' "
-			text="{{starServices.helpMsg}}"></kendo-toolbar-button>
+          <!-- Right Column: Image Upload -->
+          <div class="ai-form-column ai-image-column">
+            <div class="ai-image-card">
+              <div class="ai-image-header">
+                <span class="ai-image-icon">🖼️</span>
+                <span class="ai-image-label">Upload Diagram Image</span>
+                <span class="ai-image-badge">Optional</span>
+              </div>
+              
+              <div class="ai-image-upload-area" *ngIf="visibleDIAGRAM_IMAGE">
+                <input style="display:none" formControlName="DIAGRAM_IMAGE" #DIAGRAM_IMAGE />
+                <div class="ai-image-dropzone" (click)="this.starServices.att_img_form_openUploadimage('DIAGRAM_IMAGE',this)">
+                  <div class="ai-image-preview" *ngIf="DIAGRAM_IMAGE.value">
+                    <kendo-avatar 
+                      shape="rounded"
+                      imageSrc="{{this.starServices.att_img_getFileLink(DIAGRAM_IMAGE.value,this)}}" 
+                      width="100%"
+                      height="auto"
+                      [style.max-height]="'300px'"
+                      adaptiveMode="auto"
+                      class="ai-avatar-preview">
+                    </kendo-avatar>
+                  </div>
+                  <div class="ai-image-placeholder" *ngIf="!DIAGRAM_IMAGE.value">
+                    <div class="ai-placeholder-icon">📤</div>
+                    <div class="ai-placeholder-text">Click to upload an image</div>
+                    <div class="ai-placeholder-subtext">PNG, JPG, SVG up to 5MB</div>
+                  </div>
+                </div>
+                <div class="ai-image-actions" *ngIf="DIAGRAM_IMAGE.value">
+                  <button class="ai-image-remove-btn" (click)="removeImage()">🗑️ Remove</button>
+                </div>
+              </div>
 
-	</kendo-toolbar>
-	<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
-		<form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
+              <div class="ai-image-info">
+                <div class="ai-info-item">
+                  <span class="ai-info-icon">💡</span>
+                  <span class="ai-info-text">Upload a P&ID or diagram image for AI to analyze and convert</span>
+                </div>
+                <div class="ai-info-item">
+                  <span class="ai-info-icon">📊</span>
+                  <span class="ai-info-text">Supported formats: PNG, JPG, SVG, WebP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+		  <!-- Help Text / Logs -->
+            <div class="ai-log-section" *ngIf="showLog">
+              <div class="ai-log-header">
+                <span class="ai-log-icon">📝</span>
+                <span class="ai-log-label">Process Log</span>
+                <!-- ✅ Correct way -->
+<button class="ai-log-clear" (click)="clearHelpText()">Clear</button>
+              </div>
+              <kendo-textarea 
+                style="width: 100%;" 
+                resizable="both" 
+                [rows]="4" 
+                [cols]="400" 
+                kendoTextBox
+                formControlName="helpText" 
+                #helpText 
+                [readonly]="true"
+                style="overflow: auto; padding: 10px; background: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', monospace;"
+                (click)="ON_CLICK_helpText($event)"
+                class="ai-log-textarea">
+              </kendo-textarea>
+            </div>
+      </form>
+    </div>
+  </div>
 
-			<fieldset class="form-fieldset" class="k-form-fieldset"
-				[disabled]="!componentConfig.enabled || !componentConfig.updateable">
-
-				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
-
-
-
-
-
-
-
-
-					<button *ngIf="showLog || simulate" class="k-button k-primary" kendoButton
-						(click)="submitshowAiLog()">show Log</button>
-
-				</div>
-
-
-				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
-					<kendo-formfield [orientation]="'horizontal'"
-						[ngClass]="(labelquestionTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
-						<kendo-label *ngIf="(!labelquestionTop && !isPhonePortrait) && labelquestionVisible"
-							class="form-label" [for]="question"
-							[text]="starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.question','Question')"></kendo-label>
-						<label *ngIf="(labelquestionTop || isPhonePortrait) && labelquestionVisible"
-							class="form-label">{{starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.question','Question')}}</label>
-						<kendo-textarea style="width: auto;" resizable="both" [rows]="6" [cols]="600" kendoTextBox
-							formControlName="question" #question
-							[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.question.errors }" required
-							[readonly]="primarKeyReadOnlyArr.isquestionreadOnly" [placeholder]="questionPlaceholder"
-							(click)="ON_CLICK_question($event)"></kendo-textarea>
-					</kendo-formfield>
-	<kendo-formfield class="form-field" [orientation]="'horizontal'"
-						[ngClass]="(labelDIAGRAM_IMAGETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "
-						*ngIf=visibleDIAGRAM_IMAGE>
-						<kendo-label *ngIf="(!labelDIAGRAM_IMAGETop && !isPhonePortrait) && labelDIAGRAM_IMAGEVisible" class="form-label"
-							[text]="starServices.getNLS([],'test1_TST_COMPANY_FORM.tstcompanyTest1TstCompanyForm.DIAGRAM_IMAGE','Logo')"></kendo-label>
-						<input style="display:none" [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "
-							formControlName="DIAGRAM_IMAGE" #DIAGRAM_IMAGE />
-						<kendo-avatar shape="rounded"
-							imageSrc="{{this.starServices.att_img_getFileLink(DIAGRAM_IMAGE.value,this)}}" width="100px"
-							height="100px" adaptiveMode="auto"
-							(click)="this.starServices.att_img_form_openUploadimage('DIAGRAM_IMAGE',this)"></kendo-avatar>
-					</kendo-formfield>
-					
-
-				</div>
-
-<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
-<kendo-formfield class="form-field" [orientation]="'horizontal'" *ngIf="!hideSubmit"
-						[ngClass]="(labelSTANDARD_SHAPESTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
-						<kendo-label *ngIf="(!labelSTANDARD_SHAPESTop && !isPhonePortrait) && labelSTANDARD_SHAPESVisible"
-							class="form-label" [for]="STANDARD_SHAPES" [text]="singleMultiMsg"></kendo-label>
-						<label *ngIf="(labelSTANDARD_SHAPESTop || isPhonePortrait) && labelSTANDARD_SHAPESVisible"
-							class="form-label">{{singleMultiMsg}}</label>
-						<input class="form-input" formControlName="STANDARD_SHAPES" #STANDARD_SHAPES kendoCheckBox type="checkbox"
-							[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.STANDARD_SHAPES.errors }" 
-							[placeholder]="starServices.getNLS([],'MED_Appointments_FORM.medappointmentsMedAppointmentsForm.STANDARD_SHAPES_Hint','Please enter Med Doctorid')"
-							(click)="ON_CLICK_STANDARD_SHAPES($event)" (change)="onChange_STANDARD_SHAPES($event)" name="STANDARD_SHAPES"
-							 />
-					</kendo-formfield>
-
+  <!-- Hidden fields -->
+  <div style="display:none">
+    <kendo-formfield *ngIf="false">
+      <kendo-datepicker formControlName="LOGDATE" #LOGDATE></kendo-datepicker>
+      <input formControlName="LOGNAME" kendoTextBox #LOGNAME />
+    </kendo-formfield>
+  </div>
 </div>
 
-				<div>
-					
-					<button *ngIf="!hideSubmit" class="k-button k-primary" kendoButton
-						(click)="submit()">Submit</button>
-				</div>
+<!-- Upload Component -->
+<app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+  [setComponentConfig_Input]="DSP_UPLOADConfig">
+</app-dsp-upload>
 
-				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
-					<kendo-formfield [orientation]="'horizontal'"
-						[ngClass]="(labelanswerTop || isPhonePortrait) ? 'displayBlock' : 'standard' " *ngIf=false>
-						<kendo-label *ngIf="(!labelanswerTop && !isPhonePortrait) && labelanswerVisible"
-							class="form-label" [for]="answer"
-							[text]="starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.answer','Answer')"></kendo-label>
-						<label *ngIf="(labelanswerTop || isPhonePortrait) && labelanswerVisible"
-							class="form-label">{{starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.answer','Answer')}}</label>
-						<kendo-textarea style="width: auto;" resizable="both" [rows]="8" [cols]="400" kendoTextBox
-							formControlName="answer" #answer (click)="ON_CLICK_answer($event)"></kendo-textarea>
-					</kendo-formfield>
-
-
-				</div>
-
-				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
-					<kendo-formfield *ngIf="showLog" [orientation]="'horizontal'"
-						[ngClass]="(labelhelpTextTop || isPhonePortrait) ? 'displayBlock' : 'standard' ">
-						<kendo-label *ngIf="(!labelhelpTextTop && !isPhonePortrait) && labelhelpTextVisible"
-							class="form-label" [for]="helpText"
-							[text]="starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.helpText','Helptext')"></kendo-label>
-						<label *ngIf="(labelhelpTextTop || isPhonePortrait) && labelhelpTextVisible"
-							class="form-label">{{starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.helpText','Helptext')}}</label>
-						<kendo-textarea style="width: auto;" resizable="both" [rows]="4" [cols]="400" kendoTextBox
-							formControlName="helpText" #helpText [readonly]="true"
-							style="overflow: auto; padding: 10px;" (click)="ON_CLICK_helpText($event)"></kendo-textarea>
-					</kendo-formfield>
-				</div>
-				
-
-
-
-
-				<div [ngClass]="isPhonePortrait ? 'standard' : 'wrap' ">
-					<kendo-formfield class="form-field" [orientation]="'horizontal'"
-						[ngClass]="(labelLOGDATETop || isPhonePortrait) ? 'displayBlock' : 'standard' " *ngIf=false>
-						<kendo-label *ngIf="(!labelLOGDATETop && !isPhonePortrait) && labelLOGDATEVisible"
-							class="form-label" [for]="LOGDATE"
-							[text]="starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.LOGDATE','Logdate')"></kendo-label>
-						<label *ngIf="(labelLOGDATETop || isPhonePortrait) && labelLOGDATEVisible"
-							class="form-label">{{starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.LOGDATE','Logdate')}}</label>
-						<kendo-datepicker [format]="this.paramConfig.DateFormat" class="form-field-date"
-							formControlName="LOGDATE" #LOGDATE
-							[placeholder]="starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.LOGDATE_Hint','Please enter Logdate')"
-							(click)="ON_CLICK_LOGDATE($event)"
-							(valueChange)="onValueChange_LOGDATE($event)"></kendo-datepicker>
-					</kendo-formfield>
-
-
-					<kendo-formfield class="form-field" [orientation]="'horizontal'"
-						[ngClass]="(labelLOGNAMETop || isPhonePortrait) ? 'displayBlock' : 'standard' " *ngIf=false>
-						<kendo-label *ngIf="(!labelLOGNAMETop && !isPhonePortrait) && labelLOGNAMEVisible"
-							class="form-label" [for]="LOGNAME"
-							[text]="starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.LOGNAME','Logname')"></kendo-label>
-						<label *ngIf="(labelLOGNAMETop || isPhonePortrait) && labelLOGNAMEVisible"
-							class="form-label">{{starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.LOGNAME','Logname')}}</label>
-						<input class="form-input" formControlName="LOGNAME" kendoTextBox #LOGNAME
-							[placeholder]="starServices.getNLS([],'AI_AI_FORM.aiaiAiForm.LOGNAME_Hint','Please enter Logname')"
-							(click)="ON_CLICK_LOGNAME($event)" (change)="onChange_LOGNAME($event)" />
-					</kendo-formfield>
-				</div>
-
-			</fieldset>
-		</form>
-
-
-		<app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
-			[setComponentConfig_Input]="DSP_UPLOADConfig">
-		</app-dsp-upload>
-	</kendo-pdf-export>
-</div>
-
-
-
-
-
-
+<!-- AI Logs Dialog -->
 <div [hidden]="!showAiLog">
-	<kendo-dialog (close)="showAiLog=false;" resizable="true" [minWidth]="1200" [width]="1200" [height]="750"
-		title="AI Logs">
-		<app-adm-ailogs [detail_Input]="app_adm_ailog" [setComponentConfig_Input]="APP_ADM_AILOGConfig">
-		</app-adm-ailogs>
-
-	</kendo-dialog>
+  <kendo-dialog (close)="showAiLog=false;" resizable="true" [minWidth]="1200" [width]="1200" [height]="750"
+    title="AI Logs">
+    <app-adm-ailogs [detail_Input]="app_adm_ailog" [setComponentConfig_Input]="APP_ADM_AILOGConfig">
+    </app-adm-ailogs>
+  </kendo-dialog>
 </div>

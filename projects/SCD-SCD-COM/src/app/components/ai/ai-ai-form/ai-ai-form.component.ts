@@ -17,12 +17,12 @@ import JSON5 from 'json5'
 
 const createFormGroup = (dataItem: any) => new FormGroup({
   'question': new FormControl(dataItem.question),
-  
-  
-  
+
+
+
   'answer': new FormControl(dataItem.answer),
   'helpText': new FormControl(dataItem.helpText,),
-  'DIAGRAM_IMAGE' : new FormControl(dataItem.DIAGRAM_IMAGE  , ) ,
+  'DIAGRAM_IMAGE': new FormControl(dataItem.DIAGRAM_IMAGE,),
   'STANDARD_SHAPES': new FormControl(dataItem.STANDARD_SHAPES),
   'LOGDATE': new FormControl(dataItem.LOGDATE,),
   'LOGNAME': new FormControl(dataItem.LOGNAME,)
@@ -99,16 +99,16 @@ export class AiAiAiFormFormComponent {
   public labelLOGDATETop = false;
   public labelLOGDATEVisible = true;
   public labelLOGNAMETop = false;
-  
-  
-  
+
+
+
   public labelLOGNAMEVisible = true;
   public customerFacing = false;
-  public labelDIAGRAM_IMAGEVisible=true;
-  public labelDIAGRAM_IMAGETop=true;
+  public labelDIAGRAM_IMAGEVisible = true;
+  public labelDIAGRAM_IMAGETop = true;
   public visibleDIAGRAM_IMAGE = true;
   public disableDIAGRAM_IMAGE = false;
-  
+
   public labelSTANDARD_SHAPESTop = false;
   public labelSTANDARD_SHAPESVisible = true;
 
@@ -476,8 +476,8 @@ export class AiAiAiFormFormComponent {
   onChanges(): void {
     this.form.get('DIAGRAM_IMAGE').valueChanges.subscribe(val => {
 
-});
- this.form.get('STANDARD_SHAPES').valueChanges.subscribe(val => {
+    });
+    this.form.get('STANDARD_SHAPES').valueChanges.subscribe(val => {
     });
     this.form.get('question').valueChanges.subscribe(val => {
     });
@@ -489,8 +489,8 @@ export class AiAiAiFormFormComponent {
     });
 
 
-    
-    
+
+
   }
 
 
@@ -523,8 +523,8 @@ export class AiAiAiFormFormComponent {
       if (ComponentConfig.masterParams != null) {
         if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig.masterParams:", ComponentConfig.masterParams);
         this.formInitialValues['helpText'] = ComponentConfig.masterParams.editorPlaceholder;
-        
-        
+
+
 
         this.form = createFormGroup(
           this.formInitialValues
@@ -625,62 +625,62 @@ export class AiAiAiFormFormComponent {
 
   }
 
- async onChange_DIAGRAM_IMAGE(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
-  return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DIAGRAM_IMAGE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
-async WHEN_VALIDATE_ITEM_DIAGRAM_IMAGE(value) {
+  async onChange_DIAGRAM_IMAGE(event: any) {
+    var value = event.target.value;
+    if ((value == null) || (value == ''))
+      return;
+    this.FORM_TRIGGER_FAILURE = false;
+    await this.WHEN_VALIDATE_ITEM_DIAGRAM_IMAGE(value); if (this.FORM_TRIGGER_FAILURE) return;
+    this.formValidationChangedOutput.emit(this.form.valid);
 
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DIAGRAM_IMAGE'] != "undefined" ) 
-      this.form.controls['DIAGRAM_IMAGE'].setErrors({invalid: true}); 
- // Code goes here 
- 
+  }
+  async WHEN_VALIDATE_ITEM_DIAGRAM_IMAGE(value) {
 
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['DIAGRAM_IMAGE'] != "undefined" ) 
-     this.form.get('DIAGRAM_IMAGE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DIAGRAM_IMAGE(event){
-
-}
+    this.FORM_TRIGGER_FAILURE = false;
+    if (typeof this.form.controls['DIAGRAM_IMAGE'] != "undefined")
+      this.form.controls['DIAGRAM_IMAGE'].setErrors({ invalid: true });
+    // Code goes here 
 
 
-  async onChange_STANDARD_SHAPES(event:any) { 
-    var value = event.target.value; 
-    if ((value == null) || (value == '')) 	
-      return;  
-    
-       this.FORM_TRIGGER_FAILURE = false;	
-    await   this.WHEN_VALIDATE_ITEM_STANDARD_SHAPES(value); if ( this.FORM_TRIGGER_FAILURE) return; 
-    
-     
-    } 
-    async WHEN_VALIDATE_ITEM_STANDARD_SHAPES(value) {
+    if (this.FORM_TRIGGER_FAILURE == true)
+      return;
 
-      this.FORM_TRIGGER_FAILURE = false ; 
-      this.form.controls['STANDARD_SHAPES'].setErrors({invalid: true}); 
-      // Code goes here 
-      
-     
-      if ( this.FORM_TRIGGER_FAILURE == true) 
-      return; 
-      
-      this.form.get('STANDARD_SHAPES').updateValueAndValidity();
-      this.form.updateValueAndValidity(); 
-      }
-      async ON_CLICK_STANDARD_SHAPES(event){
-        this.singleMulti();
-      }
+    if (typeof this.form.controls['DIAGRAM_IMAGE'] != "undefined")
+      this.form.get('DIAGRAM_IMAGE').updateValueAndValidity();
+    this.form.updateValueAndValidity();
+  }
+
+  async ON_CLICK_DIAGRAM_IMAGE(event) {
+
+  }
+
+
+  async onChange_STANDARD_SHAPES(event: any) {
+    var value = event.target.value;
+    if ((value == null) || (value == ''))
+      return;
+
+    this.FORM_TRIGGER_FAILURE = false;
+    await this.WHEN_VALIDATE_ITEM_STANDARD_SHAPES(value); if (this.FORM_TRIGGER_FAILURE) return;
+
+
+  }
+  async WHEN_VALIDATE_ITEM_STANDARD_SHAPES(value) {
+
+    this.FORM_TRIGGER_FAILURE = false;
+    this.form.controls['STANDARD_SHAPES'].setErrors({ invalid: true });
+    // Code goes here 
+
+
+    if (this.FORM_TRIGGER_FAILURE == true)
+      return;
+
+    this.form.get('STANDARD_SHAPES').updateValueAndValidity();
+    this.form.updateValueAndValidity();
+  }
+  async ON_CLICK_STANDARD_SHAPES(event) {
+    this.singleMulti();
+  }
 
   async WHEN_VALIDATE_ITEM_question(value) {
 
@@ -815,17 +815,17 @@ async WHEN_VALIDATE_ITEM_DIAGRAM_IMAGE(value) {
   public filterCode!: string;
   public showCodeDetails: boolean = false;
 
- // For Attachments and images
-public myFiles = [[]];
-public filesDeleted = [[]];
-public img_gallery = [[]];
-public DSP_UPLOADConfig!: componentConfigDef;
-public DSP_WEBCAMConfig!: componentConfigDef;
-public att_arr = [];
-public img_arr = ["DIAGRAM_IMAGE"];
-public multiselect_arr = [];
-public AttDwnUrl = "";
-public uploadimage = false;
+  // For Attachments and images
+  public myFiles = [[]];
+  public filesDeleted = [[]];
+  public img_gallery = [[]];
+  public DSP_UPLOADConfig!: componentConfigDef;
+  public DSP_WEBCAMConfig!: componentConfigDef;
+  public att_arr = [];
+  public img_arr = ["DIAGRAM_IMAGE"];
+  public multiselect_arr = [];
+  public AttDwnUrl = "";
+  public uploadimage = false;
 
   public async att_img_saveFormCompleted(field_id) {
     if (this.paramConfig.DEBUG_FLAG) console.log("att_img_saveFormCompleted:", field_id, this.form.value[field_id])
@@ -982,9 +982,9 @@ public uploadimage = false;
 
   public separateInsertQuestion = true;
 
-  public diagramOperations ;
+  public diagramOperations;
   public shapeOptions;
-  public imgData:any = "";
+  public imgData: any = "";
   public simulate = false;
   public sampleData = true;
   //use 595 for HC
@@ -1206,7 +1206,7 @@ RULES for diagramOperations:
       console.log("this.answers.length:", this.answers.length, "qCode:", qCode, "this.singleMultiMsg:", this.singleMultiMsg)
       answer = this.answers[qCode];
       answer = answer.replace('[COMPLETE]', '');
-      
+
       if (this.answers.length >= 3) {
         if (qCode == 0) {
           answer = this.answers[qCode];
@@ -1216,7 +1216,7 @@ RULES for diagramOperations:
           answer = this.answers[Stage];
           answer = answer.replace('[COMPLETE]', '');
         }
-      
+
 
 
       }
@@ -1247,8 +1247,8 @@ RULES for diagramOperations:
       var newVal = {};
       //if (this.paramConfig.DEBUG_FLAG) console.log("this.starServices.MASTER_DB:", this.starServices.MASTER_DB)
       newVal["question"] = Question;
-     newVal["AI_PROVIDER"] = "DEEPSEEK";
-     //newVal["AI_PROVIDER"] = "OPENAI";
+      //newVal["AI_PROVIDER"] = "DEEPSEEK";
+      newVal["AI_PROVIDER"] = "OPENAI";
       newVal["systemContent"] = cursystemMsg
 
       if (this.paramConfig.DEBUG_FLAG) console.log("newVal:", newVal)
@@ -1274,7 +1274,7 @@ RULES for diagramOperations:
           this.masterParams.data.DURATION = (now.getTime() - this.masterParams.data.SENT_ON.getTime()) / (1000);
           this.updateAILogDetail(Question, answer, Stage);
 
-          if (answer.includes('[COMPLETE]')) {
+          if (answer.includes('[COMPLETE]') || answer.endsWith("```" ) || answer.endsWith("}" ) ) {
             this.isComplete = true;
             answer = answer.replace('[COMPLETE]', '');
           }
@@ -1313,20 +1313,21 @@ RULES for diagramOperations:
     this.helpText = this.helpText + "Got Dwg Def: \n";
     this.form.patchValue({ 'helpText': this.helpText });
 
-    let prefix = "```json";
-    let suffix = "```";
-    let jsonArrays = answer.split(prefix)
-    if (typeof jsonArrays[1] != "undefined"){
-      let jsonArraysFinal = jsonArrays[1].split(suffix)
-      answer = jsonArraysFinal[0];
-    }
-    let dwgDef = JSON.parse(answer);
-    
-    
+    // let prefix = "```json";
+    // let suffix = "```";
+    // let jsonArrays = answer.split(prefix)
+    // if (typeof jsonArrays[1] != "undefined") {
+    //   let jsonArraysFinal = jsonArrays[1].split(suffix)
+    //   answer = jsonArraysFinal[0];
+    // }
+    // let dwgDef = JSON.parse(answer);
+    let dwgDef = this.parseAIResponse(answer);
+
+
     // let n = answer.indexOf("```json");
     // if (n != -1)
     //   n = answer.indexOf("{");
-      
+
     // let answerDwg = answer.slice(n);
     // console.log("answerDwg:", n, answerDwg, answer)
     // let dwgDefTxt = answerDwg.split("```");
@@ -1335,18 +1336,18 @@ RULES for diagramOperations:
     // let dwgDef = JSON.parse(dwgDefTxt[0]);
     console.log("dwgDef:", dwgDef)
     this.diagramOperations = dwgDef['diagramOperations']
-   this.shapeOptions = dwgDef['shapeOptions']
-   for (let i =0; i < this.shapeOptions.length; i++) {
+    this.shapeOptions = dwgDef['shapeOptions']
+    for (let i = 0; i < this.shapeOptions.length; i++) {
       let id = this.shapeOptions[i].id;
       this.helpText = this.helpText + "Got shape " + id + ":\n";
       this.form.patchValue({ 'helpText': this.helpText });
 
     }
-     
-    
-  
+
+
+
     //console.log("tableNamesArr:return:", tableNamesArr)
-    
+
     return dwgDef;
 
   }
@@ -1357,9 +1358,9 @@ RULES for diagramOperations:
 
     console.log("Question2:dwgDef:", dwgDef)
 
-  
-    let Question2 = "I need you to generate a JSON configuration for a Kendo UI diagram for shape:" + id  + " ONLY "
-    + `
+
+    let Question2 = "I need you to generate a JSON configuration for a Kendo UI diagram for shape:" + id + " ONLY "
+      + `
     ## CRITICAL: This is a DETAILED shape definition, NOT a placeholder!
     Please generate the FULL visual representation  with ALL details.
 
@@ -1514,10 +1515,10 @@ RULES for diagramOperations:
     Question2 = Question2 + " as per earlier provided requirement. \n"
     const container = this.shapeOptions.find((s: any) => s.id === id);
     Question2 = Question2 + JSON.stringify(container, null, 2)
-    
+
     // Question2 = Question2 + ".  Based on the requirements provided earlier stated again to maintain the context  :"
     // Question2 = Question2 + this.form.value['question']
-    
+
 
     console.log("Question2:", Question2)
     return Question2;
@@ -1581,188 +1582,294 @@ RULES for diagramOperations:
 
   }
 
-public mergeShapeWithScalingAndClean(mainDiagram: any, shapeDetail: any, shapeId: string): any {
+  public mergeShapeWithScalingAndClean(mainDiagram: any, shapeDetail: any, shapeId: string): any {
     // 1. Create a deep copy
     const result = JSON.parse(JSON.stringify(mainDiagram));
-    
+
     // 2. Find the container
     const container = result.shapeOptions.find((s: any) => s.id === shapeId);
     if (!container) {
-        console.warn(`Container "${shapeId}" not found`);
-        return result;
+      console.warn(`Container "${shapeId}" not found`);
+      return result;
     }
-    
+
     // 3. Find the detail
     const detailShape = shapeDetail.shapeOptions?.find((s: any) => s.id === shapeId);
     if (!detailShape) {
-        console.warn(`Detail for "${shapeId}" not found`);
-        return result;
+      console.warn(`Detail for "${shapeId}" not found`);
+      return result;
     }
-    
+
     // 4. Get container and detail sizes
     const containerWidth = container.width;
     const containerHeight = container.height;
     const detailWidth = detailShape.width || containerWidth;
     const detailHeight = detailShape.height || containerHeight;
-    
+
     // 5. Calculate scale factors
     const scaleX = containerWidth / detailWidth;
     const scaleY = containerHeight / detailHeight;
-    
+
     console.log(`📐 Scaling ${shapeId}: ${detailWidth}x${detailHeight} → ${containerWidth}x${containerHeight}`);
-    
+
     // 6. Get the definition
     let definition = detailShape.dataItem?.definition;
     if (!definition) return result;
-    
+
     // 7. 🔑 Clean placeholder properties (from simpleMergeClean)
     definition = this.cleanPlaceholderProperties(definition);
-    
+
     // 8. Scale all shapes
     if (definition.shapes) {
-        definition.shapes = definition.shapes.map((shape: any) => ({
-            ...shape,
-            x: shape.x * scaleX,
-            y: shape.y * scaleY,
-            width: shape.width * scaleX,
-            height: shape.height * scaleY,
-            cornerRadius: shape.cornerRadius ? shape.cornerRadius * Math.min(scaleX, scaleY) : shape.cornerRadius,
-            // Ensure opacity is set
-            opacity: shape.opacity !== undefined ? shape.opacity : 1
-        }));
+      definition.shapes = definition.shapes.map((shape: any) => ({
+        ...shape,
+        x: shape.x * scaleX,
+        y: shape.y * scaleY,
+        width: shape.width * scaleX,
+        height: shape.height * scaleY,
+        cornerRadius: shape.cornerRadius ? shape.cornerRadius * Math.min(scaleX, scaleY) : shape.cornerRadius,
+        // Ensure opacity is set
+        opacity: shape.opacity !== undefined ? shape.opacity : 1
+      }));
     }
-    
+
     // 9. Scale textBlocks
     if (definition.textBlocks) {
-        definition.textBlocks = definition.textBlocks.map((text: any) => ({
-            ...text,
-            x: text.x * scaleX,
-            y: text.y * scaleY,
-            font: text.font ? this.scaleFont(text.font, Math.min(scaleX, scaleY)) : text.font,
-            opacity: text.opacity !== undefined ? text.opacity : 1
-        }));
+      definition.textBlocks = definition.textBlocks.map((text: any) => ({
+        ...text,
+        x: text.x * scaleX,
+        y: text.y * scaleY,
+        font: text.font ? this.scaleFont(text.font, Math.min(scaleX, scaleY)) : text.font,
+        opacity: text.opacity !== undefined ? text.opacity : 1
+      }));
     }
-    
+
     // 10. Scale lines
     if (definition.lines) {
-        definition.lines = definition.lines.map((line: any) => ({
-            ...line,
-            from: line.from ? {
-                x: line.from.x * scaleX,
-                y: line.from.y * scaleY
-            } : line.from,
-            to: line.to ? {
-                x: line.to.x * scaleX,
-                y: line.to.y * scaleY
-            } : line.to,
-            opacity: line.opacity !== undefined ? line.opacity : 1
-        }));
+      definition.lines = definition.lines.map((line: any) => ({
+        ...line,
+        from: line.from ? {
+          x: line.from.x * scaleX,
+          y: line.from.y * scaleY
+        } : line.from,
+        to: line.to ? {
+          x: line.to.x * scaleX,
+          y: line.to.y * scaleY
+        } : line.to,
+        opacity: line.opacity !== undefined ? line.opacity : 1
+      }));
     }
-    
+
     // 11. Replace the definition
     container.dataItem.definition = definition;
-    
+
     // 12. Update title if needed
     if (detailShape.dataItem?.title) {
-        container.dataItem.title = detailShape.dataItem.title;
+      container.dataItem.title = detailShape.dataItem.title;
     }
-    
+
     // 13. Remove placeholder flags (from simpleMergeClean)
     delete container.placeholder;
-    
+
     // 14. Track operation
     if (!result.diagramOperations) {
-        result.diagramOperations = [];
+      result.diagramOperations = [];
     }
-    
+
     // Remove existing update operations for this shape
     result.diagramOperations = result.diagramOperations.filter(
-        (op: any) => !(op.target === 'shape' && op.id === shapeId && op.operation === 'update')
+      (op: any) => !(op.target === 'shape' && op.id === shapeId && op.operation === 'update')
     );
-    
+
     result.diagramOperations.push({
-        operation: "update",
-        target: "shape",
-        id: shapeId,
-        status: "success",
-        message: `Merged and scaled definition for "${shapeId}"`
+      operation: "update",
+      target: "shape",
+      id: shapeId,
+      status: "success",
+      message: `Merged and scaled definition for "${shapeId}"`
     });
-    
+
     return result;
-}
+  }
 
 
-// Helper: Scale font size
-public scaleFont(font: string, scale: number): string {
+  // Helper: Scale font size
+  public scaleFont(font: string, scale: number): string {
     if (!font) return font;
     return font.replace(/(\d+)px/, (match, size) => {
-        return `${Math.round(parseInt(size) * scale)}px`;
+      return `${Math.round(parseInt(size) * scale)}px`;
     });
-}
-public cleanPlaceholderProperties(definition: any): any {
+  }
+  public cleanPlaceholderProperties(definition: any): any {
     const cleaned = JSON.parse(JSON.stringify(definition));
-    
+
     // Remove placeholder and set opacity to 1
     if (cleaned.shapes) {
-        cleaned.shapes = cleaned.shapes.map((shape: any) => {
-            const { placeholder, ...cleanShape } = shape;
-            return {
-                ...cleanShape,
-                opacity: 1
-            };
-        });
+      cleaned.shapes = cleaned.shapes.map((shape: any) => {
+        const { placeholder, ...cleanShape } = shape;
+        return {
+          ...cleanShape,
+          opacity: 1
+        };
+      });
     }
-    
+
     // Clean textBlocks
     if (cleaned.textBlocks) {
-        cleaned.textBlocks = cleaned.textBlocks.map((text: any) => {
-            const { opacity, ...cleanText } = text;
-            return {
-                ...cleanText,
-                opacity: 1
-            };
-        });
+      cleaned.textBlocks = cleaned.textBlocks.map((text: any) => {
+        const { opacity, ...cleanText } = text;
+        return {
+          ...cleanText,
+          opacity: 1
+        };
+      });
+    }
+
+    return cleaned;
+  }
+cleanAIResponse(rawResponse: string): string {
+  if (!rawResponse || rawResponse.trim() === '') {
+    return '';
+  }
+
+  let cleaned = rawResponse.trim();
+
+  // Step 1: Try to extract content between ```json and ``` if present
+  const jsonBlockRegex = /```json\s*([\s\S]*?)\s*```/;
+  const jsonBlockMatch = cleaned.match(jsonBlockRegex);
+  
+  if (jsonBlockMatch && jsonBlockMatch[1]) {
+    // Found content between ```json and ```
+    return jsonBlockMatch[1].trim();
+  }
+
+  // Step 2: Try to extract content between ``` and ``` (without 'json')
+  const codeBlockRegex = /```\s*([\s\S]*?)\s*```/;
+  const codeBlockMatch = cleaned.match(codeBlockRegex);
+  
+  if (codeBlockMatch && codeBlockMatch[1]) {
+    // Found content between ``` and ```
+    return codeBlockMatch[1].trim();
+  }
+
+  // Step 3: Try to extract JSON that starts with { and ends with }
+  // This handles cases where markers are missing or incomplete
+  const jsonRegex = /(\{[\s\S]*\})/;
+  const jsonMatch = cleaned.match(jsonRegex);
+  
+  if (jsonMatch && jsonMatch[1]) {
+    // Found JSON-like structure
+    return jsonMatch[1].trim();
+  }
+
+  // Step 4: Try to find a valid JSON structure even with extra text
+  // Look for the first { and last }
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    return cleaned.substring(firstBrace, lastBrace + 1).trim();
+  }
+
+  // Step 5: If all else fails, try to parse the raw response
+  // Some responses might have partial markers
+  return cleaned;
+}
+fixAndParseJSON(rawResponse: string): any {
+  let cleaned = rawResponse.trim();
+  
+  // Remove any text before the first {
+  const firstBrace = cleaned.indexOf('{');
+  if (firstBrace > 0) {
+    cleaned = cleaned.substring(firstBrace);
+  }
+  
+  // Remove any text after the last }
+  const lastBrace = cleaned.lastIndexOf('}');
+  if (lastBrace > 0 && lastBrace < cleaned.length - 1) {
+    cleaned = cleaned.substring(0, lastBrace + 1);
+  }
+  
+  // Fix trailing commas (common AI issue)
+  cleaned = cleaned.replace(/,\s*}/g, '}');
+  cleaned = cleaned.replace(/,\s*]/g, ']');
+  
+  // Fix missing quotes around property names
+  // Note: This is a simplified fix - for production, consider using a proper JSON5 parser
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    // If still failing, try JSON5 parser if available
+    // You can install: npm install json5
+    // import JSON5 from 'json5';
+    // return JSON5.parse(cleaned);
+    throw new Error('Unable to fix JSON');
+  }
+}
+parseAIResponse(rawResponse: string): any {
+  try {
+    const cleanJson = this.cleanAIResponse(rawResponse);
+    
+    if (!cleanJson) {
+      throw new Error('No JSON content found in response');
     }
     
-    return cleaned;
+    // Validate JSON before parsing
+    JSON.parse(cleanJson); // This will throw if invalid
+    return JSON.parse(cleanJson);
+    
+  } catch (error) {
+    console.error('Failed to parse AI response:', error);
+    console.log('Raw response:', rawResponse);
+    console.log('Cleaned response:', this.cleanAIResponse(rawResponse));
+    
+    // Attempt to fix common JSON issues
+    try {
+      return this.fixAndParseJSON(rawResponse);
+    } catch (fixError) {
+      console.error('Failed to fix and parse JSON:', fixError);
+      return null;
+    }
+  }
 }
+  appendShapeToDwg(dwgDef, answer, id, copiedShape) {
+    // let n = answer.indexOf("```json");
+    // if (n != -1)
+    //   n = answer.indexOf("{");
 
-appendShapeToDwg(dwgDef,answer, id, copiedShape ){
-  let n = answer.indexOf("```json");
-    if (n != -1)
-      n = answer.indexOf("{");
-      
-    let answerDwg = answer.slice(n);
-    console.log("appendShapeToDwg:", n, answerDwg, answer)
-    let dwgDefTxt = answerDwg.split("```");
-    console.log("appendShapeToDwg:dwgDefTxt::", dwgDefTxt)
-    let shapesDef = JSON.parse(dwgDefTxt[0]);
+    // let answerDwg = answer.slice(n);
+    // console.log("appendShapeToDwg:", n, answerDwg, answer)
+    // let dwgDefTxt = answerDwg.split("```");
+    // console.log("appendShapeToDwg:dwgDefTxt::", dwgDefTxt)
+    // let shapesDef = JSON.parse(dwgDefTxt[0]);
+    let shapesDef = this.parseAIResponse(answer);
+
     console.log("appendShapeToDwg:shapesDef:", id, shapesDef, copiedShape)
-    if (typeof copiedShape != "undefined"){
-      console.log("copiedShape:pre:", {...shapesDef.shapeOptions[0]})
-      shapesDef.shapeOptions[0].dataItem.title 
+    if (typeof copiedShape != "undefined") {
+      console.log("copiedShape:pre:", { ...shapesDef.shapeOptions[0] })
+      shapesDef.shapeOptions[0].dataItem.title
       shapesDef.shapeOptions[0] = copiedShape;
-      console.log("copiedShape:post:", {...shapesDef.shapeOptions[0]})
+      console.log("copiedShape:post:", { ...shapesDef.shapeOptions[0] })
     }
     //let DiagramDefinitionForShape = shapesDef['DiagramDefinition']
 
- let shapeOptions = dwgDef['shapeOptions']
-  
-  
-  dwgDef = this.mergeShapeWithScalingAndClean(dwgDef, shapesDef, id)
-  //dwgDef['shapeOptions'] = shapeOptions;
+    let shapeOptions = dwgDef['shapeOptions']
 
-console.log("dwgDef post merge:", 
-      JSON.stringify(dwgDef, null, 2), "DiagramDefinitionForShape:",JSON.stringify(shapesDef, null, 2))
-  // for (let i =0; i < shapeOptions.length; i++) {
-  //   console.log("appendShapeToDwg:shapeOptions[i]:", 
-  //     JSON.stringify(shapeOptions[i], null, 2), "DiagramDefinitionForShape:",JSON.stringify(DiagramDefinitionForShape, null, 2))
-  //     let id = shapeOptions[i].id;
-  // }
-  return dwgDef;
-  
-}
-  resetVars(){
+
+    dwgDef = this.mergeShapeWithScalingAndClean(dwgDef, shapesDef, id)
+    //dwgDef['shapeOptions'] = shapeOptions;
+
+    console.log("dwgDef post merge:",
+      JSON.stringify(dwgDef, null, 2), "DiagramDefinitionForShape:", JSON.stringify(shapesDef, null, 2))
+    // for (let i =0; i < shapeOptions.length; i++) {
+    //   console.log("appendShapeToDwg:shapeOptions[i]:", 
+    //     JSON.stringify(shapeOptions[i], null, 2), "DiagramDefinitionForShape:",JSON.stringify(DiagramDefinitionForShape, null, 2))
+    //     let id = shapeOptions[i].id;
+    // }
+    return dwgDef;
+
+  }
+  resetVars() {
     this.diagramOperations = [];
     this.helpText = "";
     this.somBody = [];
@@ -1777,9 +1884,9 @@ console.log("dwgDef post merge:",
     this.answer_relations = "";
   }
 
-  
-  async processImg(imageDataUrl){
-   
+
+  async processImg(imageDataUrl) {
+
     let Question = this.form.value['question'];
     let cursystemMsg = `
 You are an Industrial P&ID Recognition Engine.
@@ -1939,69 +2046,69 @@ Return JSON only.
 
     let Body = [];
     let answer;
-      var page = "";
-      var url = this.starServices.SERVER_URL + '/api/appgen?action=callAI';
-      var newVal = {};
-      //if (this.paramConfig.DEBUG_FLAG) console.log("this.starServices.MASTER_DB:", this.starServices.MASTER_DB)
-      newVal["question"] = Question;
-     
-     newVal["AI_PROVIDER"] = "OPENAI";
-      newVal["systemContent"] = cursystemMsg;
-      newVal["imageDataUrl"] = imageDataUrl
+    var page = "";
+    var url = this.starServices.SERVER_URL + '/api/appgen?action=callAI';
+    var newVal = {};
+    //if (this.paramConfig.DEBUG_FLAG) console.log("this.starServices.MASTER_DB:", this.starServices.MASTER_DB)
+    newVal["question"] = Question;
 
-      if (this.paramConfig.DEBUG_FLAG) console.log("newVal:", newVal)
-      Body.push(newVal);
-      let respone;
-      this.showLog = true;
-      this.helpText = this.helpText + "Converting image to JSON. thinking... ";
-      this.form.patchValue({ 'helpText': this.helpText });
+    newVal["AI_PROVIDER"] = "OPENAI";
+    newVal["systemContent"] = cursystemMsg;
+    newVal["imageDataUrl"] = imageDataUrl
 
-      return new Promise(resolve => {
-        this.starServices.postCommand(page, url, Body).subscribe(result => {
-          this.helpText = this.helpText + " Done.\n";
-          this.form.patchValue({ 'helpText': this.helpText });
-          respone = result.data;
-          let answer = respone.content;
-          if (this.paramConfig.DEBUG_FLAG) console.log("answer:", respone.content);
-          let prefix = "```json";
-          let suffix = "```";
-          let jsonArrays = answer.split(prefix)
-          if (typeof jsonArrays[1] != "undefined"){
-            let jsonArraysFinal = jsonArrays[1].split(suffix)
-            answer = jsonArraysFinal[0];
-          }
+    if (this.paramConfig.DEBUG_FLAG) console.log("newVal:", newVal)
+    Body.push(newVal);
+    let respone;
+    this.showLog = true;
+    this.helpText = this.helpText + "Converting image to JSON. thinking... ";
+    this.form.patchValue({ 'helpText': this.helpText });
+
+    return new Promise(resolve => {
+      this.starServices.postCommand(page, url, Body).subscribe(result => {
+        this.helpText = this.helpText + " Done.\n";
+        this.form.patchValue({ 'helpText': this.helpText });
+        respone = result.data;
+        let answer = respone.content;
+        if (this.paramConfig.DEBUG_FLAG) console.log("answer:", respone.content);
+        let prefix = "```json";
+        let suffix = "```";
+        let jsonArrays = answer.split(prefix)
+        if (typeof jsonArrays[1] != "undefined") {
+          let jsonArraysFinal = jsonArrays[1].split(suffix)
+          answer = jsonArraysFinal[0];
+        }
+        return resolve(answer);
+      },
+        err => {
+
+          alert('error callAI_API:' + err.message);
+          let Msg = this.starServices.getNLS([], 'ERROR_callAI_API', 'Error callAI_API ');
+          this.showMsg(Msg, "Error");
           return resolve(answer);
-        },
-          err => {
-
-            alert('error callAI_API:' + err.message);
-            let Msg = this.starServices.getNLS([], 'ERROR_callAI_API', 'Error callAI_API ');
-            this.showMsg(Msg, "Error");
-            return resolve(answer);
-          });
         });
+    });
   }
   async submit() {
     this.resetVars();
     let Question = "";
-    
-    console.log("submited:",this.myFiles['DIAGRAM_IMAGE']);
+
+    console.log("submited:", this.myFiles['DIAGRAM_IMAGE']);
     this.imgData = "";
-    if (!this.simulate){
-      if (typeof this.myFiles['DIAGRAM_IMAGE'] != "undefined"){
+    if (!this.simulate) {
+      if (typeof this.myFiles['DIAGRAM_IMAGE'] != "undefined") {
         let imageDataUrl = this.myFiles['DIAGRAM_IMAGE'].accountImg;
-          console.log(imageDataUrl);
-          this.imgData = await this.processImg(imageDataUrl);
-          console.log("submited:imgData:", this.imgData);
-          if (this.imgData != ""){
-            this.imgData = " The diagram defined with JSON as below :" + this.imgData;
-          }
+        console.log(imageDataUrl);
+        this.imgData = await this.processImg(imageDataUrl);
+        console.log("submited:imgData:", this.imgData);
+        if (this.imgData != "") {
+          this.imgData = " The diagram defined with JSON as below :" + this.imgData;
+        }
       }
     }
-   
-    
-    
-    
+
+
+
+
 
     this.masterParams.data.REQUESTED_ON = new Date();
     this.insertAILogHead();
@@ -2119,7 +2226,7 @@ starts at x=0,y=0.
 
     let q_suffix =
       ", For each ShapeOption, provide:\n"
-    + ` - Complete ShapeOption with id, x, y, width, height
+      + ` - Complete ShapeOption with id, x, y, width, height
         - dataItem with type, title, and definition (initially empty definition 
         - I will request the full DiagramDefinition for each type later)
         Create a ShapeOption for EVERY detected object.
@@ -2149,9 +2256,9 @@ Ignore decorative text.
 
 
     //if (this.form.value['question'] !== "")
-      Question = q_prefix
-        + this.form.value['question'] +  this.imgData
-        + q_suffix;
+    Question = q_prefix
+      + this.form.value['question'] + this.imgData
+      + q_suffix;
 
 
 
@@ -2169,14 +2276,14 @@ Ignore decorative text.
     if (this.paramConfig.DEBUG_FLAG) console.log("answer received post callAI_API:", answer);
     if (typeof answer == "undefined")
       return;
-    
+
     //1
     console.log("structured answer : dwg_def:", answer);
     this.answer_dwg = answer;
     let dwgDef: any = await this.parseandProcessCreateDwg(answer);   // to extract  TABLE CREATE
     if (this.paramConfig.DEBUG_FLAG) console.log("dwgDef:", dwgDef)
 
-    if ((typeof dwgDef == "undefined") ) {
+    if ((typeof dwgDef == "undefined")) {
       let userMSg = "No dwg found in answer. Try again."
       var dialogStruc = {
         msg: userMSg,
@@ -2190,95 +2297,95 @@ Ignore decorative text.
       return;
     }
     //this.saveCompletedOutput.emit(dwgDef);
-  
-  //  return;
-     
-      let Stage = 1;
-        let shapeOptions = dwgDef['shapeOptions']
-        for (let i =0; i < shapeOptions.length; i++) {
-            let id = shapeOptions[i].id;
-            // let width = shapeOptions[i].width;
-            // let height = shapeOptions[i].height;
-            let x = shapeOptions[i].x;
-            let y = shapeOptions[i].y;
-            
-            
-            let type = shapeOptions[i].dataItem.type;
-            let title = shapeOptions[i].dataItem.title;
-            let typesToIgnoreCopy =['pipe','label', 'arrow']
-            //typesToIgnoreCopy.includes(type)) {
-            let copiedShape;
-          
-        
-              let Question2 = this.buildScreenToDisplayQuestion2Loop(dwgDef, id);
-              this.helpText = this.helpText + "Generating shape " + id + ": ";
-              this.form.patchValue({ 'helpText': this.helpText });
-              console.log("Question2 for multi Loop:", Question2)
-              answer = await this.callAI_API(1, Question2, this.systemMsgs[0], Stage);  // Get screens_to_display_summary
-               if (this.formInitialValues['STANDARD_SHAPES'] 
-                && !typesToIgnoreCopy.includes(type)  ){
-                  copiedShape = this.getFromdwgDef(dwgDef, type, id,x,y, title);
-                }
-            console.log("copiedShape:type:post:",id, copiedShape);
-             console.log("got this answer for :", id, " at stage :", Stage, "answer:",answer,copiedShape)
-            
-            Stage++;
 
-           dwgDef = this.appendShapeToDwg(dwgDef,answer, id, copiedShape )
-          // //this.mergeAnswer_1(answer);
-          if (!this.isComplete)
-             return;
+    //  return;
 
-          }
-      console.log("final dwgDef after multi Loop:", JSON.stringify(dwgDef, null, 2))
+    let Stage = 1;
+    let shapeOptions = dwgDef['shapeOptions']
+    for (let i = 0; i < shapeOptions.length; i++) {
+      let id = shapeOptions[i].id;
+      // let width = shapeOptions[i].width;
+      // let height = shapeOptions[i].height;
+      let x = shapeOptions[i].x;
+      let y = shapeOptions[i].y;
 
-      console.log("final dwgDef after multi Loop:json:", dwgDef)
-      this.saveCompletedOutput.emit(dwgDef);
-      // this.screens_to_displayFix();
-      this.answer = answer;
-      this.answer_relations = answer;
-      //return;  
-    
 
- 
+      let type = shapeOptions[i].dataItem.type;
+      let title = shapeOptions[i].dataItem.title;
+      let typesToIgnoreCopy = ['pipe', 'label', 'arrow']
+      //typesToIgnoreCopy.includes(type)) {
+      let copiedShape;
+
+
+      let Question2 = this.buildScreenToDisplayQuestion2Loop(dwgDef, id);
+      this.helpText = this.helpText + "Generating shape " + id + ": ";
+      this.form.patchValue({ 'helpText': this.helpText });
+      console.log("Question2 for multi Loop:", Question2)
+      answer = await this.callAI_API(1, Question2, this.systemMsgs[0], Stage);  // Get screens_to_display_summary
+      if (this.formInitialValues['STANDARD_SHAPES']
+        && !typesToIgnoreCopy.includes(type)) {
+        copiedShape = this.getFromdwgDef(dwgDef, type, id, x, y, title);
+      }
+      console.log("copiedShape:type:post:", id, copiedShape);
+      console.log("got this answer for :", id, " at stage :", Stage, "answer:", answer, "copiedShape:", copiedShape)
+
+      Stage++;
+
+      dwgDef = this.appendShapeToDwg(dwgDef, answer, id, copiedShape)
+      // //this.mergeAnswer_1(answer);
+      if (!this.isComplete)
+        return;
+
+    }
+    console.log("final dwgDef after multi Loop:", JSON.stringify(dwgDef, null, 2))
+
+    console.log("final dwgDef after multi Loop:json:", dwgDef)
+    this.saveCompletedOutput.emit(dwgDef);
+    // this.screens_to_displayFix();
+    this.answer = answer;
+    this.answer_relations = answer;
+    //return;  
+
+
+
 
   }
 
-  public getFromdwgDef(dwgDef, type, id,x,y, title){
-    
+  public getFromdwgDef(dwgDef, type, id, x, y, title) {
+
     let answer1;
     let copiedShape;
-    const container = dwgDef['shapeOptions'].find((s: any) =>   s.dataItem.type === type && s.id !== id 
-                && typeof s.dataItem.definition.shapes != "undefined"
-                && s.dataItem.definition.shapes.length != 0);
-            if (typeof container != "undefined"){
-              answer1 = {...dwgDef};
-              copiedShape = {...container}
-              copiedShape.id =id;
-              // copiedShape.width =width;
-              // copiedShape.height =height;
-              copiedShape.x =x;
-              copiedShape.y =y;
-              copiedShape.dataItem.title =title;
-              
-              answer1['shapeOptions'] =  [];
-              answer1['shapeOptions'].push(copiedShape)
-              answer1 = "```json" + JSON.stringify(answer1, null, 2) + "```";
-              
-              console.log("found container:", container, "for id:", id, "and type :", type,dwgDef, 'found container::',copiedShape); 
-            }
-            console.log("copiedShape:type:return:",id, copiedShape);
-              return copiedShape;
+    const container = dwgDef['shapeOptions'].find((s: any) => s.dataItem.type === type && s.id !== id
+      && typeof s.dataItem.definition.shapes != "undefined"
+      && s.dataItem.definition.shapes.length != 0);
+    if (typeof container != "undefined") {
+      answer1 = { ...dwgDef };
+      copiedShape = { ...container }
+      copiedShape.id = id;
+      // copiedShape.width =width;
+      // copiedShape.height =height;
+      copiedShape.x = x;
+      copiedShape.y = y;
+      copiedShape.dataItem.title = title;
+
+      answer1['shapeOptions'] = [];
+      answer1['shapeOptions'].push(copiedShape)
+      answer1 = "```json" + JSON.stringify(answer1, null, 2) + "```";
+
+      console.log("found container:", container, "for id:", id, "and type :", type, dwgDef, 'found container::', copiedShape);
+    }
+    console.log("copiedShape:type:return:", id, copiedShape);
+    return copiedShape;
   }
 
 
   public singleMultiFlag = false;
 
-  
+
 
   public toCreateMS = [];
   public ERDFull = true;
-  public singleMultiMsg = ""; 
+  public singleMultiMsg = "";
   public erDiagramFull = "";
   public erDiagramNames = "";
   public display_recommendations = {};
@@ -2298,28 +2405,86 @@ Ignore decorative text.
 
 
 
-  public singleMulti(){
-    
-    
+  public singleMulti() {
+
+
     this.formInitialValues['STANDARD_SHAPES'] = !this.formInitialValues['STANDARD_SHAPES'];
     if (!this.formInitialValues['STANDARD_SHAPES'])
       this.singleMultiMsg = "Standard"
     else
-    this.singleMultiMsg = "non-standard"
+      this.singleMultiMsg = "non-standard"
   }
- 
 
 
 
+  // Add to ai-ai-form.component.ts
+
+  /**
+   * Copy the answer to clipboard
+   */
+  copyAnswer(): void {
+    const answer = this.form.get('answer')?.value;
+    if (answer) {
+      navigator.clipboard.writeText(answer).then(() => {
+        this.showMsg('Copied to clipboard!', 'Success');
+      }).catch(() => {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = answer;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        this.showMsg('Copied to clipboard!', 'Success');
+      });
+    }
+  }
+
+  /**
+   * Download the answer as a JSON file
+   */
+  downloadAnswer(): void {
+    const answer = this.form.get('answer')?.value;
+    if (answer) {
+      try {
+        // Try to parse as JSON for pretty formatting
+        const json = JSON.parse(answer);
+        const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagram-configuration.json';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } catch {
+        // If not JSON, download as text
+        const blob = new Blob([answer], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagram-output.txt';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    }
+
+  }
 
 
 
-
-
-
-
-
-
-
+removeImage(): void {
+  this.form.patchValue({ DIAGRAM_IMAGE: null });
+  // Also clear any stored file data
+  if (this.myFiles) {
+    delete this.myFiles['DIAGRAM_IMAGE'];
+  }
+}
+/**
+ * Clear the help text / log
+ */
+clearHelpText(): void {
+  this.form.get('helpText')?.setValue('');
+  this.helpText = '';
+}
 
 }

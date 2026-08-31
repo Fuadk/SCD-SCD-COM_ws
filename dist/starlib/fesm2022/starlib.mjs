@@ -1390,11 +1390,12 @@ class starServices {
     }
     onNew_form(e, object) {
         if (object.paramConfig.DEBUG_FLAG)
-            console.log("onNew: object.masterKey:" + object.masterKey);
+            console.log("onNew: object.masterKey:", object.masterKey, { ...object.form.value });
         object.myFiles = [];
         // object.img_gallery = [];
         // object.img_arr = [];
         object.form.reset(object.formInitialValues, { emitEvent: object.emitEvent != null ? object.emitEvent : true });
+        console.log("checking:", object.formInitialValues, object.form.value);
         object.clearCompletedOutput.emit(object.formInitialValues);
         object.isSearch = false;
         object.isNew = true;

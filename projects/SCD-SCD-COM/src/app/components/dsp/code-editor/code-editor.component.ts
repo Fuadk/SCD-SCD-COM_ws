@@ -82,7 +82,27 @@ export class CodeEditorComponent
   @Input() label: string = '';
   @Input() hasError: boolean = false;
   @Input() errorMessage: string = '';
-  @Input() value: string = '';
+  @Input() set value(val: string) {
+  const newValue = val || '';
+  console.log('CodeEditor received value:', newValue, this.options);
+  
+  if (newValue !== this.internalValue) {
+    this.internalValue = newValue;
+    
+    // Update the editor instance
+    if (this.editorInstance) {
+      this.editorInstance.setValue(newValue);
+    }
+    
+    // Update the codeModel
+    if (this.codeModel) {
+      this.codeModel = {
+        ...this.codeModel,
+        value: newValue
+      };
+    }
+  }
+}
   @Input() modelId: string = crypto.randomUUID();
 
   @Output() valueChange = new EventEmitter<string>();

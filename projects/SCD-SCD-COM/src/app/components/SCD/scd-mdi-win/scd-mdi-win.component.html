@@ -51,7 +51,7 @@ style="height: 100vh;  display: flex;  flex-direction: column;" class="form-bord
     <button kendoButton [icon]="'plus'" themeColor="primary" (click)="createTabGroup('Group ' + (tabGroups.length + 1))">
       New Group
     </button>
-    
+    </div>
     <!-- ===== KENDO DROPDOWN BUTTON ===== -->
     <kendo-dropdownbutton 
       [icon]="'window'"
@@ -61,7 +61,7 @@ style="height: 100vh;  display: flex;  flex-direction: column;" class="form-bord
       class="window-menu-btn">
       {{ getTotalWindowCount() }} windows
     </kendo-dropdownbutton>
-  </div>
+  
 
   <!-- Tab Host -->
   <div class="tab-host" [class.tab-host-dark]="isDarkTheme" style="flex: 1; display: flex; position: relative;">

@@ -58,6 +58,7 @@ export class ScdShapeDisplayGeneralScdSdgShapeDisplayGeneralFormdivsComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -99,7 +100,7 @@ public labelSHAPE_DISPLAY_GENERAL_IDVisible=true;
 public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
 public labelEXPRESSION_DATATop=false;
-public labelEXPRESSION_DATAVisible=true;
+public labelEXPRESSION_DATAVisible=false;
 public labelFORMATTop=false;
 public labelFORMATVisible=true;
 public labelOVERFLOWTop=false;
@@ -565,9 +566,7 @@ public disableHEIGHT = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FORMAT\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FORMAT\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrFORMAT"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"OVERFLOW\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrOVERFLOW"},
@@ -581,8 +580,6 @@ this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrSHAPE_ID = [];
-
 public lkpArrFORMAT = [];
 
 public lkpArrOVERFLOW = [];
@@ -592,11 +589,6 @@ public lkpArrDECIMAL_PLACES = [];
 public lkpArrJUSTIFICATION = [];
 
 public lkpArrLEADING_CHARACTER = [];
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetFORMAT(CODE: any): any {
 var rec = this.lkpArrFORMAT.find((x:any) => x.CODE === CODE);
@@ -625,6 +617,8 @@ return rec;
 
 onChanges(): void {
 this.form.get('SHAPE_DISPLAY_GENERAL_ID').valueChanges.subscribe(val => {
+});
+this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
 });
 this.form.get('FIELD_LENGTH').valueChanges.subscribe(val => {
 });
@@ -752,31 +746,42 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    
-if (ComponentConfig.masterSelector != null) {
-    //alert(ComponentConfig.masterSelector )
-    let masterSelector = ComponentConfig.masterSelector;
-    if (masterSelector.includes("string")){
+    if (ComponentConfig.masterParams != null) {
+      console.log("WHEN_NOTIFY:ComponentConfig.masterParams:", ComponentConfig.masterParams.data)
+      if (ComponentConfig.masterParams.data.SHAPE_TYPE == "numeric display") {
+        var rec = this.FormStepsArr.find((x: any) => x.CODE == 5);
+        if (typeof rec != "undefined") {
+          rec.visible = false;
+        }
+      }
+      if (ComponentConfig.masterParams.data.action == "new") {
+        this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
+        this.form.reset(this.formInitialValues);
+        this.form.markAsDirty();
+      }
+    }
+
+    if (ComponentConfig.masterSelector != null) {
+      //alert(ComponentConfig.masterSelector )
+      let masterSelector = ComponentConfig.masterSelector;
+      if (masterSelector.includes("string")) {
         this.generalMode = "STRING";
-         //alert(this.generalMode);
-    }
-       
-    switch (this.generalMode) {
+        //alert(this.generalMode);
+      }
+
+      switch (this.generalMode) {
         case 'STRING':
-            this.FormStepsArr[2].visible = false;
-            this.FormStepsArr[4].visible = false;
-            //alert(this.generalMode);
-            break;
+          this.FormStepsArr[2].visible = false;
+          this.FormStepsArr[4].visible = false;
+          //alert(this.generalMode);
+          break;
         default:
-            break;
+          break;
+      }
     }
-}
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
-this.form.reset(this.formInitialValues);
-this.form.markAsDirty();
-
+    
     
   }
   async WHEN_CREATE_RECORD(){
@@ -889,8 +894,8 @@ async WHEN_VALIDATE_ITEM_EXPRESSION_DATA(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['EXPRESSION_DATA'] != "undefined" ) 
       this.form.controls['EXPRESSION_DATA'].setErrors({invalid: true}); 
- this.valueChange.emit(value);
- this.form.get('EXPRESSION_DATA')?.setValue(value);
+this.form.get('EXPRESSION_DATA')?.setValue(value);
+this.form.markAsDirty();
  // Code goes here 
  
 
@@ -1163,12 +1168,15 @@ async WHEN_VALIDATE_ITEM_HEIGHT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_SHAPE_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_SHAPE_ID(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  } 
+ } 
  async onValueChange_EXPRESSION_DATA(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_EXPRESSION_DATA(value); if ( this.FORM_TRIGGER_FAILURE) return; 

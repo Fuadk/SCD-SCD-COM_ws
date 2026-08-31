@@ -56,6 +56,7 @@ export class ScdExpressionEditorScdEeExpressionEditorFormComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -103,7 +104,7 @@ public labelAI_RESPONSEVisible=true;
 public labelSUBMITTop=false;
 public labelSUBMITVisible=true;
 public labelEXPRESSIONTop=false;
-public labelEXPRESSIONVisible=true;
+public labelEXPRESSIONVisible=false;
 public labelIF_KEYTop=false;
 public labelIF_KEYVisible=false;
 public labelLOGICAL_KEYTop=false;
@@ -813,7 +814,7 @@ public printScreen(){
 
 }
   async  PRE_INSERT(formGroup){
-    
+    this.FORM_TRIGGER_FAILURE = true;
     
   }
   async  POST_INSERT(formGroup){
@@ -821,7 +822,13 @@ public printScreen(){
    
   }
   async  PRE_QUERY (formGroup){
-    
+    if (formGroup.EXPRESSION_DATA) {
+        console.log('CodeEditor received value:0:', formGroup.EXPRESSION_DATA);
+      this.form.patchValue({ EXPRESSION: formGroup.EXPRESSION_DATA });
+      // Force update the form control
+      this.form.get('EXPRESSION')?.updateValueAndValidity();
+    }
+    this.FORM_TRIGGER_FAILURE = true;
    
   }
   async  POST_QUERY(formGroup){
@@ -844,8 +851,6 @@ async WHEN_VALIDATE_ITEM_EXPRESSION_EDITOR_ID(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['EXPRESSION_EDITOR_ID'] != "undefined" ) 
       this.form.controls['EXPRESSION_EDITOR_ID'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -866,8 +871,6 @@ async WHEN_VALIDATE_ITEM_APPLICATION_ID(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['APPLICATION_ID'] != "undefined" ) 
       this.form.controls['APPLICATION_ID'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -888,8 +891,6 @@ async WHEN_VALIDATE_ITEM_AI_EXPRESSION(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['AI_EXPRESSION'] != "undefined" ) 
       this.form.controls['AI_EXPRESSION'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -910,8 +911,6 @@ async WHEN_VALIDATE_ITEM_AI_RESPONSE(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['AI_RESPONSE'] != "undefined" ) 
       this.form.controls['AI_RESPONSE'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -932,8 +931,6 @@ async WHEN_VALIDATE_ITEM_SUBMIT(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['SUBMIT'] != "undefined" ) 
       this.form.controls['SUBMIT'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -954,8 +951,8 @@ async WHEN_VALIDATE_ITEM_EXPRESSION(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['EXPRESSION'] != "undefined" ) 
       this.form.controls['EXPRESSION'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
+    console.log("WHEN_VALIDATE_ITEM_EXPRESSION:value:",value)
+ this.valueChange.emit(value);
  // Code goes here 
  
 
@@ -976,8 +973,6 @@ async WHEN_VALIDATE_ITEM_IF_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['IF_KEY'] != "undefined" ) 
       this.form.controls['IF_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -998,8 +993,6 @@ async WHEN_VALIDATE_ITEM_LOGICAL_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['LOGICAL_KEY'] != "undefined" ) 
       this.form.controls['LOGICAL_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1020,8 +1013,6 @@ async WHEN_VALIDATE_ITEM_RELATIONAL_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['RELATIONAL_KEY'] != "undefined" ) 
       this.form.controls['RELATIONAL_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1042,8 +1033,6 @@ async WHEN_VALIDATE_ITEM_ARITHMETIC_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['ARITHMETIC_KEY'] != "undefined" ) 
       this.form.controls['ARITHMETIC_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1064,8 +1053,6 @@ async WHEN_VALIDATE_ITEM_BITWISE_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['BITWISE_KEY'] != "undefined" ) 
       this.form.controls['BITWISE_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1086,8 +1073,6 @@ async WHEN_VALIDATE_ITEM_FUNCTIONS_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['FUNCTIONS_KEY'] != "undefined" ) 
       this.form.controls['FUNCTIONS_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1108,8 +1093,6 @@ async WHEN_VALIDATE_ITEM_TAGS_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['TAGS_KEY'] != "undefined" ) 
       this.form.controls['TAGS_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1130,8 +1113,6 @@ async WHEN_VALIDATE_ITEM_ALARMS_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['ALARMS_KEY'] != "undefined" ) 
       this.form.controls['ALARMS_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1152,8 +1133,6 @@ async WHEN_VALIDATE_ITEM_LINE(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['LINE'] != "undefined" ) 
       this.form.controls['LINE'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1174,8 +1153,6 @@ async WHEN_VALIDATE_ITEM_COLUMN(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['COLUMN'] != "undefined" ) 
       this.form.controls['COLUMN'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1196,8 +1173,6 @@ async WHEN_VALIDATE_ITEM_OPEN_AI(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['OPEN_AI'] != "undefined" ) 
       this.form.controls['OPEN_AI'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 
@@ -1223,8 +1198,6 @@ async WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['SYNTAX_CHECK_KEY'] != "undefined" ) 
       this.form.controls['SYNTAX_CHECK_KEY'].setErrors({invalid: true}); 
- this.valueChange.emit(value); 
-
  // Code goes here 
  
 

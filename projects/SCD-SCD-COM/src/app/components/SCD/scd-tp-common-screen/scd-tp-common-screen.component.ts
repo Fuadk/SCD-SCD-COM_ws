@@ -132,7 +132,7 @@ public labelTAB_INDEXVisible=true;
 public labelINSERT_VARIABLETop=true;
 public labelINSERT_VARIABLEVisible=true;
 
-public visibleSHAPE_ID = false;
+public visibleSHAPE_ID = true;
 public visibleDISPLAY_ID = true;
 public visibleSHAPE_TYPE = true;
 public visibleICON_ID = false;
@@ -766,8 +766,8 @@ public printScreen(){
             setTimeout(() => {
                 this.isSearch = true;
                 let form: any = {};
-                form.SHAPE_ID = masterParams.data.MENU_ID;
-                this.SHAPE_ID = masterParams.data.MENU_ID
+                form.SHAPE_ID = masterParams.data.SHAPE_ID;
+                this.SHAPE_ID = masterParams.data.SHAPE_ID
                 console.log("User masterParams:", masterParams.data.DIAGRAM_ID, masterParams, form, this.form, "this.isSearch:", this.isSearch)
                 this.executeQuery(form);
             }, 300);
@@ -1339,6 +1339,9 @@ async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
   }
 public SHAPE_ID = null;
 public shapeType = null;
+
+
+//sssss
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

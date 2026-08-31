@@ -61,22 +61,12 @@
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
 		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.SHAPE_ID','Shape Id') + ' *'}}</label>
-		<kendo-combobox  #SHAPE_ID class="form-field-combobox"  [formControlName]="'SHAPE_ID'"
-		[data]="lkpArrSHAPE_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-
+		<input   formControlName="SHAPE_ID"
+ kendoTextBox #SHAPE_ID
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
-		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
- (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SHAPE_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.SHAPE_ID_Hint','Please enter Shape Id.')"
+		(click)="ON_CLICK_SHAPE_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHAPE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_DATA >

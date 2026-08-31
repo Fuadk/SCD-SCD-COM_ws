@@ -105,7 +105,8 @@
 		modelId="EXPRESSION" 
 		language="javascript" theme="vs-dark" 
 		(valueChange)="onValueChange_EXPRESSION($event)" 
-		width="800px" height="100px" >
+		formControlName="EXPRESSION"
+		width="900px" height="100px" >
  </app-code-editor> 
 	</kendo-formfield>
 
@@ -118,7 +119,7 @@
 		<kendo-combobox  #IF_KEY class="form-field-combobox"  [formControlName]="'IF_KEY'"
 		[data]="lkpArrIF_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.IF_KEY_Hint','If')"		(click)="ON_CLICK_IF_KEY($event)"
- (valueChange)="onValueChange_IF_KEY($event)"      adaptiveMode="auto" 
+ (valueChange)="onValueChange_IF_KEY($event)"  style="width : 80px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -137,7 +138,7 @@
 		<kendo-combobox  #LOGICAL_KEY class="form-field-combobox"  [formControlName]="'LOGICAL_KEY'"
 		[data]="lkpArrLOGICAL_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LOGICAL_KEY_Hint','Logical')"		(click)="ON_CLICK_LOGICAL_KEY($event)"
- (valueChange)="onValueChange_LOGICAL_KEY($event)"      adaptiveMode="auto" 
+ (valueChange)="onValueChange_LOGICAL_KEY($event)"  style="width : 100px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -156,7 +157,7 @@
 		<kendo-combobox  #RELATIONAL_KEY class="form-field-combobox"  [formControlName]="'RELATIONAL_KEY'"
 		[data]="lkpArrRELATIONAL_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.RELATIONAL_KEY_Hint','Relational')"		(click)="ON_CLICK_RELATIONAL_KEY($event)"
- (valueChange)="onValueChange_RELATIONAL_KEY($event)"      adaptiveMode="auto" 
+ (valueChange)="onValueChange_RELATIONAL_KEY($event)"  style="width : 150px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -175,7 +176,7 @@
 		<kendo-combobox  #ARITHMETIC_KEY class="form-field-combobox"  [formControlName]="'ARITHMETIC_KEY'"
 		[data]="lkpArrARITHMETIC_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.ARITHMETIC_KEY_Hint','Arithmetic')"		(click)="ON_CLICK_ARITHMETIC_KEY($event)"
- (valueChange)="onValueChange_ARITHMETIC_KEY($event)"      adaptiveMode="auto" 
+ (valueChange)="onValueChange_ARITHMETIC_KEY($event)"  style="width : 150px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -194,7 +195,7 @@
 		<kendo-combobox  #BITWISE_KEY class="form-field-combobox"  [formControlName]="'BITWISE_KEY'"
 		[data]="lkpArrBITWISE_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.BITWISE_KEY_Hint','Bitwise')"		(click)="ON_CLICK_BITWISE_KEY($event)"
- (valueChange)="onValueChange_BITWISE_KEY($event)"      adaptiveMode="auto" 
+ (valueChange)="onValueChange_BITWISE_KEY($event)"  style="width : 120px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -213,7 +214,7 @@
 		<kendo-combobox  #FUNCTIONS_KEY class="form-field-combobox"  [formControlName]="'FUNCTIONS_KEY'"
 		[data]="lkpArrFUNCTIONS_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.FUNCTIONS_KEY_Hint','Functions')"		(click)="ON_CLICK_FUNCTIONS_KEY($event)"
- (valueChange)="onValueChange_FUNCTIONS_KEY($event)"      adaptiveMode="auto" 
+ (valueChange)="onValueChange_FUNCTIONS_KEY($event)"  style="width : 150px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>

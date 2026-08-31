@@ -183,13 +183,24 @@
   <svg *ngIf="freehandMode && freehandPreviewPath" class="freehand-preview" aria-hidden="true">
     <path [attr.d]="freehandPreviewPath" [attr.stroke]="strokeColor"></path>
   </svg>
-  <kendo-diagram [shapes]="shapes" #diagram [connections]="connections" [shapeDefaults]="shapeDefaults"
-    (select)="ON_EVENT('select', $event)" [editable]="editable" (mouseEnter)="ON_EVENT('mouseEnter', $event)"
-    (contextmenu)="onDiagramContextMenu($event)" (click)="onDiagramClick($event)"
-    (zoomEnd)="ON_EVENT('zoomEnd', $event)" (zoomStart)="ON_EVENT('zoomStart', $event)" (pan)="ON_EVENT('pan', $event)"
-    (shapeBoundsChange)="ON_EVENT('shapeBoundsChange', $event)" (dragStart)="ON_EVENT('dragStart', $event)"
-    (dragEnd)="ON_EVENT('dragEnd', $event)" (change)="ON_EVENT('change', $event)" (drag)="ON_EVENT('drag', $event)"
-    (mouseLeave)="ON_EVENT('mouseLeave', $event)">
+  <kendo-diagram [shapes]="shapes" #diagram
+      [connections]="connections"
+      [shapeDefaults]="shapeDefaults" 
+      (select)="ON_EVENT('select', $event)" 
+      [editable]="editable" 
+      (mouseEnter)="ON_EVENT('mouseEnter', $event)"
+      (contextmenu)="onDiagramContextMenu($event)"
+      (click)="onDiagramClick($event)"
+      (zoomEnd)="ON_EVENT('zoomEnd', $event)"
+      (zoomStart)="ON_EVENT('zoomStart', $event)"
+      (pan)="ON_EVENT('pan', $event)"
+      (shapeBoundsChange)="ON_EVENT('shapeBoundsChange', $event)"
+      (dragStart)="ON_EVENT('dragStart', $event)"
+      (dragEnd)="ON_EVENT('dragEnd', $event)"
+      (change)="ON_EVENT('change', $event)"
+      (drag)="ON_EVENT('drag', $event)"
+      (mouseLeave)="ON_EVENT('mouseLeave', $event)"
+      >
   </kendo-diagram>
 
   <div *ngIf="popupVisible" [ngStyle]="{
@@ -214,7 +225,8 @@
 </kendo-contextmenu>
 
 <kendo-window [hidden]="!AIFormOpened" title="Create Diagram" (close)="AIFormOpened = false" [minWidth]="500"
-  [width]="500" [height]="500" [state]="isPhonePortrait ? 'maximized' : 'default'">
+  [top]=100 [left]=100
+  [width]="800" [height]="700" [state]="isPhonePortrait ? 'maximized' : 'default'">
   <app-ai-ai-form (saveCompletedOutput)="saveFormCompletedHandler($event)"
     [setComponentConfig_Input]="DSP_AIFormConfig">
   </app-ai-ai-form>

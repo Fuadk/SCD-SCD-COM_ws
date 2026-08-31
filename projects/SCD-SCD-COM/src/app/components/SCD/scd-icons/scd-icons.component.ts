@@ -22,10 +22,8 @@ export class ScdIconsComponent implements OnInit {
   constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
    this.router = router;
   this.title =  this.starServices.getNLS([],"scd_icons.scd_icons.component_title","");
-    this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
+    this.paramConfig = getParamConfig();
   }
   public showToolBar = false;
   public paramConfig; 
@@ -47,7 +45,9 @@ export class ScdIconsComponent implements OnInit {
   public form_0_SCD_ICONS : scdiconsScdScdIconsFormQuery;
   public card_1_SCD_ICONS : scdiconsScdScdIconsCard;
   public  SCD_ICONSForm_0Config : componentConfigDef;
+  public  hide_comp_1 = false
   public  SCD_ICONSCard_1Config : componentConfigDef;
+  public  hide_comp_2 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdIcons";
 
@@ -56,7 +56,7 @@ export class ScdIconsComponent implements OnInit {
   }
   private componentConfigChangeEvent!: Subscription;
   public compSelector = 'app-scd-icons';
-  public masterKeyNameArr = ["id"];
+  public masterKeyNameArr = ["id","category","svg_name"];
 
   public masterINSERT = 'INSERT_SCD_ICONS';
   public masterDataSource = 'SCD_ICONS';
@@ -90,6 +90,7 @@ export class ScdIconsComponent implements OnInit {
    this.SCD_ICONSForm_0Config.title = this.starServices.getNLS([],"scd_icons.scd_icons.compsTitleID1","Search");
    this.SCD_ICONSForm_0Config.isMaster = true;
    this.SCD_ICONSForm_0Config.isSearchScreen = this.isSearchScreen;
+   this.SCD_ICONSForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_ICONSForm_0Config.queryable = false;
      this.SCD_ICONSForm_0Config.removeable = false;
@@ -101,6 +102,7 @@ export class ScdIconsComponent implements OnInit {
    this.SCD_ICONSCard_1Config.title = this.starServices.getNLS([],"scd_icons.scd_icons.compsTitleID2","Icons");
    this.SCD_ICONSCard_1Config.isChild = true;
    this.SCD_ICONSCard_1Config.masterSelector = 'app-scd-icons';
+   this.SCD_ICONSCard_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_ICONSCard_1Config.navigable = false;
      //this.SCD_ICONSCard_1Config.insertable = true;
@@ -112,8 +114,8 @@ export class ScdIconsComponent implements OnInit {
      if (typeof this.componentConfigChangeEvent !== 'undefined') this.componentConfigChangeEvent.unsubscribe();
   }
   public readCompletedHandler( form_SCD_ICONS) {
-    let masterKeyArr = [form_SCD_ICONS.id];
-    let masterKeyNameArr = ["id"];
+    let masterKeyArr = [form_SCD_ICONS.id,form_SCD_ICONS.category,form_SCD_ICONS.svg_name];
+    let masterKeyNameArr = ["id","category","svg_name"];
      if (this.isSearchScreen == true) 
 	  {
     	this.SCD_ICONSCard_1Config = new componentConfigDef();
@@ -125,8 +127,8 @@ export class ScdIconsComponent implements OnInit {
     //   this.card_1_SCD_ICONS[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
     this.SCD_ICONSCard_1Config = new componentConfigDef();
-    this.SCD_ICONSCard_1Config.masterKeyArr =  [form_SCD_ICONS.id];
-    this.SCD_ICONSCard_1Config.masterKeyNameArr =  ["id"];
+    this.SCD_ICONSCard_1Config.masterKeyArr =  [form_SCD_ICONS.id,form_SCD_ICONS.category,form_SCD_ICONS.svg_name];
+    this.SCD_ICONSCard_1Config.masterKeyNameArr =  ["id","category","svg_name"];
     this.SCD_ICONSCard_1Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
      this.SCD_ICONSCard_1Config.queryable = false;
@@ -138,7 +140,7 @@ export class ScdIconsComponent implements OnInit {
      await this.starServices.sleep(200);
     this.SCD_ICONSCard_1Config = new componentConfigDef();
   }
-  public keyNameArr = ["id"];
+  public keyNameArr = ["id","category","svg_name"];
 
   public callreadSavedMaster( ) {
     let masterTable = 'SCD_ICONS' 
@@ -161,12 +163,12 @@ export class ScdIconsComponent implements OnInit {
    }
  } 
   public saveCompletedHandler( form_SCD_ICONS) {
- let key:any = [form_SCD_ICONS.id]; 
+ let key:any = [form_SCD_ICONS.id,form_SCD_ICONS.category,form_SCD_ICONS.svg_name]; 
  if ( key != '') { 
     this.SCD_ICONSCard_1Config = new componentConfigDef();
     this.SCD_ICONSCard_1Config.masterSaved = form_SCD_ICONS;
-    this.SCD_ICONSCard_1Config.masterKeyArr =  [form_SCD_ICONS.id];
-    this.SCD_ICONSCard_1Config.masterKeyNameArr =  ["id"];
+    this.SCD_ICONSCard_1Config.masterKeyArr =  [form_SCD_ICONS.id,form_SCD_ICONS.category,form_SCD_ICONS.svg_name];
+    this.SCD_ICONSCard_1Config.masterKeyNameArr =  ["id","category","svg_name"];
   
     this.saveTriggerOutput.emit(form_SCD_ICONS);
   } 
@@ -176,6 +178,7 @@ export class ScdIconsComponent implements OnInit {
   }
   public saveTriggerHandler(event){
         }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Input() public set detail_Input(form: any) {
     if (typeof form !== "undefined")
     {
@@ -192,6 +195,19 @@ export class ScdIconsComponent implements OnInit {
     }
     this.formValidationChangedOutput.emit(formValidation)
   }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -225,22 +241,24 @@ export class ScdIconsComponent implements OnInit {
              this.SCD_ICONSCard_1Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ICONSCard_1Config.title = this.starServices.getNLS([],"scd_icons.scd_icons.compsTitleID2","Icons");
            this.setSteps(this);
-           }, 400);
+           }, 500);
        }
   
+       this.SCD_ICONSForm_0Config = new componentConfigDef();
+       this.SCD_ICONSCard_1Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
+              this.SCD_ICONSForm_0Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ICONSCard_1Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.SCD_ICONSForm_0Config = new componentConfigDef();
-       this.SCD_ICONSForm_0Config = ComponentConfig;
-       this.SCD_ICONSCard_1Config = new componentConfigDef();
-       this.SCD_ICONSCard_1Config = ComponentConfig;
-      if (ComponentConfig.masterSaved != null)
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_ICONSForm_0Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ICONSCard_1Config.showToolBar = ComponentConfig.showToolBar;
+       }
+      if (ComponentConfig.masterSaved != null)//here1
       {
        this.SCD_ICONSForm_0Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_ICONSCard_1Config.masterSaved = ComponentConfig.masterSaved;
       }
       if (ComponentConfig.newRec != null)
       {
@@ -270,7 +288,6 @@ export class ScdIconsComponent implements OnInit {
           }
        }
       }
-     }
     }
   }
    public card_1_SCD_ICONSOpened = false;
@@ -283,14 +300,34 @@ export class ScdIconsComponent implements OnInit {
   
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

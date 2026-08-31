@@ -148,7 +148,7 @@ import { ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent } from '../com
 import { ScdShapeStatesDefComponent } from '../components/SCD/scd-shape-states-def/scd-shape-states-def.component';
 import { ScdTextGeneralScdTgTextGeneralFormComponent } from '../components/SCD/scd-tg-text-general/scd-tg-text-general.component';
 import { ScdTextGeneralComponent } from '../components/SCD/scd-text-general/scd-text-general.component';
-import { ScdShapeScdTpCommonScreenFormComponent } from '../components/SCD/scd-tp-common-screen/scd-tp-common-screen.component';
+
 import { ScdTextGeneralScdTgTextGeneral1FormComponent } from '../components/SCD/scd-tg-text-general-1/scd-tg-text-general-1.component';
 import { ScdTextPropertiesComponent } from '../components/SCD/scd-text-properties/scd-text-properties.component';
 import { ScdShapeGeneralScdSgShapeGeneralFormComponent } from '../components/SCD/scd-sg-shape-general/scd-sg-shape-general.component';
@@ -299,6 +299,7 @@ import { ScdShapeExpressionScdScdShapeExpressionGridGridComponent } from '../com
 import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
 import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
 import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+import { ScdShapeScdTpCommonScreenFormComponent } from '../components/SCD/scd-tp-common-screen/scd-tp-common-screen.component';
 const scdRoutes: Routes = [
  
 
@@ -378,7 +379,7 @@ const scdRoutes: Routes = [
 		{ path: 'scd_shape_states_def', component: ScdShapeStatesDefComponent },
 		{ path: 'scd_tg_text_general', component: ScdTextGeneralScdTgTextGeneralFormComponent },
 		{ path: 'scd_text_general', component: ScdTextGeneralComponent },
-		{ path: 'scd_tp_common_screen', component: ScdShapeScdTpCommonScreenFormComponent },
+
 		{ path: 'scd_tg_text_general_1', component: ScdTextGeneralScdTgTextGeneral1FormComponent },
 		{ path: 'scd_text_properties', component: ScdTextPropertiesComponent },
 		{ path: 'scd_sg_shape_general', component: ScdShapeGeneralScdSgShapeGeneralFormComponent },
@@ -520,6 +521,7 @@ const scdRoutes: Routes = [
 		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
 		{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
 		{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+		{ path: 'scd_tp_common_screen', component: ScdShapeScdTpCommonScreenFormComponent },
 ];
 
 
@@ -597,7 +599,7 @@ const scdRoutes: Routes = [
 		ScdShapeStatesDefComponent,
 		ScdTextGeneralScdTgTextGeneralFormComponent,
 		ScdTextGeneralComponent,
-		ScdShapeScdTpCommonScreenFormComponent,
+
 		ScdTextGeneralScdTgTextGeneral1FormComponent,
 		ScdTextPropertiesComponent,
 		ScdShapeGeneralScdSgShapeGeneralFormComponent,
@@ -744,6 +746,7 @@ const scdRoutes: Routes = [
 		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
 		ScdExpressionEditorScdEeExpressionEditorFormComponent,
 		ScdApplicationScdScdApplicationFormFormComponent,
+		ScdShapeScdTpCommonScreenFormComponent,
   ],
   
   imports: [

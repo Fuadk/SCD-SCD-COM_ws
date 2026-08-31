@@ -898,39 +898,53 @@ public printScreen(){
 
  async ON_CLICK_CONTEXT_MENU(menuType,event){
      let shapeInfo = this.getShapeInfo();
-    let shapeType = shapeInfo['SHAPE_TYPE'];
-    console.log("DEBUG_IT:ON_CLICK_MENU:", event, menuType, this.currentShapeType,this.currentShapeId, shapeType)
-    let Id = "";
-    if (menuType == "DROPDOWN") {
-      Id = event.Id;
-      shapeType = event.text;
+let shapeType = shapeInfo['SHAPE_TYPE'];
+let action = "new";
+let SHAPE_ID = "";
+console.log("DEBUG_IT:ON_CLICK_MENU:event:", event, "menuType:", menuType, "currentShapeType:",
+    this.currentShapeType, "currentShapeId:", this.currentShapeId, "shapeType:", shapeType)
+let Id = "";
+if (menuType == "DROPDOWN") {
+    action = "new";
+    Id = event.Id;
+    shapeType = event.text;
+}
+else if (menuType == "CONTEXT_MENU") {
+    Id = event.item.Id;
+    let arr = this.currentShapeId.split(":");
+    SHAPE_ID = arr[1];
+    action = "open";
+    switch (shapeType) {
+        case 'numeric display':
+            Id = 'Numeric_Display_Properties';
+            break;
+        default:
+            break;
     }
-    else if (menuType == "CONTEXT_MENU") {
-      Id = event.item.Id;
-      console.log("ON_CLICK_MENU:id:", Id);
-    }
-    if (Id != "") {
-      let rec = this.dialogProperties.find(x => x.Component == Id);
-      console.log("ON_CLICK_MENU:rec:", this.selectedShape, rec)
-      if (typeof (rec) != 'undefined') {
+    console.log("ON_CLICK_MENU:id:", Id);
+}
+if (Id != "") {
+    let rec = this.dialogProperties.find(x => x.Component == Id);
+    console.log("ON_CLICK_MENU:rec:", this.selectedShape, rec)
+    if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
         let Maximize = rec.Maximize;
-        switch(shapeType){
-          case 'SYMPOL_FACTORY': 
-		      //  Id='3';
-            break;
-          default:
-            break;
+        switch (shapeType) {
+            case 'SYMPOL_FACTORY':
+                //  Id='3';
+                break;
+            default:
+                break;
         }
 
         //this.starlib1.dialog_openDialog(this, Id,Maximize);
-        this.openPropertyDialog(this, Id, Maximize, shapeType);
-      }
-      setTimeout(() => {
-           this.selectedShape = null;
+        this.openPropertyDialog(this, Id, Maximize, shapeType, action, SHAPE_ID);
+    }
+    setTimeout(() => {
+        this.selectedShape = null;
     });
 
-    }
+}
 
 }
 public zoomLevel: number = 1;
@@ -1301,9 +1315,7 @@ public snapDistance = 6;
   private buildEditable(): DiagramEditable {
     return {
       drag: this.isDrag,
-      rotate: this.isRotate,
-      resize: this.isResize,
-      remove: this.isRemove
+      rotate: this.isRotate
     };
   }
   public drawDiagramFromDefinition(
@@ -1370,7 +1382,7 @@ public snapDistance = 6;
           const path = new Path({
             data: line.path,
             stroke: {
-              //width: line.stroke?.width || 1,
+              width: line.stroke?.width || 1,
               color: editorStyle?.strokeColor || line.stroke?.color || "#000",
               dashType: line.stroke?.dashType as any,
             },
@@ -1398,7 +1410,7 @@ public snapDistance = 6;
             start: { x: line.from.x + offsetX, y: line.from.y + offsetY },
             end: { x: line.to.x + offsetX, y: line.to.y + offsetY },
             stroke: {
-              //width: line.stroke?.width || 1,
+              width: line.stroke?.width || 1,
               color: editorStyle?.strokeColor || line.stroke?.color || "#000",
               dashType: line.stroke?.dashType as any,
             },
@@ -1505,7 +1517,7 @@ public snapDistance = 6;
     if (frameWidth && frameHeight) {
       const frame = new Rectangle({
         x: baseX, y: baseY, width: frameWidth, height: frameHeight,
-        stroke: { color: "transparent"},
+        stroke: { color: "transparent", width: 0 },
         fill: { color: "transparent" }
       });
       // Do not use literal zero opacity here. Some Diagram sizing paths ignore
@@ -1717,8 +1729,17 @@ async  prepareShapes(){
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
     if (this.paramConfig.DEBUG_FLAG) console.log("OutRec:1:", OutRec)
-
-    let dwg = JSON.parse(OutRec.DiagramData);
+    let dwg;
+    if (OutRec.DiagramData == ""){
+      dwg = {
+        "shapes": [
+          ],
+        "connections": [
+                ]
+      }
+    }
+    else
+      dwg = JSON.parse(OutRec.DiagramData);
     if (this.paramConfig.DEBUG_FLAG) console.log("dwg:1:", dwg)
     this.isDiagramInitializing = true;
     this.shapes = dwg.shapes;
@@ -2155,7 +2176,7 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
     this.scadaIntegration.disablePolling();
     console.log('Edit mode: SCADA polling stopped');
   } else {
-       this.isDrag = false;
+      this.isDrag = false;
        this.isRotate = false;
        this.isResize = false;
        this.isRemove = false;
@@ -2466,7 +2487,7 @@ public valueChange_del(value: any): void {
    * Open property dialog - Replacement for starlib1.dialog_openDialog
    * Similar to openWin in scd-mdi-win.component.ts
    */
- public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType): void {
+ public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType,action,SHAPE_ID): void {
   console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize);
   
   // Find the dialog properties
@@ -2490,9 +2511,10 @@ public valueChange_del(value: any): void {
     data: {
       comp: comp,
       maximize: Maximize,
-      action : "new",
+      action : action,
       DISPLAY_ID:this.form.value.DISPLAY_ID,
-      SHAPE_TYPE: shapeType.toLowerCase()
+      SHAPE_TYPE: shapeType.toLowerCase(),
+      SHAPE_ID : SHAPE_ID
     }
   };
 
@@ -2823,7 +2845,10 @@ public getShapeInfo(){
   return shapeInfo;
 }
 public insertShape (data, shapeType){
-  const text = "Text";
+  let text = "Text";
+  if (shapeType == "numeric display"){
+    text = "###.##"
+  }
   this.addLibraryShape("Text", { //richText
     text: text || "Text", 
     width: 190, 
@@ -3321,7 +3346,7 @@ private uniqueShapeId(prefix: string): string {
       const cy = y + ry;
       group.append(new Path({
         data: `M ${cx - rx},${cy} A ${rx},${ry} 0 1 0 ${cx + rx},${cy} A ${rx},${ry} 0 1 0 ${cx - rx},${cy} Z`,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 2 },
         fill: { color: fill }
       }));
       return group;
@@ -3334,7 +3359,7 @@ private uniqueShapeId(prefix: string): string {
       const centerY = y + height / 2;
       group.append(new Path({
         data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 2 },
         fill: { color: "transparent" }
       }));
       return group;
@@ -3344,7 +3369,7 @@ private uniqueShapeId(prefix: string): string {
       group.append(new Rectangle({
         x, y, width, height,
         cornerRadius: kind === "roundedRectangle" ? Math.min(22, height / 2) : 0,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 2 },
         fill: { color: fill }
       }));
       return group;
@@ -3376,7 +3401,7 @@ private uniqueShapeId(prefix: string): string {
         : `M ${x},${y} L ${x + width},${y} L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`;
       group.append(new Path({
         data: bodyPath,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 2 },
         fill: { color: bodyColor }
       }));
 
@@ -3390,7 +3415,7 @@ private uniqueShapeId(prefix: string): string {
         : `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight} L ${x},${bandY + bandHeight} Z`;
       group.append(new Path({
         data: bandPath,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 2 },
         fill: { color: bodyColor }
       }));
 
@@ -3402,7 +3427,7 @@ private uniqueShapeId(prefix: string): string {
         group.append(new Rectangle({
           x: footX, y: footY, width: footWidth, height: footHeight,
           cornerRadius: 2,
-          stroke: { color: stroke},
+          stroke: { color: stroke, width: 1.5 },
           fill: { color: bodyColor }
         }));
       });
@@ -3412,7 +3437,7 @@ private uniqueShapeId(prefix: string): string {
       const gaugeTop = y + headerHeight;
       group.append(new Path({
         data: `M ${x + 4},${gaugeTop} L ${x + width - 4},${gaugeTop}`,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 1.5 },
         fill: { color: "transparent" }
       }));
 
@@ -3425,7 +3450,7 @@ private uniqueShapeId(prefix: string): string {
           y: gaugeBottom - fillHeight,
           width: Math.max(0, width - inset * 2),
           height: fillHeight,
-          stroke: { color: liquidBorder},
+          stroke: { color: liquidBorder, width: 2 },
           fill: { color: fill }
         }));
       }
@@ -3447,7 +3472,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "arc") {
       group.append(new Path({
         data: `M ${x + 5},${y + height - 5} Q ${x + width / 2},${y - height * 0.15} ${x + width - 5},${y + height - 5}`,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
       return group;
@@ -3460,7 +3485,7 @@ private uniqueShapeId(prefix: string): string {
       ).join(" ");
       group.append(new Path({
         data: pathData,
-        stroke: { color: stroke},
+        stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
       return group;
@@ -3469,7 +3494,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "polygon") {
       group.append(new Path({
         data: `M ${x + width / 2},${y} L ${x + width},${y + height * 0.38} L ${x + width * 0.82},${y + height} L ${x + width * 0.18},${y + height} L ${x},${y + height * 0.38} Z`,
-        stroke: { color: stroke},
+        stroke: { color: stroke, width: 2 },
         fill: { color: fill }
       }));
       return group;
@@ -3478,7 +3503,7 @@ private uniqueShapeId(prefix: string): string {
     if (kind === "polyline") {
       group.append(new Path({
         data: `M ${x},${y + height * 0.8} L ${x + width * 0.28},${y + height * 0.2} L ${x + width * 0.56},${y + height * 0.72} L ${x + width},${y + height * 0.15}`,
-        stroke: { color: stroke },
+        stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
       return group;

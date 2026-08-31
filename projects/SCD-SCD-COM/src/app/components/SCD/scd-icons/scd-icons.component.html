@@ -1,33 +1,25 @@
     <div>   
         <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_icons.scd_icons.component_title","") }}</legend> 
-<kendo-tilelayout 
-[columns]="isPhonePortrait ? 1 : null" [gap]="gap" 
-[resizable]="true" 
-[reorderable]="true">
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 1" [colSpan]="1" >
-        <app-scd-scd-icons-form-query  
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-scd-icons-form-query  [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ICONSForm_0Config">
         </app-scd-scd-icons-form-query >
 
-</kendo-tilelayout-item>
-</kendo-tilelayout>
-<kendo-tilelayout 
-[columns]="isPhonePortrait ? 1 : null" [gap]="gap" 
-[resizable]="true" 
-[reorderable]="true">
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 1" [colSpan]="1" >
-        <app-scd-scd-icons-card  [detail_Input]="card_1_SCD_ICONS"  
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-scd-icons-card  [hidden]="hide_comp_2" [detail_Input]="card_1_SCD_ICONS"  
                       (formValidationChangedOutput)="formValidationChangedMD($event,2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ICONSCard_1Config">
         </app-scd-scd-icons-card >
 
-</kendo-tilelayout-item>
-</kendo-tilelayout>
+</div>
 
     </div>   
 <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">

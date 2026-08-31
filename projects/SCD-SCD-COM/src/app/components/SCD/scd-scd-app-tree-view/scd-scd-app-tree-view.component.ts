@@ -57,6 +57,7 @@ export class ScdAppTreeViewScdScdAppTreeViewTreeComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -657,6 +658,8 @@ public printScreen(){
         Item : this.currentNode.Item,
         MENU_ID :this.currentNode.dataItem.MENU_ID,
         MDI_ID :this.currentNode.dataItem.MDI_ID,
+        masterKeyArr:this.masterKeyArr,
+        masterKeyNameArr:this.masterKeyNameArr,
         MAXIMIZED :this.currentNode.dataItem.MAXIMIZED
     }
     console.log("ON_CLICK_MENU:masterParams:",masterParams)

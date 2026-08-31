@@ -52,6 +52,7 @@ export class ScdIconsScdScdIconsCardCardComponent {
   public  form2!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any=[];
@@ -95,7 +96,7 @@ export class ScdIconsScdScdIconsCardCardComponent {
   public customerFacing = false;
 
   public showCardHeader = false;
-  public showCardFooter = false;
+  public showCardFooter = true;
   public showCardAction = false;
 
 public labelidTop=true;
@@ -131,7 +132,7 @@ public visibleupdated_at = false;
 public visiblecreated_at = false;
 public visibledefault_check = false;
 public visiblesvg_content = true;
-public visibleCOPY_BUT = false;
+public visibleCOPY_BUT = true;
 
   
   //@Input()  
@@ -903,7 +904,15 @@ async WHEN_VALIDATE_ITEM_COPY_BUT(value) {
  }
 
  async ON_CLICK_COPY_BUT(event){
+console.log("kendoui_content:",event, this.form.value)
 
+let copiedShape = {
+    kendoui_content : event.kendoui_content,
+    id : event.icon_type + event.id,
+    type : event.icon_type
+};
+this.starServices.sessionParams['COPIED_SHAPE'] = copiedShape;
+console.log ("kendoui_content:0:",this.starServices.sessionParams['COPIED_SHAPE']);
 }
 
 
