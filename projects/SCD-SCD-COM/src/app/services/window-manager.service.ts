@@ -16,13 +16,13 @@ export interface WindowInfo {
   isMaximized?: boolean;
   isTabbed?: boolean;
   tabGroupId?: string;
-  isActive?: boolean;
+  isActive: boolean;  // <-- REQUIRED (removed ?)
   innerHeight?: number;
   innerWidth?: number;
   order?: number;
   zIndex?: number;
   outsideContainer?: boolean;
-  isDirty?:boolean;
+  isDirty?: boolean;
   componentInstance?: any;
 }
 
@@ -78,10 +78,7 @@ export class WindowManagerService {
   }
 
   getTotalWindowCount(): number {
-    // Count windows that are NOT in a group (floating windows)
     let count = this.windows.filter(w => !w.tabGroupId).length;
-    
-    // Add windows inside groups
     this.tabGroups.forEach(group => {
       count += group.windows ? group.windows.length : 0;
     });
@@ -98,9 +95,6 @@ export class WindowManagerService {
 
   // ===== WINDOW POSITION UTILITIES =====
 
-  /**
-   * Calculate a window position with offset for multiple windows
-   */
   calculateWindowPosition(
     existingCount: number,
     containerWidth?: number,
@@ -118,9 +112,6 @@ export class WindowManagerService {
     };
   }
 
-  /**
-   * Get container dimensions for window placement
-   */
   getContainerDimensions(containerElement: HTMLElement | null): { width: number; height: number } {
     if (!containerElement) {
       return { width: 800, height: 600 };
@@ -134,54 +125,80 @@ export class WindowManagerService {
 
   // ===== WINDOW MANAGEMENT =====
 
-openWindow(windowData: Partial<WindowInfo>): string {
-  console.log("openWindow:windowData:", windowData);
-  const windowId = windowData.id || `window_${++this.windowIdCounter}`;
-  
-  const position = windowData.left !== undefined && windowData.top !== undefined
-    ? { left: windowData.left, top: windowData.top }
-    : this.calculateWindowPosition(this.windows.length);
-  
-  const newWindow: WindowInfo = {
-    id: windowId,
-    title: windowData.title || 'Untitled',
-    component: windowData.component!,
-    inputs: windowData.inputs || {},
-    outputs: windowData.outputs || {}, // <-- ADD THIS LINE
-    width: windowData.width || 800,
-    height: windowData.height || 650,
-    left: position.left,
-    top: position.top,
-    isMinimized: false,
-    isMaximized: false,
-    isTabbed: false,
-    tabGroupId: undefined,
-    isActive: true,
-    innerHeight: windowData.height || 650,
-    innerWidth: windowData.width || 800,
-    order: this.windows.length,
-    zIndex: ++this.zIndexCounter,
-    outsideContainer: windowData.outsideContainer || false,
-    isDirty: false // <-- ADD THIS LINE
-  };
+  openWindow(windowData: Partial<WindowInfo>): string {
+    console.log("tracing:openWindow:windowData:", windowData);
+    const windowId = windowData.id || `window_${++this.windowIdCounter}`;
+    
+    // Get current windows
+    const currentWindows = this.windowsSubject.getValue();
+    
+    // Check if window already exists
+    const existingIndex = currentWindows.findIndex(w => w.id === windowId);
+    
+    // If window exists, just activate it and return
+    if (existingIndex !== -1) {
+      // Preserve the existing component instance
+      const existingWindow = currentWindows[existingIndex];
+      
+      // Update window properties but keep the component instance
+      const updatedWindow: WindowInfo = {
+        ...existingWindow,
+        ...windowData,
+        // Preserve the component instance
+        componentInstance: existingWindow.componentInstance,
+        // Preserve the component reference
+        component: existingWindow.component,
+        // Ensure isActive is set
+        isActive: true
+      };
+      
+      // Replace the window in the array
+      currentWindows[existingIndex] = updatedWindow;
+      
+      // Activate the window
+      this.activateWindow(windowId);
+      
+      return windowId;
+    }
+    
+    // Window doesn't exist, create new one
+    const position = windowData.left !== undefined && windowData.top !== undefined
+      ? { left: windowData.left, top: windowData.top }
+      : this.calculateWindowPosition(currentWindows.length);
+    
+    const newWindow: WindowInfo = {
+      id: windowId,
+      title: windowData.title || 'Untitled',
+      component: windowData.component!,
+      inputs: windowData.inputs || {},
+      outputs: windowData.outputs || {},
+      width: windowData.width || 800,
+      height: windowData.height || 650,
+      left: position.left,
+      top: position.top,
+      isMinimized: false,
+      isMaximized: false,
+      isTabbed: false,
+      tabGroupId: undefined,
+      isActive: true,
+      innerHeight: windowData.height || 650,
+      innerWidth: windowData.width || 800,
+      order: currentWindows.length,
+      zIndex: ++this.zIndexCounter,
+      outsideContainer: windowData.outsideContainer || false,
+      isDirty: false,
+      componentInstance: null
+    };
 
-  const currentWindows = this.windowsSubject.getValue();
-  
-  const existingIndex = currentWindows.findIndex(w => w.id === windowId);
-  console.log("openWindow:existingIndex:", existingIndex, currentWindows, windowId);
-  
-  if (existingIndex !== -1) {
-    this.activateWindow(windowId);
+    // Deactivate all other windows
+    const updatedWindows = currentWindows.map(w => ({ ...w, isActive: false }));
+    updatedWindows.push(newWindow);
+    
+    this.windowsSubject.next(updatedWindows);
+    console.log("tracing:openWindow:windowId:", windowId);
     return windowId;
   }
 
-  const updatedWindows: WindowInfo[] = currentWindows.map(w => ({ ...w, isActive: false }));
-  updatedWindows.push(newWindow);
-  
-  this.windowsSubject.next(updatedWindows);
-  
-  return windowId;
-}
   closeWindow(windowId: string): void {
     let currentWindows = this.windowsSubject.getValue();
     const windowToClose = currentWindows.find(w => w.id === windowId);
@@ -270,10 +287,8 @@ openWindow(windowData: Partial<WindowInfo>): string {
     let targetWindows: WindowInfo[];
     
     if (groupId) {
-      // Only cascade windows in the specified group
       targetWindows = windows.filter(w => w.tabGroupId === groupId && !w.isMinimized && !w.isMaximized);
     } else {
-      // Cascade all floating windows (no group)
       targetWindows = windows.filter(w => !w.tabGroupId && !w.isMinimized && !w.isMaximized);
     }
     
@@ -294,10 +309,8 @@ openWindow(windowData: Partial<WindowInfo>): string {
     let targetWindows: WindowInfo[];
     
     if (groupId) {
-      // Only tile windows in the specified group
       targetWindows = windows.filter(w => w.tabGroupId === groupId && !w.isMinimized && !w.isMaximized);
     } else {
-      // Tile all floating windows (no group)
       targetWindows = windows.filter(w => !w.tabGroupId && !w.isMinimized && !w.isMaximized);
     }
     
@@ -324,100 +337,109 @@ openWindow(windowData: Partial<WindowInfo>): string {
   // ===== TAB GROUP MANAGEMENT =====
 
   createTabGroup(title: string, windowsData: Partial<WindowInfo>[]): string {
-  const groupId = `tabgroup_${Date.now()}`;
-  
-  const windows: WindowInfo[] = windowsData.map((w, index) => ({
-    id: w.id || `window_${groupId}_${index}`,
-    title: w.title || 'Untitled',
-    component: w.component!,
-    inputs: w.inputs || {},
-    width: w.width || 800,
-    height: w.height || 600,
-    left: w.left || 20 + index * 30,
-    top: w.top || 20 + index * 30,
-    isMinimized: false,
-    isMaximized: false,
-    isTabbed: false,
-    tabGroupId: groupId,
-    isActive: index === 0,
-    innerHeight: w.height || 600,
-    innerWidth: w.width || 800,
-    order: index,
-    zIndex: ++this.zIndexCounter
-  }));
+    const groupId = `tabgroup_${Date.now()}`;
+    
+    // Get current windows FIRST
+    const currentWindows: WindowInfo[] = this.windowsSubject.getValue();
+    
+    const windows: WindowInfo[] = windowsData.map((w, index) => ({
+      id: w.id || `window_${groupId}_${index}`,
+      title: w.title || 'Untitled',
+      component: w.component!,
+      inputs: w.inputs || {},
+      width: w.width || 800,
+      height: w.height || 600,
+      left: w.left || 20 + index * 30,
+      top: w.top || 20 + index * 30,
+      isMinimized: false,
+      isMaximized: false,
+      isTabbed: false,
+      tabGroupId: groupId,
+      isActive: index === 0,
+      innerHeight: w.height || 600,
+      innerWidth: w.width || 800,
+      order: currentWindows.length + index,
+      zIndex: ++this.zIndexCounter,
+      componentInstance: null
+    }));
 
-  const tabGroup: TabGroup = {
-    id: groupId,
-    title: title || 'Tab Group',
-    windows: windows,
-    activeWindowId: windows[0]?.id || ''
-  };
+    const tabGroup: TabGroup = {
+      id: groupId,
+      title: title || 'Tab Group',
+      windows: windows,
+      activeWindowId: windows[0]?.id || ''
+    };
 
-  // FIX: Explicitly type the array as WindowInfo[]
-  const currentWindows: WindowInfo[] = this.windowsSubject.getValue();
-  
-  windows.forEach(w => {
-    const exists = currentWindows.some(cw => cw.id === w.id);
-    if (!exists) {
-      currentWindows.push(w);
-    }
-  });
+    // Add windows to current windows
+    windows.forEach(w => {
+      const exists = currentWindows.some(cw => cw.id === w.id);
+      if (!exists) {
+        currentWindows.push(w);
+      }
+    });
 
-  const groups = this.tabGroupsSubject.getValue();
-  groups.push(tabGroup);
-  this.tabGroupsSubject.next(groups);
-  this.windowsSubject.next([...currentWindows]);
+    const groups = this.tabGroupsSubject.getValue();
+    groups.push(tabGroup);
+    this.tabGroupsSubject.next(groups);
+    this.windowsSubject.next([...currentWindows]);
 
-  return groupId;
-}
-
-  /**
-   * Add a window to a group with automatic positioning
-   */
-  addWindowToGroup(groupId: string, windowData: Partial<WindowInfo>): void {
-  const groups = this.tabGroupsSubject.getValue();
-  const group = groups.find(g => g.id === groupId);
-  
-  if (!group) {
-    console.warn('Group not found:', groupId);
-    return;
+    return groupId;
   }
 
-  const windowId = windowData.id || `window_${Date.now()}`;
-  const existingWindows = group.windows || [];
-  
-  const position = this.calculateWindowPosition(existingWindows.length);
-  
-  const newWindow: WindowInfo = {
-    id: windowId,
-    title: windowData.title || 'Untitled',
-    component: windowData.component!,
-    inputs: windowData.inputs || {},
-    width: windowData.width || position.width,
-    height: windowData.height || position.height,
-    left: windowData.left || position.left,
-    top: windowData.top || position.top,
-    isMinimized: false,
-    isMaximized: false,
-    isTabbed: false,
-    tabGroupId: groupId,
-    isActive: true,
-    innerHeight: windowData.height || position.height,
-    innerWidth: windowData.width || position.width,
-    order: group.windows.length,
-    zIndex: ++this.zIndexCounter
-  };
+  addWindowToGroup(groupId: string, windowData: Partial<WindowInfo>): void {
+    const groups = this.tabGroupsSubject.getValue();
+    const group = groups.find(g => g.id === groupId);
+    
+    if (!group) {
+      console.warn('Group not found:', groupId);
+      return;
+    }
 
-  group.windows.push(newWindow);
-  group.activeWindowId = newWindow.id;
-  
-  // FIX: Explicitly type the array as WindowInfo[]
-  const currentWindows: WindowInfo[] = this.windowsSubject.getValue();
-  currentWindows.push(newWindow);
-  
-  this.tabGroupsSubject.next(groups);
-  this.windowsSubject.next([...currentWindows]);
-}
+    const windowId = windowData.id || `window_${Date.now()}`;
+    const existingWindows = group.windows || [];
+    
+    // Check if window already exists in the group
+    const existingIndex = existingWindows.findIndex(w => w.id === windowId);
+    
+    if (existingIndex !== -1) {
+      // Window exists in group, just activate it
+      group.activeWindowId = windowId;
+      this.tabGroupsSubject.next(groups);
+      return;
+    }
+    
+    const position = this.calculateWindowPosition(existingWindows.length);
+    
+    const newWindow: WindowInfo = {
+      id: windowId,
+      title: windowData.title || 'Untitled',
+      component: windowData.component!,
+      inputs: windowData.inputs || {},
+      width: windowData.width || position.width,
+      height: windowData.height || position.height,
+      left: windowData.left || position.left,
+      top: windowData.top || position.top,
+      isMinimized: false,
+      isMaximized: false,
+      isTabbed: false,
+      tabGroupId: groupId,
+      isActive: true,
+      innerHeight: windowData.height || position.height,
+      innerWidth: windowData.width || position.width,
+      order: group.windows.length,
+      zIndex: ++this.zIndexCounter,
+      componentInstance: null
+    };
+
+    group.windows.push(newWindow);
+    group.activeWindowId = newWindow.id;
+    
+    const currentWindows: WindowInfo[] = this.windowsSubject.getValue();
+    currentWindows.push(newWindow);
+    
+    this.tabGroupsSubject.next(groups);
+    this.windowsSubject.next([...currentWindows]);
+  }
 
   removeWindowFromGroup(windowId: string, groupId: string): void {
     const groups = this.tabGroupsSubject.getValue();
@@ -458,9 +480,6 @@ openWindow(windowData: Partial<WindowInfo>): string {
 
   // ===== GROUP WINDOW ACTIONS =====
 
-  /**
-   * Activate a window within a specific group
-   */
   activateGroupWindow(groupId: string, windowId: string): void {
     const groups = this.tabGroupsSubject.getValue();
     const group = groups.find(g => g.id === groupId);
@@ -474,9 +493,6 @@ openWindow(windowData: Partial<WindowInfo>): string {
     this.activateWindow(windowId);
   }
 
-  /**
-   * Float all windows in a group (convert from tabbed to floating)
-   */
   floatAllWindows(groupId: string): void {
     const windows = this.windowsSubject.getValue();
     const groupWindows = windows.filter(w => w.tabGroupId === groupId);
@@ -493,9 +509,6 @@ openWindow(windowData: Partial<WindowInfo>): string {
     this.windowsSubject.next([...windows]);
   }
 
-  /**
-   * Float a single window (convert from tabbed to floating)
-   */
   floatWindow(windowId: string): void {
     const windows = this.windowsSubject.getValue();
     const window = windows.find(w => w.id === windowId);
@@ -521,55 +534,32 @@ openWindow(windowData: Partial<WindowInfo>): string {
     return this.windows.filter(w => !w.tabGroupId);
   }
 
-  // ===== ADD THIS: Get all windows in groups =====
   getGroupedWindows(): WindowInfo[] {
     return this.windows.filter(w => w.tabGroupId);
   }
 
-  // ===== ADD THIS: Get count of windows in a specific group =====
   getGroupWindowCount(groupId: string): number {
     return this.windows.filter(w => w.tabGroupId === groupId).length;
   }
 
-  
-
-/**
- * Check if a window's component has unsaved changes using componentConfig.isDirty
- */
-async checkWindowHasUnsavedChanges(windowId: string): Promise<boolean> {
-  const window = this.getWindowById(windowId);
-  if (!window) return false;
-  
-  return window.isDirty === true;
-}
-
-/**
- * Save a window's component changes by setting masterSaved = true
- */
-
-
-updateWindowDirtyState(windowId: string, isDirty: boolean): void {
-  const currentWindows = this.windowsSubject.getValue();
-  const window = currentWindows.find(w => w.id === windowId);
-  
-  if (window) {
-    window.isDirty = isDirty;
-    this.windowsSubject.next([...currentWindows]);
+  async checkWindowHasUnsavedChanges(windowId: string): Promise<boolean> {
+    const window = this.getWindowById(windowId);
+    if (!window) return false;
+    return window.isDirty === true;
   }
-}
 
+  updateWindowDirtyState(windowId: string, isDirty: boolean): void {
+    const currentWindows = this.windowsSubject.getValue();
+    const window = currentWindows.find(w => w.id === windowId);
+    
+    if (window) {
+      window.isDirty = isDirty;
+      this.windowsSubject.next([...currentWindows]);
+    }
+  }
 
-
-/**
- * Save a window's component changes by setting masterSaved = true
- */
-async saveWindowChanges(windowId: string): Promise<void> {
-  const window = this.getWindowById(windowId);
-  if (!window) return;
-  
-  // The component will handle the save via componentConfig
-  // We'll emit an event or set a flag
-  // This will be handled by the parent component
-}
-
+  async saveWindowChanges(windowId: string): Promise<void> {
+    const window = this.getWindowById(windowId);
+    if (!window) return;
+  }
 }

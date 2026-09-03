@@ -243,6 +243,7 @@ public disableHEIGHT = false;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
+    console.log('onCloseWindowDebug:Form dirty state changed:1:', this.form.dirty, this.componentConfig.isDirty);
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
       this.componentConfig = new componentConfigDef();
@@ -250,7 +251,7 @@ public disableHEIGHT = false;
       
       // Only emit if state changed
       if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        console.log('onCloseWindowDebug:Form dirty state changed:2:', this.form.dirty, this.componentConfig.isDirty);
         this.emitComponentConfig();
       }
     }

@@ -3,6 +3,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export interface ServerInfo {
   id: number;
@@ -48,7 +49,8 @@ export interface WriteResult {
 })
 
 export class SCADAService {
-  private apiBase = 'http://localhost:3000/api';
+  private OPCUA_SERVER_BASE = environment.OPCUA_SERVER_BASE;
+  //private OPCUA_SERVER_BASE = 'http://localhost:53531/api';
   private tagValues = new BehaviorSubject<any>({});
   private alarms = new BehaviorSubject<Alarm[]>([]);
   private servers = new BehaviorSubject<ServerInfo[]>([]);
@@ -119,26 +121,29 @@ export class SCADAService {
       console.log('opcua:Polling is disabled, not starting');
       return;
     }
-
+    console.log('opcua:startPolling');
     this.pollingInterval = setInterval(async () => {
+      console.log('opcua:setInterval:',this.isPollingEnabled);
       if (!this.isPollingEnabled) return; // Extra safety check
       
       try {
-        const tags = await this.http.get(`${this.apiBase}/tags`).toPromise();
+        console.log('opcua:http.get:',`${this.OPCUA_SERVER_BASE}/tags`);
+        const tags = await this.http.get(`${this.OPCUA_SERVER_BASE}/tags`).toPromise();
+        console.log('opcua:tags:',tags);
         if (tags) {
           this.ngZone.run(() => {
             this.tagValues.next(tags);
           });
         }
         
-        // const alarms = await this.http.get<Alarm[]>(`${this.apiBase}/alarms`).toPromise();
+        // const alarms = await this.http.get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms`).toPromise();
         // if (alarms) {
         //   this.ngZone.run(() => {
         //     this.alarms.next(alarms);
         //   });
         // }
         
-        const servers = await this.http.get<ServerInfo[]>(`${this.apiBase}/servers`).toPromise();
+        const servers = await this.http.get<ServerInfo[]>(`${this.OPCUA_SERVER_BASE}/servers`).toPromise();
         console.log("opcua:startPolling:servers",servers)
         if (servers) {
           this.ngZone.run(() => {
@@ -163,8 +168,8 @@ export class SCADAService {
   async loadInitialData(): Promise<void> {
     try {
       const [tags, servers] = await Promise.all([
-        this.http.get(`${this.apiBase}/tags`).toPromise(),
-        this.http.get<ServerInfo[]>(`${this.apiBase}/servers`).toPromise()
+        this.http.get(`${this.OPCUA_SERVER_BASE}/tags`).toPromise(),
+        this.http.get<ServerInfo[]>(`${this.OPCUA_SERVER_BASE}/servers`).toPromise()
       ]);
       
       if (tags) this.tagValues.next(tags);
@@ -197,7 +202,7 @@ export class SCADAService {
 
   async addServer(name: string, endpoint: string): Promise<ServerInfo | null> {
     try {
-      const response = await this.http.post<{ server: ServerInfo }>(`${this.apiBase}/servers`, { name, endpoint }).toPromise();
+      const response = await this.http.post<{ server: ServerInfo }>(`${this.OPCUA_SERVER_BASE}/servers`, { name, endpoint }).toPromise();
       if (response?.server) {
         const serverWithConnected = {
           ...response.server,
@@ -214,7 +219,7 @@ export class SCADAService {
 
   async removeServer(serverId: number): Promise<boolean> {
     try {
-      await this.http.delete(`${this.apiBase}/servers/${serverId}`).toPromise();
+      await this.http.delete(`${this.OPCUA_SERVER_BASE}/servers/${serverId}`).toPromise();
       return true;
     } catch (error) {
       console.error('Failed to remove server:', error);
@@ -224,7 +229,7 @@ export class SCADAService {
 
   async updateServer(serverId: number, name: string, endpoint: string): Promise<boolean> {
     try {
-      await this.http.put(`${this.apiBase}/servers/${serverId}`, { name, endpoint }).toPromise();
+      await this.http.put(`${this.OPCUA_SERVER_BASE}/servers/${serverId}`, { name, endpoint }).toPromise();
       return true;
     } catch (error) {
       console.error('Failed to update server:', error);
@@ -258,7 +263,7 @@ export class SCADAService {
         serverId = serverIdOrName;
       }
       
-      await this.http.post(`${this.apiBase}/write`, { serverId, tag: tagName, value }).toPromise();
+      await this.http.post(`${this.OPCUA_SERVER_BASE}/write`, { serverId, tag: tagName, value }).toPromise();
       return { success: true };
     } catch (err: any) {
       console.error('Write failed:', err);
@@ -268,7 +273,7 @@ export class SCADAService {
 
   async acknowledgeAlarm(alarmId: number): Promise<boolean> {
     try {
-      await this.http.post(`${this.apiBase}/alarms/${alarmId}/acknowledge`, {}).toPromise();
+      await this.http.post(`${this.OPCUA_SERVER_BASE}/alarms/${alarmId}/acknowledge`, {}).toPromise();
       return true;
     } catch (error) {
       return false;
@@ -289,7 +294,7 @@ export class SCADAService {
         serverId = serverIdOrName;
       }
       
-      const response = await this.http.get(`${this.apiBase}/history/${serverId}/${tagName}/${hours}`).toPromise();
+      const response = await this.http.get(`${this.OPCUA_SERVER_BASE}/history/${serverId}/${tagName}/${hours}`).toPromise();
       return response as any[];
     } catch (error) {
       console.error('History fetch failed:', error);

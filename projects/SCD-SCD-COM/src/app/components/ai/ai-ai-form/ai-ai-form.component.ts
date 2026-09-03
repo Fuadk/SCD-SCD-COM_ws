@@ -1248,7 +1248,8 @@ RULES for diagramOperations:
       //if (this.paramConfig.DEBUG_FLAG) console.log("this.starServices.MASTER_DB:", this.starServices.MASTER_DB)
       newVal["question"] = Question;
       //newVal["AI_PROVIDER"] = "DEEPSEEK";
-      newVal["AI_PROVIDER"] = "OPENAI";
+      //newVal["AI_PROVIDER"] = "OPENAI";
+      newVal["AI_PROVIDER"] = "CLAUDE";
       newVal["systemContent"] = cursystemMsg
 
       if (this.paramConfig.DEBUG_FLAG) console.log("newVal:", newVal)

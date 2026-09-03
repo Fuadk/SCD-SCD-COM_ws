@@ -100,6 +100,7 @@ export class ScadaIntegrationService implements OnDestroy {
    * Get raw tag values as observable
    */
   getRawTagValues(): Observable<any> {
+    console.log("opcua:getRawTagValues:rawData$", this.rawData$);
     return this.rawData$;
   }
 
@@ -204,10 +205,12 @@ export class ScadaIntegrationService implements OnDestroy {
   // Subscribe to raw tag values - no mapping
   subscriptions.push(
     this.rawData$.subscribe(rawValues => {
+      
       const prev = this.previousValues.get(component);
       const changes: ScadaChangeEvent[] = [];
-      
+      console.log("opcua:rawValues", prev, rawValues);
       if (prev) {
+        
         const oldRaw = prev.rawTagValues || {};
         const newRaw = rawValues || {};
         
@@ -218,6 +221,7 @@ export class ScadaIntegrationService implements OnDestroy {
           const newValue = newRaw[key];
           
           if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+            console.log("opcua:rawValues:allKeys:",(JSON.stringify(oldValue) !== JSON.stringify(newValue)),  allKeys);
             changes.push({
               type: 'tag',
               tagName: key,
@@ -251,6 +255,7 @@ export class ScadaIntegrationService implements OnDestroy {
 
     prev.connectionStatus = status;
 
+    
     component.scadaData.connectionStatus = status;
     component.scadaConnectionStatus = status;
 

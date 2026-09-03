@@ -20,12 +20,13 @@
   </kendo-tabstrip-tab>
        <kendo-tabstrip-tab>
        <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General1") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
         <app-scd-sdg-shape-display-general [detail_Input]="formdivs_1_SCD_SHAPE_DISPLAY_GENERAL"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config">
         </app-scd-sdg-shape-display-general >
 

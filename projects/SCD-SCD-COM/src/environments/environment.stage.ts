@@ -4,6 +4,7 @@ export const environment = {
   SERVER_URL:'https://localhost:9090',
   //SERVER_URL:'https://localhost:9091',
   SERVER_DEPLOY:'http://localhost:8080',
+  OPCUA_SERVER_BASE:'https://localhost:53531/api',
 
  KEYCLOAK: {
     KEYCLOAK_checkLoginIframe : false,

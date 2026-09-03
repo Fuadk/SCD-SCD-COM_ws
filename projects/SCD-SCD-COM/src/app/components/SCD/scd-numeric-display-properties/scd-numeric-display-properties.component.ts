@@ -99,7 +99,7 @@ export class ScdNumericDisplayPropertiesComponent implements OnInit {
      this.SCD_SHAPEForm_0Config.insertable = false;
    }
    this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config = new componentConfigDef();
-   this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General");
+   this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General1");
    this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.isChild = true;
    this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.masterSelector = 'app-scd-numeric-display-properties';
    this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
@@ -239,7 +239,7 @@ export class ScdNumericDisplayPropertiesComponent implements OnInit {
              this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID1","Common");
              this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config = new componentConfigDef();
              this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General");
+             this.SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General1");
            this.setSteps(this);
            }, 500);
        }

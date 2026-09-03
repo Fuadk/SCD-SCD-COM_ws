@@ -6,10 +6,11 @@
   </style>
 
   <!-- Single line toolbar -->
-  <div class="diagram-toolbar">
+  <div class="diagram-toolbar" *ngIf="showDiagramToolBar" >
     <!-- Mode Controls - Always first -->
     <!-- Run/Stop buttons -->
     <button class="mode-btn" [class.active]="isEditMode" [class.inactive]="!isEditMode" kendoTooltip
+      
       [title]="isEditMode ? 'Stop Editing' : 'Start Editing'" (click)="toggleMode()">
       <span class="mode-icon">{{ isEditMode ? '▶' : '⏹' }}</span>
 

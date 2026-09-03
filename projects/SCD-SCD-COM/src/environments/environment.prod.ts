@@ -4,6 +4,7 @@ export const environment = {
   SERVER_URL_LOCAL:'http://gmashro.com:9090',
   SERVER_URL:'https://starapps.duckdns.org:9090',
   SERVER_DEPLOY:'http://localhost:8080',
+  OPCUA_SERVER_BASE:'https://starapps.duckdns.org:53531/api',
 
  KEYCLOAK: {
     KEYCLOAK_checkLoginIframe : false,

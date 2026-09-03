@@ -69,6 +69,7 @@ export class AppComponent  {
   public masterParams;
   public windowLoc;
   
+  
   constructor(/*private messages: MessageService, */private keycloakService:KeycloakService, public responsive: BreakpointObserver,private location: Location,private starNotify: StarNotifyService, router: Router, public starServices: starServices) {
     this.windowLoc =  window.location
     this.router = router;

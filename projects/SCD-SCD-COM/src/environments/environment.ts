@@ -15,6 +15,9 @@ export const environment = {
   EPMENG_URL_PROD: 'http://gmashro.com:8092/format',
   SERVER_URL_PROD:'http://gmashro.com:9090',
   
+  OPCUA_SERVER_BASE:'https://localhost:53531/api',
+  
+
   KEYCLOAK: {
     KEYCLOAK_checkLoginIframe : false,
     KEYCLOAK_INIT_URL:'http://localhost:8081',

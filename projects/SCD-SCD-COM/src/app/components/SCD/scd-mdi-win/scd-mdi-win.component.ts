@@ -343,14 +343,36 @@ getComponentToRender(shapeType: string): any {
     return;
   }
   
-  console.log("openWin:componentToRender:", componentToRender, "componentConfig.masterParams:", componentConfig.masterParams);
+  // Check if window already exists
+  const existingWindow = this.windows.find(w => w.id === WindowID);
   
-  // Create outputs object
+  if (existingWindow) {
+    console.log("openWin: Window already exists, bringing to front:", WindowID);
+    
+    // If window exists, bring it to front and update its inputs
+    this.windowManager.bringToFront(WindowID);
+    this.windowManager.activateWindow(WindowID);
+    
+    // Update the component's inputs if needed
+    if (existingWindow.componentInstance) {
+      const config = new componentConfigDef();
+      config.masterParams = {
+        data: {
+          MENU_ID: MENU_ID,
+          masterParams: masterParams,
+          viewMode: viewMode
+        }
+      };
+      // Update the component's input
+      existingWindow.componentInstance.setComponentConfig_Input = config;
+    }
+    return;
+  }
+  
+  // Window doesn't exist, create new one
   const outputs = {
     setComponentConfig_Output: (config: any) => {
       console.log('Received componentConfig from child in openWin:', config);
-      // Update the window's isDirty state
-      // We'll handle this through the componentConfigChanged event
     }
   };
   
@@ -740,6 +762,9 @@ onComponentConfig_Output(event: { windowId: string, componentConfig: any }): voi
     }
   }
 	this.setComponentConfig_Output.emit(event.componentConfig);
+}
+	trackWindow(index: number, window: WindowInfo): string {
+  return window.id;
 }
 		
 	 //      this.scd-scd-display-diagram0_0Config = new componentConfigDef();

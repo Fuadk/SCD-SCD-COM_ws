@@ -810,10 +810,31 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	// if (!this.isChild){
-	// 	this.executeQuery(this.form.value);
-	// }
-
+        console.log ("WHEN_NEW_FORM_INSTANCE");
+    var href =  window.location.href;
+    
+    var array = href.split("&");
+    console.log ("WHEN_NEW_FORM_INSTANCE:array:", array);
+    if (array.length > 2){
+      let disp_data = array[2]
+      let array2 = disp_data.split("=");
+      console.log ("WHEN_NEW_FORM_INSTANCE:array2:", array2);
+      if (array2[0] == "DISPLAY_ID"){
+        this.showDiagramToolBar = false;
+        let DISPLAY_ID = decodeURIComponent(array2[1]);
+        console.log ("WHEN_NEW_FORM_INSTANCE:DISPLAY_ID:", DISPLAY_ID);
+        setTimeout(() => {
+                this.isSearch = true;
+                let form: any = {};
+                form.DISPLAY_ID = DISPLAY_ID
+                this.executeQuery(form);
+                this.toggleMode();
+                
+            }, 300);
+	
+      } 
+    }
+    
     
   }
   async WHEN_CREATE_RECORD(){
@@ -881,7 +902,7 @@ public printScreen(){
           "_QUERY": "GET_LAST_ID"
         }
       ];
-      let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+      let data = await this.starServices.execSQLBody(this, body, "");
       if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
       if (typeof data[1].data != "undefined") {
         let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
@@ -1144,7 +1165,7 @@ let body = [
     }
 ];
 
-let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+let data = await this.starServices.execSQLBody(this, body, "");
 if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:data[0].data:", data[0].data);
 if (typeof data[0].data != "undefined") {
     let opcuaServers = data[0].data;
@@ -1315,7 +1336,9 @@ public snapDistance = 6;
   private buildEditable(): DiagramEditable {
     return {
       drag: this.isDrag,
-      rotate: this.isRotate
+      rotate: this.isRotate,
+      resize: this.isResize,
+      remove: this.isRemove,
     };
   }
   public drawDiagramFromDefinition(
@@ -1558,6 +1581,13 @@ public snapDistance = 6;
       const childStyle = dataItem.editorStyle || {};
       const drawingElement = (childGroup as any).drawingElement;
       const bbox = drawingElement?.bbox?.();
+      // kendo-drawing's own Rect (what .bbox() returns) exposes size as
+      // bbox.size.{width,height} - it has no flat .width/.height properties.
+      // Reading bbox.width directly silently reads undefined, which is why
+      // the >0 checks below always fell through to "no scaling" before.
+      const bboxWidth = bbox?.size?.width;
+      const bboxHeight = bbox?.size?.height;
+
       if (drawingElement?.transform && bbox) {
         let tx = geometry.transform();
 
@@ -1565,10 +1595,10 @@ public snapDistance = 6;
         // width/height. Once shapes become children of our logical group there
         // is no individual Kendo wrapper to do that scaling, so reproduce it
         // here. This is what preserves resized custom/compound shapes exactly.
-        const targetWidth = Math.max(1, Number(child?.width) || Number(dataItem?.width) || bbox.width || 1);
-        const targetHeight = Math.max(1, Number(child?.height) || Number(dataItem?.height) || bbox.height || 1);
-        const scaleX = bbox.width > 0 ? targetWidth / bbox.width : 1;
-        const scaleY = bbox.height > 0 ? targetHeight / bbox.height : 1;
+        const targetWidth = Math.max(1, Number(child?.width) || Number(dataItem?.width) || bboxWidth || 1);
+        const targetHeight = Math.max(1, Number(child?.height) || Number(dataItem?.height) || bboxHeight || 1);
+        const scaleX = bboxWidth > 0 ? targetWidth / bboxWidth : 1;
+        const scaleY = bboxHeight > 0 ? targetHeight / bboxHeight : 1;
         if (Math.abs(scaleX - 1) > 0.0001 || Math.abs(scaleY - 1) > 0.0001) {
           tx = tx.scale(scaleX, scaleY, [x, y]);
         }
@@ -1597,13 +1627,13 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     }
     const drawingGroup = (group as any).drawingElement;
     const bounds = drawingGroup?.bbox?.();
-    if (drawingGroup?.transform && bounds) {
+    if (drawingGroup?.transform && bounds?.origin && bounds?.size) {
+      const center = [
+        bounds.origin.x + bounds.size.width / 2,
+        bounds.origin.y + bounds.size.height / 2
+      ];
       drawingGroup.transform(
-        geometry.transform().scale(
-          flipX,
-          flipY,
-          [bounds.x + bounds.width / 2, bounds.y + bounds.height / 2]
-        )
+        geometry.transform().scale(flipX, flipY, center)
       );
     }
   }
@@ -1613,6 +1643,9 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   public connections: ConnectionOptions[] =[];
   public shapeDefaults: ShapeDefaults = {
     visual: this.visualTemplate,
+    editable: {
+      connect: false // This disables the hover connection dots safely
+    }
   };
 
 public markers:any = [];
@@ -1689,7 +1722,7 @@ async  prepareShapes(){
 
     ];
   if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
-  let data_defs = await this.starServices.execSQLBody(this, body_defs, this.starServices.MASTER_DB);
+  let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
 
   let statement = "DELETE from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
   let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
@@ -1714,7 +1747,7 @@ async  prepareShapes(){
       },
     ];
     if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:body:", body);
-    let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+    let data = await this.starServices.execSQLBody(this, body, "");
     if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:data[1].data:", data[1].data);
     if (typeof data[1].data != "undefined"){
       this.scdShapes = data[1].data;
@@ -1874,6 +1907,7 @@ public onItemSelectItem (menuType,event){
   public  currentShapeType: string = "";
   private pressTimer: any = null;
   public isEditMode: boolean = false;
+  public showDiagramToolBar: boolean = true;
   
   // Context Menu properties
   public showContextMenu: boolean = true;
@@ -2029,7 +2063,7 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
         "_STMT": statement
       }
     ];
-    let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+    let data = await this.starServices.execSQLBody(this, body, "");
     if (this.paramConfig.DEBUG_FLAG) console.log("getMenu:data[0].data:", data[0].data);
     if (typeof data[0].data != "undefined") {
       this.diagramMenus = this.restructureMenuData(data[0].data);
@@ -2256,24 +2290,25 @@ public findPartAt(event): string | null {
 
     if (!container)
       return null;
+    
+  const definition = container.dataItem.definition;
+  if (typeof definition != "undefined"){
+        const shapeCount = definition.shapes?.length || 0;
 
-    const definition = container.dataItem.definition;
+        let part;
 
-    const shapeCount = definition.shapes?.length || 0;
+        if (index < shapeCount) {
 
-    let part;
+          part = definition.shapes[index];
 
-    if (index < shapeCount) {
+        } else {
 
-      part = definition.shapes[index];
+          part = definition.lines[index - shapeCount];
 
-    } else {
+        }
 
-      part = definition.lines[index - shapeCount];
-
+        return part?.id ?? this.currentShapeId;
     }
-
-    return part?.id ?? this.currentShapeId;
   }
   public updateShapes(){
    if (this.isDiagramInitializing)
@@ -2558,7 +2593,7 @@ public valueChange_del(value: any): void {
    * Handle property dialog close - similar to onCloseWindow in scd-mdi-win.component.ts
    */
 public onPropertyDialogClose(): void {
-  console.log('onPropertyDialogClose: Checking for unsaved changes...');
+  console.log('onPropertyDialogClose: Checking for unsaved changes...:',this.propertyDialogData, this.propertyDialogData.isDirty);
   
   if (this.propertyDialogData && this.propertyDialogData.isDirty) {
     // Show confirmation dialog - same as MDI windows
@@ -3308,14 +3343,20 @@ private uniqueShapeId(prefix: string): string {
         stroke: { color: stroke},
         fill: { color: fill }
       });
+      const fontSize = Math.max(8, Number(dataItem.fontSize) || 16);
+      const fontFamily = typeof dataItem.fontFamily === "string" && dataItem.fontFamily.length
+        ? dataItem.fontFamily
+        : "Arial, sans-serif";
+      const textColor = style.strokeColor || dataItem.textColor || "#1f2937";
       const text = new TextBlock({
         text: String(dataItem.text || "Text"),
         x: x + 10,
         y: y + 12,
-        fill: style.strokeColor || dataItem.textColor || "#1f2937"
+        fill: textColor,
+        fontSize,
+        fontFamily,
+        fontWeight: dataItem.fontWeight || "normal"
       });
-      text.options.fontSize = Number(dataItem.fontSize) || 16;
-      text.options.fontWeight = dataItem.fontWeight || "bold";
       group.append(background);
       group.append(text);
       return group;

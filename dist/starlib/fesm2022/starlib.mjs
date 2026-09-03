@@ -389,6 +389,7 @@ class starServices {
                 'authorization': this.StrAuth
             })
         };
+        console.log("post:theURL:", theURL, "Body:", Body);
         //if (this.paramConfig.DEBUG_FLAG) console.log("this.StrAuth:" , this.StrAuth , theURL);
         //if (this.paramConfig.DEBUG_FLAG) console.log("this.StrAuth: with URL" , this.StrAuth , theURL);
         return this.http

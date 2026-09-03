@@ -280,18 +280,24 @@ export class MDIWindowComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Use setTimeout to ensure view is fully rendered
-    setTimeout(() => {
-      if (this.window && this.window.component && !this.isComponentCreated) {
-        this.createComponent();
-      }
-    }, 0);
-  }
+  // Use setTimeout to ensure view is fully rendered
+  setTimeout(() => {
+    if (this.window && this.window.component && !this.isComponentCreated && !this.componentRef) {
+      console.log("tracing:ngAfterViewInit: Creating component for:", this.window.id);
+      this.createComponent();
+    } else if (this.componentRef) {
+      // Component already exists, just update inputs
+      console.log("tracing:ngAfterViewInit: Component already exists for:", this.window.id);
+     
+    }
+  }, 0);
+}
+
 
 private createComponent(): void {
-  if (this.isComponentCreated) {
-    return;
-  }
+  console.log('createComponent:this.isComponentCreated:', this.isComponentCreated);
+  
+
 
   if (!this.window || !this.window.component) {
     console.warn('No component to create');
@@ -312,7 +318,7 @@ private createComponent(): void {
 
   try {
     console.log('MDIWindowComponent: Creating component:', this.window.component.name);
-    console.log('MDIWindowComponent: Window ID:', this.window.id);
+    console.log('Tracing:MDIWindowComponent: Window ID:', this.window.id);
     
     // Clear the container
     this.componentContainer.clear();
@@ -320,10 +326,9 @@ private createComponent(): void {
     // Create the component
     this.componentRef = this.componentContainer.createComponent(this.window.component);
     
-    // <<<<<<< CRITICAL: Store component instance in the window object >>>>>>>
+    // Store component instance in the window object
     this.window.componentInstance = this.componentRef.instance;
     console.log('MDIWindowComponent: Stored component instance in window for ID:', this.window.id);
-    console.log('MDIWindowComponent: Component instance:', this.componentRef.instance);
 
     // Set inputs
     if (this.window.inputs) {
@@ -391,12 +396,14 @@ private createComponent(): void {
 
   // Force recreate component if needed
   refreshComponent(): void {
+    
     this.isComponentCreated = false;
     this.componentContainer?.clear();
     if (this.componentRef) {
       this.componentRef.destroy();
       this.componentRef = null;
     }
+    console.log("tracing:refreshComponent:", this.componentRef);
     this.createComponent();
   }
 
