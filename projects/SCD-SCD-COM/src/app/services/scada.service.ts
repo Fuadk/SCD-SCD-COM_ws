@@ -50,7 +50,6 @@ export interface WriteResult {
 
 export class SCADAService {
   private OPCUA_SERVER_BASE = environment.OPCUA_SERVER_BASE;
-  //private OPCUA_SERVER_BASE = 'http://localhost:53531/api';
   private tagValues = new BehaviorSubject<any>({});
   private alarms = new BehaviorSubject<Alarm[]>([]);
   private servers = new BehaviorSubject<ServerInfo[]>([]);
@@ -58,6 +57,9 @@ export class SCADAService {
   private connectionStatus = new BehaviorSubject<boolean>(false);
   private pollingInterval: any;
   private isPollingEnabled: boolean = true;
+  
+  // ✅ Track if servers have been loaded
+  private isServersLoaded: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -110,6 +112,8 @@ export class SCADAService {
     await this.loadInitialData();
   }
 
+  // ============= Polling - Tags Only =============
+  
   private startPolling(): void {
     // Clear existing interval if any
     if (this.pollingInterval) {
@@ -121,41 +125,29 @@ export class SCADAService {
       console.log('opcua:Polling is disabled, not starting');
       return;
     }
-    console.log('opcua:startPolling');
+    console.log('opcua:startPolling - Tags only (servers on demand)');
     this.pollingInterval = setInterval(async () => {
-      console.log('opcua:setInterval:',this.isPollingEnabled);
+      console.log('opcua:setInterval:', this.isPollingEnabled);
       if (!this.isPollingEnabled) return; // Extra safety check
       
       try {
-        console.log('opcua:http.get:',`${this.OPCUA_SERVER_BASE}/tags`);
+        console.log('opcua:http.get:', `${this.OPCUA_SERVER_BASE}/tags`);
         const tags = await this.http.get(`${this.OPCUA_SERVER_BASE}/tags`).toPromise();
-        console.log('opcua:tags:',tags);
+        console.log('opcua:tags:', tags);
         if (tags) {
           this.ngZone.run(() => {
             this.tagValues.next(tags);
           });
         }
-        
-        // const alarms = await this.http.get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms`).toPromise();
+         // const alarms = await this.http.get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms`).toPromise();
         // if (alarms) {
         //   this.ngZone.run(() => {
         //     this.alarms.next(alarms);
         //   });
         // }
+        // ✅ REMOVED: Servers are NOT polled here anymore
+        // Servers are loaded on demand only
         
-        const servers = await this.http.get<ServerInfo[]>(`${this.OPCUA_SERVER_BASE}/servers`).toPromise();
-        console.log("opcua:startPolling:servers",servers)
-        if (servers) {
-          this.ngZone.run(() => {
-            const serversWithConnected = servers.map(s => ({
-              ...s,
-              connected: s.status === 'connected'
-            }));
-            console.log("opcua:startPolling:this.servers",this.servers, "serversWithConnected:",serversWithConnected)
-            this.servers.next(serversWithConnected);
-            this.connectionStatus.next(serversWithConnected.some(s => s.connected));
-          });
-        }
       } catch (error) {
         console.error('Polling failed:', error);
         this.ngZone.run(() => {
@@ -165,76 +157,95 @@ export class SCADAService {
     }, 2000);
   }
 
+  // ============= Load Initial Data =============
+  
   async loadInitialData(): Promise<void> {
     try {
-      const [tags, servers] = await Promise.all([
-        this.http.get(`${this.OPCUA_SERVER_BASE}/tags`).toPromise(),
-        this.http.get<ServerInfo[]>(`${this.OPCUA_SERVER_BASE}/servers`).toPromise()
-      ]);
-      
-      if (tags) this.tagValues.next(tags);
-      if (servers) {
-        const serversWithConnected = servers.map(s => ({
-          ...s,
-          connected: s.status === 'connected'
-        }));
-        this.servers.next(serversWithConnected);
+      // Load tags
+      const tags = await this.http.get(`${this.OPCUA_SERVER_BASE}/tags`).toPromise();
+      if (tags) {
+        this.tagValues.next(tags);
       }
+      
+      // ✅ Load servers ONCE on initialization
+      await this.loadServers();
+      
     } catch (error) {
       console.error('Failed to load initial data:', error);
     }
   }
 
-  // ============= Server Management APIs =============
+  // ============= Servers - ON DEMAND ONLY =============
   
+  /**
+   * Load servers from backend - Call this when you need server data
+   */
+  async loadServers(): Promise<ServerInfo[]> {
+    console.log('opcua:🔄 Loading servers on demand');
+    try {
+      const servers = await this.http.get<ServerInfo[]>(`${this.OPCUA_SERVER_BASE}/servers`).toPromise();
+      if (servers) {
+        this.ngZone.run(() => {
+          const serversWithConnected = servers.map(s => ({
+            ...s,
+            connected: s.status === 'connected'
+          }));
+          this.servers.next(serversWithConnected);
+          this.connectionStatus.next(serversWithConnected.some(s => s.connected));
+          this.isServersLoaded = true;
+        });
+        return servers;
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to load servers:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Refresh servers - Call this when you need updated server status
+   */
+  async refreshServers(): Promise<ServerInfo[]> {
+    console.log('opcua:🔄 Refreshing servers on demand');
+    return this.loadServers();
+  }
+
+  /**
+   * Get servers as observable (for components that subscribe)
+   * Will auto-load if servers haven't been loaded yet
+   */
   getServers(): Observable<ServerInfo[]> {
-    //console.log("opcua:getServers:servers",this.servers)
+    // If servers haven't been loaded yet, trigger a load
+    if (!this.isServersLoaded) {
+      console.log('opcua:getServers - Auto-loading servers');
+      this.loadServers();
+    }
     return this.servers.asObservable();
   }
 
+  /**
+   * Get current server list (synchronous)
+   */
+  getCurrentServers(): ServerInfo[] {
+    return this.servers.getValue();
+  }
+
+  /**
+   * Check if servers are loaded
+   */
+  areServersLoaded(): boolean {
+    return this.isServersLoaded;
+  }
+
+  // ============= Other Getters =============
+  
   getCurrentServer(): Observable<string> {
     return this.currentServer.asObservable();
   }
 
   setCurrentServer(server: string): void {
     this.currentServer.next(server);
-  }
-
-  async addServer(name: string, endpoint: string): Promise<ServerInfo | null> {
-    try {
-      const response = await this.http.post<{ server: ServerInfo }>(`${this.OPCUA_SERVER_BASE}/servers`, { name, endpoint }).toPromise();
-      if (response?.server) {
-        const serverWithConnected = {
-          ...response.server,
-          connected: response.server.status === 'connected'
-        };
-        return serverWithConnected;
-      }
-      return null;
-    } catch (error) {
-      console.error('Failed to add server:', error);
-      return null;
-    }
-  }
-
-  async removeServer(serverId: number): Promise<boolean> {
-    try {
-      await this.http.delete(`${this.OPCUA_SERVER_BASE}/servers/${serverId}`).toPromise();
-      return true;
-    } catch (error) {
-      console.error('Failed to remove server:', error);
-      return false;
-    }
-  }
-
-  async updateServer(serverId: number, name: string, endpoint: string): Promise<boolean> {
-    try {
-      await this.http.put(`${this.OPCUA_SERVER_BASE}/servers/${serverId}`, { name, endpoint }).toPromise();
-      return true;
-    } catch (error) {
-      console.error('Failed to update server:', error);
-      return false;
-    }
   }
 
   getTagValues(): Observable<any> {
@@ -247,6 +258,51 @@ export class SCADAService {
 
   getConnectionStatus(): Observable<boolean> {
     return this.connectionStatus.asObservable();
+  }
+
+  // ============= Server Management APIs =============
+  
+  async addServer(name: string, endpoint: string): Promise<ServerInfo | null> {
+    try {
+      const response = await this.http.post<{ server: ServerInfo }>(`${this.OPCUA_SERVER_BASE}/servers`, { name, endpoint }).toPromise();
+      if (response?.server) {
+        const serverWithConnected = {
+          ...response.server,
+          connected: response.server.status === 'connected'
+        };
+        // ✅ Refresh servers after adding
+        await this.refreshServers();
+        return serverWithConnected;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to add server:', error);
+      return null;
+    }
+  }
+
+  async removeServer(serverId: number): Promise<boolean> {
+    try {
+      await this.http.delete(`${this.OPCUA_SERVER_BASE}/servers/${serverId}`).toPromise();
+      // ✅ Refresh servers after removal
+      await this.refreshServers();
+      return true;
+    } catch (error) {
+      console.error('Failed to remove server:', error);
+      return false;
+    }
+  }
+
+  async updateServer(serverId: number, name: string, endpoint: string): Promise<boolean> {
+    try {
+      await this.http.put(`${this.OPCUA_SERVER_BASE}/servers/${serverId}`, { name, endpoint }).toPromise();
+      // ✅ Refresh servers after update
+      await this.refreshServers();
+      return true;
+    } catch (error) {
+      console.error('Failed to update server:', error);
+      return false;
+    }
   }
 
   async writeTag(serverIdOrName: number | string, tagName: string, value: any): Promise<WriteResult> {

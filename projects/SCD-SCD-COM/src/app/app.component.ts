@@ -473,7 +473,15 @@ console.log ("environment:",environment)
   
   private async setTheme() {
     await this.starServices.sleep(100);
+    
+    setTimeout(() => {
     this.starServices.hideNoValidLicense();
+    }, 200);
+    
+
+ setTimeout(() => {
+    this.starServices.hideNoValidLicense();
+    }, 1000);
 
     //console.log(" Starting to set theme");
     const userThemeQuery = {

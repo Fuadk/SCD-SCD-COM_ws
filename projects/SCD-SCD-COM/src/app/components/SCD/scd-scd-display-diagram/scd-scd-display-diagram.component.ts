@@ -1345,7 +1345,9 @@ public snapDistance = 6;
     definition: DiagramDefinition,
     offsetX: number = 0,
     offsetY: number = 0,
-    editorStyle?: ShapeEditorStyle
+    editorStyle?: ShapeEditorStyle,
+    targetWidth?: number,
+    targetHeight?: number
   ): Group {
     const group = new Group();
 
@@ -1486,42 +1488,134 @@ public snapDistance = 6;
         group.append(textBlock);
       });
     }
+    // ------------------------------------------------------------
+// Resize the ENTIRE rendered visual if Kendo supplied
+// targetWidth / targetHeight.
+//
+// The definition itself remains at its natural/original size.
+// We scale the Drawing Group only.
+// ------------------------------------------------------------
+
+if (
+  targetWidth !== undefined &&
+  targetHeight !== undefined &&
+  targetWidth > 0 &&
+  targetHeight > 0
+) {
+  const drawingGroup: any = group.drawingElement;
+
+  if (drawingGroup) {
+    const naturalBounds = drawingGroup.bbox();
+
+    if (
+      naturalBounds &&
+      naturalBounds.size &&
+      naturalBounds.origin &&
+      naturalBounds.size.width > 0 &&
+      naturalBounds.size.height > 0
+    ) {
+      const naturalWidth = naturalBounds.size.width;
+      const naturalHeight = naturalBounds.size.height;
+
+      const naturalX = naturalBounds.origin.x;
+      const naturalY = naturalBounds.origin.y;
+
+      const scaleX = targetWidth / naturalWidth;
+      const scaleY = targetHeight / naturalHeight;
+
+      const transform = geometry
+        .transform()
+        .translate(
+          -naturalX,
+          -naturalY
+        )
+        .scale(
+          scaleX,
+          scaleY,
+          [0, 0]
+        );
+
+      drawingGroup.transform(transform);
+    }
+  }
+}
 
     return group;
   }
   // Visual template that uses the diagram definition
-  public visualTemplate = (options: any): Group => {
-    const dataItem = options?.dataItem?.dataItem ?? options?.dataItem;
-    if (!dataItem) {
-      return new Group();
-    }
+public visualTemplate = (options: any): Group => {
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem;
 
-    let group: Group;
-    if (Array.isArray(dataItem.groupChildren)) {
-      group = this.drawGroupedChildren(
-        dataItem.groupChildren,
-        dataItem.editorStyle,
-        0,
-        0,
-        Number(dataItem.groupOriginalWidth) || Number(dataItem.width) || undefined,
-        Number(dataItem.groupOriginalHeight) || Number(dataItem.height) || undefined
-      );
-    } else if (dataItem.libraryKind) {
-      group = this.drawLibraryShape(dataItem);
-    } else if (dataItem.definition) {
-      group = this.drawDiagramFromDefinition(
-        dataItem.definition,
-        dataItem.offsetX || 0,
-        dataItem.offsetY || 0,
-        dataItem.editorStyle
-      );
-    } else {
-      return new Group();
-    }
+  if (!dataItem) {
+    return new Group();
+  }
 
-    this.applyDrawingTransform(group, dataItem.editorStyle);
-    return group;
-  };
+  let group: Group;
+
+  if (Array.isArray(dataItem.groupChildren)) {
+
+    group = this.drawGroupedChildren(
+      dataItem.groupChildren,
+      dataItem.editorStyle,
+      0,
+      0,
+      Number(dataItem.groupOriginalWidth) ||
+        Number(dataItem.width) ||
+        undefined,
+      Number(dataItem.groupOriginalHeight) ||
+        Number(dataItem.height) ||
+        undefined
+    );
+
+  } else if (dataItem.libraryKind) {
+
+    group = this.drawLibraryShape(dataItem);
+
+  } else if (dataItem.definition) {
+
+    // ----------------------------------------------------------
+    // IMPORTANT:
+    // Kendo stores the resized outer shape dimensions in
+    // dataItem.width / dataItem.height.
+    //
+    // The definition itself remains at its natural size.
+    // drawDiagramFromDefinition() scales the entire visual
+    // to these target dimensions.
+    // ----------------------------------------------------------
+
+    const shapeWidth =
+      options?.width ??
+      dataItem.width ??
+      undefined;
+
+    const shapeHeight =
+      options?.height ??
+      dataItem.height ??
+      undefined;
+
+    group = this.drawDiagramFromDefinition(
+      dataItem.definition,
+      dataItem.offsetX || 0,
+      dataItem.offsetY || 0,
+      dataItem.editorStyle,
+      shapeWidth,
+      shapeHeight
+    );
+
+  } else {
+
+    return new Group();
+  }
+
+  this.applyDrawingTransform(
+    group,
+    dataItem.editorStyle
+  );
+
+  return group;
+};
     private drawGroupedChildren(
     children: any[],
     parentStyle?: ShapeEditorStyle,
@@ -2593,7 +2687,7 @@ public valueChange_del(value: any): void {
    * Handle property dialog close - similar to onCloseWindow in scd-mdi-win.component.ts
    */
 public onPropertyDialogClose(): void {
-  console.log('onPropertyDialogClose: Checking for unsaved changes...:',this.propertyDialogData, this.propertyDialogData.isDirty);
+  console.log('onPropertyDialogClose: Checking for unsaved changes...');
   
   if (this.propertyDialogData && this.propertyDialogData.isDirty) {
     // Show confirmation dialog - same as MDI windows

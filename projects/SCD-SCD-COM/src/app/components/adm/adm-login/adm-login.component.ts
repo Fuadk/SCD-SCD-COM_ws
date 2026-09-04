@@ -42,6 +42,7 @@ export class AdmLoginComponent implements OnInit {
     }
 
     ngOnInit() {
+        
         this.starServices.hideNoValidLicense();
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
