@@ -1,27 +1,13 @@
-    <div>   
-        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_all_alarms.scd_all_alarms.component_title","") }}</legend> 
+<div style ="display:block;width:100%;"> 
+<legend  class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_grid_properties_settings.SCD_grid_properties_settings.component_title","Grid Properties Settings") }}</legend>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-aa-alarms-list  [hidden]="hide_comp_1" 
-                      (readCompletedOutput)="readCompletedHandler($event)"
-                      (clearCompletedOutput)="clearCompletedHandler($event)"
-                      (saveCompletedOutput)="saveCompletedHandler($event)"
-                      (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
-                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARMGrid_0Config">
-        </app-scd-aa-alarms-list >
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-aa-alarm-filter  [hidden]="hide_comp_2" [detail_Input]="form_1_SCD_ALARM"  
-                      (formValidationChangedOutput)="formValidationChangedMD($event,2)"
-                      (saveCompletedOutput)="saveCompletedHandler2($event)"
-                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARMForm_1Config">
-        </app-scd-aa-alarm-filter >
-
+			<app-scd-gps-grid-properties  [hidden]="hide_comp_1" 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
+				[setComponentConfig_Input]="scd_gps_grid_properties0_0Config">
+    		</app-scd-gps-grid-properties >
 </div>
 
-    </div>   
+<div> 
 <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
 		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
 			iconClass="fas fa-save" *ngIf=visibleOK_BTNS

@@ -1,5 +1,5 @@
 <div>
-        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.component_title","") }}</legend> 
         <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
 
 <kendo-tabstrip-tab [selected]="true">
@@ -20,7 +20,7 @@
   </kendo-tabstrip-tab>
        <kendo-tabstrip-tab>
        <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General1") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_numeric_display_properties.scd_numeric_display_properties.compsTitleID2","General") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
         <app-scd-sdg-shape-display-general [detail_Input]="formdivs_1_SCD_SHAPE_DISPLAY_GENERAL"  

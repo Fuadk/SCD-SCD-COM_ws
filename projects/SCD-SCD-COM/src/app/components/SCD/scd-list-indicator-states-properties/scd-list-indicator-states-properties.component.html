@@ -1,18 +1,20 @@
     <div>   
-        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_list_indicator_states_properties.scd_list_indicator_states_properties.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_list_indicator_states_properties.scd_list_indicator_states_properties.component_title","") }}</legend> 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-lisp-list-indicator-states-list style="width : 200px ;" 
+        <app-scd-lisp-list-indicator-states-list style="width : 200px ;" [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_LIST_INDICATOR_STATEGrid_0Config">
         </app-scd-lisp-list-indicator-states-list >
 
 
-        <app-scd-lisd-list-indicator-state-definition  [detail_Input]="formdivs_1_SCD_LIST_INDICATOR_STATE"  
+        <app-scd-lisd-list-indicator-state-definition  [hidden]="hide_comp_2" [detail_Input]="formdivs_1_SCD_LIST_INDICATOR_STATE"  
                       (formValidationChangedOutput)="formValidationChangedMD($event,2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_LIST_INDICATOR_STATEFormdivs_1Config">
         </app-scd-lisd-list-indicator-state-definition >
 

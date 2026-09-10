@@ -22,10 +22,8 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
   constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
    this.router = router;
   this.title =  this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.component_title","");
-    this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
+    this.paramConfig = getParamConfig();
   }
   public showToolBar = false;
   public paramConfig; 
@@ -48,8 +46,11 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
   public formdivs_1_SCD_GRAPH_GENERAL : scdgraphGeneralScdGgGraphGeneral;
   public grid_2_SCD_SHAPE_CONNECTION : scdshapeConnectionScdScShapeConnections;
   public  SCD_SHAPEForm_0Config : componentConfigDef;
+  public  hide_comp_1 = false
   public  SCD_GRAPH_GENERALFormdivs_1Config : componentConfigDef;
+  public  hide_comp_2 = false
   public  SCD_SHAPE_CONNECTIONGrid_2Config : componentConfigDef;
+  public  hide_comp_3 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdBarGraphProperties";
 
@@ -92,6 +93,7 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
    this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.compsTitleID1","Common");
    this.SCD_SHAPEForm_0Config.isMaster = true;
    this.SCD_SHAPEForm_0Config.isSearchScreen = this.isSearchScreen;
+   this.SCD_SHAPEForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_SHAPEForm_0Config.queryable = false;
      this.SCD_SHAPEForm_0Config.removeable = false;
@@ -103,6 +105,7 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
    this.SCD_GRAPH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.compsTitleID2","General");
    this.SCD_GRAPH_GENERALFormdivs_1Config.isChild = true;
    this.SCD_GRAPH_GENERALFormdivs_1Config.masterSelector = 'app-scd-bar-graph-properties';
+   this.SCD_GRAPH_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_GRAPH_GENERALFormdivs_1Config.navigable = false;
      //this.SCD_GRAPH_GENERALFormdivs_1Config.insertable = true;
@@ -112,6 +115,7 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
    this.SCD_SHAPE_CONNECTIONGrid_2Config.title = this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.compsTitleID3","Connections");
    this.SCD_SHAPE_CONNECTIONGrid_2Config.isChild = true;
    this.SCD_SHAPE_CONNECTIONGrid_2Config.masterSelector = 'app-scd-bar-graph-properties';
+   this.SCD_SHAPE_CONNECTIONGrid_2Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_SHAPE_CONNECTIONGrid_2Config.navigable = false;
      //this.SCD_SHAPE_CONNECTIONGrid_2Config.insertable = true;
@@ -213,6 +217,7 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
   }
   public saveTriggerHandler(event){
         }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Input() public set detail_Input(form: any) {
     if (typeof form !== "undefined")
     {
@@ -229,6 +234,19 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
     }
     this.formValidationChangedOutput.emit(formValidation)
   }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -265,25 +283,27 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
              this.SCD_SHAPE_CONNECTIONGrid_2Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_SHAPE_CONNECTIONGrid_2Config.title = this.starServices.getNLS([],"scd_bar_graph_properties.scd_bar_graph_properties.compsTitleID3","Connections");
            this.setSteps(this);
-           }, 400);
+           }, 500);
        }
   
+       this.SCD_SHAPEForm_0Config = new componentConfigDef();
+       this.SCD_GRAPH_GENERALFormdivs_1Config = new componentConfigDef();
+       this.SCD_SHAPE_CONNECTIONGrid_2Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
+              this.SCD_SHAPEForm_0Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_GRAPH_GENERALFormdivs_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_SHAPE_CONNECTIONGrid_2Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.SCD_SHAPEForm_0Config = new componentConfigDef();
-       this.SCD_SHAPEForm_0Config = ComponentConfig;
-       this.SCD_GRAPH_GENERALFormdivs_1Config = new componentConfigDef();
-       this.SCD_GRAPH_GENERALFormdivs_1Config = ComponentConfig;
-       this.SCD_SHAPE_CONNECTIONGrid_2Config = new componentConfigDef();
-       this.SCD_SHAPE_CONNECTIONGrid_2Config = ComponentConfig;
-      if (ComponentConfig.masterSaved != null)
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_GRAPH_GENERALFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_SHAPE_CONNECTIONGrid_2Config.showToolBar = ComponentConfig.showToolBar;
+       }
+      if (ComponentConfig.masterSaved != null)//here1
       {
        this.SCD_SHAPEForm_0Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_GRAPH_GENERALFormdivs_1Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_SHAPE_CONNECTIONGrid_2Config.masterSaved = ComponentConfig.masterSaved;
       }
       if (ComponentConfig.newRec != null)
       {
@@ -321,7 +341,6 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
           }
        }
       }
-     }
     }
   }
    public formdivs_1_SCD_GRAPH_GENERALOpened = false;
@@ -342,14 +361,34 @@ export class ScdBarGraphPropertiesComponent implements OnInit {
   
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

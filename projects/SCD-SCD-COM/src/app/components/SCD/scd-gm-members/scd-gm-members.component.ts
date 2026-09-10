@@ -90,7 +90,8 @@ export class ScdGroupMembershipScdGmMembersGridComponent implements OnInit,OnDes
   public title =  this.starServices.getNLS([],"SCD_GM_MEMBERS.scdgroupMembershipScdGmMembers.component_title","Members");
   public PDFfileName = this.title + ".PDF";
   public ExcelfileName = this.title + ".xlsx";
-  public componentConfig
+  public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public compTitleMsg =  "SCD_GM_MEMBERS.scdgroupMembershipScdGmMembers";
   public editableMode = false;
   
@@ -185,6 +186,7 @@ public compSelector = 'app-scd-gm-members';
     
     if (this.isDirty !== hasChanges) {
       this.isDirty = hasChanges;
+      this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.isDirty;
       
       console.log('Grid dirty state changed:', this.isDirty);
@@ -217,7 +219,7 @@ public compSelector = 'app-scd-gm-members';
   private emitComponentConfig(): void {
   if (this.componentConfig) {
     this.componentConfig.eventFrom = this.compSelector;
-    this.componentConfig.eventTo = ['any'];
+    //this.componentConfig.eventTo = ['any'];
     console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
     this.setComponentConfig_Output.emit(this.componentConfig);
   }

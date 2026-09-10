@@ -35,6 +35,7 @@ import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scddisplayScdScdDisplayDiagram , componentConfigDef} from '@modeldir/model';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../../../services/scada-integration.service';
 import { ServerConfig } from '../../../services/scada.service';
+import {ScdAllAlarmsComponent} from '../scd-all-alarms/scd-all-alarms.component';
 import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
 import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
 import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
@@ -42,9 +43,12 @@ import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-ba
 import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
 import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
 import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
+import {ScdDisplayKeysScreenComponent} from '../scd-display-keys-screen/scd-display-keys-screen.component';
 import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
 import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
 import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
+import {ScdGridPropertiesSettingsComponent} from '../scd-grid-properties-settings/scd-grid-properties-settings.component';
+import {ScdJavascriptCodeScreenComponent} from '../scd-javascript-code-screen/scd-javascript-code-screen.component';
 import {ScdListIndicatorPropertiesComponent} from '../scd-list-indicator-properties/scd-list-indicator-properties.component';
 import {ScdListIndicatorStatesPropertiesComponent} from '../scd-list-indicator-states-properties/scd-list-indicator-states-properties.component';
 import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
@@ -810,7 +814,11 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-        console.log ("WHEN_NEW_FORM_INSTANCE");
+        	if (!this.isChild){
+		this.executeQuery(this.form.value);
+	}
+
+    console.log ("WHEN_NEW_FORM_INSTANCE");
     var href =  window.location.href;
     
     var array = href.split("&");
@@ -922,6 +930,7 @@ public printScreen(){
 let shapeType = shapeInfo['SHAPE_TYPE'];
 let action = "new";
 let SHAPE_ID = "";
+let title = "";
 console.log("DEBUG_IT:ON_CLICK_MENU:event:", event, "menuType:", menuType, "currentShapeType:",
     this.currentShapeType, "currentShapeId:", this.currentShapeId, "shapeType:", shapeType)
 let Id = "";
@@ -929,12 +938,35 @@ if (menuType == "DROPDOWN") {
     action = "new";
     Id = event.Id;
     shapeType = event.text;
+    title = event.dataItem.ITEM_TITLE;
+    
 }
 else if (menuType == "CONTEXT_MENU") {
     Id = event.item.Id;
+    /////
+    switch (Id) {
+        case 'SHOW_GRID':
+            this.toggleGrid();
+            return;
+        case 'SNAP':
+            this.toggleSnap();
+            return;
+        case 'ZOOM_FIT':
+            this.zoomToFit();
+            return;
+        case 'ZOOM_IN':
+            this.zoomIn();
+            return;
+        case 'ZOOM_OUT':
+            this.zoomOut();
+            return;
+        default:
+            break;
+    }
     let arr = this.currentShapeId.split(":");
     SHAPE_ID = arr[1];
     action = "open";
+    ////
     switch (shapeType) {
         case 'numeric display':
             Id = 'Numeric_Display_Properties';
@@ -959,7 +991,7 @@ if (Id != "") {
         }
 
         //this.starlib1.dialog_openDialog(this, Id,Maximize);
-        this.openPropertyDialog(this, Id, Maximize, shapeType, action, SHAPE_ID);
+        this.openPropertyDialog(this, Id, Maximize, shapeType, action, SHAPE_ID,title);
     }
     setTimeout(() => {
         this.selectedShape = null;
@@ -976,6 +1008,7 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
+  console.log(`onEvent: type=${type}, event=`, event);
   if (!this.isEditMode)
     return;
   if (type === "select" || type === "shapeBoundsChange" || type === "change") {
@@ -1064,7 +1097,11 @@ if (type === "shapeBoundsChange") {
   return;
 }
     // ===== SELECT =====
+   if (type === "select" ) {
+       console.log(`onEvent: type=${type}, event=`, event);
+   }
     if (type === "select" && event.selected) {
+       console.log(`onEvent: type=${type}, event=`, event, event.selected);
         const selectedItem = event.selected[0];
         const containerId = selectedItem?.id;
         console.log(`checking:select : ${containerId}`);
@@ -1874,7 +1911,8 @@ public mapSampleData() {
     this.editable = this.buildEditable();
 
     // Generate the JSON
-    const result = this.buildHierarchy(this.dbRows);
+    let diagramMenus = this.diagramMenus["DIAGRAM"]
+    const result = this.buildHierarchy(diagramMenus);
     this.items=result;
 
     requestAnimationFrame(() => {
@@ -1903,16 +1941,19 @@ public buildHierarchy(rows) {
     const childrenMap = {};
     const itemMap = {}; // Store item details by name
     
+    
     rows.forEach(row => {
         const itemName = row.Item;
         const menuName = row.Menu;
         const itemId = row.Id || row.ID; // Handle both Id and ID
+        const dataItem = row.dataItem ||  null; // Handle both dataItem and dataitem
         
         // Store item details
         if (!itemMap[itemName]) {
             itemMap[itemName] = {
                 text: itemName,
                 Id: itemId,
+                dataItem:dataItem,
                 isSeparator: itemName === "SEP"
             };
         } else if (itemId) {
@@ -1929,6 +1970,7 @@ public buildHierarchy(rows) {
         childrenMap[menuName].push({
             name: itemName,
             id: itemId,
+            dataItem:dataItem,
             isSeparator: itemName === "SEP"
         });
     });
@@ -1945,7 +1987,8 @@ public buildHierarchy(rows) {
         
         // Create node
         const node:any = { 
-            text: itemName
+            text: itemName,
+            dataItem: itemMap[itemName] ? itemMap[itemName].dataItem : null
         };
         
         // Add Id if it exists
@@ -2038,6 +2081,13 @@ public lastClickY: number = 0;
 public onDiagramClick(event: any): void {
     this.lastClickX = event.offsetX || event.layerX || 0;
     this.lastClickY = event.offsetY || event.layerY || 0;
+    let target = event.target.outerHTML;
+    if (target.startsWith("<svg")) {
+        console.log("Clicked on empty space");
+        //this.currentShapeId = "";
+        this.currentShapeType = "";
+       // this.showContextMenuAt(event.pageX, event.pageY, null);
+    }
     console.log(`📍 checking:Click: (${this.lastClickX}, ${this.lastClickY})`);
     
     // 🔑 Clear any existing timer
@@ -2180,7 +2230,8 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
       result[menuType].push({
         Menu: item.MENU,
         Item: item.ITEM,
-        Id : item.ID
+        Id : item.ID,
+        dataItem : item
       });
 
       return result;
@@ -2524,7 +2575,7 @@ public valueChange_del(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"500","Height":"500","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"500","Height":"500","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"700","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"700","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -2532,6 +2583,8 @@ public valueChange_del(value: any): void {
     }
 
     	switch (shapeType) {
+		case '33': 
+		return ScdAllAlarmsComponent; 
 		case '17': 
 		return ScdArrowButtonPropertiesComponent; 
 		case '19': 
@@ -2546,12 +2599,18 @@ public valueChange_del(value: any): void {
 		return ScdButtonPropertiesComponent; 
 		case '20': 
 		return ScdControlListSelectorPropertiesComponent; 
+		case '30': 
+		return ScdDisplayKeysScreenComponent; 
 		case '21': 
 		return ScdDisplayListSelectorPropertiesComponent; 
 		case '28': 
 		return ScdDisplaySettingsScreenComponent; 
 		case '15': 
 		return ScdGaugePropertiesComponent; 
+		case '32': 
+		return ScdGridPropertiesSettingsComponent; 
+		case '31': 
+		return ScdJavascriptCodeScreenComponent; 
 		case '12': 
 		return ScdListIndicatorPropertiesComponent; 
 		case '13': 
@@ -2616,8 +2675,11 @@ public valueChange_del(value: any): void {
    * Open property dialog - Replacement for starlib1.dialog_openDialog
    * Similar to openWin in scd-mdi-win.component.ts
    */
- public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType,action,SHAPE_ID): void {
-  console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize);
+ public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType,action,SHAPE_ID,title): void {
+  console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize, shapeType);
+  if (typeof shapeType !="undefined"){
+    shapeType = shapeType.toLowerCase();
+  }
   
   // Find the dialog properties
   const dialogDef = this.dialogProperties.find(x => x.Id === comp);
@@ -2642,14 +2704,16 @@ public valueChange_del(value: any): void {
       maximize: Maximize,
       action : action,
       DISPLAY_ID:this.form.value.DISPLAY_ID,
-      SHAPE_TYPE: shapeType.toLowerCase(),
+      SHAPE_TYPE: shapeType,
       SHAPE_ID : SHAPE_ID
     }
   };
 
   // Get the component name for the title
   const componentName = dialogDef.Component || comp;
-  const title = this.getDialogTitle(componentName);
+  if (title == '' || title == null) {
+    title = this.getDialogTitle(componentName);
+  }
 
   // Set property dialog data
   this.propertyDialogData = {
@@ -2955,7 +3019,7 @@ onContextMenuSelect(event){
   console.log("DEBUG_IT:onContextMenuSelect:event:",event)
   this.ON_CLICK_CONTEXT_MENU('CONTEXT_MENU', event)
    event.preventDefault();
-    event.stopPropagation();  
+   //event.stopPropagation();  
 }
 onDiagramContextMenu(event){
   console.log("DEBUG_IT:onDiagramContextMenu:event:",event)
@@ -3780,7 +3844,36 @@ public toggleSnap(): void {
     ? "Snap ON: shapes move in grid steps."
     : "Snap OFF: shapes move freely.";
 }
+public zoomOut(): void {
+  console.log("zoomOut", this.zoomLevel, this.zoomMin);
 
+  const newZoom = this.zoomLevel - 0.1;
+
+  if (newZoom < this.zoomMin) {
+    return;
+  }
+  const shapes = this.diagram.diagramShapes;
+  const box = this.diagram.boundingBox(shapes);
+  this.zoomLevel = newZoom;
+
+  
+}
+
+public zoomIn(): void {
+  console.log("zoomIn", this.zoomLevel, this.zoomMax);
+
+  const newZoom = this.zoomLevel + 0.1;
+
+  if (newZoom > this.zoomMax) {
+    return;
+  }
+
+  this.zoomLevel = newZoom;
+  const shapes = this.diagram.diagramShapes;
+  const box = this.diagram.boundingBox(shapes);
+
+  
+}
 public zoomToFit(): void {
     if (!this.diagram || !this.diagram.diagramShapes.length) {
       this.statusMessage = "There are no shapes to fit.";

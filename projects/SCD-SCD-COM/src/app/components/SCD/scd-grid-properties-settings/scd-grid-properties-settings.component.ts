@@ -6,27 +6,27 @@ import { StarNotifyService } from '../../../services/starnotification.service';
 import { TabAlignment } from '@progress/kendo-angular-layout';
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-gauge-display',
-  templateUrl: './scd-gauge-display.component.html',
-  styleUrls: ['./scd-gauge-display.component.scss'],
+  selector: 'app-scd-grid-properties-settings',
+  templateUrl: './scd-grid-properties-settings.component.html',
+  styleUrls: ['./scd-grid-properties-settings.component.scss'],
   standalone: false
 })
-export class ScdGaugeDisplayComponent implements OnInit {
+export class ScdGridPropertiesSettingsComponent implements OnInit {
   public componentConfig: componentConfigDef;
   public paramConfig;  
   public title = '';
   public isPhonePortrait = false;
   public customerFacing = false;
   public isSearchScreen = false;
-  public compSelector = 'app-scd-gauge-display';
-  public routineName = "ScdGaugeDisplay";
+  public compSelector = 'app-scd-grid-properties-settings';
+  public routineName = "ScdGridPropertiesSettings";
   public alignment: TabAlignment = 'start';
   public gap: any = {
   	rows: 2,
   	columns: 2,
     };
   constructor(public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices) {
-    this.title =  this.starServices.getNLS([],"SCD_gauge_display.SCD_gauge_display.component_title","Gauge Display");
+    this.title =  this.starServices.getNLS([],"SCD_grid_properties_settings.SCD_grid_properties_settings.component_title","Grid Properties Settings");
     this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
 }
@@ -56,10 +56,10 @@ public ngAfterViewInit() {
   async initComponents(){
     await this.starServices.sleep(200);
     // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
-   this.scd_gd_gauge_display0_0Config = new componentConfigDef();
-   this.scd_gd_gauge_display0_0Config.showToolBar = !this.visibleOK_BTNS; 
+   this.scd_gps_grid_properties0_0Config = new componentConfigDef();
+   this.scd_gps_grid_properties0_0Config.showToolBar = !this.visibleOK_BTNS; 
   }
-  public  scd_gd_gauge_display0_0Config : componentConfigDef;
+  public  scd_gps_grid_properties0_0Config : componentConfigDef;
   public  hide_comp_1 = false;
   public onComponentConfig_Output(ComponentConfig) 
 {
@@ -69,7 +69,7 @@ public ngAfterViewInit() {
     this.handleComponentConfig(ComponentConfig);
     } 
     public handleComponentConfig(ComponentConfig:any) {
-    if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdGaugeDisplayComponent:",ComponentConfig);
+    if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdGridPropertiesSettingsComponent:",ComponentConfig);
     if (typeof ComponentConfig !== "undefined"){
        this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig  );
        if (ComponentConfig.languageChanged != null) { 
@@ -77,36 +77,36 @@ public ngAfterViewInit() {
            }, 400);
        }
   
-       this.scd_gd_gauge_display0_0Config = new componentConfigDef();
+       this.scd_gps_grid_properties0_0Config = new componentConfigDef();
        if (ComponentConfig.masterParams != null) {
-              this.scd_gd_gauge_display0_0Config.masterParams = ComponentConfig.masterParams;
+              this.scd_gps_grid_properties0_0Config.masterParams = ComponentConfig.masterParams;
    		
        }
       if (ComponentConfig.masterSaved != null)
       {
-       this.scd_gd_gauge_display0_0Config.masterSaved = ComponentConfig.masterSaved;
+       this.scd_gps_grid_properties0_0Config.masterSaved = ComponentConfig.masterSaved;
       }
       if (ComponentConfig.showToolBar != null)
       {
-       this.scd_gd_gauge_display0_0Config.showToolBar = ComponentConfig.showToolBar;
+       this.scd_gps_grid_properties0_0Config.showToolBar = ComponentConfig.showToolBar;
       }
       if (ComponentConfig.newRec != null)
       {
-       this.scd_gd_gauge_display0_0Config.newRec = ComponentConfig.newRec;
+       this.scd_gps_grid_properties0_0Config.newRec = ComponentConfig.newRec;
       }
       if (ComponentConfig.clearScreen != null)
       {
-       this.scd_gd_gauge_display0_0Config.clearScreen = ComponentConfig.clearScreen;
+       this.scd_gps_grid_properties0_0Config.clearScreen = ComponentConfig.clearScreen;
 	   }
       if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
       {
        if ((ComponentConfig.masterKeyArr.length != 0) && (ComponentConfig.masterKeyNameArr.length != 0) )
        {
-         this.scd_gd_gauge_display0_0Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.scd_gd_gauge_display0_0Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.scd_gps_grid_properties0_0Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.scd_gps_grid_properties0_0Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.scd_gd_gauge_display0_0Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.scd_gps_grid_properties0_0Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
        }
       }

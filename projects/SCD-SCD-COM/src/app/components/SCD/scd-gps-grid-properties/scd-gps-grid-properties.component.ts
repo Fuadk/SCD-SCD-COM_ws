@@ -11,47 +11,36 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdshapeScdTpCommonScreen , componentConfigDef} from '@modeldir/model';
+import { scdgridPropertiesScdGpsGridProperties , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
-'SHAPE_TYPE' : new FormControl(dataItem.SHAPE_TYPE  , ) ,
-'ICON_ID' : new FormControl(dataItem.ICON_ID  , ) ,
-'DG_SHAPE_ID' : new FormControl(dataItem.DG_SHAPE_ID  , ) ,
-'HEIGHT' : new FormControl(dataItem.HEIGHT  , ) ,
-'WIDTH' : new FormControl(dataItem.WIDTH  , ) ,
-'TOP' : new FormControl(dataItem.TOP  , ) ,
-'LEFT' : new FormControl(dataItem.LEFT  , ) ,
-'NAME' : new FormControl(dataItem.NAME  , ) ,
-'VISIBLE' : new FormControl(dataItem.VISIBLE  , ) ,
-'KEY_NAVIGATION' : new FormControl(dataItem.KEY_NAVIGATION  , ) ,
-'FOCUS_HIGHLIGHT' : new FormControl(dataItem.FOCUS_HIGHLIGHT  , ) ,
-'POINTER_HIGHLIGHT' : new FormControl(dataItem.POINTER_HIGHLIGHT  , ) ,
-'TOOLTIP_TEXT' : new FormControl(dataItem.TOOLTIP_TEXT  , ) ,
-'TAB_INDEX' : new FormControl(dataItem.TAB_INDEX  , ) ,
-'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) 
+'GRID_PROP_ID' : new FormControl(dataItem.GRID_PROP_ID  , ) ,
+'SHOW_GRID' : new FormControl(dataItem.SHOW_GRID  , ) ,
+'SNAP_TO_GRID' : new FormControl(dataItem.SNAP_TO_GRID  , ) ,
+'GRID_COLOR' : new FormControl(dataItem.GRID_COLOR  , ) ,
+'HORIZONTAL_X' : new FormControl(dataItem.HORIZONTAL_X  , ) ,
+'VERTICAL_X' : new FormControl(dataItem.VERTICAL_X  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-tp-common-screen',
+  selector: 'app-scd-gps-grid-properties',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-tp-common-screen.component.html',
-  styleUrls: ['./scd-tp-common-screen.component.scss'],
+  templateUrl: './scd-gps-grid-properties.component.html',
+  styleUrls: ['./scd-gps-grid-properties.component.scss'],
   standalone: false
 })
 
 
-export class ScdShapeScdTpCommonScreenFormComponent {
-  public title =  this.starServices.getNLS([],"SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.component_title","Common Screen");
-  public compTitleMsg =  "SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen";
-  public routineName = "ScdShapeScdTpCommonScreenForm";
-  private insertCMD = "INSERT_SCD_SHAPE";
-  private updateCMD = "UPDATE_SCD_SHAPE";
-  private deleteCMD =   "DELETE_SCD_SHAPE";
-  private getCMD = "GET_SCD_SHAPE_QUERY";
+export class ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent {
+  public title =  this.starServices.getNLS([],"SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.component_title","Grid Properties");
+  public compTitleMsg =  "SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties";
+  public routineName = "ScdGridPropertiesScdGpsGridPropertiesFormdivs";
+  private insertCMD = "INSERT_SCD_GRID_PROPERTIES";
+  private updateCMD = "UPDATE_SCD_GRID_PROPERTIES";
+  private deleteCMD =   "DELETE_SCD_GRID_PROPERTIES";
+  private getCMD = "GET_SCD_GRID_PROPERTIES_QUERY";
 
   public value: Date = new Date(2019, 5, 1, 22);
   public format: string = 'MM/dd/yyyy HH:mm';
@@ -68,7 +57,7 @@ export class ScdShapeScdTpCommonScreenFormComponent {
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isDISPLAY_IDEnable : boolean = true;
+  public  isGRID_PROP_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -79,12 +68,12 @@ export class ScdShapeScdTpCommonScreenFormComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isSHAPE_IDreadOnly : false , isDISPLAY_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isGRID_PROP_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="DISPLAY_ID";
+  public masterKeyName ="GRID_PROP_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -93,80 +82,36 @@ export class ScdShapeScdTpCommonScreenFormComponent {
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-tp-common-screen';
-  public PK_AUTO = 'SHAPE_ID';
+  public compSelector = 'app-scd-gps-grid-properties';
+  public PK_AUTO = 'GRID_PROP_ID';
   public customerFacing = false;
-  public FormStepsArr = [] ;
-public labelSHAPE_IDTop=true;
-public labelSHAPE_IDVisible=true;
-public labelDISPLAY_IDTop=true;
-public labelDISPLAY_IDVisible=true;
-public labelSHAPE_TYPETop=true;
-public labelSHAPE_TYPEVisible=true;
-public labelICON_IDTop=true;
-public labelICON_IDVisible=true;
-public labelDG_SHAPE_IDTop=true;
-public labelDG_SHAPE_IDVisible=true;
-public labelHEIGHTTop=true;
-public labelHEIGHTVisible=true;
-public labelWIDTHTop=true;
-public labelWIDTHVisible=true;
-public labelTOPTop=true;
-public labelTOPVisible=true;
-public labelLEFTTop=true;
-public labelLEFTVisible=true;
-public labelNAMETop=true;
-public labelNAMEVisible=true;
-public labelVISIBLETop=true;
-public labelVISIBLEVisible=true;
-public labelKEY_NAVIGATIONTop=true;
-public labelKEY_NAVIGATIONVisible=true;
-public labelFOCUS_HIGHLIGHTTop=true;
-public labelFOCUS_HIGHLIGHTVisible=true;
-public labelPOINTER_HIGHLIGHTTop=true;
-public labelPOINTER_HIGHLIGHTVisible=true;
-public labelTOOLTIP_TEXTTop=true;
-public labelTOOLTIP_TEXTVisible=true;
-public labelTAB_INDEXTop=true;
-public labelTAB_INDEXVisible=true;
-public labelINSERT_VARIABLETop=true;
-public labelINSERT_VARIABLEVisible=true;
+  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"Attributes","visible":true},{"CODE":"2","CODETEXT_LANG":"Spacing","visible":true}] ;
+public labelGRID_PROP_IDTop=true;
+public labelGRID_PROP_IDVisible=true;
+public labelSHOW_GRIDTop=true;
+public labelSHOW_GRIDVisible=true;
+public labelSNAP_TO_GRIDTop=true;
+public labelSNAP_TO_GRIDVisible=true;
+public labelGRID_COLORTop=true;
+public labelGRID_COLORVisible=true;
+public labelHORIZONTAL_XTop=true;
+public labelHORIZONTAL_XVisible=true;
+public labelVERTICAL_XTop=true;
+public labelVERTICAL_XVisible=true;
 
-public visibleSHAPE_ID = true;
-public visibleDISPLAY_ID = true;
-public visibleSHAPE_TYPE = true;
-public visibleICON_ID = false;
-public visibleDG_SHAPE_ID = false;
-public visibleHEIGHT = true;
-public visibleWIDTH = true;
-public visibleTOP = true;
-public visibleLEFT = true;
-public visibleNAME = true;
-public visibleVISIBLE = true;
-public visibleKEY_NAVIGATION = false;
-public visibleFOCUS_HIGHLIGHT = false;
-public visiblePOINTER_HIGHLIGHT = false;
-public visibleTOOLTIP_TEXT = true;
-public visibleTAB_INDEX = false;
-public visibleINSERT_VARIABLE = true;
+public visibleGRID_PROP_ID = false;
+public visibleSHOW_GRID = true;
+public visibleSNAP_TO_GRID = true;
+public visibleGRID_COLOR = true;
+public visibleHORIZONTAL_X = true;
+public visibleVERTICAL_X = true;
 
-public disableSHAPE_ID = false;
-public disableDISPLAY_ID = false;
-public disableSHAPE_TYPE = false;
-public disableICON_ID = false;
-public disableDG_SHAPE_ID = false;
-public disableHEIGHT = false;
-public disableWIDTH = false;
-public disableTOP = false;
-public disableLEFT = false;
-public disableNAME = false;
-public disableVISIBLE = false;
-public disableKEY_NAVIGATION = false;
-public disableFOCUS_HIGHLIGHT = false;
-public disablePOINTER_HIGHLIGHT = false;
-public disableTOOLTIP_TEXT = false;
-public disableTAB_INDEX = false;
-public disableINSERT_VARIABLE = false;
+public disableGRID_PROP_ID = false;
+public disableSHOW_GRID = false;
+public disableSNAP_TO_GRID = false;
+public disableGRID_COLOR = false;
+public disableHORIZONTAL_X = false;
+public disableVERTICAL_X = false;
 
 
   
@@ -285,7 +230,7 @@ public disableINSERT_VARIABLE = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdshapeScdTpCommonScreen();   
+  private formInitialValues:any =   new scdgridPropertiesScdGpsGridProperties();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -293,10 +238,10 @@ public disableINSERT_VARIABLE = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdShapeScdTpCommonScreenForm form.DISPLAY_ID :' + form.DISPLAY_ID);
-    if ( (form.DISPLAY_ID != "") &&   (typeof form.DISPLAY_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdGridPropertiesScdGpsGridPropertiesFormdivs form.GRID_PROP_ID :' + form.GRID_PROP_ID);
+    if ( (form.GRID_PROP_ID != "") &&   (typeof form.GRID_PROP_ID != "undefined"))
     {
-      this.masterKey = form.DISPLAY_ID;
+      this.masterKey = form.GRID_PROP_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -317,7 +262,7 @@ public disableINSERT_VARIABLE = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.DISPLAY_ID != "undefined") &&   (form.DISPLAY_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.GRID_PROP_ID != "undefined") &&   (form.GRID_PROP_ID != ""))
     {
       
       this.isSearch = true;
@@ -474,8 +419,8 @@ public disableINSERT_VARIABLE = false;
       }
       this.Comp_Config = new componentConfigDef();
       this.Comp_Config.masterSaved = NewVal;
-      this.Comp_Config.masterKeyArr =  [NewVal['SHAPE_ID']];
-      this.Comp_Config.masterKeyNameArr =  ["SHAPE_ID"];
+      this.Comp_Config.masterKeyArr =  [NewVal['GRID_PROP_ID']];
+      this.Comp_Config.masterKeyNameArr =  ["GRID_PROP_ID"];
          
        await this.POST_INSERT(NewVal);
       if (this.FORM_TRIGGER_FAILURE) 
@@ -576,49 +521,17 @@ public disableINSERT_VARIABLE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"INSERT_VARIABLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrINSERT_VARIABLE"}];
+this.lookupArrDef =[];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrINSERT_VARIABLE = [];
-
-public lkpArrGetINSERT_VARIABLE(CODE: any): any {
-var rec = this.lkpArrINSERT_VARIABLE.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
 onChanges(): void {
-this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
+this.form.get('GRID_PROP_ID').valueChanges.subscribe(val => {
 });
-this.form.get('DISPLAY_ID').valueChanges.subscribe(val => {
+this.form.get('HORIZONTAL_X').valueChanges.subscribe(val => {
 });
-this.form.get('SHAPE_TYPE').valueChanges.subscribe(val => {
-});
-this.form.get('ICON_ID').valueChanges.subscribe(val => {
-});
-this.form.get('DG_SHAPE_ID').valueChanges.subscribe(val => {
-});
-this.form.get('HEIGHT').valueChanges.subscribe(val => {
-});
-this.form.get('WIDTH').valueChanges.subscribe(val => {
-});
-this.form.get('TOP').valueChanges.subscribe(val => {
-});
-this.form.get('LEFT').valueChanges.subscribe(val => {
-});
-this.form.get('NAME').valueChanges.subscribe(val => {
-});
-this.form.get('KEY_NAVIGATION').valueChanges.subscribe(val => {
-});
-this.form.get('FOCUS_HIGHLIGHT').valueChanges.subscribe(val => {
-});
-this.form.get('POINTER_HIGHLIGHT').valueChanges.subscribe(val => {
-});
-this.form.get('TOOLTIP_TEXT').valueChanges.subscribe(val => {
-});
-this.form.get('TAB_INDEX').valueChanges.subscribe(val => {
+this.form.get('VERTICAL_X').valueChanges.subscribe(val => {
 });
 }
 
@@ -652,7 +565,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdShapeScdTpCommonScreenForm ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdGridPropertiesScdGpsGridPropertiesFormdivs ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -734,52 +647,12 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    if (ComponentConfig.masterParams != null) {
-    console.log("WHEN_NOTIFY:ComponentConfig.masterParams:", ComponentConfig.masterParams.data.action)
-    this.shapeType = ComponentConfig.masterParams.data.SHAPE_TYPE;
-    if (ComponentConfig.masterParams.data.action == "new") {
-        let TableDefauls = await this.starlib1.setShapeDefaults(this.insertCMD);
-
-        const keys = Object.keys(TableDefauls);
-        if (keys.length > 0) {
-            setTimeout(() => {
-                this.isNew = true;
-                this.form.markAsDirty();
-                TableDefauls['DISPLAY_ID'] = ComponentConfig.masterParams.data.DISPLAY_ID;
-                TableDefauls['SHAPE_TYPE'] = ComponentConfig.masterParams.data.SHAPE_TYPE;
-                console.log("setShapeDefaults:TableDefauls:", TableDefauls)
-                this.form.patchValue(TableDefauls);
-                this.form.updateValueAndValidity();
-
-                console.log("setShapeDefaults:this.form:", this.form);
-
-                console.log("setShapeDefaults:this.form.value:", this.form.get('VISIBLE'), keys, keys.length, TableDefauls, this.form.value)
-            }, 300);
-        }
-
-    }
-    else {
-        if (ComponentConfig.masterParams.data.action == "open" && this.SHAPE_ID == null) {
-
-            let masterParams = ComponentConfig.masterParams;
-            console.log("Text masterParams:", masterParams)
-            setTimeout(() => {
-                this.isSearch = true;
-                let form: any = {};
-                form.SHAPE_ID = masterParams.data.SHAPE_ID;
-                this.SHAPE_ID = masterParams.data.SHAPE_ID
-                console.log("User masterParams:", masterParams.data.DIAGRAM_ID, masterParams, form, this.form, "this.isSearch:", this.isSearch)
-                this.executeQuery(form);
-            }, 300);
-
-        }
-    }
-}
+    
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	// if (!this.isChild){
-	// 	this.executeQuery(this.form.value);
-	// }
+    	if (!this.isChild){
+		this.executeQuery(this.form.value);
+	}
 
     
   }
@@ -819,16 +692,7 @@ public printScreen(){
     
   }
   async  POST_INSERT(formGroup){
-    this.componentConfig_output = new componentConfigDef();
-    let masterParams = {
-
-      action: "insert",
-      shapeType: this.shapeType,
-      data: formGroup
-    }
-    this.componentConfig_output.eventFrom = this.compSelector;
-    this.componentConfig_output.masterParams = masterParams;
-    this.setComponentConfig_Output.emit(this.componentConfig_output);
+    
    
   }
   async  PRE_QUERY (formGroup){
@@ -850,498 +714,178 @@ public printScreen(){
 
 
 
-async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
+async WHEN_VALIDATE_ITEM_GRID_PROP_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SHAPE_ID'] != "undefined" ) 
-      this.form.controls['SHAPE_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['GRID_PROP_ID'] != "undefined" ) 
+      this.form.controls['GRID_PROP_ID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['SHAPE_ID'] != "undefined" ) 
-     this.form.get('SHAPE_ID').updateValueAndValidity();
+ if (typeof this.form.controls['GRID_PROP_ID'] != "undefined" ) 
+     this.form.get('GRID_PROP_ID').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_SHAPE_ID(event){
+ async ON_CLICK_GRID_PROP_ID(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
+async WHEN_VALIDATE_ITEM_SHOW_GRID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SHOW_GRID'] != "undefined" ) 
+      this.form.controls['SHOW_GRID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
+ if (typeof this.form.controls['SHOW_GRID'] != "undefined" ) 
+     this.form.get('SHOW_GRID').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DISPLAY_ID(event){
+ async ON_CLICK_SHOW_GRID(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_SHAPE_TYPE(value) {
+async WHEN_VALIDATE_ITEM_SNAP_TO_GRID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SHAPE_TYPE'] != "undefined" ) 
-      this.form.controls['SHAPE_TYPE'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SNAP_TO_GRID'] != "undefined" ) 
+      this.form.controls['SNAP_TO_GRID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['SHAPE_TYPE'] != "undefined" ) 
-     this.form.get('SHAPE_TYPE').updateValueAndValidity();
+ if (typeof this.form.controls['SNAP_TO_GRID'] != "undefined" ) 
+     this.form.get('SNAP_TO_GRID').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_SHAPE_TYPE(event){
+ async ON_CLICK_SNAP_TO_GRID(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_ICON_ID(value) {
+async WHEN_VALIDATE_ITEM_GRID_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ICON_ID'] != "undefined" ) 
-      this.form.controls['ICON_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['GRID_COLOR'] != "undefined" ) 
+      this.form.controls['GRID_COLOR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['ICON_ID'] != "undefined" ) 
-     this.form.get('ICON_ID').updateValueAndValidity();
+ if (typeof this.form.controls['GRID_COLOR'] != "undefined" ) 
+     this.form.get('GRID_COLOR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_ICON_ID(event){
+ async ON_CLICK_GRID_COLOR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_DG_SHAPE_ID(value) {
+async WHEN_VALIDATE_ITEM_HORIZONTAL_X(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DG_SHAPE_ID'] != "undefined" ) 
-      this.form.controls['DG_SHAPE_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['HORIZONTAL_X'] != "undefined" ) 
+      this.form.controls['HORIZONTAL_X'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DG_SHAPE_ID'] != "undefined" ) 
-     this.form.get('DG_SHAPE_ID').updateValueAndValidity();
+ if (typeof this.form.controls['HORIZONTAL_X'] != "undefined" ) 
+     this.form.get('HORIZONTAL_X').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DG_SHAPE_ID(event){
+ async ON_CLICK_HORIZONTAL_X(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_HEIGHT(value) {
+async WHEN_VALIDATE_ITEM_VERTICAL_X(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['HEIGHT'] != "undefined" ) 
-      this.form.controls['HEIGHT'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['VERTICAL_X'] != "undefined" ) 
+      this.form.controls['VERTICAL_X'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['HEIGHT'] != "undefined" ) 
-     this.form.get('HEIGHT').updateValueAndValidity();
+ if (typeof this.form.controls['VERTICAL_X'] != "undefined" ) 
+     this.form.get('VERTICAL_X').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_HEIGHT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_WIDTH(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['WIDTH'] != "undefined" ) 
-      this.form.controls['WIDTH'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['WIDTH'] != "undefined" ) 
-     this.form.get('WIDTH').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_WIDTH(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TOP(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TOP'] != "undefined" ) 
-      this.form.controls['TOP'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TOP'] != "undefined" ) 
-     this.form.get('TOP').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TOP(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_LEFT(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['LEFT'] != "undefined" ) 
-      this.form.controls['LEFT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['LEFT'] != "undefined" ) 
-     this.form.get('LEFT').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_LEFT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_NAME(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['NAME'] != "undefined" ) 
-      this.form.controls['NAME'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['NAME'] != "undefined" ) 
-     this.form.get('NAME').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_NAME(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_VISIBLE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['VISIBLE'] != "undefined" ) 
-      this.form.controls['VISIBLE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['VISIBLE'] != "undefined" ) 
-     this.form.get('VISIBLE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_VISIBLE(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_KEY_NAVIGATION(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['KEY_NAVIGATION'] != "undefined" ) 
-      this.form.controls['KEY_NAVIGATION'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['KEY_NAVIGATION'] != "undefined" ) 
-     this.form.get('KEY_NAVIGATION').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_KEY_NAVIGATION(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_FOCUS_HIGHLIGHT(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['FOCUS_HIGHLIGHT'] != "undefined" ) 
-      this.form.controls['FOCUS_HIGHLIGHT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['FOCUS_HIGHLIGHT'] != "undefined" ) 
-     this.form.get('FOCUS_HIGHLIGHT').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_FOCUS_HIGHLIGHT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_POINTER_HIGHLIGHT(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['POINTER_HIGHLIGHT'] != "undefined" ) 
-      this.form.controls['POINTER_HIGHLIGHT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['POINTER_HIGHLIGHT'] != "undefined" ) 
-     this.form.get('POINTER_HIGHLIGHT').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_POINTER_HIGHLIGHT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TOOLTIP_TEXT(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TOOLTIP_TEXT'] != "undefined" ) 
-      this.form.controls['TOOLTIP_TEXT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TOOLTIP_TEXT'] != "undefined" ) 
-     this.form.get('TOOLTIP_TEXT').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TOOLTIP_TEXT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TAB_INDEX(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TAB_INDEX'] != "undefined" ) 
-      this.form.controls['TAB_INDEX'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TAB_INDEX'] != "undefined" ) 
-     this.form.get('TAB_INDEX').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TAB_INDEX(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
-      this.form.controls['INSERT_VARIABLE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
-     this.form.get('INSERT_VARIABLE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_INSERT_VARIABLE(event){
+ async ON_CLICK_VERTICAL_X(event){
 
 }
  
- async onChange_SHAPE_ID(event:any) { 
+ async onChange_GRID_PROP_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_GRID_PROP_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_DISPLAY_ID(event:any) { 
+ async onChange_SHOW_GRID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SHOW_GRID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_SHAPE_TYPE(event:any) { 
+ async onChange_SNAP_TO_GRID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_SHAPE_TYPE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SNAP_TO_GRID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_ICON_ID(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_ICON_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_DG_SHAPE_ID(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DG_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_HEIGHT(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_HEIGHT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_WIDTH(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_WIDTH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_TOP(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TOP(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_LEFT(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_LEFT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_NAME(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_NAME(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_VISIBLE(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_VISIBLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_KEY_NAVIGATION(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_KEY_NAVIGATION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_FOCUS_HIGHLIGHT(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_FOCUS_HIGHLIGHT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_POINTER_HIGHLIGHT(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_POINTER_HIGHLIGHT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onValueChange_TOOLTIP_TEXT(value) { 
+ async onValueChange_GRID_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_TOOLTIP_TEXT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_GRID_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onChange_TAB_INDEX(event:any) { 
+ async onChange_HORIZONTAL_X(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TAB_INDEX(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_HORIZONTAL_X(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_INSERT_VARIABLE(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_VERTICAL_X(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_VERTICAL_X(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  }
-public SHAPE_ID = null;
-public shapeType = null;
+ }
 
-
-//sssss
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

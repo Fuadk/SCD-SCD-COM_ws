@@ -49,7 +49,13 @@
           <span class="button-icon">⚡</span>
         </button>
 
-        <!-- Zoom to Fit -->
+        <!-- Zoom -->
+        <button kendoButton kendoTooltip title="Zoom Out" (click)="zoomOut()" class="toolbar-btn">
+          <span class="button-icon">🔍-</span>
+        </button>
+        <button kendoButton kendoTooltip title="Zoom In" (click)="zoomIn()" class="toolbar-btn">
+          <span class="button-icon">🔍+</span>
+        </button>
         <button kendoButton kendoTooltip title="Zoom to Fit" (click)="zoomToFit()" class="toolbar-btn">
           <span class="button-icon">🔍⤢</span>
         </button>
@@ -193,6 +199,7 @@
       (click)="onDiagramClick($event)"
       (zoomEnd)="ON_EVENT('zoomEnd', $event)"
       (zoomStart)="ON_EVENT('zoomStart', $event)"
+      [zoom]="zoomLevel"
       (pan)="ON_EVENT('pan', $event)"
       (shapeBoundsChange)="ON_EVENT('shapeBoundsChange', $event)"
       (dragStart)="ON_EVENT('dragStart', $event)"
@@ -234,6 +241,7 @@
 
 <!-- ===== PROPERTY DIALOG ===== -->
 <kendo-window *ngIf="propertyDialogData && propertyDialogData.isVisible" [title]="propertyDialogData.title"
+[top]=0 [left]=0
   [minWidth]="propertyDialogData.width || 500" [width]="propertyDialogData.width || 700"
   [height]="propertyDialogData.height || 500" [state]="propertyDialogData.state || 'default'" [resizable]="true"
   (close)="onPropertyDialogClose()">

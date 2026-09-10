@@ -1,3 +1,13 @@
+ export class scdgridPropertiesScdGpsGridProperties{
+	public GRID_PROP_ID = '';
+	public SHOW_GRID = '';
+	public SNAP_TO_GRID = '';
+	public GRID_COLOR = '';
+	public HORIZONTAL_X = '';
+	public VERTICAL_X = '';
+
+}
+
  export class scdshapeExpressionScdScdShapeExpressionGrid{
 	public SHAPE_EXPRESSIONS = '';
 	public SHAPE_ID = '';
@@ -111,8 +121,10 @@
 	public ITEM = '';
 	public LINE_NO = '';
 	public ID = '';
+	public ITEM_TITLE = '';
 
 }
+
 
  export class tstcaseDiagramTstTstCaseDiagramDiagram2{
 	public TST_DIAGRAM_ID = '';

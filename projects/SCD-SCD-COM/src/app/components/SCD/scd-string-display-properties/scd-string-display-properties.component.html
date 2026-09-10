@@ -1,5 +1,5 @@
 <div>
-        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_string_display_properties.scd_string_display_properties.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_string_display_properties.scd_string_display_properties.component_title","") }}</legend> 
         <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
 
 <kendo-tabstrip-tab [selected]="true">
@@ -12,6 +12,7 @@
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_SHAPEForm_0Config">
         </app-scd-tp-common-screen >
 
@@ -25,6 +26,7 @@
         <app-scd-sdg-shape-display-general [detail_Input]="formdivs_1_SCD_SHAPE_DISPLAY_GENERAL"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_SHAPE_DISPLAY_GENERALFormdivs_1Config">
         </app-scd-sdg-shape-display-general >
 

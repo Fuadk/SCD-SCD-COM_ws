@@ -22,6 +22,7 @@ export class ScdSymbolPropertiesComponent implements OnInit {
   constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
    this.router = router;
   this.title =  this.starServices.getNLS([],"scd_symbol_properties.scd_symbol_properties.component_title","");
+    this.componentConfig = new componentConfigDef();
     this.paramConfig = getParamConfig();
   }
   public showToolBar = false;
@@ -300,11 +301,9 @@ export class ScdSymbolPropertiesComponent implements OnInit {
               this.SCD_ALARMFormtabs_1Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_SYMBOL_GENERALFormdivs_2Config.showToolBar = ComponentConfig.showToolBar;
        }
-      if (ComponentConfig.masterSaved != null)
+      if (ComponentConfig.masterSaved != null)//here1
       {
        this.SCD_SHAPEForm_0Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_ALARMFormtabs_1Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_SYMBOL_GENERALFormdivs_2Config.masterSaved = ComponentConfig.masterSaved;
       }
       if (ComponentConfig.newRec != null)
       {

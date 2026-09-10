@@ -111,6 +111,16 @@
 		</ng-template>
 		</kendo-grid-column>
 
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ITEM_TITLE"
+ *ngIf=visibleITEM_TITLE  [editable]=" !(disabledColumns.indexOf('ITEM_TITLE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('ITEM_TITLE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_DIAGRAM_MENUS_GRID.scddiagramMenusScdScdDiagramMenusGrid.ITEM_TITLE','Item Title')}}"  [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.ITEM_TITLE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_ITEM_TITLE()"      [formControl]="formGroup.get('ITEM_TITLE')" [placeholder]="starServices.getNLS([],'SCD_SCD_DIAGRAM_MENUS_GRID.scddiagramMenusScdScdDiagramMenusGrid.ITEM_TITLE_Hint','Please enter Item Title.')" />
+		</ng-template>
+		</kendo-grid-column>
+
 
 
 
