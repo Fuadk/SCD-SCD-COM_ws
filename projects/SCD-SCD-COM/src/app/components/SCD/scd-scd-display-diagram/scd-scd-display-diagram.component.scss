@@ -402,9 +402,19 @@
 //   }
 // }
 
-
 .target-box {
   position: relative;
+
+  &.insert-shape-active {
+    // Ensure the Kendo diagram & all its SVG children use our cursor
+    kendo-diagram,
+    .k-diagram,
+    .k-diagram-surface,
+    .k-diagram svg,
+    .k-diagram svg * {
+      cursor: inherit !important;
+    }
+  }
 }
 
 .target-box.grid-visible {

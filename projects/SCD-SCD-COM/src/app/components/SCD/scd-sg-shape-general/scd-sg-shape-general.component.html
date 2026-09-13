@@ -67,6 +67,50 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLINE_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLINE_STYLE >
+		<kendo-label *ngIf="(!labelLINE_STYLETop && !isPhonePortrait) && labelLINE_STYLEVisible" class="form-label" [for]="LINE_STYLE" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_STYLE','Line Style')"></kendo-label>
+		<label *ngIf="(labelLINE_STYLETop || isPhonePortrait) && labelLINE_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_STYLE','Line Style')}}</label>
+		<kendo-combobox  #LINE_STYLE class="form-field-combobox"  [formControlName]="'LINE_STYLE'"
+		[data]="lkpArrLINE_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_STYLE_Hint','Please enter Line Style.')"		(click)="ON_CLICK_LINE_STYLE($event)"
+ (valueChange)="onValueChange_LINE_STYLE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'LINE_STYLE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFORE_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFORE_COLOR >
+		<kendo-label *ngIf="(!labelFORE_COLORTop && !isPhonePortrait) && labelFORE_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.FORE_COLOR','Fore Color')"></kendo-label>
+		<label *ngIf="(labelFORE_COLORTop || isPhonePortrait) && labelFORE_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.FORE_COLOR','Fore Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="FORE_COLOR"
+  #FORE_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_FORE_COLOR($event)"
+ (valueChange)="onValueChange_FORE_COLOR($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_FORE_COLOR($event)"
+		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.FORE_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLINE_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLINE_WIDTH >
+		<kendo-label *ngIf="(!labelLINE_WIDTHTop && !isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label" [for]="LINE_WIDTH" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH','Line Width')"></kendo-label>
+		<label *ngIf="(labelLINE_WIDTHTop || isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH','Line Width')}}</label>
+		<input   formControlName="LINE_WIDTH"
+ kendoTextBox #LINE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH_Hint','Please enter Line Width.')"
+		(click)="ON_CLICK_LINE_WIDTH($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LINE_WIDTH($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
@@ -101,6 +145,35 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_USES_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_USES_BACK_COLOR >
+		<kendo-label *ngIf="(!labelBORDER_USES_BACK_COLORTop && !isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label" [for]="BORDER_USES_BACK_COLOR" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')"></kendo-label>
+		<label *ngIf="(labelBORDER_USES_BACK_COLORTop || isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BORDER_USES_BACK_COLOR"
+  #BORDER_USES_BACK_COLOR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"		(click)="ON_CLICK_BORDER_USES_BACK_COLOR($event)"
+ (change)="onChange_BORDER_USES_BACK_COLOR($event)"      adaptiveMode="auto" 
+	 name="BORDER_USES_BACK_COLOR"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
+		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_COLOR','Border Color')"></kendo-label>
+		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_COLOR','Border Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BORDER_COLOR"
+  #BORDER_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_BORDER_COLOR($event)"
+ (valueChange)="onValueChange_BORDER_COLOR($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BORDER_COLOR($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BORDER_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_STYLE >
 		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label" [for]="BACK_STYLE" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BACK_STYLE','Back Style')"></kendo-label>
 		<label *ngIf="(labelBACK_STYLETop || isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BACK_STYLE','Back Style')}}</label>
@@ -120,6 +193,22 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_COLOR >
+		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BACK_COLOR','Back Color')"></kendo-label>
+		<label *ngIf="(labelBACK_COLORTop || isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BACK_COLOR','Back Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BACK_COLOR"
+  #BACK_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_BACK_COLOR($event)"
+ (valueChange)="onValueChange_BACK_COLOR($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BACK_COLOR($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_STYLE >
 		<kendo-label *ngIf="(!labelPATTERN_STYLETop && !isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label" [for]="PATTERN_STYLE" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.PATTERN_STYLE','Pattern Style')"></kendo-label>
 		<label *ngIf="(labelPATTERN_STYLETop || isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.PATTERN_STYLE','Pattern Style')}}</label>
@@ -139,18 +228,6 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_USES_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_USES_BACK_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_USES_BACK_COLORTop && !isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label" [for]="BORDER_USES_BACK_COLOR" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')"></kendo-label>
-		<label *ngIf="(labelBORDER_USES_BACK_COLORTop || isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BORDER_USES_BACK_COLOR"
-  #BORDER_USES_BACK_COLOR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"		(click)="ON_CLICK_BORDER_USES_BACK_COLOR($event)"
- (change)="onChange_BORDER_USES_BACK_COLOR($event)"      adaptiveMode="auto" 
- />
-	</kendo-formfield>
-
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_COLOR >
 		<kendo-label *ngIf="(!labelPATTERN_COLORTop && !isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.PATTERN_COLOR','Pattern Color')"></kendo-label>
 		<label *ngIf="(labelPATTERN_COLORTop || isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.PATTERN_COLOR','Pattern Color')}}</label>
@@ -167,41 +244,16 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_COLOR >
-		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BACK_COLOR','Back Color')"></kendo-label>
-		<label *ngIf="(labelBACK_COLORTop || isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BACK_COLOR','Back Color')}}</label>
-		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BACK_COLOR"
-  #BACK_COLOR 
-		 *ngIf="!customerFacing" 
- 		(click)="ON_CLICK_BACK_COLOR($event)"
- (valueChange)="onValueChange_BACK_COLOR($event)"      adaptiveMode="auto" 
-		 ></kendo-colorpicker>
-	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BACK_COLOR($event)"
-		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
-	</kendo-formfield>
-
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_COLOR','Border Color')"></kendo-label>
-		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_COLOR','Border Color')}}</label>
-		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BORDER_COLOR"
-  #BORDER_COLOR 
-		 *ngIf="!customerFacing" 
- 		(click)="ON_CLICK_BORDER_COLOR($event)"
- (valueChange)="onValueChange_BORDER_COLOR($event)"      adaptiveMode="auto" 
-		 ></kendo-colorpicker>
-	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BORDER_COLOR($event)"
-		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BORDER_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK >
 		<kendo-label *ngIf="(!labelBLINKTop && !isPhonePortrait) && labelBLINKVisible" class="form-label" [for]="BLINK" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BLINK','Blink')"></kendo-label>
 		<label *ngIf="(labelBLINKTop || isPhonePortrait) && labelBLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BLINK','Blink')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BLINK"
   #BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BLINK_Hint','Please enter Blink.')"		(click)="ON_CLICK_BLINK($event)"
  (change)="onChange_BLINK($event)"      adaptiveMode="auto" 
+	 name="BLINK"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BLINK_Hint','Please enter Blink.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 </div>

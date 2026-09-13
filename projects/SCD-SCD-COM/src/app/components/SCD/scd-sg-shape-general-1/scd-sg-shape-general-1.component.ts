@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -16,6 +17,9 @@ import { scdshapeGeneralScdSgShapeGeneral1 , componentConfigDef} from '@modeldir
  const createFormGroup = (dataItem:any) => new FormGroup({
 'SHAPE_GENERAL_ID' : new FormControl(dataItem.SHAPE_GENERAL_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'LINE_STYLE' : new FormControl(dataItem.LINE_STYLE  , ) ,
+'FORE_COLOR' : new FormControl(dataItem.FORE_COLOR  , ) ,
+'LINE_WIDTH' : new FormControl(dataItem.LINE_WIDTH  , ) ,
 'BORDER_STYLE' : new FormControl(dataItem.BORDER_STYLE  , ) ,
 'BORDER_WIDTH' : new FormControl(dataItem.BORDER_WIDTH  , ) ,
 'BACK_STYLE' : new FormControl(dataItem.BACK_STYLE  , ) ,
@@ -53,6 +57,7 @@ export class ScdShapeGeneralScdSgShapeGeneral1FormComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -93,6 +98,12 @@ public labelSHAPE_GENERAL_IDTop=false;
 public labelSHAPE_GENERAL_IDVisible=true;
 public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
+public labelLINE_STYLETop=false;
+public labelLINE_STYLEVisible=true;
+public labelFORE_COLORTop=false;
+public labelFORE_COLORVisible=true;
+public labelLINE_WIDTHTop=false;
+public labelLINE_WIDTHVisible=true;
 public labelBORDER_STYLETop=false;
 public labelBORDER_STYLEVisible=true;
 public labelBORDER_WIDTHTop=false;
@@ -114,6 +125,9 @@ public labelBLINKVisible=true;
 
 public visibleSHAPE_GENERAL_ID = false;
 public visibleSHAPE_ID = false;
+public visibleLINE_STYLE = true;
+public visibleFORE_COLOR = true;
+public visibleLINE_WIDTH = true;
 public visibleBORDER_STYLE = true;
 public visibleBORDER_WIDTH = true;
 public visibleBACK_STYLE = true;
@@ -126,6 +140,9 @@ public visibleBLINK = false;
 
 public disableSHAPE_GENERAL_ID = false;
 public disableSHAPE_ID = false;
+public disableLINE_STYLE = false;
+public disableFORE_COLOR = false;
+public disableLINE_WIDTH = false;
 public disableBORDER_STYLE = false;
 public disableBORDER_WIDTH = false;
 public disableBACK_STYLE = false;
@@ -144,8 +161,10 @@ public disableBLINK = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -217,8 +236,30 @@ public disableBLINK = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -462,6 +503,17 @@ public disableBLINK = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -510,20 +562,31 @@ public userLang = "EN" ;
 public lookupArrDef:any =[];
 public setlookupArrDef(){
 this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+			"lkpArrName":"lkpArrSHAPE_ID"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"LINE_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrLINE_STYLE"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
 public lkpArrSHAPE_ID = [];
 
+public lkpArrLINE_STYLE = [];
+
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
+public lkpArrGetLINE_STYLE(CODE: any): any {
+var rec = this.lkpArrLINE_STYLE.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
 onChanges(): void {
 this.form.get('SHAPE_GENERAL_ID').valueChanges.subscribe(val => {
+});
+this.form.get('LINE_WIDTH').valueChanges.subscribe(val => {
 });
 this.form.get('BORDER_STYLE').valueChanges.subscribe(val => {
 });
@@ -764,6 +827,66 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_LINE_STYLE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['LINE_STYLE'] != "undefined" ) 
+      this.form.controls['LINE_STYLE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['LINE_STYLE'] != "undefined" ) 
+     this.form.get('LINE_STYLE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_LINE_STYLE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_FORE_COLOR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['FORE_COLOR'] != "undefined" ) 
+      this.form.controls['FORE_COLOR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['FORE_COLOR'] != "undefined" ) 
+     this.form.get('FORE_COLOR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_FORE_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_LINE_WIDTH(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['LINE_WIDTH'] != "undefined" ) 
+      this.form.controls['LINE_WIDTH'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['LINE_WIDTH'] != "undefined" ) 
+     this.form.get('LINE_WIDTH').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_LINE_WIDTH(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_BORDER_STYLE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -959,6 +1082,27 @@ async WHEN_VALIDATE_ITEM_BLINK(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_LINE_STYLE(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_LINE_STYLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_FORE_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FORE_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_LINE_WIDTH(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_LINE_WIDTH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onChange_BORDER_STYLE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	

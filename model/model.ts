@@ -1,3 +1,13 @@
+ export class scdshapeConnectionScdScdShapeConnectionForm{
+	public SHAPE_CONNECTION_ID = '';
+	public SHAPE_ID = '';
+	public CONNECTION_ID = '';
+	public CONNECTION_NAME = '';
+	public CONNECTION_ICON = '';
+	public CONNECTION_TAG_EXPRESSION = '';
+
+}
+
  export class scdgridPropertiesScdGpsGridProperties{
 	public GRID_PROP_ID = '';
 	public SHOW_GRID = '';
@@ -1207,8 +1217,13 @@
 	public BACK_COLOR = '';
 	public BORDER_COLOR = '';
 	public BLINK = '';
+	public LINE_STYLE = '';
+	public FORE_COLOR = '';
+	public LINE_WIDTH = '';
 
 }
+
+
 
  export class scdshapeGeneralScdSgShapeGeneral{
 	public SHAPE_GENERAL_ID = '';
@@ -1222,8 +1237,13 @@
 	public BACK_COLOR = '';
 	public BORDER_COLOR = '';
 	public BLINK = '';
+	public LINE_STYLE = '';
+	public FORE_COLOR = '';
+	public LINE_WIDTH = '';
 
 }
+
+
 
  export class scdtextGeneralScdTgTextGeneral1{
 	public TEXT_GENERAL_ID = '';

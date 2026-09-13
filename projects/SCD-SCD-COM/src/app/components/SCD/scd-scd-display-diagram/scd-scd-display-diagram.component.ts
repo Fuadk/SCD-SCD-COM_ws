@@ -814,35 +814,35 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-        	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    // if (!this.isChild) {
+//   this.executeQuery(this.form.value);
+// }
 
-    console.log ("WHEN_NEW_FORM_INSTANCE");
-    var href =  window.location.href;
-    
-    var array = href.split("&");
-    console.log ("WHEN_NEW_FORM_INSTANCE:array:", array);
-    if (array.length > 2){
-      let disp_data = array[2]
-      let array2 = disp_data.split("=");
-      console.log ("WHEN_NEW_FORM_INSTANCE:array2:", array2);
-      if (array2[0] == "DISPLAY_ID"){
-        this.showDiagramToolBar = false;
-        let DISPLAY_ID = decodeURIComponent(array2[1]);
-        console.log ("WHEN_NEW_FORM_INSTANCE:DISPLAY_ID:", DISPLAY_ID);
-        setTimeout(() => {
-                this.isSearch = true;
-                let form: any = {};
-                form.DISPLAY_ID = DISPLAY_ID
-                this.executeQuery(form);
-                this.toggleMode();
-                
-            }, 300);
-	
-      } 
-    }
-    
+console.log("WHEN_NEW_FORM_INSTANCE");
+var href = window.location.href;
+
+var array = href.split("&");
+console.log("WHEN_NEW_FORM_INSTANCE:array:", array);
+if (array.length > 2) {
+  let disp_data = array[2]
+  let array2 = disp_data.split("=");
+  console.log("WHEN_NEW_FORM_INSTANCE:array2:", array2);
+  if (array2[0] == "DISPLAY_ID") {
+    this.showDiagramToolBar = false;
+    let DISPLAY_ID = decodeURIComponent(array2[1]);
+    console.log("WHEN_NEW_FORM_INSTANCE:DISPLAY_ID:", DISPLAY_ID);
+    setTimeout(() => {
+      this.isSearch = true;
+      let form: any = {};
+      form.DISPLAY_ID = DISPLAY_ID
+      this.executeQuery(form);
+      this.toggleMode();
+
+    }, 300);
+
+  }
+}
+
     
   }
   async WHEN_CREATE_RECORD(){
@@ -883,42 +883,7 @@ public printScreen(){
       this.starServices.sessionParams['COPIED_SHAPE'] = "";
       console.log("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
       let shapeType = "SYMPOL_FACTORY";
-      const diagramX =
-        (this.lastClickX - this.currentPan.x) / this.zoomLevel;
-      const diagramY =
-        (this.lastClickY - this.currentPan.y) / this.zoomLevel;
-      kendoui_content[diagramX] = diagramX;
-      kendoui_content[diagramY] = diagramY;
-      let body = [
-        {
-          "_QUERY": "INSERT_SCD_SHAPE",
-          "DISPLAY_ID": this.form.value.DISPLAY_ID,
-          "SHAPE_TYPE": shapeType,
-          "HEIGHT": 100,
-          "WIDTH": 100,
-          "TOP": diagramY,
-          "LEFT": diagramX,
-          "NAME": kendoui_content.id,
-          "VISIBLE": 1,
-          "KEY_NAVIGATION": 1,
-          "FOCUS_HIGHLIGHT": 0,
-          "POINTER_HIGHLIGHT": 1,
-          "TAB_INDEX": 1,
-          "TOOLTIP_TEXT": kendoui_content.id
-        },
-        {
-          "_QUERY": "GET_LAST_ID"
-        }
-      ];
-      let data = await this.starServices.execSQLBody(this, body, "");
-      if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
-      if (typeof data[1].data != "undefined") {
-        let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
-        kendoui_content.id =    kendoui_content.id + ":" + last_insert_rowid;
-        if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
-      }
-
-
+      kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
       this.add_new_shape(kendoui_content, copiedShape.type);
       this.updateShapes();
     }
@@ -926,78 +891,102 @@ public printScreen(){
 }
 
  async ON_CLICK_CONTEXT_MENU(menuType,event){
-     let shapeInfo = this.getShapeInfo();
-let shapeType = shapeInfo['SHAPE_TYPE'];
-let action = "new";
-let SHAPE_ID = "";
-let title = "";
-console.log("DEBUG_IT:ON_CLICK_MENU:event:", event, "menuType:", menuType, "currentShapeType:",
-    this.currentShapeType, "currentShapeId:", this.currentShapeId, "shapeType:", shapeType)
-let Id = "";
-if (menuType == "DROPDOWN") {
-    action = "new";
-    Id = event.Id;
-    shapeType = event.text;
-    title = event.dataItem.ITEM_TITLE;
-    
-}
-else if (menuType == "CONTEXT_MENU") {
-    Id = event.item.Id;
-    /////
-    switch (Id) {
+     setTimeout(() => {
+        this.selectedShape = null;
+      });
+if (menuType == "DROPDOWN" && !this.insertShapeFlag) {
+      console.log("DEBUG_IT:ON_CLICK_MENU:event.Id:", event.Id);
+      if (event.Id != "SymbolFactoryPlus") {
+        this.event = event;
+        this.menuType = menuType;
+        this.insertShapeFlag = true;
+        this.pendingShapeType = this.event.text;
+        return;
+      }
+
+    }
+    this.insertShapeFlag = false;
+    let shapeInfo = this.getShapeInfo();
+    let shapeType = shapeInfo['SHAPE_TYPE'];
+    let action = "new";
+    let SHAPE_ID = "";
+    let title = "";
+    console.log("DEBUG_IT:ON_CLICK_MENU:event:", event, "menuType:", menuType, "currentShapeType:",
+      this.currentShapeType, "currentShapeId:", this.currentShapeId, "shapeType:", shapeType)
+    let Id = "";
+    if (menuType == "DROPDOWN") {
+      action = "new";
+      Id = event.Id;
+      shapeType = event.text;
+      title = event.dataItem.ITEM_TITLE;
+
+    }
+    else if (menuType == "CONTEXT_MENU") {
+      Id = event.item.Id;
+      /////
+      switch (Id) {
         case 'SHOW_GRID':
-            this.toggleGrid();
-            return;
+          this.toggleGrid();
+          return;
         case 'SNAP':
-            this.toggleSnap();
-            return;
+          this.toggleSnap();
+          return;
         case 'ZOOM_FIT':
-            this.zoomToFit();
-            return;
+          this.zoomToFit();
+          return;
         case 'ZOOM_IN':
-            this.zoomIn();
-            return;
+          this.zoomIn();
+          return;
         case 'ZOOM_OUT':
-            this.zoomOut();
-            return;
+          this.zoomOut();
+          return;
         default:
-            break;
-    }
-    let arr = this.currentShapeId.split(":");
-    SHAPE_ID = arr[1];
-    action = "open";
-    ////
-    switch (shapeType) {
-        case 'numeric display':
-            Id = 'Numeric_Display_Properties';
-            break;
+          break;
+      }
+      let arr = this.currentShapeId.split(":");
+      shapeType = arr[0];
+      SHAPE_ID = arr[1];
+      action = "open";
+      ////
+      switch (shapeType) {
+        case 'Numeric Display':
+          Id = 'Numeric_Display_Properties';
+          break;
+        case 'Numeric Input':
+          Id = 'Numeric_Input_Properties';
+          break;
+        case 'Panel':
+        case 'Arc':
+        case 'Elipse':
+          title = shapeType + ' Properties';
+          break;
         default:
-            break;
+          break;
+      }
+      console.log("ON_CLICK_MENU:id:", Id);
     }
-    console.log("ON_CLICK_MENU:id:", Id);
-}
-if (Id != "") {
-    let rec = this.dialogProperties.find(x => x.Component == Id);
-    console.log("ON_CLICK_MENU:rec:", this.selectedShape, rec)
-    if (typeof (rec) != 'undefined') {
+    if (Id != "") {
+      let rec = this.dialogProperties.find(x => x.Component == Id);
+      console.log("ON_CLICK_MENU:rec:", this.selectedShape, rec)
+      if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
         let Maximize = rec.Maximize;
         switch (shapeType) {
-            case 'SYMPOL_FACTORY':
-                //  Id='3';
-                break;
-            default:
-                break;
+          case 'SYMPOL_FACTORY':
+            //  Id='3';
+            break;
+          default:
+            break;
         }
-
+        console.log("ON_CLICK_MENU:Id:", Id)
         //this.starlib1.dialog_openDialog(this, Id,Maximize);
-        this.openPropertyDialog(this, Id, Maximize, shapeType, action, SHAPE_ID,title);
-    }
-    setTimeout(() => {
+        this.openPropertyDialog(this, Id, Maximize, shapeType, action, SHAPE_ID, title);
+      }
+      setTimeout(() => {
         this.selectedShape = null;
-    });
+      });
 
-}
+    }
 
 }
 public zoomLevel: number = 1;
@@ -1008,7 +997,6 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
-  console.log(`onEvent: type=${type}, event=`, event);
   if (!this.isEditMode)
     return;
   if (type === "select" || type === "shapeBoundsChange" || type === "change") {
@@ -1097,11 +1085,7 @@ if (type === "shapeBoundsChange") {
   return;
 }
     // ===== SELECT =====
-   if (type === "select" ) {
-       console.log(`onEvent: type=${type}, event=`, event);
-   }
     if (type === "select" && event.selected) {
-       console.log(`onEvent: type=${type}, event=`, event, event.selected);
         const selectedItem = event.selected[0];
         const containerId = selectedItem?.id;
         console.log(`checking:select : ${containerId}`);
@@ -2081,6 +2065,16 @@ public lastClickY: number = 0;
 public onDiagramClick(event: any): void {
     this.lastClickX = event.offsetX || event.layerX || 0;
     this.lastClickY = event.offsetY || event.layerY || 0;
+    if (this.insertShapeFlag == true){
+      let shapeType = this.event.text;
+      
+      this.insertShape ( shapeType);
+      this.insertShapeFlag = false;
+      
+      setTimeout(() => {
+        //this.ON_CLICK_CONTEXT_MENU(this.menuType,this.event);
+      }, 500);
+    }
     let target = event.target.outerHTML;
     if (target.startsWith("<svg")) {
         console.log("Clicked on empty space");
@@ -2575,7 +2569,7 @@ public valueChange_del(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"700","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"700","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"700","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"700","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -2981,7 +2975,7 @@ private setupPropertyDialogOutputs(): void {
         if (componentConfig.masterParams !== null){
           if ( componentConfig.masterParams.action == "insert"){
             console.log("Property dialog: Received componentConfig from child:componentConfig.masterParams:",componentConfig.masterParams);
-            this.insertShape (componentConfig.masterParams.data, componentConfig.masterParams.shapeType)
+            //this.insertShape (componentConfig.masterParams.data, componentConfig.masterParams.shapeType)
           }
         }
 
@@ -3023,6 +3017,8 @@ onContextMenuSelect(event){
 }
 onDiagramContextMenu(event){
   console.log("DEBUG_IT:onDiagramContextMenu:event:",event)
+   this.insertShapeFlag = false;
+  
 }
 public scdShapes;
 public getShapeInfo(){
@@ -3037,19 +3033,145 @@ public getShapeInfo(){
 
   return shapeInfo;
 }
-public insertShape (data, shapeType){
-  let text = "Text";
-  if (shapeType == "numeric display"){
-    text = "###.##"
+async insertSCDShapeTables(shapeID, shapeType) {
+    function groupByFieldName<T extends { FIELD_NAME: string; FIELD_VALUE: any }>(
+      data: T[]
+    ): Array<Array<{ FIELD_NAME: string; FIELD_VALUE: any }>> {
+      if (!data?.length) return [];
+
+      // Counter: how many items of each FIELD_NAME we've already placed
+      const counters: Record<string, number> = {};
+
+      // Result buckets — each entry is now a trimmed { FIELD_NAME, FIELD_VALUE }
+      const groups: Array<Array<{ FIELD_NAME: string; FIELD_VALUE: any }>> = [];
+
+      for (const item of data) {
+        const key = item.FIELD_NAME;
+        const idx = counters[key] ?? 0;
+
+        // Make sure the bucket exists
+        if (!groups[idx]) groups[idx] = [];
+
+        // Push only the two fields we care about
+        groups[idx].push({
+          FIELD_NAME: item.FIELD_NAME,
+          FIELD_VALUE: item.FIELD_VALUE,
+        });
+
+        counters[key] = idx + 1;
+      }
+
+      return groups;
+    }
+    console.log("insertSCDShapeTables:shapeType:", shapeType)
+    let tables = [];
+    switch (shapeType) {
+      case 'Numeric Display':
+        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
+        break;
+      case 'Numeric Input':
+        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'Panel':
+      case 'Arc':
+      case 'Elipse':
+        tables.push('INSERT_SCD_SHAPE_GENERAL');
+        break;
+      default:
+        break;
+    }
+    console.log("insertSCDShapeTables:tables:", tables)
+    if (tables.length > 0) {
+      for (let i = 0; i < tables.length; i++) {
+        let TableDefauls = await this.starlib1.setShapeDefaults(tables[i]);
+        console.log("insertSCDShapeTables:TableDefauls:", JSON.stringify(TableDefauls));
+        let TableDefaulsArr = groupByFieldName(TableDefauls);
+        console.log("insertSCDShapeTables:TableDefauls:new", TableDefaulsArr);
+        for (let k = 0; k < TableDefaulsArr.length; k++) {
+          TableDefauls = TableDefaulsArr[k];
+          console.log("insertSCDShapeTables:TableDefauls:new", TableDefauls);
+          const keys = Object.keys(TableDefauls);
+          console.log("insertSCDShapeTables:keys:", keys)
+          let object = {};
+          for (let j = 0; j < TableDefauls.length; j++) {
+            let field = TableDefauls[j].FIELD_NAME;
+            let val = TableDefauls[j].FIELD_VALUE;
+            object[field] = val;
+          }
+          console.log("insertSCDShapeTables:object:", object)
+          if (typeof object != "undefined" && Object.keys(object).length > 0) {
+            object['SHAPE_ID'] = shapeID;
+            object['_QUERY'] = tables[i];
+            let body = [];
+            body.push(object);
+            console.log("insertSCDShapeTables:body:", body)
+            let data = await this.starServices.execSQLBody(this, body, "");
+            if (this.paramConfig.DEBUG_FLAG) console.log("insertSCDShapeTables:", data);
+          }
+        }
+      }
+    }
   }
-  this.addLibraryShape("Text", { //richText
-    text: text || "Text", 
+public menuType;
+public event;
+public insertShapeFlag = false;
+async insertSCDShape(kendoui_content, shapeType){
+      const diagramX =
+        (this.lastClickX - this.currentPan.x) / this.zoomLevel;
+      const diagramY =
+        (this.lastClickY - this.currentPan.y) / this.zoomLevel;
+      kendoui_content[diagramX] = diagramX;
+      kendoui_content[diagramY] = diagramY;
+      let body = [
+        {
+          "_QUERY": "INSERT_SCD_SHAPE",
+          "DISPLAY_ID": this.form.value.DISPLAY_ID,
+          "SHAPE_TYPE": shapeType,
+          "HEIGHT": 100,
+          "WIDTH": 100,
+          "TOP": diagramY,
+          "LEFT": diagramX,
+          "NAME": kendoui_content.id,
+          "VISIBLE": 1,
+          "KEY_NAVIGATION": 1,
+          "FOCUS_HIGHLIGHT": 0,
+          "POINTER_HIGHLIGHT": 1,
+          "TAB_INDEX": 1,
+          "TOOLTIP_TEXT": kendoui_content.id
+        },
+        {
+          "_QUERY": "GET_LAST_ID"
+        }
+      ];
+      let data = await this.starServices.execSQLBody(this, body, "");
+      if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
+      if (typeof data[1].data != "undefined") {
+        let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
+        kendoui_content.id =    kendoui_content.id + ":" + last_insert_rowid;
+        kendoui_content.shapeID = last_insert_rowid;
+        if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
+      }
+      return kendoui_content;
+}
+async insertShape ( shapeType){
+  let kendoui_content:any ={
+    id : shapeType
+  }
+  kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
+  await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType)
+  let  kind = this.shapeToIconKey[shapeType] ?? 'Text';
+  this.addLibraryShape(kind, { //richText
+    text: "", 
     width: 190, 
     height: 90, 
-    SHAPE_ID :data.SHAPE_ID,
-    SHAPE_TYPE :data.SHAPE_TYPE,
+    x: this.lastClickX,
+    y: this.lastClickY,
+    SHAPE_ID :kendoui_content.id,
+    SHAPE_TYPE :shapeType,
     fillColor: "#fff7d6" 
-  });
+  },true);
 }
 
 //////////
@@ -3388,7 +3510,7 @@ private uniqueShapeId(prefix: string): string {
     const height = Math.max(20, Number(options.height) || 90);
     let id = this.uniqueShapeId(kind);
     if (typeof options.SHAPE_ID != "undefined" )
-      id =  options.SHAPE_TYPE  + ":" +  options.SHAPE_ID ;
+      id =   options.SHAPE_ID ;
     const dataItem: any = {
       type: "libraryShape",
       title: this.libraryShapeTitle(kind),
@@ -3507,7 +3629,7 @@ private uniqueShapeId(prefix: string): string {
         : "Arial, sans-serif";
       const textColor = style.strokeColor || dataItem.textColor || "#1f2937";
       const text = new TextBlock({
-        text: String(dataItem.text || "Text"),
+        text: String(dataItem.text ),
         x: x + 10,
         y: y + 12,
         fill: textColor,
@@ -5055,5 +5177,280 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     }
     return Array.isArray(value) ? value : [value];
   }
+  pendingShapeType = '';
+
+  /**
+   * SVG icons per shape family.
+   * Each entry returns the inner SVG markup (no xmlns needed — we add it).
+   */
+  private readonly cursorIcons: Record<string, string> = {
+    // ── Basic geometry ──
+    rectangle:
+      `<rect x="3" y="6" width="18" height="14" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    rounded:
+      `<rect x="3" y="6" width="18" height="14" rx="4" ry="4" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    ellipse:
+      `<ellipse cx="12" cy="13" rx="9" ry="7" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    arc:
+      `<path d="M3 20 A9 9 0 0 1 21 20" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    wedge:
+      `<path d="M3 20 L12 4 L21 20 Z" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    polygon:
+      `<path d="M12 3 L21 9 L18 20 L6 20 L3 9 Z" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    polyline:
+      `<path d="M3 18 L9 8 L15 16 L21 6" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    line:
+      `<line x1="3" y1="20" x2="21" y2="6" stroke="#e94560" stroke-width="2"/>`,
+    freehand:
+      `<path d="M3 18 C6 10 9 20 12 12 C15 4 18 16 21 10" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    vector:
+      `<path d="M4 18 L14 6" stroke="#e94560" stroke-width="2"/><circle cx="14" cy="6" r="2" fill="#e94560"/>`,
+
+    // ── Buttons ──
+    button:
+      `<rect x="3" y="7" width="18" height="12" rx="6" ry="6" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="12" cy="13" r="2" fill="#e94560"/>`,
+    navButton:
+      `<circle cx="12" cy="13" r="9" fill="none" stroke="#e94560" stroke-width="2"/><path d="M9 13 L15 13 M13 10 L16 13 L13 16" stroke="#e94560" stroke-width="2" fill="none"/>`,
+    rampButton:
+      `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>`,
+
+    // ── Display / data ──
+    display:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">7</text>`,
+    input:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><line x1="6" y1="10" x2="6" y2="14" stroke="#e94560" stroke-width="2"/>`,
+    numeric:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">#</text>`,
+    scale:
+      `<rect x="3" y="12" width="18" height="4" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="12" x2="7" y2="16" stroke="#e94560"/><line x1="12" y1="12" x2="12" y2="16" stroke="#e94560"/><line x1="17" y1="12" x2="17" y2="16" stroke="#e94560"/>`,
+    gauge:
+      `<path d="M4 18 A8 8 0 0 1 20 18" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="18" x2="16" y2="12" stroke="#e94560" stroke-width="2"/>`,
+    bar:
+      `<rect x="4" y="12" width="4" height="8" fill="#e94560"/><rect x="10" y="8" width="4" height="12" fill="#e94560"/><rect x="16" y="4" width="4" height="16" fill="#e94560"/>`,
+    graph:
+      `<path d="M3 20 L9 12 L14 16 L21 6" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    list:
+      `<line x1="4" y1="7" x2="20" y2="7" stroke="#e94560" stroke-width="2"/><line x1="4" y1="13" x2="20" y2="13" stroke="#e94560" stroke-width="2"/><line x1="4" y1="19" x2="20" y2="19" stroke="#e94560" stroke-width="2"/>`,
+
+    // ── Indicators ──
+    indicator:
+      `<circle cx="12" cy="13" r="6" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="12" cy="13" r="2" fill="#e94560"/>`,
+    piloted:
+      `<circle cx="12" cy="13" r="7" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="6" x2="12" y2="9" stroke="#e94560" stroke-width="2"/>`,
+
+    // ── Navigation / keys ──
+    arrow:
+      `<path d="M4 13 L16 13 M12 8 L18 13 L12 18" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    pageUp:
+      `<path d="M7 15 L12 9 L17 15" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="19" x2="17" y2="19" stroke="#e94560" stroke-width="2"/>`,
+    pageDown:
+      `<path d="M7 11 L12 17 L17 11" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="7" x2="17" y2="7" stroke="#e94560" stroke-width="2"/>`,
+    enter:
+      `<path d="M18 6 L18 13 L7 13 M10 10 L7 13 L10 16" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    backspace:
+      `<path d="M8 6 L20 6 L20 20 L8 20 L3 13 Z" fill="none" stroke="#e94560" stroke-width="2"/><line x1="11" y1="10" x2="17" y2="16" stroke="#e94560" stroke-width="2"/><line x1="17" y1="10" x2="11" y2="16" stroke="#e94560" stroke-width="2"/>`,
+
+    // ── Text / media ──
+    text:
+      `<text x="12" y="19" font-size="18" font-weight="bold" text-anchor="middle" fill="#e94560" font-family="serif">T</text>`,
+    image:
+      `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="9" cy="11" r="2" fill="#e94560"/><path d="M4 18 L10 13 L14 17 L18 14 L21 17" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    browser:
+      `<rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#e94560" stroke-width="2"/><circle cx="6" cy="8" r="1" fill="#e94560"/>`,
+
+    // ── Generic fallback ──
+    default:
+      `<rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2" stroke-dasharray="3 2"/><line x1="12" y1="9" x2="12" y2="15" stroke="#e94560" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="#e94560" stroke-width="2"/>`,
+  };
+
+  /**
+   * Map each of your shape-type strings → an icon family key.
+   * Anything not listed falls back to 'default'.
+   */
+  private readonly shapeToIconKey: Record<string, string> = {
+    'Arc': 'arc',
+    'Vector': 'vector',
+    'FreeHand': 'freehand',
+    'Elipse': 'ellipse',
+    'Rounded Rectangle': 'rounded',
+    'Rectangle': 'rectangle',
+    'Wedge': 'wedge',
+    'Polyline': 'polyline',
+    'Polygon': 'polygon',
+    'Line': 'line',
+    'Interlocked': 'button',
+    'Multistate': 'button',
+    'Latched': 'button',
+    'Maintained': 'button',
+    'Momentry': 'button',
+    'Push Buttons': 'button',
+    'Navigation Button': 'navButton',
+    'Ramp  Button': 'rampButton',
+    'Button': 'button',
+    'Buttons': 'button',
+    'String Display': 'display',
+    'String Input': 'input',
+    'Numeric Input': 'input',
+    'Numeric Display': 'numeric',
+    'Data': 'numeric',
+    'Scale': 'scale',
+    'Gauge': 'gauge',
+    'Bar': 'bar',
+    'Graph': 'graph',
+    'List': 'list',
+    'Multiple': 'list',
+    'Indicator': 'indicator',
+    'Page  Up': 'pageUp',
+    'Page  Down': 'pageDown',
+    'Move Up': 'arrow',
+    'Move Down': 'arrow',
+    'Move Right': 'arrow',
+    'Move Left': 'arrow',
+    'Enter': 'enter',
+    'End': 'arrow',
+    'Backspace': 'backspace',
+    'Navigation': 'navButton',
+    'Arrow': 'arrow',
+    'Display': 'display',
+    'Piloted': 'piloted',
+    'Control': 'button',
+    'List Indicator': 'list',
+    'String': 'text',
+    'Numeric': 'numeric',
+    'Time and Date Display': 'display',
+    'Local Message': 'text',
+    'Tag Label': 'text',
+    'Banner': 'text',
+    'Alarms and Events': 'list',
+    'Status Explorer': 'list',
+    'Log Viewer': 'list',
+    'Summary': 'list',
+    'Symbol': 'polygon',
+    'Web Browser': 'browser',
+    'Image': 'image',
+    'Text': 'text',
+    'Panel': 'rectangle',
+  };
+
+  /**
+   * Build a data-URI cursor for the currently pending shape type.
+   * Returns 'crosshair' if no shape is pending.
+   */
+  get insertCursor(): string {
+    if (!this.insertShapeFlag) return 'default';
+
+    const iconKey = this.shapeToIconKey[this.pendingShapeType] ?? 'default';
+    const iconSvg = this.cursorIcons[iconKey] ?? this.cursorIcons['default'];
+
+    // 24×24 canvas. Hotspot at (2,2) = top-left area of the icon.
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">` +
+        // small arrow pointer behind the icon
+        `<path d="M0 0 L0 10 L3 7 L5 12 L7 11 L5 6 L9 6 Z" fill="black" stroke="white" stroke-width="1"/>` +
+        iconSvg +
+      `</svg>`;
+
+    // encodeURIComponent keeps the SVG safe inside a CSS url()
+    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 2 2, crosshair`;
+  }
+
+  processButton(action: string, event?: any): void {
+    this.insertShapeFlag = false;
+  switch (action) {
+
+    // ── Display controls ──
+    case 'toggleGrid':
+      this.toggleGrid();
+      break;
+
+    case 'toggleSnap':
+      this.toggleSnap();
+      break;
+
+    case 'zoomOut':
+      this.zoomOut();
+      break;
+
+    case 'zoomIn':
+      this.zoomIn();
+      break;
+
+    case 'zoomToFit':
+      this.zoomToFit();
+      break;
+
+    // ── Shape edit controls ──
+    case 'copySelected':
+      this.copySelected();
+      break;
+
+    case 'paste':
+      this.paste();
+      break;
+
+    case 'deleteSelected':
+      this.deleteSelected();
+      break;
+
+    case 'duplicateSelected':
+      this.duplicateSelected();
+      break;
+
+    case 'sendToBack':
+      this.sendToBack();
+      break;
+
+    case 'bringToFront':
+      this.bringToFront();
+      break;
+
+    case 'alignToGrid':
+      this.alignToGrid();
+      break;
+
+    case 'flipHorizontal':
+      this.flipHorizontal();
+      break;
+
+    case 'flipVertical':
+      this.flipVertical();
+      break;
+
+    case 'rotateRight':
+      this.rotateRight();
+      break;
+
+    case 'rotateLeft':
+      this.rotateLeft();
+      break;
+
+    case 'applyRotation':
+      this.applyRotation();
+      break;
+
+    // ── Colors ──
+    case 'applyStrokeColor':
+      this.applyStrokeColor();
+      break;
+
+    case 'applyFillColor':
+      this.applyFillColor();
+      break;
+
+    // ── Grouping ──
+    case 'groupSelected':
+      this.groupSelected();
+      break;
+
+    case 'ungroupSelected':
+      this.ungroupSelected();
+      break;
+
+    // ── Unknown action ──
+    default:
+      console.warn(`[processButton] Unknown action: "${action}"`);
+      break;
+  }
+}
 }
 

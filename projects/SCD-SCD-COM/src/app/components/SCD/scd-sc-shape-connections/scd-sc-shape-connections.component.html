@@ -61,15 +61,6 @@
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TAG_CONNECTION"
- *ngIf=visibleTAG_CONNECTION [editable]="false" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.TAG_CONNECTION','Tag Connection')}}"   [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem>
-		<button kendoGridEditCommand  	
- iconClass="fas fa-tags" 
-		[primary]="true" >{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.TAG_CONNECTION','Tag Connection')}}</button>
-		 </ng-template>
-</kendo-grid-column>
-
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
 
  [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
@@ -81,15 +72,6 @@
 		</kendo-dropdownlist>
 		</ng-template>
 	</kendo-grid-column>
-
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EXPRESSION_CONNECTION"
- *ngIf=visibleEXPRESSION_CONNECTION [editable]="false" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.EXPRESSION_CONNECTION','Expression Connection')}}"   [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem>
-		<button kendoGridEditCommand  	
- iconClass="fas fa-code" 
-		[primary]="true" >{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.EXPRESSION_CONNECTION','Expression Connection')}}</button>
-		 </ng-template>
-</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CONNECTION_ID"
  *ngIf=visibleCONNECTION_ID  [editable]=" !(disabledColumns.indexOf('CONNECTION_ID') > -1)  "
@@ -115,21 +97,39 @@
  *ngIf=visibleCONNECTION_ICON  [editable]=" !(disabledColumns.indexOf('CONNECTION_ICON') > -1)  "
 
  [hidden]="hiddenColumns.indexOf('CONNECTION_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_ICON','Connection Icon')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CONNECTION_ICON}}</span></ng-template>
+		 <ng-template kendoGridCellTemplate let-dataItem><span > <kendo-icon name={{dataItem.CONNECTION_ICON}}  style="font-size : 20px ;"    ></kendo-icon> </span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_CONNECTION_ICON()"      [formControl]="formGroup.get('CONNECTION_ICON')" [placeholder]="starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_ICON_Hint','Please enter Connection Icon.')" />
+		<input  (valueChange)="valueChangeCONNECTION_ICON($event)"  style="font-size : 20px ;"    [formControl]="formGroup.get('CONNECTION_ICON')" [placeholder]="starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_ICON_Hint','Please enter Connection Icon.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CONNECTION_TAG_EXPRESSION"
  *ngIf=visibleCONNECTION_TAG_EXPRESSION  [editable]=" !(disabledColumns.indexOf('CONNECTION_TAG_EXPRESSION') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('CONNECTION_TAG_EXPRESSION') > -1" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_TAG_EXPRESSION','Connection Tag Expression')}}"  [width]="100">
+ [hidden]="hiddenColumns.indexOf('CONNECTION_TAG_EXPRESSION') > -1" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_TAG_EXPRESSION','Tag/Expression')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CONNECTION_TAG_EXPRESSION}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_CONNECTION_TAG_EXPRESSION()"      [formControl]="formGroup.get('CONNECTION_TAG_EXPRESSION')" [placeholder]="starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_TAG_EXPRESSION_Hint','Please enter Connection Tag Expression.')" />
 		</ng-template>
 		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TAG_CONNECTION"
+ *ngIf=visibleTAG_CONNECTION [editable]="false" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.TAG_CONNECTION','Tag')}}"   [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem>
+		<button kendoGridEditCommand  	
+ iconClass="fas fa-tags" 
+		[primary]="true" >{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.TAG_CONNECTION','Tag')}}</button>
+		 </ng-template>
+</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EXPRESSION_CONNECTION"
+ *ngIf=visibleEXPRESSION_CONNECTION [editable]="false" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.EXPRESSION_CONNECTION','Expression')}}"   [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem>
+		<button kendoGridEditCommand  	
+ iconClass="fas fa-code" 
+		[primary]="true" >{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.EXPRESSION_CONNECTION','Expression')}}</button>
+		 </ng-template>
+</kendo-grid-column>
 
 
 

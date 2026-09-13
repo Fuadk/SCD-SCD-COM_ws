@@ -618,6 +618,7 @@ gridUserSelectionChange(object, selectedData) {
   object.sendToOrder(componentConfig);
 }
  async setShapeDefaults(insertCMD){
+  console.log("insertSCDShapeTables:insertCMD:", insertCMD)
     let result ={};
     insertCMD.split("_")
     const shapeType = insertCMD.replace("INSERT_", "");
@@ -628,19 +629,23 @@ gridUserSelectionChange(object, selectedData) {
                 "_WHERE": whereClause
             }
         ];
+        console.log("insertSCDShapeTables:body:", body)
         let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
-        
+        let ShapeDefaults = [];
         if (typeof data[0].data != "undefined") {
-            let ShapeDefaults = data[0].data;
+            ShapeDefaults = data[0].data;
             
-            for (let i = 0; i < ShapeDefaults.length; i++) {
-              let object={};
-              object[ShapeDefaults[i].FIELD_NAME] = ShapeDefaults[i].FIELD_VALUE;
-               Object.assign(result, object);
-            }
+            // for (let i = 0; i < ShapeDefaults.length; i++) {
+            //   console.log("insertSCDShapeTables:ShapeDefaults[i]:", ShapeDefaults[i])
+            //   let object={};
+            //   object[ShapeDefaults[i].FIELD_NAME] = ShapeDefaults[i].FIELD_VALUE;
+            //    Object.assign(result, object);
+            // }
             
         }
-        return result;
+        console.log("insertSCDShapeTables:ShapeDefaults:", ShapeDefaults)
+
+        return ShapeDefaults;
   }
 
 }

@@ -3941,6 +3941,7 @@ import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/
 import { ScdShapeScdTpCommonScreenFormComponent } from '../components/SCD/scd-tp-common-screen/scd-tp-common-screen.component';
 import { ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent } from '../components/SCD/scd-gps-grid-properties/scd-gps-grid-properties.component';
 import { ScdGridPropertiesSettingsComponent } from '../components/SCD/scd-grid-properties-settings/scd-grid-properties-settings.component';
+
 //point1
 
 export const PanelbarRoutes: Routes = [
@@ -7968,6 +7969,7 @@ export const PanelbarRoutes: Routes = [
 	{ path: 'scd_tp_common_screen', component: ScdShapeScdTpCommonScreenFormComponent },
 	{ path: 'scd_gps_grid_properties', component: ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent },
 	{ path: 'scd_grid_properties_settings', component: ScdGridPropertiesSettingsComponent },
+
   //point2
 
 ];

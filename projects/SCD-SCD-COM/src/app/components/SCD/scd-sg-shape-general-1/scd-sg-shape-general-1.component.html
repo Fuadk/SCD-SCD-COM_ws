@@ -67,6 +67,47 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLINE_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLINE_STYLE >
+		<kendo-label *ngIf="(!labelLINE_STYLETop && !isPhonePortrait) && labelLINE_STYLEVisible" class="form-label" [for]="LINE_STYLE" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.LINE_STYLE','Line style')"></kendo-label>
+		<label *ngIf="(labelLINE_STYLETop || isPhonePortrait) && labelLINE_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.LINE_STYLE','Line style')}}</label>
+		<kendo-combobox  #LINE_STYLE class="form-field-combobox"  [formControlName]="'LINE_STYLE'"
+		[data]="lkpArrLINE_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.LINE_STYLE_Hint','Please enter Line style.')"		(click)="ON_CLICK_LINE_STYLE($event)"
+ (valueChange)="onValueChange_LINE_STYLE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'LINE_STYLE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFORE_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFORE_COLOR >
+		<kendo-label *ngIf="(!labelFORE_COLORTop && !isPhonePortrait) && labelFORE_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.FORE_COLOR','Fore color')"></kendo-label>
+		<label *ngIf="(labelFORE_COLORTop || isPhonePortrait) && labelFORE_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.FORE_COLOR','Fore color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="FORE_COLOR"
+  #FORE_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_FORE_COLOR($event)"
+ (valueChange)="onValueChange_FORE_COLOR($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_FORE_COLOR($event)"
+		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.FORE_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLINE_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLINE_WIDTH >
+		<kendo-label *ngIf="(!labelLINE_WIDTHTop && !isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label" [for]="LINE_WIDTH" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.LINE_WIDTH','Line width')"></kendo-label>
+		<label *ngIf="(labelLINE_WIDTHTop || isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.LINE_WIDTH','Line width')}}</label>
+		<input   formControlName="LINE_WIDTH"
+ kendoTextBox #LINE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL_1.scdshapeGeneralScdSgShapeGeneral1.LINE_WIDTH_Hint','Please enter Line width.')"
+		(click)="ON_CLICK_LINE_WIDTH($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LINE_WIDTH($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">

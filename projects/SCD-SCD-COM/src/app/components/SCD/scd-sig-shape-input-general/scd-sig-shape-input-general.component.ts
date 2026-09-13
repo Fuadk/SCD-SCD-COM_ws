@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -54,6 +55,7 @@ export class ScdShapeInputGeneralScdSigShapeInputGeneralFormdivsComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -112,10 +114,10 @@ public labelCONTINUOUSLY_UPDATETop=false;
 public labelCONTINUOUSLY_UPDATEVisible=true;
 public labelDISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOSTTop=false;
 public labelDISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOSTVisible=true;
-public labelCONFIGURE_ESIGNATURE_SIGTop=false;
-public labelCONFIGURE_ESIGNATURE_SIGVisible=true;
 public labelE_SIGNATURE_SETTINGSTop=false;
 public labelE_SIGNATURE_SETTINGSVisible=true;
+public labelCONFIGURE_ESIGNATURE_SIGTop=false;
+public labelCONFIGURE_ESIGNATURE_SIGVisible=true;
 
 public visibleSHAPE_INPUT_GENERAL_ID = false;
 public visibleTAG = true;
@@ -128,8 +130,8 @@ public visibleCAPTION = true;
 public visibleINSERT_VARIABLE = true;
 public visibleCONTINUOUSLY_UPDATE = true;
 public visibleDISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOST = true;
-public visibleCONFIGURE_ESIGNATURE_SIG = true;
 public visibleE_SIGNATURE_SETTINGS = true;
+public visibleCONFIGURE_ESIGNATURE_SIG = true;
 
 public disableSHAPE_INPUT_GENERAL_ID = false;
 public disableTAG = false;
@@ -142,8 +144,8 @@ public disableCAPTION = false;
 public disableINSERT_VARIABLE = false;
 public disableCONTINUOUSLY_UPDATE = false;
 public disableDISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOST = false;
-public disableCONFIGURE_ESIGNATURE_SIG = false;
 public disableE_SIGNATURE_SETTINGS = false;
+public disableCONFIGURE_ESIGNATURE_SIG = false;
 
 public variableCONFIGURE_ESIGNATURE_SIG;
 
@@ -154,8 +156,10 @@ public variableCONFIGURE_ESIGNATURE_SIG;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -227,8 +231,30 @@ public variableCONFIGURE_ESIGNATURE_SIG;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -472,6 +498,17 @@ public variableCONFIGURE_ESIGNATURE_SIG;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -684,8 +721,12 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    
-
+    if (ComponentConfig.masterParams != null) {
+      console.log("WHEN_NOTIFY:ComponentConfig.masterParams:", ComponentConfig.masterParams.data)
+      // if (ComponentConfig.masterParams.data.SHAPE_TYPE == "Numeric Input") {
+      //   this.visibleE_SIGNATURE_SETTINGS = false;
+      // }
+}
   }
   async WHEN_NEW_FORM_INSTANCE(){
     	if (!this.isChild){
@@ -972,26 +1013,6 @@ async WHEN_VALIDATE_ITEM_DISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOST(va
 
 }
 
-async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['CONFIGURE_ESIGNATURE_SIG'] != "undefined" ) 
-      this.form.controls['CONFIGURE_ESIGNATURE_SIG'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['CONFIGURE_ESIGNATURE_SIG'] != "undefined" ) 
-     this.form.get('CONFIGURE_ESIGNATURE_SIG').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_CONFIGURE_ESIGNATURE_SIG(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_E_SIGNATURE_SETTINGS(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1009,6 +1030,26 @@ async WHEN_VALIDATE_ITEM_E_SIGNATURE_SETTINGS(value) {
  }
 
  async ON_CLICK_E_SIGNATURE_SETTINGS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['CONFIGURE_ESIGNATURE_SIG'] != "undefined" ) 
+      this.form.controls['CONFIGURE_ESIGNATURE_SIG'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['CONFIGURE_ESIGNATURE_SIG'] != "undefined" ) 
+     this.form.get('CONFIGURE_ESIGNATURE_SIG').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CONFIGURE_ESIGNATURE_SIG(event){
 
 }
  
@@ -1099,12 +1140,6 @@ async WHEN_VALIDATE_ITEM_E_SIGNATURE_SETTINGS(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_CONFIGURE_ESIGNATURE_SIG(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_E_SIGNATURE_SETTINGS(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1113,7 +1148,13 @@ async WHEN_VALIDATE_ITEM_E_SIGNATURE_SETTINGS(value) {
  await   this.WHEN_VALIDATE_ITEM_E_SIGNATURE_SETTINGS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
- }
+ } 
+ async onValueChange_CONFIGURE_ESIGNATURE_SIG(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  }
 
 // For Adding new CODE
   public  grid_som_tabs_codes={};
