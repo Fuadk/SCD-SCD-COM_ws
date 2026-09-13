@@ -741,7 +741,14 @@ public printScreen(){
           break;
         case "arc":
         case 'elipse':
-        case 'hreehand':
+        case 'freehand':
+        case 'line':
+        case 'polygon':
+        case 'polyline':
+        case 'rectangle':
+        case 'rounded rectangle':
+        case 'wedge':
+        case 'arrow':
           this.visibleBORDER_STYLE = false;
           this.visibleBORDER_WIDTH = false;
           this.visibleBORDER_USES_BACK_COLOR = false;
@@ -753,8 +760,21 @@ public printScreen(){
           break;
       }
       if (ComponentConfig.masterParams.data.SHAPE_TYPE === "elipse"
-        || ComponentConfig.masterParams.data.SHAPE_TYPE === "hreehand") {
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "freehand"
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "line"
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "polygon"
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "polyline"
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "rectangle"
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "rounded rectangle"
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "wedge"
+        || ComponentConfig.masterParams.data.SHAPE_TYPE === "arrow"
+        ) {
         this.visibleLINE_WIDTH = true;
+      }
+      if (ComponentConfig.masterParams.data.SHAPE_TYPE === "line"){
+        this.visiblePATTERN_STYLE = false;
+        this.visiblePATTERN_COLOR = false;
+
       }
 
     }

@@ -897,6 +897,9 @@ if (array.length > 2) {
 if (menuType == "DROPDOWN" && !this.insertShapeFlag) {
       console.log("DEBUG_IT:ON_CLICK_MENU:event.Id:", event.Id);
       if (event.Id != "SymbolFactoryPlus") {
+        if (event.text == "FreeHand") {
+          this.toggleFreehandMode();
+        }
         this.event = event;
         this.menuType = menuType;
         this.insertShapeFlag = true;
@@ -948,6 +951,7 @@ if (menuType == "DROPDOWN" && !this.insertShapeFlag) {
       SHAPE_ID = arr[1];
       action = "open";
       ////
+      console.log("shapeType:",shapeType)
       switch (shapeType) {
         case 'Numeric Display':
           Id = 'Numeric_Display_Properties';
@@ -955,15 +959,25 @@ if (menuType == "DROPDOWN" && !this.insertShapeFlag) {
         case 'Numeric Input':
           Id = 'Numeric_Input_Properties';
           break;
+        case 'Arrow':
+          Id = 'Arrow_Properties';
+          break;
         case 'Panel':
         case 'Arc':
         case 'Elipse':
+        case 'FreeHand':
+        case 'Line':
+        case 'Polygon':
+        case 'Polyline':
+        case 'Rectangle':
+        case 'Rounded Rectangle':
+        case 'Wedge':
           title = shapeType + ' Properties';
           break;
         default:
           break;
       }
-      console.log("ON_CLICK_MENU:id:", Id);
+      console.log("ON_CLICK_MENU:id:", Id, shapeType, title);
     }
     if (Id != "") {
       let rec = this.dialogProperties.find(x => x.Component == Id);
@@ -2062,42 +2076,56 @@ public lastClickX: number = 0;
 public lastClickY: number = 0;
 
 // ===== CLICK HANDLER =====
-public onDiagramClick(event: any): void {
+  public onDiagramClick(event: any): void {
     this.lastClickX = event.offsetX || event.layerX || 0;
     this.lastClickY = event.offsetY || event.layerY || 0;
-    if (this.insertShapeFlag == true){
-      let shapeType = this.event.text;
-      
-      this.insertShape ( shapeType);
-      this.insertShapeFlag = false;
-      
-      setTimeout(() => {
-        //this.ON_CLICK_CONTEXT_MENU(this.menuType,this.event);
-      }, 500);
+    if (this.event.text != "FreeHand") {
+      if (this.insertShapeFlag == true) {
+        let shapeType = this.event.text;
+        let options = null;
+        if ( (shapeType == "Line") || (shapeType == "Polygon") || (shapeType == "Polyline")
+        || (shapeType == "Polyline") || (shapeType == "Rectangle") || (shapeType == "Rounded Rectangle")
+        || (shapeType == "Wedge") || (shapeType == "Arrow")  )
+          options = {
+            width: 180,
+            height: 24,
+            fillColor: "transparent",
+            x: this.lastClickX,
+            y: this.lastClickY,
+          };
+
+        this.insertShape(shapeType, options);
+        this.insertShapeFlag = false;
+
+        setTimeout(() => {
+          //this.ON_CLICK_CONTEXT_MENU(this.menuType,this.event);
+        }, 500);
+      }
     }
     let target = event.target.outerHTML;
     if (target.startsWith("<svg")) {
-        console.log("Clicked on empty space");
-        //this.currentShapeId = "";
-        this.currentShapeType = "";
-       // this.showContextMenuAt(event.pageX, event.pageY, null);
+      console.log("Clicked on empty space");
+      //this.currentShapeId = "";
+      this.currentShapeType = "";
+      // this.showContextMenuAt(event.pageX, event.pageY, null);
     }
     console.log(`📍 checking:Click: (${this.lastClickX}, ${this.lastClickY})`);
-    
+
     // 🔑 Clear any existing timer
     if (this.clickTimer) {
-        clearTimeout(this.clickTimer);
-        this.clickTimer = null;
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
     }
-    
+
     // 🔑 Set a timer to detect part on already-selected shapes
     this.clickTimer = setTimeout(() => {
-        this.detectPartAtClick(this.lastClickX, this.lastClickY, event);
-        this.clickTimer = null;
+      this.detectPartAtClick(this.lastClickX, this.lastClickY, event);
+      this.clickTimer = null;
     }, 100);
 
     this.ON_CLICK(event);
-}
+  }
+
 public detectPartAtClick(clickX: number, clickY: number, event): void {
     // 🔑 Use currentShapeId if available
     let foundContainerId: string | null = this.currentShapeId;
@@ -3077,6 +3105,14 @@ async insertSCDShapeTables(shapeID, shapeType) {
       case 'Panel':
       case 'Arc':
       case 'Elipse':
+      case 'FreeHand':
+      case 'Line':
+      case 'Polygon':
+      case 'Polyline':
+      case 'Rectangle':
+      case 'Rounded Rectangle':
+      case 'Wedge':
+      case 'Arrow':
         tables.push('INSERT_SCD_SHAPE_GENERAL');
         break;
       default:
@@ -3155,24 +3191,32 @@ async insertSCDShape(kendoui_content, shapeType){
       }
       return kendoui_content;
 }
-async insertShape ( shapeType){
-  let kendoui_content:any ={
-    id : shapeType
+async insertShape(shapeType, options) {
+    let kendoui_content: any = {
+      id: shapeType
+    }
+    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
+    await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType)
+    let kind = this.shapeToIconKey[shapeType] ?? 'Text';
+    if (options == null) {
+      options = { //richText
+        text: "",
+        width: 190,
+        height: 90,
+        x: this.lastClickX,
+        y: this.lastClickY,
+        SHAPE_ID: kendoui_content.id,
+        SHAPE_TYPE: shapeType,
+        fillColor: "#fff7d6"
+      }
+    }
+    else{
+      options['SHAPE_ID'] = kendoui_content.id;
+      options['SHAPE_TYPE'] = shapeType;
+    }
+    console.log("kind, options:",kind,shapeType,  options);
+    this.addLibraryShape(kind, options, true);
   }
-  kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
-  await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType)
-  let  kind = this.shapeToIconKey[shapeType] ?? 'Text';
-  this.addLibraryShape(kind, { //richText
-    text: "", 
-    width: 190, 
-    height: 90, 
-    x: this.lastClickX,
-    y: this.lastClickY,
-    SHAPE_ID :kendoui_content.id,
-    SHAPE_TYPE :shapeType,
-    fillColor: "#fff7d6" 
-  },true);
-}
 
 //////////
 public statusMessage = "Select a shape to edit it.";
@@ -3439,7 +3483,7 @@ private uniqueShapeId(prefix: string): string {
     }
   }
 
-  public onFreehandPointerUp(event: PointerEvent): void {
+public onFreehandPointerUp(event: PointerEvent): void {
     if (!this.freehandMode || this.freehandPointerId !== event.pointerId) {
       return;
     }
@@ -3469,7 +3513,15 @@ private uniqueShapeId(prefix: string): string {
     this.freehandPoints = [];
     this.freehandPreviewPoints = [];
     this.freehandPreviewPath = "";
-    this.addLibraryShape("freehand", { x: minX, y: minY, width, height, points, fillColor: "transparent" }, true);
+    if (this.insertShapeFlag == true){
+        let shapeType = this.event.text;
+        let options = { x: minX, y: minY, width, height, points, fillColor: "transparent" };
+        this.insertShape ( shapeType,options);
+        this.insertShapeFlag = false;
+        
+        
+      }
+    
   }
 
   private pointerToStage(event: PointerEvent): { x: number; y: number } | null {
@@ -3617,7 +3669,7 @@ private uniqueShapeId(prefix: string): string {
       );
       return group;
     }
-    if (kind === "Text") {
+    if ( (kind === "Text")||(kind === "numeric")||(kind === "input") ) {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
         stroke: { color: stroke},
@@ -3660,7 +3712,7 @@ private uniqueShapeId(prefix: string): string {
       return group;
     }
 
-    if (kind === "ellipse") {
+    if (kind === "ellipse" || kind === "wedge") {
       const rx = width / 2;
       const ry = height / 2;
       const cx = x + rx;
@@ -3673,7 +3725,7 @@ private uniqueShapeId(prefix: string): string {
       return group;
     }
 
-    if (kind === "line") {
+    if ( (kind === "line")||(kind === "arrow") ) {
       // Render Line using the same lightweight Path approach as Arc.
       // The Diagram shape model owns the selectable/resizable bounds; the
       // visible geometry is only the line itself.
@@ -5187,7 +5239,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     // ── Basic geometry ──
     rectangle:
       `<rect x="3" y="6" width="18" height="14" fill="none" stroke="#e94560" stroke-width="2"/>`,
-    rounded:
+    roundedRectangle:
       `<rect x="3" y="6" width="18" height="14" rx="4" ry="4" fill="none" stroke="#e94560" stroke-width="2"/>`,
     ellipse:
       `<ellipse cx="12" cy="13" rx="9" ry="7" fill="none" stroke="#e94560" stroke-width="2"/>`,
@@ -5272,7 +5324,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Vector': 'vector',
     'FreeHand': 'freehand',
     'Elipse': 'ellipse',
-    'Rounded Rectangle': 'rounded',
+    'Rounded Rectangle': 'roundedRectangle',
     'Rectangle': 'rectangle',
     'Wedge': 'wedge',
     'Polyline': 'polyline',
@@ -5336,7 +5388,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
    * Build a data-URI cursor for the currently pending shape type.
    * Returns 'crosshair' if no shape is pending.
    */
-  get insertCursor(): string {
+    get insertCursor(): string {
     if (!this.insertShapeFlag) return 'default';
 
     const iconKey = this.shapeToIconKey[this.pendingShapeType] ?? 'default';
@@ -5344,14 +5396,14 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
 
     // 24×24 canvas. Hotspot at (2,2) = top-left area of the icon.
     const svg =
-      `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">` +
+      `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">` +
         // small arrow pointer behind the icon
         `<path d="M0 0 L0 10 L3 7 L5 12 L7 11 L5 6 L9 6 Z" fill="black" stroke="white" stroke-width="1"/>` +
         iconSvg +
       `</svg>`;
 
     // encodeURIComponent keeps the SVG safe inside a CSS url()
-    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 2 2, crosshair`;
+    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 4 4, crosshair`;
   }
 
   processButton(action: string, event?: any): void {
