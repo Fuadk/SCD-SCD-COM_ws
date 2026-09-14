@@ -959,6 +959,13 @@ if (menuType == "DROPDOWN" && !this.insertShapeFlag) {
         case 'Numeric Input':
           Id = 'Numeric_Input_Properties';
           break;
+        case 'Button':
+          Id = 'Button_Properties';
+          break;
+        case 'Momentry':
+          Id = 'Push_Button_Properties';
+          title = shapeType + ' Push Button Properties';
+          break;
         case 'Arrow':
           Id = 'Arrow_Properties';
           break;
@@ -1839,6 +1846,30 @@ async  prepareShapes(){
   let statement_SHAPE_DISPLAY_GENERAL = "DELETE from SCD_SHAPE_DISPLAY_GENERAL where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_SHAPE_INPUT_GENERAL = "DELETE from SCD_SHAPE_INPUT_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_SHAPE_INPUT_APPEARANCE = "DELETE from SCD_SHAPE_INPUT_APPEARANCE where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_SHAPE_CONNECTION = "DELETE from SCD_SHAPE_CONNECTION where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
+  let statement_SCD_SHAPE_GENERAL = "DELETE from SCD_SHAPE_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_BUTTON_GENERAL = "DELETE from SCD_BUTTON_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_BUTTON_ACTION = "DELETE from SCD_BUTTON_ACTION where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
+  let statement_SCD_BUTTON_APPEARANCE = "DELETE from SCD_BUTTON_APPEARANCE where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_BUTTON_PUSH_GENERAL = "DELETE from SCD_BUTTON_PUSH_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                     
   let body_defs = [
      {
         "_QUERY": "EXECSQL",
@@ -1847,6 +1878,38 @@ async  prepareShapes(){
            {
         "_QUERY": "EXECSQL",
         "_STMT": statement_SHAPE_DISPLAY_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_INPUT_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_INPUT_APPEARANCE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_CONNECTION
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_ACTION
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_APPEARANCE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_PUSH_GENERAL
       }
 
     ];
@@ -1888,6 +1951,7 @@ async  prepareShapes(){
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", this.expData);
     } 
 }
+
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
     if (this.paramConfig.DEBUG_FLAG) console.log("OutRec:1:", OutRec)
@@ -2085,14 +2149,19 @@ public lastClickY: number = 0;
         let options = null;
         if ( (shapeType == "Line") || (shapeType == "Polygon") || (shapeType == "Polyline")
         || (shapeType == "Polyline") || (shapeType == "Rectangle") || (shapeType == "Rounded Rectangle")
-        || (shapeType == "Wedge") || (shapeType == "Arrow")  )
+        || (shapeType == "Wedge") || (shapeType == "Arrow") || (shapeType == "Button")  
+        || (shapeType == "Push Button") || (shapeType == "Momentry")   )
           options = {
             width: 180,
             height: 24,
+            text: "",
             fillColor: "transparent",
             x: this.lastClickX,
             y: this.lastClickY,
           };
+        if ( (shapeType == "Button") || (shapeType == "Momentry")){
+          options.fillColor = "#D3D3D3"
+        }
 
         this.insertShape(shapeType, options);
         this.insertShapeFlag = false;
@@ -3102,6 +3171,9 @@ async insertSCDShapeTables(shapeID, shapeType) {
         tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
         tables.push('INSERT_SCD_SHAPE_CONNECTION');
         break;
+      case 'Momentry':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        break;
       case 'Panel':
       case 'Arc':
       case 'Elipse':
@@ -3115,10 +3187,18 @@ async insertSCDShapeTables(shapeID, shapeType) {
       case 'Arrow':
         tables.push('INSERT_SCD_SHAPE_GENERAL');
         break;
+      case 'Button':
+        tables.push('INSERT_SCD_BUTTON_GENERAL');
+        tables.push('INSERT_SCD_BUTTON_ACTION');
+        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
+        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
+        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
+        break;
       default:
         break;
     }
-    console.log("insertSCDShapeTables:tables:", tables)
+    console.log("insertSCDShapeTables:tables:", shapeType, tables)
+    let butApp = 0;
     if (tables.length > 0) {
       for (let i = 0; i < tables.length; i++) {
         let TableDefauls = await this.starlib1.setShapeDefaults(tables[i]);
@@ -3140,6 +3220,15 @@ async insertSCDShapeTables(shapeID, shapeType) {
           if (typeof object != "undefined" && Object.keys(object).length > 0) {
             object['SHAPE_ID'] = shapeID;
             object['_QUERY'] = tables[i];
+            if (tables[i] == "INSERT_SCD_BUTTON_APPEARANCE"){
+              if (butApp == 0)
+                object['BUTTON_APPEARANCE'] = "UP";
+              else if (butApp == 1)
+                object['BUTTON_APPEARANCE'] = "DOWN";
+              else if (butApp == 2)
+                object['BUTTON_APPEARANCE'] = "DISABLED";
+              butApp++;
+            }
             let body = [];
             body.push(object);
             console.log("insertSCDShapeTables:body:", body)
@@ -3150,6 +3239,8 @@ async insertSCDShapeTables(shapeID, shapeType) {
       }
     }
   }
+
+
 public menuType;
 public event;
 public insertShapeFlag = false;
@@ -3214,7 +3305,7 @@ async insertShape(shapeType, options) {
       options['SHAPE_ID'] = kendoui_content.id;
       options['SHAPE_TYPE'] = shapeType;
     }
-    console.log("kind, options:",kind,shapeType,  options);
+    console.log("kind:",kind,"shapeType:", shapeType, "options:", options);
     this.addLibraryShape(kind, options, true);
   }
 
@@ -3669,7 +3760,8 @@ public onFreehandPointerUp(event: PointerEvent): void {
       );
       return group;
     }
-    if ( (kind === "Text")||(kind === "numeric")||(kind === "input") ) {
+    if ( (kind === "Text")||(kind === "numeric")||(kind === "input")
+     ||(kind === "button") ||(kind === "buttonmomentry") ) {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
         stroke: { color: stroke},
@@ -5265,7 +5357,11 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       `<circle cx="12" cy="13" r="9" fill="none" stroke="#e94560" stroke-width="2"/><path d="M9 13 L15 13 M13 10 L16 13 L13 16" stroke="#e94560" stroke-width="2" fill="none"/>`,
     rampButton:
       `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>`,
-
+    pushbutton:
+      `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>`,
+    buttonmomentry:
+      `<rect x="3" y="9" width="18" height="11" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+        `<path d="M12 3 L12 7 M9 5 L12 8 L15 5" fill="none" stroke="#7945e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
     // ── Display / data ──
     display:
       `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">7</text>`,
@@ -5334,12 +5430,13 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Multistate': 'button',
     'Latched': 'button',
     'Maintained': 'button',
-    'Momentry': 'button',
-    'Push Buttons': 'button',
+    'Momentry': 'buttonmomentry',
+    'Push Button': '"pushbutton',
     'Navigation Button': 'navButton',
     'Ramp  Button': 'rampButton',
     'Button': 'button',
     'Buttons': 'button',
+    
     'String Display': 'display',
     'String Input': 'input',
     'Numeric Input': 'input',

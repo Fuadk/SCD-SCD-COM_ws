@@ -41,11 +41,10 @@
     <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
     <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
     <fieldset class="form-fieldset"  class="k-form-fieldset" >
-    
-         <legend class="divTitle">{{FormStepsArr.length > 0   ? FormStepsArr[1].CODETEXT_LANG 
-			:  this.starServices.getNLS([],"SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.component_title","Button Appearance") }}
-			 </legend>
-			 <div class="form-div">
+
+         <legend *ngIf="FormStepsArr[1].visible" class="divTitle">{{FormStepsArr.length > 0 ?
+          FormStepsArr[1].CODETEXT_LANG:this.starServices.getNLS([],"SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.component_title","Button Appearance") }}</legend>
+			 <div *ngIf="FormStepsArr[1].visible" class="form-div">
 
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
@@ -56,7 +55,7 @@
  kendoTextBox #BUTTON_APPEARANCE_ID 
 		[readonly]="primarKeyReadOnlyArr.isBUTTON_APPEARANCE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE_ID_Hint','Please enter Button Appearance Id.')"
 		(click)="ON_CLICK_BUTTON_APPEARANCE_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BUTTON_APPEARANCE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
@@ -67,7 +66,7 @@
 
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -85,7 +84,10 @@
 		<label *ngIf="(labelSAME_AS_UP_APPEARANCETop || isPhonePortrait) && labelSAME_AS_UP_APPEARANCEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SAME_AS_UP_APPEARANCE','Same As Up Appearance')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SAME_AS_UP_APPEARANCE"
   #SAME_AS_UP_APPEARANCE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SAME_AS_UP_APPEARANCE_Hint','Please enter Same As Up Appearance.')"		(click)="ON_CLICK_SAME_AS_UP_APPEARANCE($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_SAME_AS_UP_APPEARANCE($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SAME_AS_UP_APPEARANCE_Hint','Please enter Same As Up Appearance.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -94,8 +96,22 @@
 		<label *ngIf="(labelSHOW_DISABLED_STATETop || isPhonePortrait) && labelSHOW_DISABLED_STATEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SHOW_DISABLED_STATE','Show Disabled State')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SHOW_DISABLED_STATE"
   #SHOW_DISABLED_STATE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SHOW_DISABLED_STATE_Hint','Please enter Show Disabled State.')"		(click)="ON_CLICK_SHOW_DISABLED_STATE($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_SHOW_DISABLED_STATE($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SHOW_DISABLED_STATE_Hint','Please enter Show Disabled State.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBUTTON_APPEARANCETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBUTTON_APPEARANCE >
+		<kendo-label *ngIf="(!labelBUTTON_APPEARANCETop && !isPhonePortrait) && labelBUTTON_APPEARANCEVisible" class="form-label" [for]="BUTTON_APPEARANCE" [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE','Button Appearance')"></kendo-label>
+		<label *ngIf="(labelBUTTON_APPEARANCETop || isPhonePortrait) && labelBUTTON_APPEARANCEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE','Button Appearance')}}</label>
+		<input   formControlName="BUTTON_APPEARANCE"
+ kendoTextBox #BUTTON_APPEARANCE
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.BUTTON_APPEARANCE.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isBUTTON_APPEARANCEreadOnly" [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE_Hint','Please enter Button Appearance.')"
+		(click)="ON_CLICK_BUTTON_APPEARANCE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BUTTON_APPEARANCE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -107,7 +123,7 @@
 		<kendo-combobox  #BACK_STYLE class="form-field-combobox"  [formControlName]="'BACK_STYLE'"
 		[data]="lkpArrBACK_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BACK_STYLE_Hint','Please enter Back Style.')"		(click)="ON_CLICK_BACK_STYLE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BACK_STYLE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -127,7 +143,7 @@
   #FORE_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_FORE_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_FORE_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_FORE_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.FORE_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -142,7 +158,7 @@
 		<kendo-combobox  #PATTERN_STYLE class="form-field-combobox"  [formControlName]="'PATTERN_STYLE'"
 		[data]="lkpArrPATTERN_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.PATTERN_STYLE_Hint','Please enter Pattern Style.')"		(click)="ON_CLICK_PATTERN_STYLE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_PATTERN_STYLE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -155,22 +171,6 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_COLOR >
-		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BACK_COLOR','Back Color')"></kendo-label>
-		<label *ngIf="(labelBACK_COLORTop || isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BACK_COLOR','Back Color')}}</label>
-		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BACK_COLOR"
-  #BACK_COLOR 
-		 *ngIf="!customerFacing" 
- 		(click)="ON_CLICK_BACK_COLOR($event)"
-     adaptiveMode="auto" 
-		 ></kendo-colorpicker>
-	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BACK_COLOR($event)"
-		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_COLOR >
 		<kendo-label *ngIf="(!labelPATTERN_COLORTop && !isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.PATTERN_COLOR','Pattern Color')"></kendo-label>
 		<label *ngIf="(labelPATTERN_COLORTop || isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.PATTERN_COLOR','Pattern Color')}}</label>
@@ -178,10 +178,26 @@
   #PATTERN_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_PATTERN_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_PATTERN_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_PATTERN_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.PATTERN_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_COLOR >
+		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BACK_COLOR','Back Color')"></kendo-label>
+		<label *ngIf="(labelBACK_COLORTop || isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BACK_COLOR','Back Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BACK_COLOR"
+  #BACK_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_BACK_COLOR($event)"
+ (valueChange)="onValueChange_BACK_COLOR($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BACK_COLOR($event)"
+		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
 	</kendo-formfield>
 
 
@@ -196,14 +212,14 @@
      adaptiveMode="auto" ></kendo-textarea>
 	</kendo-formfield>
 
-		<button  style="margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_TAG_BUT($event)"  style="margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.TAG_BUT_Hint','Please enter Tag But.')" 
- iconClass="fas fa-"  *ngIf=visibleTAG_BUT 		(click)="ON_CLICK_TAG_BUT($event)"
+ iconClass="fas fa-tags"  *ngIf=visibleTAG_BUT 		(click)="ON_CLICK_TAG_BUT($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.TAG_BUT','Tags')}}</button>
 
-		<button  style="margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_EXPRESSION_BUT($event)"  style="margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.EXPRESSION_BUT_Hint','Please enter Expression But.')" 
- iconClass="fas fa-"  *ngIf=visibleEXPRESSION_BUT 		(click)="ON_CLICK_EXPRESSION_BUT($event)"
+ iconClass="fas fa-equation"  *ngIf=visibleEXPRESSION_BUT 		(click)="ON_CLICK_EXPRESSION_BUT($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.EXPRESSION_BUT','Expression')}}</button>
 
 
@@ -229,8 +245,8 @@
 		<label *ngIf="(labelINSERT_VARIABLETop || isPhonePortrait) && labelINSERT_VARIABLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.INSERT_VARIABLE','Insert Variable')}}</label>
 		<kendo-combobox  #INSERT_VARIABLE class="form-field-combobox"  [formControlName]="'INSERT_VARIABLE'"
 		[data]="lkpArrINSERT_VARIABLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.INSERT_VARIABLE_Hint','Please enter Insert Variable.')"		(click)="ON_CLICK_INSERT_VARIABLE($event)"
- style="width : 200px ;"    adaptiveMode="auto" 
+  [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.INSERT_VARIABLE_Hint','Insert Variable.')"		(click)="ON_CLICK_INSERT_VARIABLE($event)"
+ (valueChange)="onValueChange_INSERT_VARIABLE($event)"  style="width : 200px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -252,7 +268,7 @@
 		<kendo-combobox  #FONT_NAME class="form-field-combobox"  [formControlName]="'FONT_NAME'"
 		[data]="lkpArrFONT_NAME" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_NAME_Hint','Please enter Font Name.')"		(click)="ON_CLICK_FONT_NAME($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_FONT_NAME($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -271,7 +287,7 @@
 		<kendo-combobox  #FONT_SIZE class="form-field-combobox"  [formControlName]="'FONT_SIZE'"
 		[data]="lkpArrFONT_SIZE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_SIZE_Hint','Please enter Font Size.')"		(click)="ON_CLICK_FONT_SIZE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_FONT_SIZE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -284,17 +300,17 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
-		<button  style="font-weight : bold ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_FONT_BOLD($event)"  style="font-weight : bold ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_BOLD_Hint','Please enter Font Bold.')" 
  iconClass="fas fa-"  *ngIf=visibleFONT_BOLD 		(click)="ON_CLICK_FONT_BOLD($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_BOLD','B')}}</button>
 
-		<button  style="font-style : italic ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_FONT_ITALIC($event)"  style="font-style : italic ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_ITALIC_Hint','Please enter Font Italic.')" 
  iconClass="fas fa-"  *ngIf=visibleFONT_ITALIC 		(click)="ON_CLICK_FONT_ITALIC($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_ITALIC','I')}}</button>
 
-		<button  style="margin : 4px ;text-decoration: underline;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_FONT_UNDERLINE($event)"  style="margin : 4px ;text-decoration: underline;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_UNDERLINE_Hint','Please enter Font Underline.')" 
  iconClass="fas fa-"  *ngIf=visibleFONT_UNDERLINE 		(click)="ON_CLICK_FONT_UNDERLINE($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_UNDERLINE','U')}}</button>
@@ -308,10 +324,10 @@
 	<div class="form-field"  [ngClass]="(labelIMAGE_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_TYPE >
 		<kendo-label *ngIf="(!labelIMAGE_TYPETop && !isPhonePortrait) && labelIMAGE_TYPEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_TYPE','Image Type')"></kendo-label>
 		<label *ngIf="(labelIMAGE_TYPETop || isPhonePortrait) && labelIMAGE_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_TYPE','Image Type')}}</label>
-		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_IMAGE_TYPE($event)"
-     adaptiveMode="auto" 
+		<ul class="k-radio-list" 		(click)="ON_CLICK_IMAGE_TYPE($event)"
+ (change)="onChange_IMAGE_TYPE($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrIMAGE_TYPE">
+			<li class="k-radio-item" *ngFor="let item of lkpArrIMAGE_TYPE"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'IMAGE_TYPE'"
 					#IMAGE_TYPE ></kendo-radiobutton> 
@@ -320,6 +336,19 @@
 			</li>
 		</ul>
 	</div>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSCALE_IMAGETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSCALE_IMAGE >
+		<kendo-label *ngIf="(!labelSCALE_IMAGETop && !isPhonePortrait) && labelSCALE_IMAGEVisible" class="form-label" [for]="SCALE_IMAGE" [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE','Scale Image')"></kendo-label>
+		<label *ngIf="(labelSCALE_IMAGETop || isPhonePortrait) && labelSCALE_IMAGEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE','Scale Image')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SCALE_IMAGE"
+  #SCALE_IMAGE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE_Hint','Please enter Scale Image.')"		(click)="ON_CLICK_SCALE_IMAGE($event)"
+ (change)="onChange_SCALE_IMAGE($event)"      adaptiveMode="auto" 
+	 name="SCALE_IMAGE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE_Hint','Please enter Scale Image.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
+	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_NAME >
 		<kendo-label *ngIf="(!labelIMAGE_NAMETop && !isPhonePortrait) && labelIMAGE_NAMEVisible" class="form-label" 
@@ -335,24 +364,12 @@
  kendoTextBox #IMAGE_NAME></textarea>  
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSCALE_IMAGETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSCALE_IMAGE >
-		<kendo-label *ngIf="(!labelSCALE_IMAGETop && !isPhonePortrait) && labelSCALE_IMAGEVisible" class="form-label" [for]="SCALE_IMAGE" [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE','Scale Image')"></kendo-label>
-		<label *ngIf="(labelSCALE_IMAGETop || isPhonePortrait) && labelSCALE_IMAGEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE','Scale Image')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SCALE_IMAGE"
-  #SCALE_IMAGE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE_Hint','Please enter Scale Image.')"		(click)="ON_CLICK_SCALE_IMAGE($event)"
-     adaptiveMode="auto" 
- />
-	</kendo-formfield>
-
-		<button      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_IMPORT_BA($event)"  style="height : 40px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA_Hint','Please enter Import Ba.')" 
  iconClass="fas fa-upload"  *ngIf=visibleIMPORT_BA 		(click)="ON_CLICK_IMPORT_BA($event)"
- >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA','Import')}}</button>
+ >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA','')}}</button>
 
-		<button      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_IMAGE_SELECT_BA($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA_Hint','Please enter Image Select Ba.')" 
  iconClass="fas fa-image"  *ngIf=visibleIMAGE_SELECT_BA 		(click)="ON_CLICK_IMAGE_SELECT_BA($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA','Image Select Ba')}}</button>
@@ -367,9 +384,9 @@
 		<kendo-label *ngIf="(!labelBUTTON_STATETop && !isPhonePortrait) && labelBUTTON_STATEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_STATE','Button State')"></kendo-label>
 		<label *ngIf="(labelBUTTON_STATETop || isPhonePortrait) && labelBUTTON_STATEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_STATE','Button State')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_BUTTON_STATE($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_BUTTON_STATE($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrBUTTON_STATE">
+			<li class="k-radio-item" *ngFor="let item of lkpArrBUTTON_STATE"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'BUTTON_STATE'"
 					#BUTTON_STATE ></kendo-radiobutton> 
@@ -388,10 +405,10 @@
 	<div class="form-field"  [ngClass]="(labelDISABLED_SETTINGSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISABLED_SETTINGS >
 		<kendo-label *ngIf="(!labelDISABLED_SETTINGSTop && !isPhonePortrait) && labelDISABLED_SETTINGSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.DISABLED_SETTINGS','Disabled Settings')"></kendo-label>
 		<label *ngIf="(labelDISABLED_SETTINGSTop || isPhonePortrait) && labelDISABLED_SETTINGSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.DISABLED_SETTINGS','Disabled Settings')}}</label>
-		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_DISABLED_SETTINGS($event)"
-     adaptiveMode="auto" 
+		<ul class="k-radio-list" 		(click)="ON_CLICK_DISABLED_SETTINGS($event)"
+ (change)="onChange_DISABLED_SETTINGS($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrDISABLED_SETTINGS">
+			<li class="k-radio-item" *ngFor="let item of lkpArrDISABLED_SETTINGS"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'DISABLED_SETTINGS'"
 					#DISABLED_SETTINGS ></kendo-radiobutton> 
@@ -400,6 +417,19 @@
 			</li>
 		</ul>
 	</div>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSCALE_IMAGE2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSCALE_IMAGE2 >
+		<kendo-label *ngIf="(!labelSCALE_IMAGE2Top && !isPhonePortrait) && labelSCALE_IMAGE2Visible" class="form-label" [for]="SCALE_IMAGE2" [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2','Scale Image')"></kendo-label>
+		<label *ngIf="(labelSCALE_IMAGE2Top || isPhonePortrait) && labelSCALE_IMAGE2Visible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2','Scale Image')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SCALE_IMAGE2"
+  #SCALE_IMAGE2 kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2_Hint','Please enter Scale Image2.')"		(click)="ON_CLICK_SCALE_IMAGE2($event)"
+ (change)="onChange_SCALE_IMAGE2($event)"      adaptiveMode="auto" 
+	 name="SCALE_IMAGE2"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2_Hint','Please enter Scale Image2.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
+	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_NAME2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_NAME2 >
 		<kendo-label *ngIf="(!labelIMAGE_NAME2Top && !isPhonePortrait) && labelIMAGE_NAME2Visible" class="form-label" 
@@ -415,28 +445,15 @@
  kendoTextBox #IMAGE_NAME2></textarea>  
 	</kendo-formfield>
 
-		<button      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_IMPORT_BA2($event)"  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA2_Hint','Please enter Import Ba2.')" 
+ iconClass="fas fa-upload"  *ngIf=visibleIMPORT_BA2 		(click)="ON_CLICK_IMPORT_BA2($event)"
+ >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA2','')}}</button>
+
+		<button  (valueChange)="onValueChange_IMAGE_SELECT_BA2($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA2_Hint','Please enter Image Select Ba2.')" 
  iconClass="fas fa-image"  *ngIf=visibleIMAGE_SELECT_BA2 		(click)="ON_CLICK_IMAGE_SELECT_BA2($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA2','Image Select Ba2')}}</button>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSCALE_IMAGE2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSCALE_IMAGE2 >
-		<kendo-label *ngIf="(!labelSCALE_IMAGE2Top && !isPhonePortrait) && labelSCALE_IMAGE2Visible" class="form-label" [for]="SCALE_IMAGE2" [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2','Scale Image')"></kendo-label>
-		<label *ngIf="(labelSCALE_IMAGE2Top || isPhonePortrait) && labelSCALE_IMAGE2Visible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2','Scale Image')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SCALE_IMAGE2"
-  #SCALE_IMAGE2 kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2_Hint','Please enter Scale Image2.')"		(click)="ON_CLICK_SCALE_IMAGE2($event)"
-     adaptiveMode="auto" 
-	 name="SCALE_IMAGE2"  ToggleValue  [true]= "1" [false]= "0" 
- />
-	</kendo-formfield>
-
-		<button      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA2_Hint','Please enter Import Ba2.')" 
- iconClass="fas fa-upload"  *ngIf=visibleIMPORT_BA2 		(click)="ON_CLICK_IMPORT_BA2($event)"
- >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA2','Import')}}</button>
 </div>
 
 

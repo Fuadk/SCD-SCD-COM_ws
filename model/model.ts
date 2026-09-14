@@ -1177,8 +1177,10 @@
 	public IMAGE_NAME2 = '';
 	public SCALE_IMAGE2 = '';
 	public INSERT_VARIABLE = '';
+	public BUTTON_APPEARANCE = '';
 
 }
+
 
 
  export class scdbuttonActionScdBaButtonAction{

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -18,11 +19,12 @@ import { scdbuttonAppearanceScdBaButtonAppearance , componentConfigDef} from '@m
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'SAME_AS_UP_APPEARANCE' : new FormControl(dataItem.SAME_AS_UP_APPEARANCE  , ) ,
 'SHOW_DISABLED_STATE' : new FormControl(dataItem.SHOW_DISABLED_STATE  , ) ,
+'BUTTON_APPEARANCE' : new FormControl(dataItem.BUTTON_APPEARANCE  ,   Validators.required ) ,
 'BACK_STYLE' : new FormControl(dataItem.BACK_STYLE  , ) ,
 'FORE_COLOR' : new FormControl(dataItem.FORE_COLOR  , ) ,
 'PATTERN_STYLE' : new FormControl(dataItem.PATTERN_STYLE  , ) ,
-'BACK_COLOR' : new FormControl(dataItem.BACK_COLOR  , ) ,
 'PATTERN_COLOR' : new FormControl(dataItem.PATTERN_COLOR  , ) ,
+'BACK_COLOR' : new FormControl(dataItem.BACK_COLOR  , ) ,
 'EXPRESSION' : new FormControl(dataItem.EXPRESSION  , ) ,
 'CAPTION' : new FormControl(dataItem.CAPTION  , ) ,
 'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) ,
@@ -32,12 +34,12 @@ import { scdbuttonAppearanceScdBaButtonAppearance , componentConfigDef} from '@m
 'FONT_ITALIC' : new FormControl(dataItem.FONT_ITALIC  , ) ,
 'FONT_UNDERLINE' : new FormControl(dataItem.FONT_UNDERLINE  , ) ,
 'IMAGE_TYPE' : new FormControl(dataItem.IMAGE_TYPE  , ) ,
-'IMAGE_NAME' : new FormControl(dataItem.IMAGE_NAME  , ) ,
 'SCALE_IMAGE' : new FormControl(dataItem.SCALE_IMAGE  , ) ,
+'IMAGE_NAME' : new FormControl(dataItem.IMAGE_NAME  , ) ,
 'BUTTON_STATE' : new FormControl(dataItem.BUTTON_STATE  , ) ,
 'DISABLED_SETTINGS' : new FormControl(dataItem.DISABLED_SETTINGS  , ) ,
-'IMAGE_NAME2' : new FormControl(dataItem.IMAGE_NAME2  , ) ,
-'SCALE_IMAGE2' : new FormControl(dataItem.SCALE_IMAGE2  , ) 
+'SCALE_IMAGE2' : new FormControl(dataItem.SCALE_IMAGE2  , ) ,
+'IMAGE_NAME2' : new FormControl(dataItem.IMAGE_NAME2  , ) 
 });
 
 declare function getParamConfig():any;
@@ -66,6 +68,7 @@ export class ScdButtonAppearanceScdBaButtonAppearanceFormdivsComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -84,7 +87,7 @@ export class ScdButtonAppearanceScdBaButtonAppearanceFormdivsComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isBUTTON_APPEARANCE_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isBUTTON_APPEARANCE_IDreadOnly : false , isSHAPE_IDreadOnly : false , isBUTTON_APPEARANCEreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
@@ -110,16 +113,18 @@ public labelSAME_AS_UP_APPEARANCETop=true;
 public labelSAME_AS_UP_APPEARANCEVisible=true;
 public labelSHOW_DISABLED_STATETop=true;
 public labelSHOW_DISABLED_STATEVisible=true;
+public labelBUTTON_APPEARANCETop=true;
+public labelBUTTON_APPEARANCEVisible=true;
 public labelBACK_STYLETop=true;
 public labelBACK_STYLEVisible=true;
 public labelFORE_COLORTop=true;
 public labelFORE_COLORVisible=true;
 public labelPATTERN_STYLETop=true;
 public labelPATTERN_STYLEVisible=true;
-public labelBACK_COLORTop=true;
-public labelBACK_COLORVisible=true;
 public labelPATTERN_COLORTop=true;
 public labelPATTERN_COLORVisible=true;
+public labelBACK_COLORTop=true;
+public labelBACK_COLORVisible=true;
 public labelEXPRESSIONTop=true;
 public labelEXPRESSIONVisible=true;
 public labelTAG_BUTTop=true;
@@ -129,7 +134,7 @@ public labelEXPRESSION_BUTVisible=true;
 public labelCAPTIONTop=true;
 public labelCAPTIONVisible=true;
 public labelINSERT_VARIABLETop=true;
-public labelINSERT_VARIABLEVisible=true;
+public labelINSERT_VARIABLEVisible=false;
 public labelFONT_NAMETop=true;
 public labelFONT_NAMEVisible=true;
 public labelFONT_SIZETop=true;
@@ -142,10 +147,10 @@ public labelFONT_UNDERLINETop=true;
 public labelFONT_UNDERLINEVisible=true;
 public labelIMAGE_TYPETop=true;
 public labelIMAGE_TYPEVisible=true;
-public labelIMAGE_NAMETop=true;
-public labelIMAGE_NAMEVisible=true;
 public labelSCALE_IMAGETop=true;
 public labelSCALE_IMAGEVisible=true;
+public labelIMAGE_NAMETop=true;
+public labelIMAGE_NAMEVisible=true;
 public labelIMPORT_BATop=true;
 public labelIMPORT_BAVisible=true;
 public labelIMAGE_SELECT_BATop=true;
@@ -154,24 +159,25 @@ public labelBUTTON_STATETop=true;
 public labelBUTTON_STATEVisible=true;
 public labelDISABLED_SETTINGSTop=true;
 public labelDISABLED_SETTINGSVisible=true;
-public labelIMAGE_NAME2Top=true;
-public labelIMAGE_NAME2Visible=true;
-public labelIMAGE_SELECT_BA2Top=true;
-public labelIMAGE_SELECT_BA2Visible=true;
 public labelSCALE_IMAGE2Top=true;
 public labelSCALE_IMAGE2Visible=true;
+public labelIMAGE_NAME2Top=true;
+public labelIMAGE_NAME2Visible=true;
 public labelIMPORT_BA2Top=true;
 public labelIMPORT_BA2Visible=true;
+public labelIMAGE_SELECT_BA2Top=true;
+public labelIMAGE_SELECT_BA2Visible=true;
 
 public visibleBUTTON_APPEARANCE_ID = false;
 public visibleSHAPE_ID = false;
 public visibleSAME_AS_UP_APPEARANCE = true;
 public visibleSHOW_DISABLED_STATE = true;
+public visibleBUTTON_APPEARANCE = true;
 public visibleBACK_STYLE = true;
 public visibleFORE_COLOR = true;
 public visiblePATTERN_STYLE = true;
-public visibleBACK_COLOR = true;
 public visiblePATTERN_COLOR = true;
+public visibleBACK_COLOR = true;
 public visibleEXPRESSION = true;
 public visibleTAG_BUT = true;
 public visibleEXPRESSION_BUT = true;
@@ -183,26 +189,27 @@ public visibleFONT_BOLD = true;
 public visibleFONT_ITALIC = true;
 public visibleFONT_UNDERLINE = true;
 public visibleIMAGE_TYPE = true;
-public visibleIMAGE_NAME = true;
 public visibleSCALE_IMAGE = true;
+public visibleIMAGE_NAME = true;
 public visibleIMPORT_BA = true;
 public visibleIMAGE_SELECT_BA = false;
 public visibleBUTTON_STATE = true;
 public visibleDISABLED_SETTINGS = true;
-public visibleIMAGE_NAME2 = true;
-public visibleIMAGE_SELECT_BA2 = false;
 public visibleSCALE_IMAGE2 = true;
+public visibleIMAGE_NAME2 = true;
 public visibleIMPORT_BA2 = true;
+public visibleIMAGE_SELECT_BA2 = false;
 
 public disableBUTTON_APPEARANCE_ID = false;
 public disableSHAPE_ID = false;
 public disableSAME_AS_UP_APPEARANCE = false;
 public disableSHOW_DISABLED_STATE = false;
+public disableBUTTON_APPEARANCE = false;
 public disableBACK_STYLE = false;
 public disableFORE_COLOR = false;
 public disablePATTERN_STYLE = false;
-public disableBACK_COLOR = false;
 public disablePATTERN_COLOR = false;
+public disableBACK_COLOR = false;
 public disableEXPRESSION = false;
 public disableTAG_BUT = false;
 public disableEXPRESSION_BUT = false;
@@ -214,23 +221,23 @@ public disableFONT_BOLD = false;
 public disableFONT_ITALIC = false;
 public disableFONT_UNDERLINE = false;
 public disableIMAGE_TYPE = false;
-public disableIMAGE_NAME = false;
 public disableSCALE_IMAGE = false;
+public disableIMAGE_NAME = false;
 public disableIMPORT_BA = false;
 public disableIMAGE_SELECT_BA = false;
 public disableBUTTON_STATE = false;
 public disableDISABLED_SETTINGS = false;
-public disableIMAGE_NAME2 = false;
-public disableIMAGE_SELECT_BA2 = false;
 public disableSCALE_IMAGE2 = false;
+public disableIMAGE_NAME2 = false;
 public disableIMPORT_BA2 = false;
+public disableIMAGE_SELECT_BA2 = false;
 
 public variableTAG_BUT;
 public variableEXPRESSION_BUT;
 public variableIMPORT_BA;
 public variableIMAGE_SELECT_BA;
-public variableIMAGE_SELECT_BA2;
 public variableIMPORT_BA2;
+public variableIMAGE_SELECT_BA2;
 
   
   //@Input()  
@@ -239,8 +246,10 @@ public variableIMPORT_BA2;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -312,8 +321,30 @@ public variableIMPORT_BA2;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -557,6 +588,17 @@ public variableIMPORT_BA2;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -691,6 +733,8 @@ return rec;
 
 onChanges(): void {
 this.form.get('BUTTON_APPEARANCE_ID').valueChanges.subscribe(val => {
+});
+this.form.get('BUTTON_APPEARANCE').valueChanges.subscribe(val => {
 });
 this.form.get('EXPRESSION').valueChanges.subscribe(val => {
 });
@@ -827,7 +871,8 @@ public printScreen(){
             this.visibleSHOW_DISABLED_STATE = false;
             this.visibleEXPRESSION = false;
             this.visibleTAG_BUT = false;
-            this.visibleEXPRESSION_BUT = true;
+            //this.visibleEXPRESSION_BUT = true;
+            this.visibleEXPRESSION_BUT = false;
             break;
         case 'DOWN':
             this.FormStepsArr[4].visible =false;
@@ -835,7 +880,7 @@ public printScreen(){
             this.visibleSHOW_DISABLED_STATE = false;
              this.visibleEXPRESSION = false;
              this.visibleTAG_BUT = false;
-            this.visibleEXPRESSION_BUT = true;
+            this.visibleEXPRESSION_BUT = false;
             break;
         case 'DISABLED':
             this.FormStepsArr[2].visible =false;
@@ -856,9 +901,9 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
     
   }
@@ -902,7 +947,9 @@ public printScreen(){
    
   }
   async  PRE_QUERY (formGroup){
-    
+    console.log ("this.appMode:", this.appMode, this.masterKeyArr, this.masterKeyNameArr)
+    this.masterKeyArr[2] = this.appMode ;
+    this.masterKeyNameArr[2] = 'BUTTON_APPEARANCE'
    
   }
   async  POST_QUERY(formGroup){
@@ -1000,6 +1047,26 @@ async WHEN_VALIDATE_ITEM_SHOW_DISABLED_STATE(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_BUTTON_APPEARANCE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BUTTON_APPEARANCE'] != "undefined" ) 
+      this.form.controls['BUTTON_APPEARANCE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BUTTON_APPEARANCE'] != "undefined" ) 
+     this.form.get('BUTTON_APPEARANCE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BUTTON_APPEARANCE(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_BACK_STYLE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1060,26 +1127,6 @@ async WHEN_VALIDATE_ITEM_PATTERN_STYLE(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_BACK_COLOR(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BACK_COLOR'] != "undefined" ) 
-      this.form.controls['BACK_COLOR'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['BACK_COLOR'] != "undefined" ) 
-     this.form.get('BACK_COLOR').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BACK_COLOR(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_PATTERN_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1097,6 +1144,26 @@ async WHEN_VALIDATE_ITEM_PATTERN_COLOR(value) {
  }
 
  async ON_CLICK_PATTERN_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BACK_COLOR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BACK_COLOR'] != "undefined" ) 
+      this.form.controls['BACK_COLOR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BACK_COLOR'] != "undefined" ) 
+     this.form.get('BACK_COLOR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BACK_COLOR(event){
 
 }
 
@@ -1320,26 +1387,6 @@ async WHEN_VALIDATE_ITEM_IMAGE_TYPE(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_IMAGE_NAME(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['IMAGE_NAME'] != "undefined" ) 
-      this.form.controls['IMAGE_NAME'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['IMAGE_NAME'] != "undefined" ) 
-     this.form.get('IMAGE_NAME').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_IMAGE_NAME(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_SCALE_IMAGE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1357,6 +1404,26 @@ async WHEN_VALIDATE_ITEM_SCALE_IMAGE(value) {
  }
 
  async ON_CLICK_SCALE_IMAGE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_IMAGE_NAME(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['IMAGE_NAME'] != "undefined" ) 
+      this.form.controls['IMAGE_NAME'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['IMAGE_NAME'] != "undefined" ) 
+     this.form.get('IMAGE_NAME').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_IMAGE_NAME(event){
 
 }
 
@@ -1440,46 +1507,6 @@ async WHEN_VALIDATE_ITEM_DISABLED_SETTINGS(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_IMAGE_NAME2(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['IMAGE_NAME2'] != "undefined" ) 
-      this.form.controls['IMAGE_NAME2'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['IMAGE_NAME2'] != "undefined" ) 
-     this.form.get('IMAGE_NAME2').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_IMAGE_NAME2(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_IMAGE_SELECT_BA2(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['IMAGE_SELECT_BA2'] != "undefined" ) 
-      this.form.controls['IMAGE_SELECT_BA2'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['IMAGE_SELECT_BA2'] != "undefined" ) 
-     this.form.get('IMAGE_SELECT_BA2').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_IMAGE_SELECT_BA2(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_SCALE_IMAGE2(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1500,6 +1527,26 @@ async WHEN_VALIDATE_ITEM_SCALE_IMAGE2(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_IMAGE_NAME2(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['IMAGE_NAME2'] != "undefined" ) 
+      this.form.controls['IMAGE_NAME2'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['IMAGE_NAME2'] != "undefined" ) 
+     this.form.get('IMAGE_NAME2').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_IMAGE_NAME2(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1517,6 +1564,26 @@ async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
  }
 
  async ON_CLICK_IMPORT_BA2(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_IMAGE_SELECT_BA2(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['IMAGE_SELECT_BA2'] != "undefined" ) 
+      this.form.controls['IMAGE_SELECT_BA2'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['IMAGE_SELECT_BA2'] != "undefined" ) 
+     this.form.get('IMAGE_SELECT_BA2').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_IMAGE_SELECT_BA2(event){
 
 }
  
@@ -1553,6 +1620,15 @@ async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onChange_BUTTON_APPEARANCE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_BUTTON_APPEARANCE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onValueChange_BACK_STYLE(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_BACK_STYLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
@@ -1571,15 +1647,15 @@ async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_BACK_COLOR(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BACK_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_PATTERN_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_PATTERN_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_BACK_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_BACK_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
@@ -1652,12 +1728,6 @@ async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_IMAGE_NAME(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_IMAGE_NAME(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_SCALE_IMAGE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1667,6 +1737,12 @@ async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onValueChange_IMAGE_NAME(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_IMAGE_NAME(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onValueChange_IMPORT_BA(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_IMPORT_BA(value); if ( this.FORM_TRIGGER_FAILURE) return; 
@@ -1697,18 +1773,6 @@ async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_IMAGE_NAME2(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_IMAGE_NAME2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
- async onValueChange_IMAGE_SELECT_BA2(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_IMAGE_SELECT_BA2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_SCALE_IMAGE2(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1718,9 +1782,21 @@ async WHEN_VALIDATE_ITEM_IMPORT_BA2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onValueChange_IMAGE_NAME2(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_IMAGE_NAME2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onValueChange_IMPORT_BA2(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_IMPORT_BA2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_IMAGE_SELECT_BA2(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_IMAGE_SELECT_BA2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }

@@ -41,11 +41,10 @@
     <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
     <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
     <fieldset class="form-fieldset"  class="k-form-fieldset" >
-    
-         <legend class="divTitle">{{FormStepsArr.length > 0   ? FormStepsArr[1].CODETEXT_LANG 
-			:  this.starServices.getNLS([],"SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.component_title","Push Button General") }}
-			 </legend>
-			 <div class="form-div">
+
+         <legend *ngIf="FormStepsArr[1].visible" class="divTitle">{{FormStepsArr.length > 0 ?
+          FormStepsArr[1].CODETEXT_LANG:this.starServices.getNLS([],"SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.component_title","Push Button General") }}</legend>
+			 <div *ngIf="FormStepsArr[1].visible" class="form-div">
 
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
@@ -56,7 +55,7 @@
  kendoTextBox #BUTTON_PUSH_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isBUTTON_PUSH_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BUTTON_PUSH_GENERAL_ID_Hint','Please enter Button Push General Id.')"
 		(click)="ON_CLICK_BUTTON_PUSH_GENERAL_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BUTTON_PUSH_GENERAL_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_STYLE >
@@ -65,7 +64,7 @@
 		<kendo-combobox  #BORDER_STYLE class="form-field-combobox"  [formControlName]="'BORDER_STYLE'"
 		[data]="lkpArrBORDER_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_STYLE_Hint','Please enter Border Style.')"		(click)="ON_CLICK_BORDER_STYLE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BORDER_STYLE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -84,7 +83,7 @@
 		<input   formControlName="BORDER_WIDTH"
  kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
@@ -95,7 +94,7 @@
 
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -116,8 +115,11 @@
 		<label *ngIf="(labelBORDER_USES_BACK_COLORTop || isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BORDER_USES_BACK_COLOR"
   #BORDER_USES_BACK_COLOR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"		(click)="ON_CLICK_BORDER_USES_BACK_COLOR($event)"
-     adaptiveMode="auto" 
-	 name="BORDER_USES_BACK_COLOR"  ToggleValue  [true]= "1" [false]= "0" 
+ (change)="onChange_BORDER_USES_BACK_COLOR($event)"      adaptiveMode="auto" 
+	 name="BORDER_USES_BACK_COLOR"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -128,7 +130,7 @@
   #HIGHLIGHT_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_HIGHLIGHT_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_HIGHLIGHT_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_HIGHLIGHT_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.HIGHLIGHT_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -144,7 +146,7 @@
   #BACK_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_BACK_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BACK_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BACK_COLOR($event)"
 		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -157,7 +159,7 @@
   #BORDER_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_BORDER_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BORDER_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BORDER_COLOR($event)"
 		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BORDER_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -170,7 +172,7 @@
   #PATTERN_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_PATTERN_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_PATTERN_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_PATTERN_COLOR($event)"
 		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.PATTERN_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -181,8 +183,11 @@
 		<label *ngIf="(labelBLINKTop || isPhonePortrait) && labelBLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK','Blink')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BLINK"
   #BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK_Hint','Please enter Blink.')"		(click)="ON_CLICK_BLINK($event)"
-     adaptiveMode="auto" 
-	 name="BLINK"  ToggleValue  [true]= "1" [false]= "0" 
+ (change)="onChange_BLINK($event)"      adaptiveMode="auto" 
+	 name="BLINK"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK_Hint','Please enter Blink.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -195,7 +200,7 @@
 		<kendo-combobox  #BACK_STYLE class="form-field-combobox"  [formControlName]="'BACK_STYLE'"
 		[data]="lkpArrBACK_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BACK_STYLE_Hint','Please enter Back Style.')"		(click)="ON_CLICK_BACK_STYLE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BACK_STYLE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -214,7 +219,7 @@
 		<kendo-combobox  #SHAPE_TYPE class="form-field-combobox"  [formControlName]="'SHAPE_TYPE'"
 		[data]="lkpArrSHAPE_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.SHAPE_TYPE_Hint','Please enter Shape Type.')"		(click)="ON_CLICK_SHAPE_TYPE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_TYPE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -239,7 +244,7 @@
 		<kendo-combobox  #NAVIGATION_ACTION class="form-field-combobox"  [formControlName]="'NAVIGATION_ACTION'"
 		[data]="lkpArrNAVIGATION_ACTION" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.NAVIGATION_ACTION_Hint','Please enter Navigation Action.')"		(click)="ON_CLICK_NAVIGATION_ACTION($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_NAVIGATION_ACTION($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -255,14 +260,14 @@
 	<div class="form-field"  [ngClass]="(labelBUTTON_ACTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBUTTON_ACTION >
 		<kendo-label *ngIf="(!labelBUTTON_ACTIONTop && !isPhonePortrait) && labelBUTTON_ACTIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BUTTON_ACTION','Button Action')"></kendo-label>
 		<label *ngIf="(labelBUTTON_ACTIONTop || isPhonePortrait) && labelBUTTON_ACTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BUTTON_ACTION','Button Action')}}</label>
-		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_BUTTON_ACTION($event)"
-     adaptiveMode="auto" 
+		<ul class="k-radio-list" 		(click)="ON_CLICK_BUTTON_ACTION($event)"
+ (change)="onChange_BUTTON_ACTION($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrBUTTON_ACTION">
+			<li class="k-radio-item" *ngFor="let item of lkpArrBUTTON_ACTION"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'BUTTON_ACTION'"
 					#BUTTON_ACTION ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="BUTTON_ACTION " 
+				<kendo-label  [for]="BUTTON_ACTION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
@@ -274,7 +279,7 @@
 		<kendo-combobox  #HOLD_TIME class="form-field-combobox"  [formControlName]="'HOLD_TIME'"
 		[data]="lkpArrHOLD_TIME" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.HOLD_TIME_Hint','Please enter Hold Time.')"		(click)="ON_CLICK_HOLD_TIME($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_HOLD_TIME($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -295,8 +300,11 @@
 		<label *ngIf="(labelUSE_VARIABLE_LOWER_UPPER_LIMITTop || isPhonePortrait) && labelUSE_VARIABLE_LOWER_UPPER_LIMITVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_LOWER_UPPER_LIMIT','Use Variable Lower Upper Limit')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="USE_VARIABLE_LOWER_UPPER_LIMIT"
   #USE_VARIABLE_LOWER_UPPER_LIMIT kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_LOWER_UPPER_LIMIT_Hint','Please enter Use Variable Lower Upper Limit.')"		(click)="ON_CLICK_USE_VARIABLE_LOWER_UPPER_LIMIT($event)"
-     adaptiveMode="auto" 
-	 name="USE_VARIABLE_LOWER_UPPER_LIMIT"  ToggleValue  [true]= "1" [false]= "0" 
+ (change)="onChange_USE_VARIABLE_LOWER_UPPER_LIMIT($event)"      adaptiveMode="auto" 
+	 name="USE_VARIABLE_LOWER_UPPER_LIMIT"  ToggleValue  [true]= "'Y'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_LOWER_UPPER_LIMIT_Hint','Please enter Use Variable Lower Upper Limit.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -305,8 +313,11 @@
 		<label *ngIf="(labelUSE_VARIABLE_RAMP_VALUETop || isPhonePortrait) && labelUSE_VARIABLE_RAMP_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_RAMP_VALUE','Use Variable Ramp Value')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="USE_VARIABLE_RAMP_VALUE"
   #USE_VARIABLE_RAMP_VALUE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_RAMP_VALUE_Hint','Please enter Use Variable Ramp Value.')"		(click)="ON_CLICK_USE_VARIABLE_RAMP_VALUE($event)"
-     adaptiveMode="auto" 
-	 name="USE_VARIABLE_RAMP_VALUE"  ToggleValue  [true]= "1" [false]= "0" 
+ (change)="onChange_USE_VARIABLE_RAMP_VALUE($event)"      adaptiveMode="auto" 
+	 name="USE_VARIABLE_RAMP_VALUE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_RAMP_VALUE_Hint','Please enter Use Variable Ramp Value.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -317,13 +328,13 @@
 		<kendo-label *ngIf="(!labelRAMP_UP_DOWNTop && !isPhonePortrait) && labelRAMP_UP_DOWNVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.RAMP_UP_DOWN','Ramp Up Down')"></kendo-label>
 		<label *ngIf="(labelRAMP_UP_DOWNTop || isPhonePortrait) && labelRAMP_UP_DOWNVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.RAMP_UP_DOWN','Ramp Up Down')}}</label>
 		<ul class="k-radio-list" 		(click)="ON_CLICK_RAMP_UP_DOWN($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_RAMP_UP_DOWN($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrRAMP_UP_DOWN">
+			<li class="k-radio-item" *ngFor="let item of lkpArrRAMP_UP_DOWN"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'RAMP_UP_DOWN'"
 					#RAMP_UP_DOWN ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="RAMP_UP_DOWN " 
+				<kendo-label  [for]="RAMP_UP_DOWN " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
@@ -335,7 +346,7 @@
 		<input   formControlName="UPPER_LIMIT"
  kendoTextBox #UPPER_LIMIT  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.UPPER_LIMIT_Hint','Please enter Upper Limit.')"
 		(click)="ON_CLICK_UPPER_LIMIT($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_UPPER_LIMIT($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelRAMP_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleRAMP_VALUE >
@@ -344,7 +355,7 @@
 		<input   formControlName="RAMP_VALUE"
  kendoTextBox #RAMP_VALUE  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.RAMP_VALUE_Hint','Please enter Ramp Value.')"
 		(click)="ON_CLICK_RAMP_VALUE($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_RAMP_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -356,7 +367,7 @@
 		<input   formControlName="BUTTON_VALUE"
  kendoTextBox #BUTTON_VALUE  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BUTTON_VALUE_Hint','Please enter Button Value.')"
 		(click)="ON_CLICK_BUTTON_VALUE($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BUTTON_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLATCH_RESET_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLATCH_RESET_TYPE >
@@ -365,7 +376,7 @@
 		<kendo-combobox  #LATCH_RESET_TYPE class="form-field-combobox"  [formControlName]="'LATCH_RESET_TYPE'"
 		[data]="lkpArrLATCH_RESET_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.LATCH_RESET_TYPE_Hint','Please enter Latch Reset Type.')"		(click)="ON_CLICK_LATCH_RESET_TYPE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_LATCH_RESET_TYPE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -390,7 +401,7 @@
 		<kendo-combobox  #NUMBER_OF_STATES class="form-field-combobox"  [formControlName]="'NUMBER_OF_STATES'"
 		[data]="lkpArrNUMBER_OF_STATES" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.NUMBER_OF_STATES_Hint','Please enter Number Of States.')"		(click)="ON_CLICK_NUMBER_OF_STATES($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_NUMBER_OF_STATES($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -409,7 +420,7 @@
 		<kendo-combobox  #NEXT_STATE_BASED_ON class="form-field-combobox"  [formControlName]="'NEXT_STATE_BASED_ON'"
 		[data]="lkpArrNEXT_STATE_BASED_ON" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.NEXT_STATE_BASED_ON_Hint','Please enter Next State Based On.')"		(click)="ON_CLICK_NEXT_STATE_BASED_ON($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_NEXT_STATE_BASED_ON($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -431,7 +442,7 @@
 		<input   formControlName="LOWER_LIMIT"
  kendoTextBox #LOWER_LIMIT  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.LOWER_LIMIT_Hint','Please enter Lower Limit.')"
 		(click)="ON_CLICK_LOWER_LIMIT($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LOWER_LIMIT($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -446,7 +457,7 @@
 		<input   formControlName="HORIZONTAL_MARGIN"
  kendoTextBox #HORIZONTAL_MARGIN  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.HORIZONTAL_MARGIN_Hint','Please enter Horizontal Margin.')"
 		(click)="ON_CLICK_HORIZONTAL_MARGIN($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_HORIZONTAL_MARGIN($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelVERTICAL_MARGINTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleVERTICAL_MARGIN >
@@ -455,7 +466,7 @@
 		<input   formControlName="VERTICAL_MARGIN"
  kendoTextBox #VERTICAL_MARGIN  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.VERTICAL_MARGIN_Hint','Please enter Vertical Margin.')"
 		(click)="ON_CLICK_VERTICAL_MARGIN($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_VERTICAL_MARGIN($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -469,7 +480,11 @@
 		<label *ngIf="(labelAUDIOTop || isPhonePortrait) && labelAUDIOVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.AUDIO','Audio')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="AUDIO"
   #AUDIO kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.AUDIO_Hint','Please enter Audio.')"		(click)="ON_CLICK_AUDIO($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_AUDIO($event)"      adaptiveMode="auto" 
+	 name="AUDIO"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.AUDIO_Hint','Please enter Audio.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 </div>
