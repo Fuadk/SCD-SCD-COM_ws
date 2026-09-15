@@ -106,7 +106,7 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CONNECTION_TAG_EXPRESSION"
  *ngIf=visibleCONNECTION_TAG_EXPRESSION  [editable]=" !(disabledColumns.indexOf('CONNECTION_TAG_EXPRESSION') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('CONNECTION_TAG_EXPRESSION') > -1" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_TAG_EXPRESSION','Tag/Expression')}}"  [width]="100">
+ [hidden]="hiddenColumns.indexOf('CONNECTION_TAG_EXPRESSION') > -1" 		 title="{{starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_TAG_EXPRESSION','Tag/Expression')}}"  [width]="300">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CONNECTION_TAG_EXPRESSION}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_CONNECTION_TAG_EXPRESSION()"      [formControl]="formGroup.get('CONNECTION_TAG_EXPRESSION')" [placeholder]="starServices.getNLS([],'SCD_SC_SHAPE_CONNECTIONS.scdshapeConnectionScdScShapeConnections.CONNECTION_TAG_EXPRESSION_Hint','Please enter Connection Tag Expression.')" />

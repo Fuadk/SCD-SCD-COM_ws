@@ -55,7 +55,7 @@
  kendoTextBox #SYMBOL_STATE_ID 
 		[readonly]="primarKeyReadOnlyArr.isSYMBOL_STATE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SYMBOL_STATE_ID_Hint','Please enter Symbol State Id.')"
 		(click)="ON_CLICK_SYMBOL_STATE_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SYMBOL_STATE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
@@ -66,7 +66,7 @@
 
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -88,7 +88,7 @@
 		<input   formControlName="STATE_ID"
  kendoTextBox #STATE_ID  [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_ID_Hint','Please enter State Id.')"
 		(click)="ON_CLICK_STATE_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_NAME >
@@ -97,7 +97,7 @@
 		<input   formControlName="STATE_NAME"
  kendoTextBox #STATE_NAME  [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.STATE_NAME_Hint','Please enter State Name.')"
 		(click)="ON_CLICK_STATE_NAME($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -109,7 +109,7 @@
 		<input   formControlName="VALUE"
  kendoTextBox #VALUE  [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.VALUE_Hint','Please enter Value.')"
 		(click)="ON_CLICK_VALUE($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
@@ -119,7 +119,7 @@
   #BORDER_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_BORDER_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BORDER_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BORDER_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BORDER_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -138,7 +138,7 @@
   #IMAGE_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_IMAGE_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_IMAGE_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_IMAGE_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.IMAGE_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -150,7 +150,7 @@
 		<kendo-combobox  #BACK_STYLE class="form-field-combobox"  [formControlName]="'BACK_STYLE'"
 		[data]="lkpArrBACK_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.BACK_STYLE_Hint','Please enter Back Style.')"		(click)="ON_CLICK_BACK_STYLE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BACK_STYLE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -173,7 +173,7 @@
   #IMAGE_BACK_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_IMAGE_BACK_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_IMAGE_BACK_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_IMAGE_BACK_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.IMAGE_BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -187,7 +187,10 @@
 		<label *ngIf="(labelIMAGE_BLINKTop || isPhonePortrait) && labelIMAGE_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BLINK','Image Blink')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="IMAGE_BLINK"
   #IMAGE_BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BLINK_Hint','Please enter Image Blink.')"		(click)="ON_CLICK_IMAGE_BLINK($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_IMAGE_BLINK($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SSD_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSsdSymbolStateDefinition.IMAGE_BLINK_Hint','Please enter Image Blink.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 </div>

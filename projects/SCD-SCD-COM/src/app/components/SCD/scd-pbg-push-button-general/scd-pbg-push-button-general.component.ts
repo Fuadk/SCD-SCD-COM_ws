@@ -649,7 +649,7 @@ this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM
 			"lkpArrName":"lkpArrRAMP_UP_DOWN"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"LATCH_RESET_TYPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrLATCH_RESET_TYPE"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"NUMBER_OF_STATES\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"NUMBER_OF_STATES\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG+0",
 			"lkpArrName":"lkpArrNUMBER_OF_STATES"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"NEXT_STATE_BASED_ON\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrNEXT_STATE_BASED_ON"}];
@@ -865,98 +865,101 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    
+    if (ComponentConfig.masterParams != null) {
+  console.log("WHEN_NOTIFY:ComponentConfig.masterParams:",
+    ComponentConfig.masterParams.data)
+  this.butMode = ComponentConfig.masterParams.data.SHAPE_TYPE.toUpperCase();
+  console.log("this.butMode:", this.butMode)
+  switch (this.butMode) {
+    case 'MULTISTATE':
+      this.FormStepsArr[2].visible = false;
+      this.visibleBACK_COLOR = false;
+      this.visibleBORDER_COLOR = false;
+      this.visiblePATTERN_COLOR = false;
+      this.visibleBLINK = false;
+      this.visibleLOWER_LIMIT = false;
+      break;
+    case 'RAMP':
+      this.visibleNAVIGATION_ACTION = false;
+      this.visibleBUTTON_ACTION = false;
+      this.visibleHOLD_TIME = false;
+      this.visibleBUTTON_VALUE = false;
+      this.visibleLATCH_RESET_TYPE = false;
+      this.visibleLOWER_LIMIT = false;
+      break;
+    case "INTERLOCKED":
+      this.visibleBACK_COLOR = false;
+      this.visibleBORDER_COLOR = false;
+      this.visiblePATTERN_COLOR = false;
+      this.visibleBLINK = false;
+      this.visibleLOWER_LIMIT = false;
+
+      this.visibleNAVIGATION_ACTION = false;
+      this.visibleBUTTON_ACTION = false;
+      this.visibleHOLD_TIME = false;
+      this.visibleUSE_VARIABLE_LOWER_UPPER_LIMIT = false;
+      this.visibleUSE_VARIABLE_RAMP_VALUE = false;
+      this.visibleRAMP_UP_DOWN = false;
+      this.visibleUPPER_LIMIT = false;
+      this.visibleRAMP_VALUE = false;
+      this.visibleLATCH_RESET_TYPE = false;
+      this.FormStepsArr[3].visible = false;
+      break;
+    case "LATCHED":
+      this.visibleBACK_COLOR = false;
+      this.visibleBORDER_COLOR = false;
+      this.visiblePATTERN_COLOR = false;
+      this.visibleBLINK = false;
+      this.FormStepsArr[3].visible = false;
+
+      this.visibleNAVIGATION_ACTION = false;
+      this.visibleBUTTON_ACTION = false;
+      this.visibleHOLD_TIME = false;
+      this.visibleBUTTON_VALUE = false;
+      this.visibleLOWER_LIMIT = false;
+      this.visibleUSE_VARIABLE_LOWER_UPPER_LIMIT = false;
+      this.visibleUSE_VARIABLE_RAMP_VALUE = false;
+      this.visibleRAMP_UP_DOWN = false;
+      this.visibleUPPER_LIMIT = false;
+      this.visibleRAMP_VALUE = false;
+      break;
+
+    case "MAINTAINED":
+      this.visibleBACK_COLOR = false;
+      this.visibleBORDER_COLOR = false;
+      this.visiblePATTERN_COLOR = false;
+      this.visibleBLINK = false;
+      this.FormStepsArr[2].visible = false;
+      this.visibleLOWER_LIMIT = false;
+      this.visibleNUMBER_OF_STATES = false;
+      break;
+    case "MOMENTARY":
+      this.visibleBACK_COLOR = false;
+      this.visibleBORDER_COLOR = false;
+      this.visiblePATTERN_COLOR = false;
+      this.visibleBLINK = false;
+
+      this.visibleNAVIGATION_ACTION = false;
+      this.visibleUSE_VARIABLE_LOWER_UPPER_LIMIT = false;
+      this.visibleUSE_VARIABLE_RAMP_VALUE = false;
+      this.visibleRAMP_UP_DOWN = false;
+      this.visibleUPPER_LIMIT = false;
+      this.visibleRAMP_VALUE = false;
+      this.visibleBUTTON_VALUE = false;
+      this.visibleLATCH_RESET_TYPE = false;
+
+      this.FormStepsArr[3].visible = false;
+      break;
+
+    default:
+      break;
   }
-  async WHEN_NEW_FORM_INSTANCE(){
-    // if (!this.isChild) {
-//   this.executeQuery(this.form.value);
-// }
 
-switch (this.butMode) {
-  case 'MULTISTAT':
-    this.FormStepsArr[2].visible = false;
-    this.visibleBACK_COLOR = false;
-    this.visibleBORDER_COLOR = false;
-    this.visiblePATTERN_COLOR = false;
-    this.visibleBLINK = false;
-    this.visibleLOWER_LIMIT = false;
-    break;
-  case 'RAMP':
-    this.visibleNAVIGATION_ACTION = false;
-    this.visibleBUTTON_ACTION = false;
-    this.visibleHOLD_TIME = false;
-    this.visibleBUTTON_VALUE = false;
-    this.visibleLATCH_RESET_TYPE = false;
-    this.visibleLOWER_LIMIT = false;
-    break;
-  case "INTERLOCK":
-    this.visibleBACK_COLOR = false;
-    this.visibleBORDER_COLOR = false;
-    this.visiblePATTERN_COLOR = false;
-    this.visibleBLINK = false;
-    this.visibleLOWER_LIMIT = false;
-
-    this.visibleNAVIGATION_ACTION = false;
-    this.visibleBUTTON_ACTION = false;
-    this.visibleHOLD_TIME = false;
-    this.visibleUSE_VARIABLE_LOWER_UPPER_LIMIT = false;
-    this.visibleUSE_VARIABLE_RAMP_VALUE = false;
-    this.visibleRAMP_UP_DOWN = false;
-    this.visibleUPPER_LIMIT = false;
-    this.visibleRAMP_VALUE = false;
-    this.visibleLATCH_RESET_TYPE = false;
-    this.FormStepsArr[3].visible = false;
-    break;
-  case "LATCHED":
-    this.visibleBACK_COLOR = false;
-    this.visibleBORDER_COLOR = false;
-    this.visiblePATTERN_COLOR = false;
-    this.visibleBLINK = false;
-    this.FormStepsArr[3].visible = false;
-
-    this.visibleNAVIGATION_ACTION = false;
-    this.visibleBUTTON_ACTION = false;
-    this.visibleHOLD_TIME = false;
-    this.visibleBUTTON_VALUE = false;
-    this.visibleLOWER_LIMIT = false;
-    this.visibleUSE_VARIABLE_LOWER_UPPER_LIMIT = false;
-    this.visibleUSE_VARIABLE_RAMP_VALUE = false;
-    this.visibleRAMP_UP_DOWN = false;
-    this.visibleUPPER_LIMIT = false;
-    this.visibleRAMP_VALUE = false;
-    break;
-
-  case "MAINTAINED":
-    this.visibleBACK_COLOR = false;
-    this.visibleBORDER_COLOR = false;
-    this.visiblePATTERN_COLOR = false;
-    this.visibleBLINK = false;
-    this.FormStepsArr[2].visible = false;
-    this.visibleLOWER_LIMIT = false;
-    this.visibleNUMBER_OF_STATES = false;
-    break;
-  case "MOMENTARY":
-    this.visibleBACK_COLOR = false;
-    this.visibleBORDER_COLOR = false;
-    this.visiblePATTERN_COLOR = false;
-    this.visibleBLINK = false;
-
-    this.visibleNAVIGATION_ACTION = false;
-    this.visibleUSE_VARIABLE_LOWER_UPPER_LIMIT = false;
-    this.visibleUSE_VARIABLE_RAMP_VALUE = false;
-    this.visibleRAMP_UP_DOWN = false;
-    this.visibleUPPER_LIMIT = false;
-    this.visibleRAMP_VALUE = false;
-    this.visibleBUTTON_VALUE = false;
-    this.visibleLATCH_RESET_TYPE = false;
-
-    this.FormStepsArr[3].visible = false;
-    break;
-
-  default:
-    break;
 }
 
+  }
+  async WHEN_NEW_FORM_INSTANCE(){
+    
     
   }
   async WHEN_CREATE_RECORD(){
@@ -1790,7 +1793,7 @@ async WHEN_VALIDATE_ITEM_AUDIO(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  }
-public butMode = "MOMENTARY";
+public butMode = "";
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

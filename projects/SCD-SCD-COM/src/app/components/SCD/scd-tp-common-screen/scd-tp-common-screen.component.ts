@@ -737,43 +737,22 @@ public printScreen(){
     if (ComponentConfig.masterParams != null) {
     console.log("WHEN_NOTIFY:ComponentConfig.masterParams:", ComponentConfig.masterParams.data.action)
     this.shapeType = ComponentConfig.masterParams.data.SHAPE_TYPE;
-    if (ComponentConfig.masterParams.data.action == "new") {
-        let TableDefauls = await this.starlib1.setShapeDefaults(this.insertCMD);
 
-        const keys = Object.keys(TableDefauls);
-        if (keys.length > 0) {
-            setTimeout(() => {
-                this.isNew = true;
-                this.form.markAsDirty();
-                TableDefauls['DISPLAY_ID'] = ComponentConfig.masterParams.data.DISPLAY_ID;
-                TableDefauls['SHAPE_TYPE'] = ComponentConfig.masterParams.data.SHAPE_TYPE;
-                console.log("setShapeDefaults:TableDefauls:", TableDefauls)
-                this.form.patchValue(TableDefauls);
-                this.form.updateValueAndValidity();
+    if (ComponentConfig.masterParams.data.action == "open" && this.SHAPE_ID == null) {
 
-                console.log("setShapeDefaults:this.form:", this.form);
-
-                console.log("setShapeDefaults:this.form.value:", this.form.get('VISIBLE'), keys, keys.length, TableDefauls, this.form.value)
-            }, 300);
-        }
+        let masterParams = ComponentConfig.masterParams;
+        console.log("Text masterParams:", masterParams)
+        setTimeout(() => {
+            this.isSearch = true;
+            let form: any = {};
+            form.SHAPE_ID = masterParams.data.SHAPE_ID;
+            this.SHAPE_ID = masterParams.data.SHAPE_ID
+            console.log("User masterParams:", masterParams.data.DIAGRAM_ID, masterParams, form, this.form, "this.isSearch:", this.isSearch)
+            this.executeQuery(form);
+        }, 300);
 
     }
-    else {
-        if (ComponentConfig.masterParams.data.action == "open" && this.SHAPE_ID == null) {
 
-            let masterParams = ComponentConfig.masterParams;
-            console.log("Text masterParams:", masterParams)
-            setTimeout(() => {
-                this.isSearch = true;
-                let form: any = {};
-                form.SHAPE_ID = masterParams.data.SHAPE_ID;
-                this.SHAPE_ID = masterParams.data.SHAPE_ID
-                console.log("User masterParams:", masterParams.data.DIAGRAM_ID, masterParams, form, this.form, "this.isSearch:", this.isSearch)
-                this.executeQuery(form);
-            }, 300);
-
-        }
-    }
 }
   }
   async WHEN_NEW_FORM_INSTANCE(){

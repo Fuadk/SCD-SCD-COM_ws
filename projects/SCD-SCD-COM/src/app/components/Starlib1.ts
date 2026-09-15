@@ -617,12 +617,15 @@ gridUserSelectionChange(object, selectedData) {
   }
   object.sendToOrder(componentConfig);
 }
- async setShapeDefaults(insertCMD){
-  console.log("insertSCDShapeTables:insertCMD:", insertCMD)
+ async setShapeDefaults(insertCMD,shapeType ){
+  console.log("insertSCDShapeTables:insertCMD:", insertCMD, shapeType)
     let result ={};
-    insertCMD.split("_")
-    const shapeType = insertCMD.replace("INSERT_", "");
-    let whereClause = "SHAPE_TYPE ='" + shapeType.toUpperCase() + "'";
+    
+    const screenName = insertCMD.replace("INSERT_", "");
+    let whereClause = "SCREEN_NAME ='" + screenName.toUpperCase() + "'"
+    if (shapeType != null)  
+        whereClause = whereClause + " AND SHAPE_TYPE ='" + shapeType + "'" 
+    whereClause = whereClause + " order by REC_NUM ";
         let body = [
             {
                 "_QUERY": "GET_SCD_SHAPE_DEFAULTS_QUERY",

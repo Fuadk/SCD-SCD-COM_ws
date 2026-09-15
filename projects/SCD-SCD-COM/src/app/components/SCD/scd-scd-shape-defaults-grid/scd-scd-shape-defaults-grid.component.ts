@@ -20,6 +20,8 @@ import {   scdshapeDefaultsScdScdShapeDefaultsGrid , componentConfigDef } from '
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'SHAPE_DEFAULT_ID' : new FormControl(dataItem.SHAPE_DEFAULT_ID  , ) ,
+'SCREEN_NAME' : new FormControl(dataItem.SCREEN_NAME  , ) ,
+'REC_NUM' : new FormControl(dataItem.REC_NUM  , ) ,
 'SHAPE_TYPE' : new FormControl(dataItem.SHAPE_TYPE  , ) ,
 'FIELD_NAME' : new FormControl(dataItem.FIELD_NAME  , ) ,
 'FIELD_VALUE' : new FormControl(dataItem.FIELD_VALUE  , ) 
@@ -74,7 +76,7 @@ export class ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent implements OnI
 
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
-  public  gridHeight = "";
+  public  gridHeight = "800px";
 
   private masterKeyArr = [];
   private masterKeyNameArr = [];
@@ -89,7 +91,8 @@ export class ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent implements OnI
   public title =  this.starServices.getNLS([],"SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.component_title","SCD SHAPE DEFAULTS GRID");
   public PDFfileName = this.title + ".PDF";
   public ExcelfileName = this.title + ".xlsx";
-  public componentConfig
+  public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public compTitleMsg =  "SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid";
   public editableMode = false;
   
@@ -109,6 +112,8 @@ export class ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent implements OnI
   public masterParams:any;
 public isPhonePortrait = false;
 public visibleSHAPE_DEFAULT_ID = true;
+public visibleSCREEN_NAME = true;
+public visibleREC_NUM = true;
 public visibleSHAPE_TYPE = true;
 public visibleFIELD_NAME = true;
 public visibleFIELD_VALUE = true;
@@ -183,6 +188,7 @@ public compSelector = 'app-scd-scd-shape-defaults-grid';
     
     if (this.isDirty !== hasChanges) {
       this.isDirty = hasChanges;
+      this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.isDirty;
       
       console.log('Grid dirty state changed:', this.isDirty);
@@ -215,7 +221,7 @@ public compSelector = 'app-scd-scd-shape-defaults-grid';
   private emitComponentConfig(): void {
   if (this.componentConfig) {
     this.componentConfig.eventFrom = this.compSelector;
-    this.componentConfig.eventTo = ['any'];
+    //this.componentConfig.eventTo = ['any'];
     console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
     this.setComponentConfig_Output.emit(this.componentConfig);
   }
@@ -772,6 +778,46 @@ async WHEN_VALIDATE_ITEM_SHAPE_DEFAULT_ID(formGroup) {
 
 }
 
+async WHEN_VALIDATE_ITEM_SCREEN_NAME(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['SCREEN_NAME'] != "undefined" ) 
+      this.formGroup.controls['SCREEN_NAME'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['SCREEN_NAME'] != "undefined" ) 
+     this.formGroup.get('SCREEN_NAME').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SCREEN_NAME(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_REC_NUM(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['REC_NUM'] != "undefined" ) 
+      this.formGroup.controls['REC_NUM'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['REC_NUM'] != "undefined" ) 
+     this.formGroup.get('REC_NUM').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_REC_NUM(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_SHAPE_TYPE(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -834,6 +880,12 @@ async WHEN_VALIDATE_ITEM_FIELD_VALUE(formGroup) {
  
  async onBlur_SHAPE_DEFAULT_ID() { 
   await this.WHEN_VALIDATE_ITEM_SHAPE_DEFAULT_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_SCREEN_NAME() { 
+  await this.WHEN_VALIDATE_ITEM_SCREEN_NAME(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_REC_NUM() { 
+  await this.WHEN_VALIDATE_ITEM_REC_NUM(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SHAPE_TYPE() { 
   await this.WHEN_VALIDATE_ITEM_SHAPE_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  

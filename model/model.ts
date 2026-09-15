@@ -32,8 +32,11 @@
 	public SHAPE_TYPE = '';
 	public FIELD_NAME = '';
 	public FIELD_VALUE = '';
+	public REC_NUM = '';
+	public SCREEN_NAME = '';
 
 }
+
 
 
  export class scddisplayScdScdDisplayDiagram{

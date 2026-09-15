@@ -144,7 +144,7 @@ import { ScdJavascriptCodeScdJcsJavascriptCodeFormComponent } from '../component
 import { ScdJavascriptCodeScreenComponent } from '../components/SCD/scd-javascript-code-screen/scd-javascript-code-screen.component';
 import { ScdShapeScdCsCommonScreenFormdivsComponent } from '../components/SCD/scd-cs-common-screen/scd-cs-common-screen.component';
 import { ScdCommonScreenComponent } from '../components/SCD/scd-common-screen/scd-common-screen.component';
-import { ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent } from '../components/SCD/scd-ssd-shape-state-definition/scd-ssd-shape-state-definition.component';
+
 import { ScdShapeStatesDefComponent } from '../components/SCD/scd-shape-states-def/scd-shape-states-def.component';
 import { ScdTextGeneralScdTgTextGeneralFormComponent } from '../components/SCD/scd-tg-text-general/scd-tg-text-general.component';
 import { ScdTextGeneralComponent } from '../components/SCD/scd-text-general/scd-text-general.component';
@@ -303,6 +303,7 @@ import { ScdShapeScdTpCommonScreenFormComponent } from '../components/SCD/scd-tp
 import { ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent } from '../components/SCD/scd-gps-grid-properties/scd-gps-grid-properties.component';
 import { ScdGridPropertiesSettingsComponent } from '../components/SCD/scd-grid-properties-settings/scd-grid-properties-settings.component';
 
+import { ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent } from '../components/SCD/scd-ssd-shape-state-definition/scd-ssd-shape-state-definition.component';
 const scdRoutes: Routes = [
  
 
@@ -378,7 +379,7 @@ const scdRoutes: Routes = [
 		{ path: 'scd_javascript_code_screen', component: ScdJavascriptCodeScreenComponent },
 		{ path: 'scd_cs_common_screen', component: ScdShapeScdCsCommonScreenFormdivsComponent },
 		{ path: 'scd_common_screen', component: ScdCommonScreenComponent },
-		{ path: 'scd_ssd_shape_state_definition', component: ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent },
+
 		{ path: 'scd_shape_states_def', component: ScdShapeStatesDefComponent },
 		{ path: 'scd_tg_text_general', component: ScdTextGeneralScdTgTextGeneralFormComponent },
 		{ path: 'scd_text_general', component: ScdTextGeneralComponent },
@@ -528,6 +529,7 @@ const scdRoutes: Routes = [
 		{ path: 'scd_gps_grid_properties', component: ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent },
 		{ path: 'scd_grid_properties_settings', component: ScdGridPropertiesSettingsComponent },
 
+		{ path: 'scd_ssd_shape_state_definition', component: ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent },
 ];
 
 
@@ -601,7 +603,7 @@ const scdRoutes: Routes = [
 		ScdJavascriptCodeScreenComponent,
 		ScdShapeScdCsCommonScreenFormdivsComponent,
 		ScdCommonScreenComponent,
-		ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent,
+
 		ScdShapeStatesDefComponent,
 		ScdTextGeneralScdTgTextGeneralFormComponent,
 		ScdTextGeneralComponent,
@@ -756,6 +758,7 @@ const scdRoutes: Routes = [
 		ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent,
 		ScdGridPropertiesSettingsComponent,
 
+		ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent,
   ],
   
   imports: [

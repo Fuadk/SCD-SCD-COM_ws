@@ -143,6 +143,9 @@
   #SHOW_DIGIT_GROUPING kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.SHOW_DIGIT_GROUPING_Hint','Please enter Show Digit Grouping.')"		(click)="ON_CLICK_SHOW_DIGIT_GROUPING($event)"
  (change)="onChange_SHOW_DIGIT_GROUPING($event)"      adaptiveMode="auto" 
 	 name="SHOW_DIGIT_GROUPING"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SDG_SHAPE_DISPLAY_GENERAL.scdshapeDisplayGeneralScdSdgShapeDisplayGeneral.SHOW_DIGIT_GROUPING_Hint','Please enter Show Digit Grouping.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -159,7 +162,7 @@
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'DECIMAL_PLACES'"
 					#DECIMAL_PLACES ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="DECIMAL_PLACES " 
+				<kendo-label  [for]="DECIMAL_PLACES " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
@@ -199,7 +202,7 @@
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'JUSTIFICATION'"
 					#JUSTIFICATION ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="JUSTIFICATION " 
+				<kendo-label  [for]="JUSTIFICATION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
@@ -220,7 +223,7 @@
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'LEADING_CHARACTER'"
 					#LEADING_CHARACTER ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="LEADING_CHARACTER " 
+				<kendo-label  [for]="LEADING_CHARACTER " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>

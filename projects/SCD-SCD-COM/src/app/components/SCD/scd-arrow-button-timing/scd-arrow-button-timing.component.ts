@@ -1,41 +1,77 @@
-import { Component, OnInit,Output,Input, EventEmitter } from '@angular/core';
-import { componentConfigDef} from '@modeldir/model';
+import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
+import {  scdshapeScdTpCommonScreen  ,scdbuttonPushGeneralScdPbgPushButtonGeneral  ,scdalarmScdShapeStatesProperties  ,scdarrowButtonTimingScdAbtArrowButtonTiming  ,scdshapeConnectionScdScShapeConnections  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
+import { Router } from '@angular/router';
 import { StarNotifyService } from '../../../services/starnotification.service';
 import { TabAlignment } from '@progress/kendo-angular-layout';
 declare function getParamConfig():any;
+
 @Component({
+
   selector: 'app-scd-arrow-button-timing',
   templateUrl: './scd-arrow-button-timing.component.html',
   styleUrls: ['./scd-arrow-button-timing.component.scss'],
   standalone: false
 })
 export class ScdArrowButtonTimingComponent implements OnInit {
-  public componentConfig: componentConfigDef;
-  public paramConfig;  
+  @Output() saveTriggerOutput: EventEmitter<any> = new EventEmitter();
+  @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
+   this.router = router;
+  this.title =  this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.component_title","");
+    this.componentConfig = new componentConfigDef();
+    this.paramConfig = getParamConfig();
+  }
+  public showToolBar = false;
+  public paramConfig; 
   public title = '';
   public isPhonePortrait = false;
   public customerFacing = false;
   public isSearchScreen = false;
-  public routineName = "ScdArrowButtonTiming";
+  public routineName = "scd_arrow_button_timing";
   public alignment: TabAlignment = 'start';
+  public selectedTab = 2;
+  public masterParams;
   public gap: any = {
-  	rows: 2,
-  	columns: 2,
+  	rows: 1,
+  	columns: 1,
     };
-  constructor(public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices) {
-    this.title =  this.starServices.getNLS([],"SCD_arrow_button_timing.SCD_arrow_button_timing.component_title","Arrow Button Timing");
-    this.paramConfig = getParamConfig();
-    this.componentConfig = new componentConfigDef(); 
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
-}
-public ngAfterViewInit() {
-  this.starServices.setRTL();
- }
- @Input() public set detail_Input(form: any) { 
+
+  public componentConfig: componentConfigDef;
+
+  public form_0_SCD_SHAPE : scdshapeScdTpCommonScreen;
+  public formdivs_1_SCD_BUTTON_PUSH_GENERAL : scdbuttonPushGeneralScdPbgPushButtonGeneral;
+  public formtabs_2_SCD_ALARM : scdalarmScdShapeStatesProperties;
+  public form_3_SCD_ARROW_BUTTON_TIMING : scdarrowButtonTimingScdAbtArrowButtonTiming;
+  public grid_4_SCD_SHAPE_CONNECTION : scdshapeConnectionScdScShapeConnections;
+  public  SCD_SHAPEForm_0Config : componentConfigDef;
+  public  hide_comp_1 = false
+  public  SCD_BUTTON_PUSH_GENERALFormdivs_1Config : componentConfigDef;
+  public  hide_comp_2 = false
+  public  SCD_ALARMFormtabs_2Config : componentConfigDef;
+  public  hide_comp_3 = false
+  public  SCD_ARROW_BUTTON_TIMINGForm_3Config : componentConfigDef;
+  public  hide_comp_4 = false
+  public  SCD_SHAPE_CONNECTIONGrid_4Config : componentConfigDef;
+  public  hide_comp_5 = false
+  public PDFfileName = this.title + ".PDF";
+  public routineAuth = "ScdArrowButtonTiming";
+
+  public ngAfterViewInit() {
+    this.starServices.setRTL();
   }
+  private componentConfigChangeEvent!: Subscription;
+  public compSelector = 'app-scd-arrow-button-timing';
+  public masterKeyNameArr = ["SHAPE_ID","DISPLAY_ID"];
+
+  public masterINSERT = 'INSERT_SCD_SHAPE';
+  public masterDataSource = 'SCD_SHAPE';
+  public showForm=false;
+  public showApproveReject:boolean = false;
+  public DSP_ORDERSFormConfig: componentConfigDef;
   ngOnInit(): void {
     this.starServices.actOnParamConfig(this, this.routineName );
       this.responsive 
@@ -46,73 +82,440 @@ public ngAfterViewInit() {
        this.isPhonePortrait = true; 
         } 
       }); 
-    //	this.pre_form();
-	//this.when_window_activated();
-	//this.when_new_form_instance();
- 
+  this.componentConfigChangeEvent = this.starNotify.subscribeEvent<componentConfigDef>('componentConfigDef', componentConfig => {
+  	if (componentConfig.eventFrom != this.compSelector) {
+  	   if (componentConfig.eventTo.includes(this.compSelector)|| componentConfig.eventTo.includes('any'))  {
+  		  this.handleComponentConfig(componentConfig);
+  	   }
+  	}
+   });
+    this.initComponents();
   }
 
-  public  scd_abt_arrow_button_timing0_0Config : componentConfigDef;
+  async initComponents(){
+    await this.starServices.sleep(200);
+    // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
+   this.SCD_SHAPEForm_0Config = new componentConfigDef();
+   this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID1","Common");
+   this.SCD_SHAPEForm_0Config.isMaster = true;
+   this.SCD_SHAPEForm_0Config.isSearchScreen = this.isSearchScreen;
+   this.SCD_SHAPEForm_0Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_SHAPEForm_0Config.queryable = false;
+     this.SCD_SHAPEForm_0Config.removeable = false;
+     this.SCD_SHAPEForm_0Config.updateable = false;
+     this.SCD_SHAPEForm_0Config.navigable = false;
+     this.SCD_SHAPEForm_0Config.insertable = false;
+   }
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.isChild = true;
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = 'app-scd-arrow-button-timing';
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.navigable = false;
+     //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.insertable = true;
+     //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.removeable = true;
+   }
+   this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+   this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID3","States");
+   this.SCD_ALARMFormtabs_2Config.isChild = true;
+   this.SCD_ALARMFormtabs_2Config.masterSelector = 'app-scd-arrow-button-timing';
+   this.SCD_ALARMFormtabs_2Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_ALARMFormtabs_2Config.navigable = false;
+     //this.SCD_ALARMFormtabs_2Config.insertable = true;
+     //this.SCD_ALARMFormtabs_2Config.removeable = true;
+   }
+   this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
+   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID4","Timing");
+   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.isChild = true;
+   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterSelector = 'app-scd-arrow-button-timing';
+   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_ARROW_BUTTON_TIMINGForm_3Config.navigable = false;
+     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.insertable = true;
+     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.removeable = true;
+   }
+   this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+   this.SCD_SHAPE_CONNECTIONGrid_4Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID5","Connections");
+   this.SCD_SHAPE_CONNECTIONGrid_4Config.isChild = true;
+   this.SCD_SHAPE_CONNECTIONGrid_4Config.masterSelector = 'app-scd-arrow-button-timing';
+   this.SCD_SHAPE_CONNECTIONGrid_4Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_SHAPE_CONNECTIONGrid_4Config.navigable = false;
+     //this.SCD_SHAPE_CONNECTIONGrid_4Config.insertable = true;
+     //this.SCD_SHAPE_CONNECTIONGrid_4Config.removeable = true;
+   }
+  }
+  public ngOnDestroy(): void {
+     // Unsubscribe the event once not needed.
+     if (typeof this.componentConfigChangeEvent !== 'undefined') this.componentConfigChangeEvent.unsubscribe();
+  }
+  public readCompletedHandler( form_SCD_SHAPE) {
+    let masterKeyArr = [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    let masterKeyNameArr = ["SHAPE_ID","DISPLAY_ID"];
+     if (this.isSearchScreen == true) 
+	  {
+    	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+    	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+    	this.SCD_ALARMFormtabs_2Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
+    	this.SCD_ARROW_BUTTON_TIMINGForm_3Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+    	this.SCD_SHAPE_CONNECTIONGrid_4Config.formattedWhere  = form_SCD_SHAPE;
+    	return;
+	  }
+    //this.formdivs_1_SCD_BUTTON_PUSH_GENERAL = new scdbuttonPushGeneralScdPbgPushButtonGeneral();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.formdivs_1_SCD_BUTTON_PUSH_GENERAL[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.queryable = false;
+     //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.removeable = true;
+     //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.updateable = true;
+   }
+    //this.formtabs_2_SCD_ALARM = new scdalarmScdShapeStatesProperties();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.formtabs_2_SCD_ALARM[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARMFormtabs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARMFormtabs_2Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_ALARMFormtabs_2Config.queryable = false;
+     //this.SCD_ALARMFormtabs_2Config.removeable = true;
+     //this.SCD_ALARMFormtabs_2Config.updateable = true;
+   }
+    //this.form_3_SCD_ARROW_BUTTON_TIMING = new scdarrowButtonTimingScdAbtArrowButtonTiming();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.form_3_SCD_ARROW_BUTTON_TIMING[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_ARROW_BUTTON_TIMINGForm_3Config.queryable = false;
+     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.removeable = true;
+     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.updateable = true;
+   }
+    //this.grid_4_SCD_SHAPE_CONNECTION = new scdshapeConnectionScdScShapeConnections();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.grid_4_SCD_SHAPE_CONNECTION[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_SHAPE_CONNECTIONGrid_4Config.queryable = false;
+     //this.SCD_SHAPE_CONNECTIONGrid_4Config.removeable = true;
+     //this.SCD_SHAPE_CONNECTIONGrid_4Config.updateable = true;
+   }
+  }
+  async clearCompletedHandler( form_SCD_SHAPE) {
+     await this.starServices.sleep(200);
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+  }
+  public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
+
+  public callreadSavedMaster( ) {
+    let masterTable = 'SCD_SHAPE' 
+     }
+  public sendToMaster(componentConfig){ 
+  	this.SCD_SHAPEForm_0Config = new componentConfigDef(); 
+  	this.SCD_SHAPEForm_0Config = componentConfig; 
+ } 
+  public sendToOrder(componentConfig){  
+  	this.DSP_ORDERSFormConfig = new componentConfigDef();  
+  	this.DSP_ORDERSFormConfig = componentConfig;  
+    }  
+  public closeApproveReject() {
+      this.showApproveReject = false;
+    }
+  public sendToChildren(componentConfig, pageNo){ 
+   if ( (pageNo + 1) == 2){
+  	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef(); 
+  	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 3){
+  	this.SCD_ALARMFormtabs_2Config = new componentConfigDef(); 
+  	this.SCD_ALARMFormtabs_2Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 4){
+  	this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef(); 
+  	this.SCD_ARROW_BUTTON_TIMINGForm_3Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 5){
+  	this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef(); 
+  	this.SCD_SHAPE_CONNECTIONGrid_4Config = componentConfig; 
+   }
+ } 
+  public saveCompletedHandler( form_SCD_SHAPE) {
+ let key:any = [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID]; 
+ if ( key != '') { 
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+  
+    this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_2Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ALARMFormtabs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARMFormtabs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+  
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+  
+    this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+  
+    this.saveTriggerOutput.emit(form_SCD_SHAPE);
+  } 
+      }
+  public saveCompletedHandler2( event) {
+      this.saveTriggerOutput.emit(event)
+  }
+  public saveTriggerHandler(event){
+        }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Input() public set detail_Input(form: any) {
+    if (typeof form !== "undefined")
+    {
+        this.form_0_SCD_SHAPE = form;
+    }
+  }
+
+  public validForms =[true,true,true,true,true,true,true]; //length should be number of components
+  public formValidationChangedMD(e,fornNum) { //check if any component is not valid and emit screen status
+    this.validForms[fornNum-1] = e;
+    let formValidation = true;
+    for (let i =0; i< this.validForms.length; i++) {
+      formValidation = formValidation && this.validForms[i];
+    }
+    this.formValidationChangedOutput.emit(formValidation)
+  }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
+    public setSteps(object){
+    if (typeof object.steps != 'undefined'){
+    		let newSteps=[];
+    		for (let i =object.showafter; i<object.steps.length;i++){
+    		let key = 'etr_ent_tem_wf.etr_ent_tem_wf.compsTitleID' + (i+ 1);
+    		let defaultVal = object.steps[i].label;
+    		let val = object.starServices.getNLS([],key ,defaultVal);
+    		let rec = {
+    	 		label : val,
+    	 		compNo : object.steps[i].compNo
+    		}
+    		console.log('setSteps:',key, val,object.steps[i] ,rec )
+    		newSteps.push(rec);
+    		}
+    	object.steps = newSteps;
+   	 }
+    }
     public handleComponentConfig(ComponentConfig:any) {
     if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdArrowButtonTimingComponent:",ComponentConfig);
     if (typeof ComponentConfig !== "undefined"){
        this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig  );
        if (ComponentConfig.languageChanged != null) { 
            setTimeout(() => {
-           }, 400);
+             this.SCD_SHAPEForm_0Config = new componentConfigDef();
+             this.SCD_SHAPEForm_0Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID1","Common");
+             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
+             this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+             this.SCD_ALARMFormtabs_2Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID3","States");
+             this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
+             this.SCD_ARROW_BUTTON_TIMINGForm_3Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ARROW_BUTTON_TIMINGForm_3Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID4","Timing");
+             this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+             this.SCD_SHAPE_CONNECTIONGrid_4Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_SHAPE_CONNECTIONGrid_4Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID5","Connections");
+           this.setSteps(this);
+           }, 500);
        }
   
+       this.SCD_SHAPEForm_0Config = new componentConfigDef();
+       this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+       this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+       this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
+       this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+   		
        if (ComponentConfig.masterParams != null) {
+              this.SCD_SHAPEForm_0Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARMFormtabs_2Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_SHAPE_CONNECTIONGrid_4Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.scd_abt_arrow_button_timing0_0Config = new componentConfigDef();
-       this.scd_abt_arrow_button_timing0_0Config = ComponentConfig;
-      if (ComponentConfig.masterSaved != null)
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARMFormtabs_2Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ARROW_BUTTON_TIMINGForm_3Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_SHAPE_CONNECTIONGrid_4Config.showToolBar = ComponentConfig.showToolBar;
+       }
+      if (ComponentConfig.masterSaved != null)//here1
       {
-       this.scd_abt_arrow_button_timing0_0Config.masterSaved = ComponentConfig.masterSaved;
+       this.SCD_SHAPEForm_0Config.masterSaved = ComponentConfig.masterSaved;
       }
       if (ComponentConfig.newRec != null)
       {
-       this.scd_abt_arrow_button_timing0_0Config.newRec = ComponentConfig.newRec;
+       this.SCD_SHAPEForm_0Config.newRec = ComponentConfig.newRec;
+       this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARMFormtabs_2Config.newRec = ComponentConfig.newRec;
+       this.SCD_ARROW_BUTTON_TIMINGForm_3Config.newRec = ComponentConfig.newRec;
+       this.SCD_SHAPE_CONNECTIONGrid_4Config.newRec = ComponentConfig.newRec;
       }
       if (ComponentConfig.clearScreen != null)
       {
-       this.scd_abt_arrow_button_timing0_0Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_SHAPEForm_0Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARMFormtabs_2Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ARROW_BUTTON_TIMINGForm_3Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_SHAPE_CONNECTIONGrid_4Config.clearScreen = ComponentConfig.clearScreen;
 	   }
       if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
       {
        if ((ComponentConfig.masterKeyArr.length != 0) && (ComponentConfig.masterKeyNameArr.length != 0) )
        {
-         this.scd_abt_arrow_button_timing0_0Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.scd_abt_arrow_button_timing0_0Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_SHAPEForm_0Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_SHAPEForm_0Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.scd_abt_arrow_button_timing0_0Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_SHAPEForm_0Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_ALARMFormtabs_2Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARMFormtabs_2Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_ALARMFormtabs_2Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_SHAPE_CONNECTIONGrid_4Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
        }
       }
-     }
     }
   }
+   public formdivs_1_SCD_BUTTON_PUSH_GENERALOpened = false;
+  public  formdivs_1_SCD_BUTTON_PUSH_GENERALClose() { 
+    this.formdivs_1_SCD_BUTTON_PUSH_GENERALOpened = false;  
+  }
+  public  formdivs_1_SCD_BUTTON_PUSH_GENERALOpen() { 
+    this.formdivs_1_SCD_BUTTON_PUSH_GENERALOpened = true;  
+  }
+  
+  public formtabs_2_SCD_ALARMOpened = false;
+  public  formtabs_2_SCD_ALARMClose() { 
+    this.formtabs_2_SCD_ALARMOpened = false;  
+  }
+  public  formtabs_2_SCD_ALARMOpen() { 
+    this.formtabs_2_SCD_ALARMOpened = true;  
+  }
+  
+  public form_3_SCD_ARROW_BUTTON_TIMINGOpened = false;
+  public  form_3_SCD_ARROW_BUTTON_TIMINGClose() { 
+    this.form_3_SCD_ARROW_BUTTON_TIMINGOpened = false;  
+  }
+  public  form_3_SCD_ARROW_BUTTON_TIMINGOpen() { 
+    this.form_3_SCD_ARROW_BUTTON_TIMINGOpened = true;  
+  }
+  
+  public grid_4_SCD_SHAPE_CONNECTIONOpened = false;
+  public  grid_4_SCD_SHAPE_CONNECTIONClose() { 
+    this.grid_4_SCD_SHAPE_CONNECTIONOpened = false;  
+  }
+  public  grid_4_SCD_SHAPE_CONNECTIONOpen() { 
+    this.grid_4_SCD_SHAPE_CONNECTIONOpened = true;  
+  }
+  
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){
     	this.helpOpened = true;
 	}
-	public visibleOK_BTNS = false;
+	public visibleOK_BTNS = true;
 	
   }

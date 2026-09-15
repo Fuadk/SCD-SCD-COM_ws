@@ -215,6 +215,9 @@
   #SIZE_TO_FIT kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.SIZE_TO_FIT_Hint','Please enter Size To Fit.')"		(click)="ON_CLICK_SIZE_TO_FIT($event)"
  (change)="onChange_SIZE_TO_FIT($event)"      adaptiveMode="auto" 
 	 name="SIZE_TO_FIT"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.SIZE_TO_FIT_Hint','Please enter Size To Fit.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -228,6 +231,9 @@
   #WORD_WRAP kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.WORD_WRAP_Hint','Please enter Word Wrap.')"		(click)="ON_CLICK_WORD_WRAP($event)"
  (change)="onChange_WORD_WRAP($event)"      adaptiveMode="auto" 
 	 name="WORD_WRAP"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.WORD_WRAP_Hint','Please enter Word Wrap.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -241,7 +247,7 @@
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'ALIGNMENT'"
 					#ALIGNMENT ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="ALIGNMENT " 
+				<kendo-label  [for]="ALIGNMENT " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>

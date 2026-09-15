@@ -54,17 +54,37 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_DEFAULT_ID"
  *ngIf=visibleSHAPE_DEFAULT_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_DEFAULT_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_DEFAULT_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('SHAPE_DEFAULT_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_DEFAULT_ID','Shape Default Id') + ' *'}}"  [width]="100">
+ [hidden]="hiddenColumns.indexOf('SHAPE_DEFAULT_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_DEFAULT_ID','Id') + ' *'}}"  [width]="20">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_DEFAULT_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_SHAPE_DEFAULT_ID()"      [formControl]="formGroup.get('SHAPE_DEFAULT_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_DEFAULT_ID_Hint','Please enter Shape Default Id.')" />
 		</ng-template>
 		</kendo-grid-column>
 
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SCREEN_NAME"
+ *ngIf=visibleSCREEN_NAME  [editable]=" !(disabledColumns.indexOf('SCREEN_NAME') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SCREEN_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SCREEN_NAME','Screen Name')}}"  [width]="150">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SCREEN_NAME}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SCREEN_NAME()"      [formControl]="formGroup.get('SCREEN_NAME')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SCREEN_NAME_Hint','Please enter Screen Name.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="REC_NUM"
+ *ngIf=visibleREC_NUM  [editable]=" !(disabledColumns.indexOf('REC_NUM') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('REC_NUM') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.REC_NUM','Rec Num')}}"  [width]="20">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.REC_NUM}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_REC_NUM()"      [formControl]="formGroup.get('REC_NUM')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.REC_NUM_Hint','Please enter Rec Num.')" />
+		</ng-template>
+		</kendo-grid-column>
+
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_TYPE"
  *ngIf=visibleSHAPE_TYPE  [editable]=" !(disabledColumns.indexOf('SHAPE_TYPE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SHAPE_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_TYPE','Shape Type')}}"  [width]="100">
+ [hidden]="hiddenColumns.indexOf('SHAPE_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_TYPE','Shape Type')}}"  [width]="150">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_TYPE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_SHAPE_TYPE()"      [formControl]="formGroup.get('SHAPE_TYPE')" [placeholder]="starServices.getNLS([],'SCD_SCD_SHAPE_DEFAULTS_GRID.scdshapeDefaultsScdScdShapeDefaultsGrid.SHAPE_TYPE_Hint','Please enter Shape Type.')" />

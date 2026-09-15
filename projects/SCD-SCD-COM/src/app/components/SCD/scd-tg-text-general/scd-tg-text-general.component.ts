@@ -58,6 +58,7 @@ export class ScdTextGeneralScdTgTextGeneralFormComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -166,7 +167,7 @@ public disableALIGNMENT = false;
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
-  
+  @Output() valueChange = new EventEmitter<string>();
 
    constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -244,6 +245,7 @@ public disableALIGNMENT = false;
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
       const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
       this.componentConfig.isDirty = this.form.dirty;
       
       // Only emit if state changed
@@ -258,7 +260,7 @@ public disableALIGNMENT = false;
   private emitComponentConfig(): void {
   if (this.componentConfig) {
     this.componentConfig.eventFrom = this.compSelector;
-    this.componentConfig.eventTo = ['any'];
+    //this.componentConfig.eventTo = ['any'];
     console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
     this.setComponentConfig_Output.emit(this.componentConfig);
   }
@@ -744,9 +746,9 @@ public printScreen(){
     
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
-this.form.reset(this.formInitialValues);
-this.form.markAsDirty();
+    // this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
+// this.form.reset(this.formInitialValues);
+// this.form.markAsDirty();
 
     
   }

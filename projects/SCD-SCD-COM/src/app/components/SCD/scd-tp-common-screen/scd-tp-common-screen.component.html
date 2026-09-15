@@ -142,6 +142,9 @@
   #VISIBLE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.VISIBLE_Hint','Please enter Visible.')"		(click)="ON_CLICK_VISIBLE($event)"
  (change)="onChange_VISIBLE($event)"      adaptiveMode="auto" 
 	 name="VISIBLE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.VISIBLE_Hint','Please enter Visible.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 

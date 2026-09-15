@@ -754,11 +754,11 @@ public printScreen(){
           rec.visible = false;
         }
       }
-      if (ComponentConfig.masterParams.data.action == "new") {
-        this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
-        this.form.reset(this.formInitialValues);
-        this.form.markAsDirty();
-      }
+    //   if (ComponentConfig.masterParams.data.action == "new") {
+    //     this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
+    //     this.form.reset(this.formInitialValues);
+    //     this.form.markAsDirty();
+    //   }
     }
 
     if (ComponentConfig.masterSelector != null) {
