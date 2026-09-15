@@ -1880,7 +1880,10 @@ async  prepareShapes(){
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
   let statement_SCD_SHAPE_STATE = "DELETE from SCD_SHAPE_STATE where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                    
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
+let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                           
   let body_defs = [
      {
         "_QUERY": "EXECSQL",
@@ -1925,6 +1928,10 @@ async  prepareShapes(){
            {
         "_QUERY": "EXECSQL",
         "_STMT": statement_SCD_SHAPE_STATE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_TIMING
       }
 
     ];
