@@ -778,25 +778,29 @@ public printScreen(){
   }
   async WHEN_NOTIFY(ComponentConfig){
     
-console.log("ComponentConfig.masterParams.data :",ComponentConfig.masterParams.data )
-if (ComponentConfig.masterParams != null) {
-    if (ComponentConfig.masterParams.data.SHAPE_TYPE == "numeric input") {
-        this.visibleTAGS2 = false;
-     }
-}
+
 if (ComponentConfig.masterSelector != null) {
     //alert(ComponentConfig.masterSelector )
-    console.log("ComponentConfig.masterParams.data.SHAPE_TYPE :",ComponentConfig.masterParams.data.SHAPE_TYPE )
+    console.log("ComponentConfig.masterParams :",
+        ComponentConfig.masterParams )
     
     let masterSelector = ComponentConfig.masterSelector;
     if (masterSelector.includes("numeric")){
         this.appMode = "NUMERIC";
-         
+    }
+    if (masterSelector.includes("string")){
+        this.appMode = "STRING";
     }
        
     switch (this.appMode) {
         case 'NUMERIC':
             this.FormStepsArr[1].visible = false;
+            //alert(this.appMode);
+            break;
+        case 'STRING':
+    
+            this.FormStepsArr[2].visible = false;
+            this.FormStepsArr[4].visible = false;
             //alert(this.appMode);
             break;
         default:

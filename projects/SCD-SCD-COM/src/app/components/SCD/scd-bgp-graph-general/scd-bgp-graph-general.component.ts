@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -17,6 +18,11 @@ import { scdgraphGeneralScdBgpGraphGeneral , componentConfigDef} from '@modeldir
 'GRAPH_GENERAL_ID' : new FormControl(dataItem.GRAPH_GENERAL_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'FILL_STYLE' : new FormControl(dataItem.FILL_STYLE  , ) ,
+'FILL_COLOR_1' : new FormControl(dataItem.FILL_COLOR_1  , ) ,
+'MAJOR_TICKS' : new FormControl(dataItem.MAJOR_TICKS  , ) ,
+'MINOR_TICKS' : new FormControl(dataItem.MINOR_TICKS  , ) ,
+'NEEDLE_WIDTH' : new FormControl(dataItem.NEEDLE_WIDTH  , ) ,
+'NEEDLE_COLOR' : new FormControl(dataItem.NEEDLE_COLOR  , ) ,
 'BORDER_STYLE' : new FormControl(dataItem.BORDER_STYLE  , ) ,
 'BORDER_WIDTH' : new FormControl(dataItem.BORDER_WIDTH  , ) ,
 'LINE_STYLE' : new FormControl(dataItem.LINE_STYLE  , ) ,
@@ -37,8 +43,6 @@ import { scdgraphGeneralScdBgpGraphGeneral , componentConfigDef} from '@modeldir
 'MAXIMUM_VALUE' : new FormControl(dataItem.MAXIMUM_VALUE  , ) ,
 'FILL_DIRECTION' : new FormControl(dataItem.FILL_DIRECTION  , ) ,
 'TICK_DIRECTION' : new FormControl(dataItem.TICK_DIRECTION  , ) ,
-'MAJOR_TICKS' : new FormControl(dataItem.MAJOR_TICKS  , ) ,
-'MINOR_TICKS' : new FormControl(dataItem.MINOR_TICKS  , ) ,
 'NUMBER_OF_THRESHOLDS' : new FormControl(dataItem.NUMBER_OF_THRESHOLDS  , ) ,
 'THRESHOLD_TYPE' : new FormControl(dataItem.THRESHOLD_TYPE  , ) ,
 'THRESHOLD_1_VALUE' : new FormControl(dataItem.THRESHOLD_1_VALUE  , ) ,
@@ -75,6 +79,7 @@ export class ScdGraphGeneralScdBgpGraphGeneralFormComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -117,6 +122,16 @@ public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
 public labelFILL_STYLETop=false;
 public labelFILL_STYLEVisible=true;
+public labelFILL_COLOR_1Top=false;
+public labelFILL_COLOR_1Visible=true;
+public labelMAJOR_TICKSTop=false;
+public labelMAJOR_TICKSVisible=true;
+public labelMINOR_TICKSTop=false;
+public labelMINOR_TICKSVisible=true;
+public labelNEEDLE_WIDTHTop=false;
+public labelNEEDLE_WIDTHVisible=true;
+public labelNEEDLE_COLORTop=false;
+public labelNEEDLE_COLORVisible=true;
 public labelBORDER_STYLETop=false;
 public labelBORDER_STYLEVisible=true;
 public labelBORDER_WIDTHTop=false;
@@ -157,10 +172,6 @@ public labelFILL_DIRECTIONTop=false;
 public labelFILL_DIRECTIONVisible=true;
 public labelTICK_DIRECTIONTop=false;
 public labelTICK_DIRECTIONVisible=true;
-public labelMAJOR_TICKSTop=false;
-public labelMAJOR_TICKSVisible=true;
-public labelMINOR_TICKSTop=false;
-public labelMINOR_TICKSVisible=true;
 public labelNUMBER_OF_THRESHOLDSTop=false;
 public labelNUMBER_OF_THRESHOLDSVisible=true;
 public labelTHRESHOLD_TYPETop=false;
@@ -181,6 +192,11 @@ public labelBLINK_2Visible=true;
 public visibleGRAPH_GENERAL_ID = false;
 public visibleSHAPE_ID = false;
 public visibleFILL_STYLE = true;
+public visibleFILL_COLOR_1 = true;
+public visibleMAJOR_TICKS = true;
+public visibleMINOR_TICKS = true;
+public visibleNEEDLE_WIDTH = true;
+public visibleNEEDLE_COLOR = true;
 public visibleBORDER_STYLE = true;
 public visibleBORDER_WIDTH = true;
 public visibleLINE_STYLE = false;
@@ -201,8 +217,6 @@ public visibleMINIMUM = false;
 public visibleMAXIMUM_VALUE = false;
 public visibleFILL_DIRECTION = false;
 public visibleTICK_DIRECTION = false;
-public visibleMAJOR_TICKS = false;
-public visibleMINOR_TICKS = false;
 public visibleNUMBER_OF_THRESHOLDS = false;
 public visibleTHRESHOLD_TYPE = false;
 public visibleTHRESHOLD_1_VALUE = false;
@@ -215,6 +229,11 @@ public visibleBLINK_2 = false;
 public disableGRAPH_GENERAL_ID = false;
 public disableSHAPE_ID = false;
 public disableFILL_STYLE = false;
+public disableFILL_COLOR_1 = false;
+public disableMAJOR_TICKS = false;
+public disableMINOR_TICKS = false;
+public disableNEEDLE_WIDTH = false;
+public disableNEEDLE_COLOR = false;
 public disableBORDER_STYLE = false;
 public disableBORDER_WIDTH = false;
 public disableLINE_STYLE = false;
@@ -235,8 +254,6 @@ public disableMINIMUM = false;
 public disableMAXIMUM_VALUE = false;
 public disableFILL_DIRECTION = false;
 public disableTICK_DIRECTION = false;
-public disableMAJOR_TICKS = false;
-public disableMINOR_TICKS = false;
 public disableNUMBER_OF_THRESHOLDS = false;
 public disableTHRESHOLD_TYPE = false;
 public disableTHRESHOLD_1_VALUE = false;
@@ -254,8 +271,10 @@ public disableBLINK_2 = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -327,8 +346,30 @@ public disableBLINK_2 = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -572,6 +613,17 @@ public disableBLINK_2 = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -622,7 +674,11 @@ public setlookupArrDef(){
 this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrSHAPE_ID"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FILL_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrFILL_STYLE"}];
+			"lkpArrName":"lkpArrFILL_STYLE"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"MAJOR_TICKS\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrMAJOR_TICKS"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"MINOR_TICKS\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrMINOR_TICKS"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
@@ -630,6 +686,10 @@ this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM
 public lkpArrSHAPE_ID = [];
 
 public lkpArrFILL_STYLE = [];
+
+public lkpArrMAJOR_TICKS = [];
+
+public lkpArrMINOR_TICKS = [];
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
@@ -641,8 +701,20 @@ var rec = this.lkpArrFILL_STYLE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
+public lkpArrGetMAJOR_TICKS(CODE: any): any {
+var rec = this.lkpArrMAJOR_TICKS.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetMINOR_TICKS(CODE: any): any {
+var rec = this.lkpArrMINOR_TICKS.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
 onChanges(): void {
 this.form.get('GRAPH_GENERAL_ID').valueChanges.subscribe(val => {
+});
+this.form.get('NEEDLE_WIDTH').valueChanges.subscribe(val => {
 });
 this.form.get('BORDER_STYLE').valueChanges.subscribe(val => {
 });
@@ -683,10 +755,6 @@ this.form.get('MAXIMUM_VALUE').valueChanges.subscribe(val => {
 this.form.get('FILL_DIRECTION').valueChanges.subscribe(val => {
 });
 this.form.get('TICK_DIRECTION').valueChanges.subscribe(val => {
-});
-this.form.get('MAJOR_TICKS').valueChanges.subscribe(val => {
-});
-this.form.get('MINOR_TICKS').valueChanges.subscribe(val => {
 });
 this.form.get('NUMBER_OF_THRESHOLDS').valueChanges.subscribe(val => {
 });
@@ -942,6 +1010,106 @@ async WHEN_VALIDATE_ITEM_FILL_STYLE(value) {
  }
 
  async ON_CLICK_FILL_STYLE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_FILL_COLOR_1(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['FILL_COLOR_1'] != "undefined" ) 
+      this.form.controls['FILL_COLOR_1'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['FILL_COLOR_1'] != "undefined" ) 
+     this.form.get('FILL_COLOR_1').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_FILL_COLOR_1(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_MAJOR_TICKS(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['MAJOR_TICKS'] != "undefined" ) 
+      this.form.controls['MAJOR_TICKS'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['MAJOR_TICKS'] != "undefined" ) 
+     this.form.get('MAJOR_TICKS').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_MAJOR_TICKS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_MINOR_TICKS(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['MINOR_TICKS'] != "undefined" ) 
+      this.form.controls['MINOR_TICKS'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['MINOR_TICKS'] != "undefined" ) 
+     this.form.get('MINOR_TICKS').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_MINOR_TICKS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_NEEDLE_WIDTH(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['NEEDLE_WIDTH'] != "undefined" ) 
+      this.form.controls['NEEDLE_WIDTH'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['NEEDLE_WIDTH'] != "undefined" ) 
+     this.form.get('NEEDLE_WIDTH').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_NEEDLE_WIDTH(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_NEEDLE_COLOR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['NEEDLE_COLOR'] != "undefined" ) 
+      this.form.controls['NEEDLE_COLOR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['NEEDLE_COLOR'] != "undefined" ) 
+     this.form.get('NEEDLE_COLOR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_NEEDLE_COLOR(event){
 
 }
 
@@ -1345,46 +1513,6 @@ async WHEN_VALIDATE_ITEM_TICK_DIRECTION(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_MAJOR_TICKS(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['MAJOR_TICKS'] != "undefined" ) 
-      this.form.controls['MAJOR_TICKS'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['MAJOR_TICKS'] != "undefined" ) 
-     this.form.get('MAJOR_TICKS').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_MAJOR_TICKS(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_MINOR_TICKS(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['MINOR_TICKS'] != "undefined" ) 
-      this.form.controls['MINOR_TICKS'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['MINOR_TICKS'] != "undefined" ) 
-     this.form.get('MINOR_TICKS').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_MINOR_TICKS(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_NUMBER_OF_THRESHOLDS(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1566,6 +1694,39 @@ async WHEN_VALIDATE_ITEM_BLINK_2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_FILL_COLOR_1(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FILL_COLOR_1(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_MAJOR_TICKS(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_MAJOR_TICKS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_MINOR_TICKS(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_MINOR_TICKS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_NEEDLE_WIDTH(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_NEEDLE_WIDTH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_NEEDLE_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_NEEDLE_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_BORDER_STYLE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1743,24 +1904,6 @@ async WHEN_VALIDATE_ITEM_BLINK_2(value) {
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
  await   this.WHEN_VALIDATE_ITEM_TICK_DIRECTION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_MAJOR_TICKS(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_MAJOR_TICKS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_MINOR_TICKS(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_MINOR_TICKS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 

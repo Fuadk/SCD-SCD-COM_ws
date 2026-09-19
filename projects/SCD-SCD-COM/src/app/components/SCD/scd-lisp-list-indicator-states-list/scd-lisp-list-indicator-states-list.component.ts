@@ -66,7 +66,7 @@ export class ScdListIndicatorStateScdLispListIndicatorStatesListGridComponent im
  public grid!: GridComponent;
  
  //@Input()    
- public showToolBar = true;
+ public showToolBar = false;
   public removedRec=[];
   public groups: GroupDescriptor[] = [];
   public view!: any[];
@@ -97,7 +97,8 @@ export class ScdListIndicatorStateScdLispListIndicatorStatesListGridComponent im
   public title =  this.starServices.getNLS([],"SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.component_title","List Indicator States List");
   public PDFfileName = this.title + ".PDF";
   public ExcelfileName = this.title + ".xlsx";
-  public componentConfig
+  public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public compTitleMsg =  "SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList";
   public editableMode = false;
   
@@ -118,7 +119,7 @@ export class ScdListIndicatorStateScdLispListIndicatorStatesListGridComponent im
 public isPhonePortrait = false;
 public visibleLIST_INDICATOR_STATE_ID = false;
 public visibleSHAPE_ID = false;
-public visibleSTATE_ID = true;
+public visibleSTATE_ID = false;
 public visibleSTATE_NAME = true;
 public visibleVALUE = false;
 public visibleCAPTION = false;
@@ -126,7 +127,7 @@ public visibleCAPTION_COLOR = false;
 public visibleCAPTION_BACK_STYLE = false;
 public visibleCAPTION_BACK_COLOR = false;
 public visibleCAPTION_BLINK = false;
-public visibleINSERT_VARIABLE = true;
+public visibleINSERT_VARIABLE = false;
 public visibleCAPTION_ALIGNMENT = false;
 
 public compSelector = 'app-scd-lisp-list-indicator-states-list';
@@ -136,6 +137,7 @@ public compSelector = 'app-scd-lisp-list-indicator-states-list';
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
 
     constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices, private renderer: Renderer2) {
       this.router = router;
@@ -148,7 +150,7 @@ public compSelector = 'app-scd-lisp-list-indicator-states-list';
       this.componentConfig.insertable = false;
       this.componentConfig.removeable = false;
       this.componentConfig.updateable = false;       
-      this.componentConfig.showToolBar = true;
+      this.componentConfig.showToolBar = false;
       this.componentConfig.enabled = true;
       this.title = this.componentConfig.title ? this.componentConfig.title :this.starServices.getNLS([],"SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.component_title","List Indicator States List");
   }
@@ -183,9 +185,59 @@ public compSelector = 'app-scd-lisp-list-indicator-states-list';
     //this.PRE_BLOCK();
     this.AttDwnUrl = this.starServices.SERVER_URL + "/api/att?action=download&username=" + this.starServices.sessionParams['USERNAME'].toLowerCase() + "&name=";
     
-  }
- 
   
+  
+
+  }
+  public gridData: any[] = [];
+  public originalGridData: any[] = [];
+  private gridDataCopy: any[] = [];
+    public isDirty: boolean = false;
+
+   onCellClose(event: any): void {
+    // Watch form changes to update isDirty in componentConfig
+    const hasChanges = this.hasDataChanged();
+    
+    if (this.isDirty !== hasChanges) {
+      this.isDirty = hasChanges;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.isDirty;
+      
+      console.log('Grid dirty state changed:', this.isDirty);
+      this.emitComponentConfig();
+    }
+  }
+  private hasDataChanged(): boolean {
+    if (!this.gridData || !this.originalGridData) {
+      return false;
+    }
+
+    // Compare current data with original
+    if (this.gridData.length !== this.originalGridData.length) {
+      return true; // Rows added or deleted
+    }
+
+    // Deep compare each row
+    for (let i = 0; i < this.gridData.length; i++) {
+      const currentRow = JSON.stringify(this.gridData[i]);
+      const originalRow = JSON.stringify(this.originalGridData[i]);
+      
+      if (currentRow !== originalRow) {
+        return true; // Row changed
+      }
+    }
+
+    return false; // No changes
+  }
+
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
     public ngOnDestroy(): void {
         this.docClickSubscription();
    // Unsubscribe the event once not needed.
@@ -685,9 +737,9 @@ async WHEN_NOTIFY(ComponentConfig){
     
 }
 async WHEN_NEW_FORM_INSTANCE(){
-   	if (!this.isChild){
-this.executeQuery(this.grid);
-	}
+   // 	if (!this.isChild){
+// this.executeQuery(this.grid);
+// 	}
 
 
 }

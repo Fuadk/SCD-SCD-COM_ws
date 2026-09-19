@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -17,6 +18,7 @@ import { scdshapeStateScdSspShapeStateDefinition , componentConfigDef} from '@mo
 'SHAPE_STATE_ID' : new FormControl(dataItem.SHAPE_STATE_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) ,
+'SAME_AS_ACTIVE_APPEARANCE' : new FormControl(dataItem.SAME_AS_ACTIVE_APPEARANCE  , ) ,
 'STATE_ID' : new FormControl(dataItem.STATE_ID  , ) ,
 'STATE_NAME' : new FormControl(dataItem.STATE_NAME  , ) ,
 'VALUE' : new FormControl(dataItem.VALUE  , ) ,
@@ -72,6 +74,7 @@ export class ScdShapeStateScdSspShapeStateDefinitionFormComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -114,6 +117,8 @@ public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
 public labelINSERT_VARIABLETop=false;
 public labelINSERT_VARIABLEVisible=true;
+public labelSAME_AS_ACTIVE_APPEARANCETop=false;
+public labelSAME_AS_ACTIVE_APPEARANCEVisible=true;
 public labelSTATE_IDTop=false;
 public labelSTATE_IDVisible=true;
 public labelSTATE_NAMETop=false;
@@ -172,6 +177,7 @@ public labelIMAGE_ALIGNMENTVisible=true;
 public visibleSHAPE_STATE_ID = false;
 public visibleSHAPE_ID = false;
 public visibleINSERT_VARIABLE = true;
+public visibleSAME_AS_ACTIVE_APPEARANCE = true;
 public visibleSTATE_ID = true;
 public visibleSTATE_NAME = true;
 public visibleVALUE = true;
@@ -203,6 +209,7 @@ public visibleIMAGE_ALIGNMENT = false;
 public disableSHAPE_STATE_ID = false;
 public disableSHAPE_ID = false;
 public disableINSERT_VARIABLE = false;
+public disableSAME_AS_ACTIVE_APPEARANCE = false;
 public disableSTATE_ID = false;
 public disableSTATE_NAME = false;
 public disableVALUE = false;
@@ -239,8 +246,10 @@ public disableIMAGE_ALIGNMENT = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -312,8 +321,30 @@ public disableIMAGE_ALIGNMENT = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -557,6 +588,17 @@ public disableIMAGE_ALIGNMENT = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -907,6 +949,26 @@ async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
  }
 
  async ON_CLICK_INSERT_VARIABLE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SAME_AS_ACTIVE_APPEARANCE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SAME_AS_ACTIVE_APPEARANCE'] != "undefined" ) 
+      this.form.controls['SAME_AS_ACTIVE_APPEARANCE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SAME_AS_ACTIVE_APPEARANCE'] != "undefined" ) 
+     this.form.get('SAME_AS_ACTIVE_APPEARANCE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SAME_AS_ACTIVE_APPEARANCE(event){
 
 }
 
@@ -1471,6 +1533,15 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onChange_SAME_AS_ACTIVE_APPEARANCE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SAME_AS_ACTIVE_APPEARANCE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onChange_STATE_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	

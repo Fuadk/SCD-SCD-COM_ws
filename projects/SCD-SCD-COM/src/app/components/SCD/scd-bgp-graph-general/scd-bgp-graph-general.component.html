@@ -86,6 +86,79 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFILL_COLOR_1Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFILL_COLOR_1 >
+		<kendo-label *ngIf="(!labelFILL_COLOR_1Top && !isPhonePortrait) && labelFILL_COLOR_1Visible" class="form-label"  [text]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.FILL_COLOR_1','Fill color 1')"></kendo-label>
+		<label *ngIf="(labelFILL_COLOR_1Top || isPhonePortrait) && labelFILL_COLOR_1Visible" class="form-label"  >{{starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.FILL_COLOR_1','Fill color 1')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="FILL_COLOR_1"
+  #FILL_COLOR_1 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_FILL_COLOR_1($event)"
+ (valueChange)="onValueChange_FILL_COLOR_1($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_FILL_COLOR_1($event)"
+		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.FILL_COLOR_1, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAJOR_TICKSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAJOR_TICKS >
+		<kendo-label *ngIf="(!labelMAJOR_TICKSTop && !isPhonePortrait) && labelMAJOR_TICKSVisible" class="form-label" [for]="MAJOR_TICKS" [text]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MAJOR_TICKS','Major ticks')"></kendo-label>
+		<label *ngIf="(labelMAJOR_TICKSTop || isPhonePortrait) && labelMAJOR_TICKSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MAJOR_TICKS','Major ticks')}}</label>
+		<kendo-combobox  #MAJOR_TICKS class="form-field-combobox"  [formControlName]="'MAJOR_TICKS'"
+		[data]="lkpArrMAJOR_TICKS" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MAJOR_TICKS_Hint','Please enter Major ticks.')"		(click)="ON_CLICK_MAJOR_TICKS($event)"
+ (valueChange)="onValueChange_MAJOR_TICKS($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'MAJOR_TICKS')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMINOR_TICKSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMINOR_TICKS >
+		<kendo-label *ngIf="(!labelMINOR_TICKSTop && !isPhonePortrait) && labelMINOR_TICKSVisible" class="form-label" [for]="MINOR_TICKS" [text]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MINOR_TICKS','Minor ticks')"></kendo-label>
+		<label *ngIf="(labelMINOR_TICKSTop || isPhonePortrait) && labelMINOR_TICKSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MINOR_TICKS','Minor ticks')}}</label>
+		<kendo-combobox  #MINOR_TICKS class="form-field-combobox"  [formControlName]="'MINOR_TICKS'"
+		[data]="lkpArrMINOR_TICKS" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MINOR_TICKS_Hint','Please enter Minor ticks.')"		(click)="ON_CLICK_MINOR_TICKS($event)"
+ (valueChange)="onValueChange_MINOR_TICKS($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'MINOR_TICKS')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNEEDLE_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNEEDLE_WIDTH >
+		<kendo-label *ngIf="(!labelNEEDLE_WIDTHTop && !isPhonePortrait) && labelNEEDLE_WIDTHVisible" class="form-label" [for]="NEEDLE_WIDTH" [text]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.NEEDLE_WIDTH','Needle width')"></kendo-label>
+		<label *ngIf="(labelNEEDLE_WIDTHTop || isPhonePortrait) && labelNEEDLE_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.NEEDLE_WIDTH','Needle width')}}</label>
+		<input   formControlName="NEEDLE_WIDTH"
+ kendoTextBox #NEEDLE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.NEEDLE_WIDTH_Hint','Please enter Needle width.')"
+		(click)="ON_CLICK_NEEDLE_WIDTH($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NEEDLE_WIDTH($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNEEDLE_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNEEDLE_COLOR >
+		<kendo-label *ngIf="(!labelNEEDLE_COLORTop && !isPhonePortrait) && labelNEEDLE_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.NEEDLE_COLOR','Needle color')"></kendo-label>
+		<label *ngIf="(labelNEEDLE_COLORTop || isPhonePortrait) && labelNEEDLE_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.NEEDLE_COLOR','Needle color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="NEEDLE_COLOR"
+  #NEEDLE_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_NEEDLE_COLOR($event)"
+ (valueChange)="onValueChange_NEEDLE_COLOR($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_NEEDLE_COLOR($event)"
+		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.NEEDLE_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
@@ -294,27 +367,6 @@
  kendoTextBox #TICK_DIRECTION  [placeholder]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.TICK_DIRECTION_Hint','Please enter Tick Direction.')"
 		(click)="ON_CLICK_TICK_DIRECTION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TICK_DIRECTION($event)"      adaptiveMode="auto"  />
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAJOR_TICKSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAJOR_TICKS >
-		<kendo-label *ngIf="(!labelMAJOR_TICKSTop && !isPhonePortrait) && labelMAJOR_TICKSVisible" class="form-label" [for]="MAJOR_TICKS" [text]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MAJOR_TICKS','Major Ticks')"></kendo-label>
-		<label *ngIf="(labelMAJOR_TICKSTop || isPhonePortrait) && labelMAJOR_TICKSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MAJOR_TICKS','Major Ticks')}}</label>
-		<input   formControlName="MAJOR_TICKS"
- kendoTextBox #MAJOR_TICKS  [placeholder]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MAJOR_TICKS_Hint','Please enter Major Ticks.')"
-		(click)="ON_CLICK_MAJOR_TICKS($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAJOR_TICKS($event)"      adaptiveMode="auto"  />
-	</kendo-formfield>
-
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMINOR_TICKSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMINOR_TICKS >
-		<kendo-label *ngIf="(!labelMINOR_TICKSTop && !isPhonePortrait) && labelMINOR_TICKSVisible" class="form-label" [for]="MINOR_TICKS" [text]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MINOR_TICKS','Minor Ticks')"></kendo-label>
-		<label *ngIf="(labelMINOR_TICKSTop || isPhonePortrait) && labelMINOR_TICKSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MINOR_TICKS','Minor Ticks')}}</label>
-		<input   formControlName="MINOR_TICKS"
- kendoTextBox #MINOR_TICKS  [placeholder]="starServices.getNLS([],'SCD_BGP_GRAPH_GENERAL.scdgraphGeneralScdBgpGraphGeneral.MINOR_TICKS_Hint','Please enter Minor Ticks.')"
-		(click)="ON_CLICK_MINOR_TICKS($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MINOR_TICKS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 

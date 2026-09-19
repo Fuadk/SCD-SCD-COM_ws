@@ -555,8 +555,6 @@
 	public MAXIMUM_VALUE = '';
 	public FILL_DIRECTION = '';
 	public TICK_DIRECTION = '';
-	public MAJOR_TICKS = '';
-	public MINOR_TICKS = '';
 	public NUMBER_OF_THRESHOLDS = '';
 	public THRESHOLD_TYPE = '';
 	public THRESHOLD_1_VALUE = '';
@@ -566,8 +564,19 @@
 	public FILL_COLOR_2 = '';
 	public BLINK_2 = '';
 	public FILL_STYLE = '';
+	public FILL_COLOR_1 = '';
+	public MAJOR_TICKS = '';
+	public MINOR_TICKS = '';
+	public NEEDLE_WIDTH = '';
+	public NEEDLE_COLOR = '';
 
 }
+
+
+
+
+
+
 
 
  export class scdgaugeDisplayScdGpGaugeDisplay{
@@ -631,8 +640,6 @@
 	public MAXIMUM_VALUE = '';
 	public FILL_DIRECTION = '';
 	public TICK_DIRECTION = '';
-	public MAJOR_TICKS = '';
-	public MINOR_TICKS = '';
 	public NUMBER_OF_THRESHOLDS = '';
 	public THRESHOLD_TYPE = '';
 	public THRESHOLD_1_VALUE = '';
@@ -642,8 +649,19 @@
 	public FILL_COLOR_2 = '';
 	public BLINK_2 = '';
 	public FILL_STYLE = '';
+	public FILL_COLOR_1 = '';
+	public MAJOR_TICKS = '';
+	public MINOR_TICKS = '';
+	public NEEDLE_WIDTH = '';
+	public NEEDLE_COLOR = '';
 
 }
+
+
+
+
+
+
 
 
  export class scdgraphGeneralScdGgGraphGeneral{
@@ -669,8 +687,6 @@
 	public MAXIMUM_VALUE = '';
 	public FILL_DIRECTION = '';
 	public TICK_DIRECTION = '';
-	public MAJOR_TICKS = '';
-	public MINOR_TICKS = '';
 	public NUMBER_OF_THRESHOLDS = '';
 	public THRESHOLD_TYPE = '';
 	public THRESHOLD_1_VALUE = '';
@@ -680,8 +696,19 @@
 	public FILL_COLOR_2 = '';
 	public BLINK_2 = '';
 	public FILL_STYLE = '';
+	public FILL_COLOR_1 = '';
+	public MAJOR_TICKS = '';
+	public MINOR_TICKS = '';
+	public NEEDLE_WIDTH = '';
+	public NEEDLE_COLOR = '';
 
 }
+
+
+
+
+
+
 
 
  export class scdlistIndicatorGeneralScdLipListIndicatorGeneral{
@@ -1051,8 +1078,10 @@
 	public SCALE_IMAGE = '';
 	public IMAGE_ALIGNMENT = '';
 	public INSERT_VARIABLE = '';
+	public SAME_AS_ACTIVE_APPEARANCE = '';
 
 }
+
 
 
  export class scdshapeStateScdSslShapeStatesList{
@@ -1086,8 +1115,10 @@
 	public SCALE_IMAGE = '';
 	public IMAGE_ALIGNMENT = '';
 	public INSERT_VARIABLE = '';
+	public SAME_AS_ACTIVE_APPEARANCE = '';
 
 }
+
 
 
  export class scdbuttonPushGeneralScdPbgPushButtonGeneral{
@@ -1107,6 +1138,7 @@
 	public RAMP_VALUE = '';
 	public UPPER_LIMIT = '';
 	public BACK_COLOR = '';
+	public BLINK = '';
 	public BORDER_COLOR = '';
 	public PATTERN_COLOR = '';
 	public BACK_STYLE = '';
@@ -1118,9 +1150,21 @@
 	public HORIZONTAL_MARGIN = '';
 	public VERTICAL_MARGIN = '';
 	public AUDIO = '';
-	public BLINK = '';
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1181,8 +1225,11 @@
 	public SCALE_IMAGE2 = '';
 	public INSERT_VARIABLE = '';
 	public BUTTON_APPEARANCE = '';
+	public BORDER_COLOR = '';
+	public BLINK = '';
 
 }
+
 
 
 
@@ -1341,8 +1388,10 @@
 	public SCALE_IMAGE = '';
 	public IMAGE_ALIGNMENT = '';
 	public INSERT_VARIABLE = '';
+	public SAME_AS_ACTIVE_APPEARANCE = '';
 
 }
+
 
 
  export class scdshapeScdCsCommonScreen{

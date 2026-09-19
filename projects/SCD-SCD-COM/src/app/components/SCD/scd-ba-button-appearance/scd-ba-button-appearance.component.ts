@@ -25,6 +25,8 @@ import { scdbuttonAppearanceScdBaButtonAppearance , componentConfigDef} from '@m
 'PATTERN_STYLE' : new FormControl(dataItem.PATTERN_STYLE  , ) ,
 'PATTERN_COLOR' : new FormControl(dataItem.PATTERN_COLOR  , ) ,
 'BACK_COLOR' : new FormControl(dataItem.BACK_COLOR  , ) ,
+'BORDER_COLOR' : new FormControl(dataItem.BORDER_COLOR  , ) ,
+'BLINK' : new FormControl(dataItem.BLINK  , ) ,
 'EXPRESSION' : new FormControl(dataItem.EXPRESSION  , ) ,
 'CAPTION' : new FormControl(dataItem.CAPTION  , ) ,
 'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) ,
@@ -125,6 +127,10 @@ public labelPATTERN_COLORTop=true;
 public labelPATTERN_COLORVisible=true;
 public labelBACK_COLORTop=true;
 public labelBACK_COLORVisible=true;
+public labelBORDER_COLORTop=true;
+public labelBORDER_COLORVisible=true;
+public labelBLINKTop=true;
+public labelBLINKVisible=true;
 public labelEXPRESSIONTop=true;
 public labelEXPRESSIONVisible=true;
 public labelTAG_BUTTop=true;
@@ -178,6 +184,8 @@ public visibleFORE_COLOR = true;
 public visiblePATTERN_STYLE = true;
 public visiblePATTERN_COLOR = true;
 public visibleBACK_COLOR = true;
+public visibleBORDER_COLOR = true;
+public visibleBLINK = true;
 public visibleEXPRESSION = true;
 public visibleTAG_BUT = true;
 public visibleEXPRESSION_BUT = true;
@@ -210,6 +218,8 @@ public disableFORE_COLOR = false;
 public disablePATTERN_STYLE = false;
 public disablePATTERN_COLOR = false;
 public disableBACK_COLOR = false;
+public disableBORDER_COLOR = false;
+public disableBLINK = false;
 public disableEXPRESSION = false;
 public disableTAG_BUT = false;
 public disableEXPRESSION_BUT = false;
@@ -862,6 +872,10 @@ public printScreen(){
         this.appMode = "DOWN";
       else if (ComponentConfig.title.toUpperCase().startsWith("DISABLED"))
         this.appMode = "DISABLED";
+      // else if (ComponentConfig.title.toUpperCase().startsWith("ACTIVE"))
+      //   this.appMode = "ACTIVE";
+      // else if (ComponentConfig.title.toUpperCase().startsWith("INACTIVE"))
+      //   this.appMode = "INACTIVE";
 
       switch (this.appMode) {
           case 'UP':
@@ -873,6 +887,8 @@ public printScreen(){
             this.visibleTAG_BUT = false;
             //this.visibleEXPRESSION_BUT = true;
             this.visibleEXPRESSION_BUT = false;
+            this.visibleBORDER_COLOR = false;
+            this.visibleBLINK = false;
             break;
         case 'DOWN':
             this.FormStepsArr[4].visible =false;
@@ -881,6 +897,8 @@ public printScreen(){
              this.visibleEXPRESSION = false;
              this.visibleTAG_BUT = false;
             this.visibleEXPRESSION_BUT = false;
+            this.visibleBORDER_COLOR = false;
+            this.visibleBLINK = false;
             break;
         case 'DISABLED':
             this.FormStepsArr[2].visible =false;
@@ -891,8 +909,29 @@ public printScreen(){
             this.visiblePATTERN_STYLE = false;
             this.visibleBACK_COLOR = false;
             this.visiblePATTERN_COLOR = false;
-            
+            this.visibleBORDER_COLOR = false;
+            this.visibleBLINK = false;
             break;
+      // case 'ACTIVE':
+      //       this.FormStepsArr[4].visible =false;
+      //       this.FormStepsArr[5].visible = false;
+      //       this.visibleSAME_AS_UP_APPEARANCE = false;
+      //       this.visibleSHOW_DISABLED_STATE = false;
+      //       this.visibleEXPRESSION = false;
+      //       this.visibleTAG_BUT = false;
+      //       //this.visibleEXPRESSION_BUT = true;
+      //       this.visibleEXPRESSION_BUT = false;
+      //       this.visibleBACK_STYLE = false;
+      //       this.visibleFORE_COLOR = false;
+      //       break;
+      //   case 'INACTIVE':
+      //       this.FormStepsArr[4].visible =false;
+      //       this.FormStepsArr[5].visible = false;
+      //       this.visibleSHOW_DISABLED_STATE = false;
+      //        this.visibleEXPRESSION = false;
+      //        this.visibleTAG_BUT = false;
+      //       this.visibleEXPRESSION_BUT = false;
+      //       break;
           default:
             break;
       }
@@ -947,9 +986,10 @@ public printScreen(){
    
   }
   async  PRE_QUERY (formGroup){
-    console.log ("this.appMode:", this.appMode, this.masterKeyArr, this.masterKeyNameArr)
+    
     this.masterKeyArr[2] = this.appMode ;
     this.masterKeyNameArr[2] = 'BUTTON_APPEARANCE'
+    console.log ("this.appMode:", this.appMode, this.masterKeyArr, this.masterKeyNameArr)
    
   }
   async  POST_QUERY(formGroup){
@@ -1164,6 +1204,46 @@ async WHEN_VALIDATE_ITEM_BACK_COLOR(value) {
  }
 
  async ON_CLICK_BACK_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BORDER_COLOR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BORDER_COLOR'] != "undefined" ) 
+      this.form.controls['BORDER_COLOR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BORDER_COLOR'] != "undefined" ) 
+     this.form.get('BORDER_COLOR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BORDER_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BLINK(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BLINK'] != "undefined" ) 
+      this.form.controls['BLINK'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BLINK'] != "undefined" ) 
+     this.form.get('BLINK').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BLINK(event){
 
 }
 
@@ -1659,6 +1739,21 @@ async WHEN_VALIDATE_ITEM_IMAGE_SELECT_BA2(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_BORDER_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_BORDER_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_BLINK(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_BLINK(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onValueChange_EXPRESSION(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_EXPRESSION(value); if ( this.FORM_TRIGGER_FAILURE) return; 

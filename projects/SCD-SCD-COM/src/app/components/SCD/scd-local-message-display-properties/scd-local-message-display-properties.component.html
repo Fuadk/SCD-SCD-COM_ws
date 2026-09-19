@@ -1,10 +1,10 @@
 <div>
-        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_local_message_display_properties.scd_local_message_display_properties.component_title","") }}</legend> 
         <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
 
 <kendo-tabstrip-tab [selected]="true">
     <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.compsTitleID1","Common") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_local_message_display_properties.scd_local_message_display_properties.compsTitleID1","Common") }}</legend>
      </ng-template>
     <ng-template kendoTabContent>
         <app-scd-tp-common-screen 
@@ -20,29 +20,29 @@
   </kendo-tabstrip-tab>
        <kendo-tabstrip-tab>
        <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.compsTitleID2","General") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_local_message_display_properties.scd_local_message_display_properties.compsTitleID2","General") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-sig-shape-input-general [detail_Input]="formdivs_1_SCD_SHAPE_INPUT_GENERAL"  
+        <app-scd-mg-message-general [detail_Input]="formdivs_1_SCD_MESSAGE_GENERAL"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_SHAPE_INPUT_GENERALFormdivs_1Config">
-        </app-scd-sig-shape-input-general >
+                      [setComponentConfig_Input]="SCD_MESSAGE_GENERALFormdivs_1Config">
+        </app-scd-mg-message-general >
 
 </ng-template>
 </kendo-tabstrip-tab>
        <kendo-tabstrip-tab>
        <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.compsTitleID3","Appearance") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_local_message_display_properties.scd_local_message_display_properties.compsTitleID3","Connections") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-sia-shape-input-appearance [detail_Input]="formdivs_2_SCD_SHAPE_INPUT_APPEARANCE"  
+        <app-scd-sc-shape-connections [detail_Input]="grid_2_SCD_SHAPE_CONNECTION"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_SHAPE_INPUT_APPEARANCEFormdivs_2Config">
-        </app-scd-sia-shape-input-appearance >
+                      [setComponentConfig_Input]="SCD_SHAPE_CONNECTIONGrid_2Config">
+        </app-scd-sc-shape-connections >
 
 </ng-template>
 </kendo-tabstrip-tab>

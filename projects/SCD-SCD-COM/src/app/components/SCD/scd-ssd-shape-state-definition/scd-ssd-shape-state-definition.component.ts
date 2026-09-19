@@ -19,6 +19,7 @@ import { scdshapeStateScdSsdShapeStateDefinition , componentConfigDef} from '@mo
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'STATE_ID' : new FormControl(dataItem.STATE_ID  , ) ,
 'STATE_NAME' : new FormControl(dataItem.STATE_NAME  , ) ,
+'SAME_AS_ACTIVE_APPEARANCE' : new FormControl(dataItem.SAME_AS_ACTIVE_APPEARANCE  , ) ,
 'BACK_COLOR' : new FormControl(dataItem.BACK_COLOR  , ) ,
 'VALUE' : new FormControl(dataItem.VALUE  , ) ,
 'PATTERN_COLOR' : new FormControl(dataItem.PATTERN_COLOR  , ) ,
@@ -33,16 +34,16 @@ import { scdshapeStateScdSsdShapeStateDefinition , componentConfigDef} from '@mo
 'FONT_ITALIC' : new FormControl(dataItem.FONT_ITALIC  , ) ,
 'FONT_UNDERLINE' : new FormControl(dataItem.FONT_UNDERLINE  , ) ,
 'CAPTION_COLOR' : new FormControl(dataItem.CAPTION_COLOR  , ) ,
-'CAPTION_BLINK' : new FormControl(dataItem.CAPTION_BLINK  , ) ,
 'CAPTION_BACK_COLOR' : new FormControl(dataItem.CAPTION_BACK_COLOR  , ) ,
+'CAPTION_BLINK' : new FormControl(dataItem.CAPTION_BLINK  , ) ,
 'CAPTION_WORD_WRAP' : new FormControl(dataItem.CAPTION_WORD_WRAP  , ) ,
 'CAPTION_ALIGNMENT' : new FormControl(dataItem.CAPTION_ALIGNMENT  , ) ,
 'CAPTION_BACK_STYLE' : new FormControl(dataItem.CAPTION_BACK_STYLE  , ) ,
 'IMAGE_NAME' : new FormControl(dataItem.IMAGE_NAME  , ) ,
 'IMAGE_TYPE' : new FormControl(dataItem.IMAGE_TYPE  , ) ,
 'IMAGE_COLOR' : new FormControl(dataItem.IMAGE_COLOR  , ) ,
-'IMAGE_BLINK' : new FormControl(dataItem.IMAGE_BLINK  , ) ,
 'IMAGE_BACK_COLOR' : new FormControl(dataItem.IMAGE_BACK_COLOR  , ) ,
+'IMAGE_BLINK' : new FormControl(dataItem.IMAGE_BLINK  , ) ,
 'SCALE_IMAGE' : new FormControl(dataItem.SCALE_IMAGE  , ) ,
 'IMAGE_ALIGNMENT' : new FormControl(dataItem.IMAGE_ALIGNMENT  , ) 
 });
@@ -118,6 +119,8 @@ public labelSTATE_IDTop=false;
 public labelSTATE_IDVisible=true;
 public labelSTATE_NAMETop=false;
 public labelSTATE_NAMEVisible=true;
+public labelSAME_AS_ACTIVE_APPEARANCETop=false;
+public labelSAME_AS_ACTIVE_APPEARANCEVisible=true;
 public labelBACK_COLORTop=false;
 public labelBACK_COLORVisible=true;
 public labelVALUETop=false;
@@ -146,10 +149,10 @@ public labelFONT_UNDERLINETop=false;
 public labelFONT_UNDERLINEVisible=true;
 public labelCAPTION_COLORTop=false;
 public labelCAPTION_COLORVisible=true;
-public labelCAPTION_BLINKTop=false;
-public labelCAPTION_BLINKVisible=true;
 public labelCAPTION_BACK_COLORTop=false;
 public labelCAPTION_BACK_COLORVisible=true;
+public labelCAPTION_BLINKTop=false;
+public labelCAPTION_BLINKVisible=true;
 public labelCAPTION_WORD_WRAPTop=false;
 public labelCAPTION_WORD_WRAPVisible=true;
 public labelCAPTION_ALIGNMENTTop=false;
@@ -164,10 +167,10 @@ public labelIMAGE_TYPETop=false;
 public labelIMAGE_TYPEVisible=true;
 public labelIMAGE_COLORTop=false;
 public labelIMAGE_COLORVisible=true;
-public labelIMAGE_BLINKTop=false;
-public labelIMAGE_BLINKVisible=true;
 public labelIMAGE_BACK_COLORTop=false;
 public labelIMAGE_BACK_COLORVisible=true;
+public labelIMAGE_BLINKTop=false;
+public labelIMAGE_BLINKVisible=true;
 public labelSCALE_IMAGETop=false;
 public labelSCALE_IMAGEVisible=true;
 public labelIMAGE_ALIGNMENTTop=false;
@@ -176,7 +179,8 @@ public labelIMAGE_ALIGNMENTVisible=true;
 public visibleSHAPE_STATE_ID = false;
 public visibleSHAPE_ID = false;
 public visibleSTATE_ID = false;
-public visibleSTATE_NAME = false;
+public visibleSTATE_NAME = true;
+public visibleSAME_AS_ACTIVE_APPEARANCE = false;
 public visibleBACK_COLOR = true;
 public visibleVALUE = true;
 public visiblePATTERN_COLOR = true;
@@ -191,8 +195,8 @@ public visibleFONT_BOLD = true;
 public visibleFONT_ITALIC = true;
 public visibleFONT_UNDERLINE = true;
 public visibleCAPTION_COLOR = true;
-public visibleCAPTION_BLINK = true;
 public visibleCAPTION_BACK_COLOR = true;
+public visibleCAPTION_BLINK = true;
 public visibleCAPTION_WORD_WRAP = true;
 public visibleCAPTION_ALIGNMENT = true;
 public visibleCAPTION_BACK_STYLE = true;
@@ -200,8 +204,8 @@ public visibleIMAGE_NAME = true;
 public visibleIMAGE_SELECT_STATE = true;
 public visibleIMAGE_TYPE = false;
 public visibleIMAGE_COLOR = true;
-public visibleIMAGE_BLINK = true;
 public visibleIMAGE_BACK_COLOR = true;
+public visibleIMAGE_BLINK = true;
 public visibleSCALE_IMAGE = true;
 public visibleIMAGE_ALIGNMENT = true;
 
@@ -209,6 +213,7 @@ public disableSHAPE_STATE_ID = false;
 public disableSHAPE_ID = false;
 public disableSTATE_ID = false;
 public disableSTATE_NAME = false;
+public disableSAME_AS_ACTIVE_APPEARANCE = false;
 public disableBACK_COLOR = false;
 public disableVALUE = false;
 public disablePATTERN_COLOR = false;
@@ -223,8 +228,8 @@ public disableFONT_BOLD = false;
 public disableFONT_ITALIC = false;
 public disableFONT_UNDERLINE = false;
 public disableCAPTION_COLOR = false;
-public disableCAPTION_BLINK = false;
 public disableCAPTION_BACK_COLOR = false;
+public disableCAPTION_BLINK = false;
 public disableCAPTION_WORD_WRAP = false;
 public disableCAPTION_ALIGNMENT = false;
 public disableCAPTION_BACK_STYLE = false;
@@ -232,8 +237,8 @@ public disableIMAGE_NAME = false;
 public disableIMAGE_SELECT_STATE = false;
 public disableIMAGE_TYPE = false;
 public disableIMAGE_COLOR = false;
-public disableIMAGE_BLINK = false;
 public disableIMAGE_BACK_COLOR = false;
+public disableIMAGE_BLINK = false;
 public disableSCALE_IMAGE = false;
 public disableIMAGE_ALIGNMENT = false;
 
@@ -859,6 +864,35 @@ public printScreen(){
   }
   async WHEN_NOTIFY(ComponentConfig){
     
+
+if (ComponentConfig.title != null) {
+    console.log("WHEN_NOTIFY:title:", ComponentConfig.title)
+    if (ComponentConfig.title.toUpperCase().startsWith("ACTIVE"))
+        this.appMode = "ACTIVE";
+    else if (ComponentConfig.title.toUpperCase().startsWith("INACTIVE"))
+        this.appMode = "INACTIVE";
+    else if (ComponentConfig.title.toUpperCase().startsWith("LABEL"))
+        this.appMode = "LABEL";
+    console.log("this.appMode:", this.appMode)
+    switch (this.appMode) {
+
+        case 'ACTIVE':
+            this.visibleSAME_AS_ACTIVE_APPEARANCE = false;
+            break;
+        case 'INACTIVE':
+            this.visibleSAME_AS_ACTIVE_APPEARANCE = true;
+            break;
+        case 'LABEL':
+            this.visibleSAME_AS_ACTIVE_APPEARANCE = false;
+             this.FormStepsArr[1].visible =false;
+            break;
+        default:
+            break;
+    }
+
+
+}
+
   }
   async WHEN_NEW_FORM_INSTANCE(){
     	// if (!this.isChild){
@@ -908,6 +942,9 @@ public printScreen(){
   }
   async  PRE_QUERY (formGroup){
     
+    this.masterKeyArr[2] = this.appMode ;
+    this.masterKeyNameArr[2] = 'STATE_NAME'
+    console.log ("this.appMode:", this.appMode, this.masterKeyArr, this.masterKeyNameArr)
    
   }
   async  POST_QUERY(formGroup){
@@ -1002,6 +1039,26 @@ async WHEN_VALIDATE_ITEM_STATE_NAME(value) {
  }
 
  async ON_CLICK_STATE_NAME(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SAME_AS_ACTIVE_APPEARANCE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SAME_AS_ACTIVE_APPEARANCE'] != "undefined" ) 
+      this.form.controls['SAME_AS_ACTIVE_APPEARANCE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SAME_AS_ACTIVE_APPEARANCE'] != "undefined" ) 
+     this.form.get('SAME_AS_ACTIVE_APPEARANCE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SAME_AS_ACTIVE_APPEARANCE(event){
 
 }
 
@@ -1285,26 +1342,6 @@ async WHEN_VALIDATE_ITEM_CAPTION_COLOR(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_CAPTION_BLINK(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['CAPTION_BLINK'] != "undefined" ) 
-      this.form.controls['CAPTION_BLINK'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['CAPTION_BLINK'] != "undefined" ) 
-     this.form.get('CAPTION_BLINK').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_CAPTION_BLINK(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_CAPTION_BACK_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1322,6 +1359,26 @@ async WHEN_VALIDATE_ITEM_CAPTION_BACK_COLOR(value) {
  }
 
  async ON_CLICK_CAPTION_BACK_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_CAPTION_BLINK(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['CAPTION_BLINK'] != "undefined" ) 
+      this.form.controls['CAPTION_BLINK'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['CAPTION_BLINK'] != "undefined" ) 
+     this.form.get('CAPTION_BLINK').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CAPTION_BLINK(event){
 
 }
 
@@ -1465,26 +1522,6 @@ async WHEN_VALIDATE_ITEM_IMAGE_COLOR(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_IMAGE_BLINK(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['IMAGE_BLINK'] != "undefined" ) 
-      this.form.controls['IMAGE_BLINK'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['IMAGE_BLINK'] != "undefined" ) 
-     this.form.get('IMAGE_BLINK').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_IMAGE_BLINK(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_IMAGE_BACK_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1502,6 +1539,26 @@ async WHEN_VALIDATE_ITEM_IMAGE_BACK_COLOR(value) {
  }
 
  async ON_CLICK_IMAGE_BACK_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_IMAGE_BLINK(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['IMAGE_BLINK'] != "undefined" ) 
+      this.form.controls['IMAGE_BLINK'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['IMAGE_BLINK'] != "undefined" ) 
+     this.form.get('IMAGE_BLINK').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_IMAGE_BLINK(event){
 
 }
 
@@ -1575,6 +1632,15 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(value) {
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
  await   this.WHEN_VALIDATE_ITEM_STATE_NAME(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SAME_AS_ACTIVE_APPEARANCE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SAME_AS_ACTIVE_APPEARANCE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
@@ -1668,6 +1734,12 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_CAPTION_BACK_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_CAPTION_BACK_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_CAPTION_BLINK(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1677,12 +1749,6 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_CAPTION_BACK_COLOR(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_CAPTION_BACK_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_CAPTION_WORD_WRAP(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1734,6 +1800,12 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_IMAGE_BACK_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_IMAGE_BACK_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_IMAGE_BLINK(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1743,12 +1815,6 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_IMAGE_BACK_COLOR(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_IMAGE_BACK_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_SCALE_IMAGE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1767,7 +1833,7 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  }
-
+public appMode = "";
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

@@ -97,6 +97,19 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSAME_AS_ACTIVE_APPEARANCETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSAME_AS_ACTIVE_APPEARANCE >
+		<kendo-label *ngIf="(!labelSAME_AS_ACTIVE_APPEARANCETop && !isPhonePortrait) && labelSAME_AS_ACTIVE_APPEARANCEVisible" class="form-label" [for]="SAME_AS_ACTIVE_APPEARANCE" [text]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE','Same As Active Appearance')"></kendo-label>
+		<label *ngIf="(labelSAME_AS_ACTIVE_APPEARANCETop || isPhonePortrait) && labelSAME_AS_ACTIVE_APPEARANCEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE','Same As Active Appearance')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SAME_AS_ACTIVE_APPEARANCE"
+  #SAME_AS_ACTIVE_APPEARANCE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE_Hint','Please enter Same As Active Appearance.')"		(click)="ON_CLICK_SAME_AS_ACTIVE_APPEARANCE($event)"
+ (change)="onChange_SAME_AS_ACTIVE_APPEARANCE($event)"      adaptiveMode="auto" 
+	 name="SAME_AS_ACTIVE_APPEARANCE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE_Hint','Please enter Same As Active Appearance.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
@@ -295,22 +308,6 @@
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.CAPTION_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_BLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_BLINK >
-		<kendo-label *ngIf="(!labelCAPTION_BLINKTop && !isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label" [for]="CAPTION_BLINK" [text]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK','Caption Blink')"></kendo-label>
-		<label *ngIf="(labelCAPTION_BLINKTop || isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK','Caption Blink')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="CAPTION_BLINK"
-  #CAPTION_BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')"		(click)="ON_CLICK_CAPTION_BLINK($event)"
- (change)="onChange_CAPTION_BLINK($event)"      adaptiveMode="auto" 
-	 name="CAPTION_BLINK"  ToggleValue  [true]= "'Y'" [false]= "''" 
- kendoTooltip 
- [title]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
- />
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_BACK_COLOR >
 		<kendo-label *ngIf="(!labelCAPTION_BACK_COLORTop && !isPhonePortrait) && labelCAPTION_BACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BACK_COLOR','Caption Back Color')"></kendo-label>
 		<label *ngIf="(labelCAPTION_BACK_COLORTop || isPhonePortrait) && labelCAPTION_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BACK_COLOR','Caption Back Color')}}</label>
@@ -322,6 +319,19 @@
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_CAPTION_BACK_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.CAPTION_BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_BLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_BLINK >
+		<kendo-label *ngIf="(!labelCAPTION_BLINKTop && !isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label" [for]="CAPTION_BLINK" [text]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK','Caption Blink')"></kendo-label>
+		<label *ngIf="(labelCAPTION_BLINKTop || isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK','Caption Blink')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="CAPTION_BLINK"
+  #CAPTION_BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')"		(click)="ON_CLICK_CAPTION_BLINK($event)"
+ (change)="onChange_CAPTION_BLINK($event)"      adaptiveMode="auto" 
+	 name="CAPTION_BLINK"  ToggleValue  [true]= "'Y'" [false]= "''" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_WORD_WRAPTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_WORD_WRAP >
@@ -430,22 +440,6 @@
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.IMAGE_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_BLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_BLINK >
-		<kendo-label *ngIf="(!labelIMAGE_BLINKTop && !isPhonePortrait) && labelIMAGE_BLINKVisible" class="form-label" [for]="IMAGE_BLINK" [text]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK','Image Blink')"></kendo-label>
-		<label *ngIf="(labelIMAGE_BLINKTop || isPhonePortrait) && labelIMAGE_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK','Image Blink')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="IMAGE_BLINK"
-  #IMAGE_BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK_Hint','Please enter Image Blink.')"		(click)="ON_CLICK_IMAGE_BLINK($event)"
- (change)="onChange_IMAGE_BLINK($event)"      adaptiveMode="auto" 
-	 name="IMAGE_BLINK"  ToggleValue  [true]= "'Y'" [false]= "''" 
- kendoTooltip 
- [title]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK_Hint','Please enter Image Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
- />
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_BACK_COLOR >
 		<kendo-label *ngIf="(!labelIMAGE_BACK_COLORTop && !isPhonePortrait) && labelIMAGE_BACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BACK_COLOR','Image Back Color')"></kendo-label>
 		<label *ngIf="(labelIMAGE_BACK_COLORTop || isPhonePortrait) && labelIMAGE_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BACK_COLOR','Image Back Color')}}</label>
@@ -457,6 +451,19 @@
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_IMAGE_BACK_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.IMAGE_BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_BLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_BLINK >
+		<kendo-label *ngIf="(!labelIMAGE_BLINKTop && !isPhonePortrait) && labelIMAGE_BLINKVisible" class="form-label" [for]="IMAGE_BLINK" [text]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK','Image Blink')"></kendo-label>
+		<label *ngIf="(labelIMAGE_BLINKTop || isPhonePortrait) && labelIMAGE_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK','Image Blink')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="IMAGE_BLINK"
+  #IMAGE_BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK_Hint','Please enter Image Blink.')"		(click)="ON_CLICK_IMAGE_BLINK($event)"
+ (change)="onChange_IMAGE_BLINK($event)"      adaptiveMode="auto" 
+	 name="IMAGE_BLINK"  ToggleValue  [true]= "'Y'" [false]= "''" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SSD_SHAPE_STATE_DEFINITION.scdshapeStateScdSsdShapeStateDefinition.IMAGE_BLINK_Hint','Please enter Image Blink.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSCALE_IMAGETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSCALE_IMAGE >

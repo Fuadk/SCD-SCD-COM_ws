@@ -662,9 +662,9 @@ public printScreen(){
     
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
     
   }

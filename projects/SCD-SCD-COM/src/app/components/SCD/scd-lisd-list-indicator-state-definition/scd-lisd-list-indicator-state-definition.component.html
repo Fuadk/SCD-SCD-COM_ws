@@ -55,7 +55,7 @@
  kendoTextBox #LIST_INDICATOR_STATE_ID 
 		[readonly]="primarKeyReadOnlyArr.isLIST_INDICATOR_STATE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.LIST_INDICATOR_STATE_ID_Hint','Please enter List Indicator State Id.')"
 		(click)="ON_CLICK_LIST_INDICATOR_STATE_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LIST_INDICATOR_STATE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
@@ -66,7 +66,7 @@
 
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -85,7 +85,7 @@
 		<input   formControlName="STATE_ID"
  kendoTextBox #STATE_ID  [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.STATE_ID_Hint','Please enter State Id.')"
 		(click)="ON_CLICK_STATE_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_NAME >
@@ -94,7 +94,7 @@
 		<input   formControlName="STATE_NAME"
  kendoTextBox #STATE_NAME  [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.STATE_NAME_Hint','Please enter State Name.')"
 		(click)="ON_CLICK_STATE_NAME($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -106,7 +106,7 @@
 		<input   formControlName="VALUE"
  kendoTextBox #VALUE  [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.VALUE_Hint','Please enter Value.')"
 		(click)="ON_CLICK_VALUE($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -118,7 +118,7 @@
 	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelCAPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION >
 		<kendo-label *ngIf="(!labelCAPTIONTop && !isPhonePortrait) && labelCAPTIONVisible" class="form-label" [for]="CAPTION" [text]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION','Caption')"></kendo-label>
 		<label *ngIf="(labelCAPTIONTop || isPhonePortrait) && labelCAPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION','Caption')}}</label>
-		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="5" [cols]="50"  kendoTextBox  formControlName="CAPTION"
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="1" [cols]="50"  kendoTextBox  formControlName="CAPTION"
  #CAPTION
   [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION_Hint','Please enter Caption.')"		(click)="ON_CLICK_CAPTION($event)"
      adaptiveMode="auto" ></kendo-textarea>
@@ -133,7 +133,7 @@
 		<kendo-combobox  #INSERT_VARIABLE class="form-field-combobox"  [formControlName]="'INSERT_VARIABLE'"
 		[data]="lkpArrINSERT_VARIABLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.INSERT_VARIABLE_Hint','Please enter Insert Variable.')"		(click)="ON_CLICK_INSERT_VARIABLE($event)"
- style="width : 200px ;"    adaptiveMode="auto" 
+ (valueChange)="onValueChange_INSERT_VARIABLE($event)"  style="width : 200px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -156,7 +156,7 @@
   #CAPTION_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_CAPTION_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_CAPTION_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_CAPTION_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.CAPTION_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -168,7 +168,7 @@
 		<kendo-combobox  #CAPTION_BACK_STYLE class="form-field-combobox"  [formControlName]="'CAPTION_BACK_STYLE'"
 		[data]="lkpArrCAPTION_BACK_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION_BACK_STYLE_Hint','Please enter Caption Back Style.')"		(click)="ON_CLICK_CAPTION_BACK_STYLE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_CAPTION_BACK_STYLE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -191,7 +191,7 @@
   #CAPTION_BACK_COLOR 
 		 *ngIf="!customerFacing" 
  		(click)="ON_CLICK_CAPTION_BACK_COLOR($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_CAPTION_BACK_COLOR($event)"      adaptiveMode="auto" 
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_CAPTION_BACK_COLOR($event)"
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.CAPTION_BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
@@ -202,7 +202,11 @@
 		<label *ngIf="(labelCAPTION_BLINKTop || isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION_BLINK','Caption Blink')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="CAPTION_BLINK"
   #CAPTION_BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')"		(click)="ON_CLICK_CAPTION_BLINK($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_CAPTION_BLINK($event)"      adaptiveMode="auto" 
+	 name="CAPTION_BLINK"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -213,13 +217,13 @@
 		<kendo-label *ngIf="(!labelCAPTION_ALIGNMENTTop && !isPhonePortrait) && labelCAPTION_ALIGNMENTVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION_ALIGNMENT','Caption Alignment')"></kendo-label>
 		<label *ngIf="(labelCAPTION_ALIGNMENTTop || isPhonePortrait) && labelCAPTION_ALIGNMENTVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LISD_LIST_INDICATOR_STATE_DEFINITION.scdlistIndicatorStateScdLisdListIndicatorStateDefinition.CAPTION_ALIGNMENT','Caption Alignment')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_CAPTION_ALIGNMENT($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_CAPTION_ALIGNMENT($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrCAPTION_ALIGNMENT">
+			<li class="k-radio-item" *ngFor="let item of lkpArrCAPTION_ALIGNMENT"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'CAPTION_ALIGNMENT'"
 					#CAPTION_ALIGNMENT ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="CAPTION_ALIGNMENT " 
+				<kendo-label  [for]="CAPTION_ALIGNMENT " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>

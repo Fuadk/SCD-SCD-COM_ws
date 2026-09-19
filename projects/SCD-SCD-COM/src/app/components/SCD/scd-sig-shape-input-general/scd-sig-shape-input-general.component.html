@@ -88,6 +88,14 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+		<button  (valueChange)="onValueChange_TAG_BUT($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAG_BUT_Hint','Please enter Tag But.')" 
+ iconClass="fas fa-tags"  *ngIf=visibleTAG_BUT 		(click)="ON_CLICK_TAG_BUT($event)"
+ >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAG_BUT','Tag')}}</button>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDEFAULT_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDEFAULT_DATA >
 		<kendo-label *ngIf="(!labelDEFAULT_DATATop && !isPhonePortrait) && labelDEFAULT_DATAVisible" class="form-label" [for]="DEFAULT_DATA" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DEFAULT_DATA','Default Data')"></kendo-label>
 		<label *ngIf="(labelDEFAULT_DATATop || isPhonePortrait) && labelDEFAULT_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DEFAULT_DATA','Default Data')}}</label>
@@ -97,9 +105,6 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DEFAULT_DATA($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAB_INDEXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAB_INDEX >
 		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label" [for]="TAB_INDEX" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX','Tab Index')"></kendo-label>
 		<label *ngIf="(labelTAB_INDEXTop || isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX','Tab Index')}}</label>
@@ -107,6 +112,22 @@
  kendoTextBox #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
 		(click)="ON_CLICK_TAB_INDEX($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAB_INDEX($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_ON_SCREEN_KEYBOARDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ON_SCREEN_KEYBOARD >
+		<kendo-label *ngIf="(!labelDISPLAY_ON_SCREEN_KEYBOARDTop && !isPhonePortrait) && labelDISPLAY_ON_SCREEN_KEYBOARDVisible" class="form-label" [for]="DISPLAY_ON_SCREEN_KEYBOARD" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD','Screen Keyboard')"></kendo-label>
+		<label *ngIf="(labelDISPLAY_ON_SCREEN_KEYBOARDTop || isPhonePortrait) && labelDISPLAY_ON_SCREEN_KEYBOARDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD','Screen Keyboard')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="DISPLAY_ON_SCREEN_KEYBOARD"
+  #DISPLAY_ON_SCREEN_KEYBOARD kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD_Hint','Please enter Display On Screen Keyboard.')"		(click)="ON_CLICK_DISPLAY_ON_SCREEN_KEYBOARD($event)"
+ (change)="onChange_DISPLAY_ON_SCREEN_KEYBOARD($event)"      adaptiveMode="auto" 
+	 name="DISPLAY_ON_SCREEN_KEYBOARD"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD_Hint','Please enter Display On Screen Keyboard.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSECURITYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSECURITY >
@@ -126,21 +147,6 @@
 		 </div> 
 		 </ng-template> 
 		</kendo-combobox>
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_ON_SCREEN_KEYBOARDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ON_SCREEN_KEYBOARD >
-		<kendo-label *ngIf="(!labelDISPLAY_ON_SCREEN_KEYBOARDTop && !isPhonePortrait) && labelDISPLAY_ON_SCREEN_KEYBOARDVisible" class="form-label" [for]="DISPLAY_ON_SCREEN_KEYBOARD" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD','Screen Keyboard')"></kendo-label>
-		<label *ngIf="(labelDISPLAY_ON_SCREEN_KEYBOARDTop || isPhonePortrait) && labelDISPLAY_ON_SCREEN_KEYBOARDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD','Screen Keyboard')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="DISPLAY_ON_SCREEN_KEYBOARD"
-  #DISPLAY_ON_SCREEN_KEYBOARD kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD_Hint','Please enter Display On Screen Keyboard.')"		(click)="ON_CLICK_DISPLAY_ON_SCREEN_KEYBOARD($event)"
- (change)="onChange_DISPLAY_ON_SCREEN_KEYBOARD($event)"      adaptiveMode="auto" 
- kendoTooltip 
- [title]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD_Hint','Please enter Display On Screen Keyboard.')" 
-[position]="'top'" [showOn]="'hover'"  
- />
 	</kendo-formfield>
 
 
@@ -222,7 +228,7 @@
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'E_SIGNATURE_SETTINGS'"
 					#E_SIGNATURE_SETTINGS ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="E_SIGNATURE_SETTINGS " 
+				<kendo-label  [for]="E_SIGNATURE_SETTINGS " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>

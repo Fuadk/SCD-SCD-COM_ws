@@ -87,10 +87,11 @@ export class ScdShapeStatesPropertiesComponent implements OnInit {
     await this.starServices.sleep(200);
     // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
    this.SCD_SHAPE_STATEGrid_0Config = new componentConfigDef();
-   this.SCD_SHAPE_STATEGrid_0Config.title = this.starServices.getNLS([],"scd_shape_states_properties.scd_shape_states_properties.compsTitleID1","State List1");
+   this.SCD_SHAPE_STATEGrid_0Config.title = this.starServices.getNLS([],"scd_shape_states_properties.scd_shape_states_properties.compsTitleID1","State List");
    this.SCD_SHAPE_STATEGrid_0Config.isMaster = true;
    this.SCD_SHAPE_STATEGrid_0Config.isSearchScreen = this.isSearchScreen;
-   this.SCD_SHAPE_STATEGrid_0Config.showToolBar = !this.visibleOK_BTNS; 
+	if (this.visibleOK_BTNS) 
+   	this.SCD_SHAPE_STATEGrid_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_SHAPE_STATEGrid_0Config.queryable = false;
      this.SCD_SHAPE_STATEGrid_0Config.removeable = false;
@@ -236,7 +237,7 @@ export class ScdShapeStatesPropertiesComponent implements OnInit {
            setTimeout(() => {
              this.SCD_SHAPE_STATEGrid_0Config = new componentConfigDef();
              this.SCD_SHAPE_STATEGrid_0Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_SHAPE_STATEGrid_0Config.title = this.starServices.getNLS([],"scd_shape_states_properties.scd_shape_states_properties.compsTitleID1","State List1");
+             this.SCD_SHAPE_STATEGrid_0Config.title = this.starServices.getNLS([],"scd_shape_states_properties.scd_shape_states_properties.compsTitleID1","State List");
              this.SCD_SHAPE_STATEFormdivs_1Config = new componentConfigDef();
              this.SCD_SHAPE_STATEFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_SHAPE_STATEFormdivs_1Config.title = this.starServices.getNLS([],"scd_shape_states_properties.scd_shape_states_properties.compsTitleID2","State");

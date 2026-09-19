@@ -123,6 +123,35 @@
  />
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK >
+		<kendo-label *ngIf="(!labelBLINKTop && !isPhonePortrait) && labelBLINKVisible" class="form-label" [for]="BLINK" [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK','Blink')"></kendo-label>
+		<label *ngIf="(labelBLINKTop || isPhonePortrait) && labelBLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK','Blink')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BLINK"
+  #BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK_Hint','Please enter Blink.')"		(click)="ON_CLICK_BLINK($event)"
+ (change)="onChange_BLINK($event)"      adaptiveMode="auto" 
+	 name="BLINK"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK_Hint','Please enter Blink.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
+		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_COLOR','Border Color')"></kendo-label>
+		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_COLOR','Border Color')}}</label>
+		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BORDER_COLOR"
+  #BORDER_COLOR 
+		 *ngIf="!customerFacing" 
+ 		(click)="ON_CLICK_BORDER_COLOR($event)"
+ (valueChange)="onValueChange_BORDER_COLOR($event)"      adaptiveMode="auto" 
+		 ></kendo-colorpicker>
+	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BORDER_COLOR($event)"
+		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BORDER_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
+	</kendo-formfield>
+
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelHIGHLIGHT_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleHIGHLIGHT_COLOR >
 		<kendo-label *ngIf="(!labelHIGHLIGHT_COLORTop && !isPhonePortrait) && labelHIGHLIGHT_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.HIGHLIGHT_COLOR','Highlight Color')"></kendo-label>
 		<label *ngIf="(labelHIGHLIGHT_COLORTop || isPhonePortrait) && labelHIGHLIGHT_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.HIGHLIGHT_COLOR','Highlight Color')}}</label>
@@ -152,19 +181,6 @@
 		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BACK_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_COLOR','Border Color')"></kendo-label>
-		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BORDER_COLOR','Border Color')}}</label>
-		<kendo-colorpicker  [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' "  formControlName="BORDER_COLOR"
-  #BORDER_COLOR 
-		 *ngIf="!customerFacing" 
- 		(click)="ON_CLICK_BORDER_COLOR($event)"
- (valueChange)="onValueChange_BORDER_COLOR($event)"      adaptiveMode="auto" 
-		 ></kendo-colorpicker>
-	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_BORDER_COLOR($event)"
-		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BORDER_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
-	</kendo-formfield>
-
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_COLOR >
 		<kendo-label *ngIf="(!labelPATTERN_COLORTop && !isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.PATTERN_COLOR','Pattern Color')"></kendo-label>
 		<label *ngIf="(labelPATTERN_COLORTop || isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.PATTERN_COLOR','Pattern Color')}}</label>
@@ -176,19 +192,6 @@
 		 ></kendo-colorpicker>
 	 <p class="card-format" *ngIf="customerFacing" 		(click)="ON_CLICK_PATTERN_COLOR($event)"
 		     adaptiveMode="auto"  width="50" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.PATTERN_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
-	</kendo-formfield>
-
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK >
-		<kendo-label *ngIf="(!labelBLINKTop && !isPhonePortrait) && labelBLINKVisible" class="form-label" [for]="BLINK" [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK','Blink')"></kendo-label>
-		<label *ngIf="(labelBLINKTop || isPhonePortrait) && labelBLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK','Blink')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BLINK"
-  #BLINK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK_Hint','Please enter Blink.')"		(click)="ON_CLICK_BLINK($event)"
- (change)="onChange_BLINK($event)"      adaptiveMode="auto" 
-	 name="BLINK"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
- kendoTooltip 
- [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.BLINK_Hint','Please enter Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
- />
 	</kendo-formfield>
 
 
@@ -301,7 +304,7 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="USE_VARIABLE_LOWER_UPPER_LIMIT"
   #USE_VARIABLE_LOWER_UPPER_LIMIT kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_LOWER_UPPER_LIMIT_Hint','Please enter Use Variable Lower Upper Limit.')"		(click)="ON_CLICK_USE_VARIABLE_LOWER_UPPER_LIMIT($event)"
  (change)="onChange_USE_VARIABLE_LOWER_UPPER_LIMIT($event)"      adaptiveMode="auto" 
-	 name="USE_VARIABLE_LOWER_UPPER_LIMIT"  ToggleValue  [true]= "'Y'" [false]= "'0'" 
+	 name="USE_VARIABLE_LOWER_UPPER_LIMIT"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.USE_VARIABLE_LOWER_UPPER_LIMIT_Hint','Please enter Use Variable Lower Upper Limit.')" 
 [position]="'top'" [showOn]="'hover'"  
@@ -433,9 +436,6 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLOWER_LIMITTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLOWER_LIMIT >
 		<kendo-label *ngIf="(!labelLOWER_LIMITTop && !isPhonePortrait) && labelLOWER_LIMITVisible" class="form-label" [for]="LOWER_LIMIT" [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.LOWER_LIMIT','Lower Limit')"></kendo-label>
 		<label *ngIf="(labelLOWER_LIMITTop || isPhonePortrait) && labelLOWER_LIMITVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.LOWER_LIMIT','Lower Limit')}}</label>

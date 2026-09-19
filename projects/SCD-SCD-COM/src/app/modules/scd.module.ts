@@ -295,15 +295,21 @@ import { ScdShapeDefaultsScdScdShapeDefaultsGridGridComponent } from '../compone
 
 
 
-import { ScdShapeExpressionScdScdShapeExpressionGridGridComponent } from '../components/SCD/scd-scd-shape-expression-grid/scd-scd-shape-expression-grid.component';
-import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
+
+
 import { ScdExpressionEditorScdEeExpressionEditorFormComponent } from '../components/SCD/scd-ee-expression-editor/scd-ee-expression-editor.component';
-import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+
 import { ScdShapeScdTpCommonScreenFormComponent } from '../components/SCD/scd-tp-common-screen/scd-tp-common-screen.component';
 import { ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent } from '../components/SCD/scd-gps-grid-properties/scd-gps-grid-properties.component';
 import { ScdGridPropertiesSettingsComponent } from '../components/SCD/scd-grid-properties-settings/scd-grid-properties-settings.component';
 
 import { ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent } from '../components/SCD/scd-ssd-shape-state-definition/scd-ssd-shape-state-definition.component';
+import { ScdNavigationButtonPropertiesComponent } from '../components/SCD/scd-navigation-button-properties/scd-navigation-button-properties.component';
+import { ScdRampButtonTimingComponent } from '../components/SCD/scd-ramp-button-timing/scd-ramp-button-timing.component';
+import { ScdLocalMessageDisplayPropertiesComponent } from '../components/SCD/scd-local-message-display-properties/scd-local-message-display-properties.component';
+import { ScdLocalMessagePropertiesComponent } from '../components/SCD/scd-local-message-properties/scd-local-message-properties.component';
+import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/SCD/scd-scd-application-form/scd-scd-application-form.component';
+import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
 const scdRoutes: Routes = [
  
 
@@ -521,15 +527,21 @@ const scdRoutes: Routes = [
 
 
 
-		{ path: 'scd_scd_shape_expression_grid', component: ScdShapeExpressionScdScdShapeExpressionGridGridComponent },
-		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
+
+
 		{ path: 'scd_ee_expression_editor', component: ScdExpressionEditorScdEeExpressionEditorFormComponent },
-		{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+
 		{ path: 'scd_tp_common_screen', component: ScdShapeScdTpCommonScreenFormComponent },
 		{ path: 'scd_gps_grid_properties', component: ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent },
 		{ path: 'scd_grid_properties_settings', component: ScdGridPropertiesSettingsComponent },
 
 		{ path: 'scd_ssd_shape_state_definition', component: ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent },
+		{ path: 'scd_navigation_button_properties', component: ScdNavigationButtonPropertiesComponent },
+		{ path: 'scd_ramp_button_timing', component: ScdRampButtonTimingComponent },
+		{ path: 'scd_local_message_display_properties', component: ScdLocalMessageDisplayPropertiesComponent },
+		{ path: 'scd_local_message_properties', component: ScdLocalMessagePropertiesComponent },
+		{ path: 'scd_scd_application_form', component: ScdApplicationScdScdApplicationFormFormComponent },
+		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
 ];
 
 
@@ -750,15 +762,21 @@ const scdRoutes: Routes = [
 
 
 
-		ScdShapeExpressionScdScdShapeExpressionGridGridComponent,
-		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
+
+
 		ScdExpressionEditorScdEeExpressionEditorFormComponent,
-		ScdApplicationScdScdApplicationFormFormComponent,
+
 		ScdShapeScdTpCommonScreenFormComponent,
 		ScdGridPropertiesScdGpsGridPropertiesFormdivsComponent,
 		ScdGridPropertiesSettingsComponent,
 
 		ScdShapeStateScdSsdShapeStateDefinitionFormdivsComponent,
+		ScdNavigationButtonPropertiesComponent,
+		ScdRampButtonTimingComponent,
+		ScdLocalMessageDisplayPropertiesComponent,
+		ScdLocalMessagePropertiesComponent,
+		ScdApplicationScdScdApplicationFormFormComponent,
+		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
   ],
   
   imports: [

@@ -1,5 +1,5 @@
 <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
-<legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{
+<legend class="k-form-legend" *ngIf="componentConfig.showToolBar">{{
       componentConfig.title ? componentConfig.title :
        this.starServices.getNLS([],"SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.component_title","List Indicator States List") }}</legend>
 	
@@ -86,7 +86,7 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STATE_NAME"
  *ngIf=visibleSTATE_NAME  [editable]=" !(disabledColumns.indexOf('STATE_NAME') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('STATE_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.STATE_NAME','State Name')}}"  [width]="100">
+ [hidden]="hiddenColumns.indexOf('STATE_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.STATE_NAME','State Name')}}"  [width]="30">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.STATE_NAME}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_STATE_NAME()"      [formControl]="formGroup.get('STATE_NAME')" [placeholder]="starServices.getNLS([],'SCD_LISP_LIST_INDICATOR_STATES_LIST.scdlistIndicatorStateScdLispListIndicatorStatesList.STATE_NAME_Hint','Please enter State Name.')" />

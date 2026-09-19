@@ -18,6 +18,7 @@ import {
   Image as DiagramImage,
   ConnectionOptions,
   DiagramComponent,
+  Rect,
 } from "@progress/kendo-angular-diagrams";
 
 import { starServices } from 'starlib';
@@ -172,6 +173,7 @@ export class ScdDiagramScdScdDiagramDiagramDiagramComponent implements AfterView
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -236,6 +238,7 @@ public disableNAME = false;
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   @Output() setComponentConfig_Output = new EventEmitter<any>();
+  @Output() valueChange = new EventEmitter<string>();
   
   // Server management
   public availableServers: ServerConfig[] = [];
@@ -895,17 +898,137 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
 }
 
  async ON_CLICK_CONTEXT_MENU(menuType,event){
-     let shapeInfo = this.getShapeInfo();
+     setTimeout(() => {
+      this.selectedShape = null;
+    });
+    if (menuType == "DROPDOWN" && !this.insertShapeFlag) {
+      console.log("DEBUG_IT:ON_CLICK_MENU:event.Id:", event.Id);
+      if (event.Id != "SymbolFactoryPlus") {
+        if (event.text == "FreeHand") {
+          this.toggleFreehandMode();
+        }
+        this.event = event;
+        this.menuType = menuType;
+        this.insertShapeFlag = true;
+        this.pendingShapeType = this.event.text;
+        return;
+      }
+
+    }
+    this.insertShapeFlag = false;
+    let shapeInfo = this.getShapeInfo();
     let shapeType = shapeInfo['SHAPE_TYPE'];
-    console.log("DEBUG_IT:ON_CLICK_MENU:", event, menuType, this.currentShapeType,this.currentShapeId, shapeType)
+    let action = "new";
+    let SHAPE_ID = "";
+    let title = "";
+    console.log("DEBUG_IT:ON_CLICK_MENU:event:", event, "menuType:", menuType, "currentShapeType:",
+      this.currentShapeType, "currentShapeId:", this.currentShapeId, "shapeType:", shapeType)
     let Id = "";
     if (menuType == "DROPDOWN") {
+      action = "new";
       Id = event.Id;
       shapeType = event.text;
+      title = event.dataItem.ITEM_TITLE;
+
     }
     else if (menuType == "CONTEXT_MENU") {
       Id = event.item.Id;
-      console.log("ON_CLICK_MENU:id:", Id);
+      /////
+      switch (Id) {
+        case 'SHOW_GRID':
+          this.toggleGrid();
+          return;
+        case 'SNAP':
+          this.toggleSnap();
+          return;
+        case 'ZOOM_FIT':
+          this.zoomToFit();
+          return;
+        case 'ZOOM_IN':
+          this.zoomIn();
+          return;
+        case 'ZOOM_OUT':
+          this.zoomOut();
+          return;
+        default:
+          break;
+      }
+      let arr = this.currentShapeId.split(":");
+      shapeType = arr[0];
+      SHAPE_ID = arr[1];
+      action = "open";
+      ////
+      console.log("shapeType:", shapeType)
+      switch (shapeType) {
+        case 'Numeric Display':
+          Id = 'Numeric_Display_Properties';
+          break;
+        case 'String Display':
+          Id = 'String_Display_Properties';
+          break;
+        case 'Time and Date Display':
+          Id = 'Message_Date_Properties';
+          title = shapeType + '  Properties';
+          break;
+        case 'Local Message':
+          Id = 'Local_Message_Properties';
+          title = shapeType + '  Properties';
+          break;
+        case 'Text':
+          Id = 'Text_Properties';
+          title = shapeType + '  Properties';
+          break;
+        case 'Tag Label':
+          Id = 'Tag_Label_Properties';
+          title = shapeType + '  Properties';
+          break;
+        case 'Numeric Input':
+          Id = 'Numeric_Input_Properties';
+          break;
+        case 'String Input':
+          Id = 'String_Input_Properties';
+          break;
+        case 'Button':
+          Id = 'Button_Properties';
+          break;
+        case 'Momentry':
+        case 'Maintained':
+        case 'Latched':
+        case 'Interlocked':
+          Id = 'Push_Button_Properties';
+          title = shapeType + ' Push Button Properties';
+          break;
+        case 'Multistate':
+          Id = 'Arrow_Button_Timing';
+          title = shapeType + ' Push Button Properties';
+          break;
+        case 'Ramp Button':
+          Id = 'Ramp_Button_Timing';
+          title = shapeType + ' Properties';
+          break;
+        case 'Navigation Button':
+          Id = 'Navigation_Button_Properties';
+          title = shapeType + ' Properties';
+          break;
+        case 'Arrow':
+          Id = 'Arrow_Properties';
+          break;
+        case 'Panel':
+        case 'Arc':
+        case 'Elipse':
+        case 'FreeHand':
+        case 'Line':
+        case 'Polygon':
+        case 'Polyline':
+        case 'Rectangle':
+        case 'Rounded Rectangle':
+        case 'Wedge':
+          title = shapeType + ' Properties';
+          break;
+        default:
+          break;
+      }
+      console.log("ON_CLICK_MENU:id:", Id, shapeType, title);
     }
     if (Id != "") {
       let rec = this.dialogProperties.find(x => x.Component == Id);
@@ -913,20 +1036,20 @@ if ( typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
       if (typeof (rec) != 'undefined') {
         let Id = rec.Id;
         let Maximize = rec.Maximize;
-        switch(shapeType){
-          case 'SYMPOL_FACTORY': 
-		      //  Id='3';
+        switch (shapeType) {
+          case 'SYMPOL_FACTORY':
+            //  Id='3';
             break;
           default:
             break;
         }
-
+        console.log("ON_CLICK_MENU:Id:", Id)
         //this.starlib1.dialog_openDialog(this, Id,Maximize);
-        this.openPropertyDialog(this, Id, Maximize, shapeType);
+        this.openPropertyDialog(this, Id, Maximize, shapeType, action, SHAPE_ID, title);
       }
       setTimeout(() => {
-           this.selectedShape = null;
-    });
+        this.selectedShape = null;
+      });
 
     }
 
@@ -939,8 +1062,16 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
-    if (!this.isEditMode)
+  if (!this.isEditMode)
     return;
+  if (type === "select" || type === "shapeBoundsChange" || type === "change") {
+      setTimeout(() => this.syncInspectorFromSelection());
+    }
+    if (type === "change") {
+      // Paste/duplicate/delete can add or remove runtime shapes. Reconcile
+      // those changes with this.shapes as well.
+      this.applyDiagramChangeToAppMemory(event);
+    }
     // ===== ZOOM TRACKING =====
     if (type === "zoomStart") {
         this.zoomLevel = event.zoom || 1;
@@ -1009,7 +1140,6 @@ async ON_EVENT(type: string, event: any) {
     return;
 }
 if (type === "shapeBoundsChange") {
-
   const shape = event.item;
   const bounds = event.bounds;
   
@@ -1242,18 +1372,25 @@ public mapperFromOrg = {
 public mapperFrom = {"DiagramID":"DIAGRAM_ID","name":"NAME","DiagramData":"DIAGRAM_DATA"};
 public snapDistance = 6;
   public editable: DiagramEditable = this.buildEditable();
-
+  public isDrag = true;
+  public isRotate = true;
+  public isResize = true;
+  public isRemove = true;
   private buildEditable(): DiagramEditable {
     return {
-      drag: true,
-      rotate: true
+      drag: this.isDrag,
+      rotate: this.isRotate,
+      resize: this.isResize,
+      remove: this.isRemove,
     };
   }
   public drawDiagramFromDefinition(
     definition: DiagramDefinition,
     offsetX: number = 0,
     offsetY: number = 0,
-    editorStyle?: ShapeEditorStyle
+    editorStyle?: ShapeEditorStyle,
+    targetWidth?: number,
+    targetHeight?: number
   ): Group {
     const group = new Group();
 
@@ -1326,6 +1463,14 @@ public snapDistance = 6;
           if (line.opacity !== undefined) {
             path.options.opacity = line.opacity;
           }
+          // Compound/path-only shapes must respect the child offset while grouped.
+          // Path (the diagram model wrapper) has no transform() of its own; the
+          // transformable drawing element lives at path.drawingElement.
+          if (offsetX !== 0 || offsetY !== 0) {
+            (path as any).drawingElement?.transform(
+              geometry.transform().translate(offsetX, offsetY)
+            );
+          }
           group.append(path);
         } else if (line.from && line.to) {
           // Draw straight line
@@ -1386,37 +1531,162 @@ public snapDistance = 6;
         group.append(textBlock);
       });
     }
+    // ------------------------------------------------------------
+// Resize the ENTIRE rendered visual if Kendo supplied
+// targetWidth / targetHeight.
+//
+// The definition itself remains at its natural/original size.
+// We scale the Drawing Group only.
+// ------------------------------------------------------------
+
+if (
+  targetWidth !== undefined &&
+  targetHeight !== undefined &&
+  targetWidth > 0 &&
+  targetHeight > 0
+) {
+  const drawingGroup: any = group.drawingElement;
+
+  if (drawingGroup) {
+    const naturalBounds = drawingGroup.bbox();
+
+    if (
+      naturalBounds &&
+      naturalBounds.size &&
+      naturalBounds.origin &&
+      naturalBounds.size.width > 0 &&
+      naturalBounds.size.height > 0
+    ) {
+      const naturalWidth = naturalBounds.size.width;
+      const naturalHeight = naturalBounds.size.height;
+
+      const naturalX = naturalBounds.origin.x;
+      const naturalY = naturalBounds.origin.y;
+
+      const scaleX = targetWidth / naturalWidth;
+      const scaleY = targetHeight / naturalHeight;
+
+      const transform = geometry
+        .transform()
+        .translate(
+          -naturalX,
+          -naturalY
+        )
+        .scale(
+          scaleX,
+          scaleY,
+          [0, 0]
+        );
+
+      drawingGroup.transform(transform);
+    }
+  }
+}
 
     return group;
   }
   // Visual template that uses the diagram definition
-  public visualTemplate = (options: any): Group => {
-    const dataItem = options?.dataItem?.dataItem ?? options?.dataItem;
-    if (!dataItem) {
-      return new Group();
-    }
+public visualTemplate = (options: any): Group => {
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem;
 
-    let group: Group;
-    if (Array.isArray(dataItem.groupChildren)) {
-      group = this.drawGroupedChildren(dataItem.groupChildren, dataItem.editorStyle);
-    } else if (dataItem.libraryKind) {
-      group = this.drawLibraryShape(dataItem);
-    } else if (dataItem.definition) {
-      group = this.drawDiagramFromDefinition(
-        dataItem.definition,
-        dataItem.offsetX || 0,
-        dataItem.offsetY || 0,
-        dataItem.editorStyle
-      );
-    } else {
-      return new Group();
-    }
+  if (!dataItem) {
+    return new Group();
+  }
 
-    this.applyDrawingTransform(group, dataItem.editorStyle);
-    return group;
-  };
-    private drawGroupedChildren(children: any[], parentStyle?: ShapeEditorStyle, baseX: number = 0, baseY: number = 0): Group {
+  let group: Group;
+
+  if (Array.isArray(dataItem.groupChildren)) {
+
+    group = this.drawGroupedChildren(
+      dataItem.groupChildren,
+      dataItem.editorStyle,
+      0,
+      0,
+      Number(dataItem.groupOriginalWidth) ||
+        Number(dataItem.width) ||
+        undefined,
+      Number(dataItem.groupOriginalHeight) ||
+        Number(dataItem.height) ||
+        undefined
+    );
+
+  } else if (dataItem.libraryKind) {
+
+    group = this.drawLibraryShape(dataItem);
+
+  } else if (dataItem.definition) {
+
+    // ----------------------------------------------------------
+    // IMPORTANT:
+    // Kendo stores the resized outer shape dimensions in
+    // dataItem.width / dataItem.height.
+    //
+    // The definition itself remains at its natural size.
+    // drawDiagramFromDefinition() scales the entire visual
+    // to these target dimensions.
+    // ----------------------------------------------------------
+
+    const shapeWidth =
+      options?.width ??
+      dataItem.width ??
+      undefined;
+
+    const shapeHeight =
+      options?.height ??
+      dataItem.height ??
+      undefined;
+
+    group = this.drawDiagramFromDefinition(
+      dataItem.definition,
+      dataItem.offsetX || 0,
+      dataItem.offsetY || 0,
+      dataItem.editorStyle,
+      shapeWidth,
+      shapeHeight
+    );
+
+  } else {
+
+    return new Group();
+  }
+
+  this.applyDrawingTransform(
+    group,
+    dataItem.editorStyle
+  );
+
+  return group;
+};
+    private drawGroupedChildren(
+    children: any[],
+    parentStyle?: ShapeEditorStyle,
+    baseX: number = 0,
+    baseY: number = 0,
+    frameWidth?: number,
+    frameHeight?: number
+  ): Group {
     const group = new Group();
+
+    // Kendo scales a custom visual according to its own drawing bbox. Without
+    // an explicit frame, whitespace between children is excluded from that bbox
+    // and the visual gets non-uniformly normalized when grouping. A transparent
+    // frame makes the drawing bbox exactly equal to the original group bounds,
+    // preserving every child's size and relative position.
+    if (frameWidth && frameHeight) {
+      const frame = new Rectangle({
+        x: baseX, y: baseY, width: frameWidth, height: frameHeight,
+        stroke: { color: "transparent", width: 0 },
+        fill: { color: "transparent" }
+      });
+      // Do not use literal zero opacity here. Some Diagram sizing paths ignore
+      // fully invisible visuals. 0.001 is imperceptible but keeps the frame in
+      // the measured drawing bounds.
+      frame.options.opacity = 0.001;
+      group.append(frame);
+    }
+
     for (const child of children || []) {
       const dataItem = child?.dataItem?.dataItem ?? child?.dataItem ?? {};
       const x = baseX + (Number(child?.x) || 0);
@@ -1424,11 +1694,18 @@ public snapDistance = 6;
       let childGroup: Group;
 
       if (Array.isArray(dataItem.groupChildren)) {
-        childGroup = this.drawGroupedChildren(dataItem.groupChildren, parentStyle, x, y);
+        childGroup = this.drawGroupedChildren(
+          dataItem.groupChildren,
+          parentStyle,
+          x,
+          y,
+          Number(dataItem.groupOriginalWidth) || Number(child.width) || undefined,
+          Number(dataItem.groupOriginalHeight) || Number(child.height) || undefined
+        );
       } else if (dataItem.libraryKind) {
         childGroup = this.drawLibraryShape(dataItem, x, y, parentStyle);
       } else if (dataItem.definition) {
-        const mergedStyle:ShapeEditorStyle = {
+        const mergedStyle: ShapeEditorStyle = {
           ...(dataItem.editorStyle || {}),
           ...(parentStyle?.strokeColor ? { strokeColor: parentStyle.strokeColor } : {}),
           ...(parentStyle?.fillColor ? { fillColor: parentStyle.fillColor } : {})
@@ -1441,11 +1718,31 @@ public snapDistance = 6;
       const childStyle = dataItem.editorStyle || {};
       const drawingElement = (childGroup as any).drawingElement;
       const bbox = drawingElement?.bbox?.();
+      // kendo-drawing's own Rect (what .bbox() returns) exposes size as
+      // bbox.size.{width,height} - it has no flat .width/.height properties.
+      // Reading bbox.width directly silently reads undefined, which is why
+      // the >0 checks below always fell through to "no scaling" before.
+      const bboxWidth = bbox?.size?.width;
+      const bboxHeight = bbox?.size?.height;
+
       if (drawingElement?.transform && bbox) {
         let tx = geometry.transform();
+
+        // A normal Kendo Shape scales its custom visual to the shape's stored
+        // width/height. Once shapes become children of our logical group there
+        // is no individual Kendo wrapper to do that scaling, so reproduce it
+        // here. This is what preserves resized custom/compound shapes exactly.
+        const targetWidth = Math.max(1, Number(child?.width) || Number(dataItem?.width) || bboxWidth || 1);
+        const targetHeight = Math.max(1, Number(child?.height) || Number(dataItem?.height) || bboxHeight || 1);
+        const scaleX = bboxWidth > 0 ? targetWidth / bboxWidth : 1;
+        const scaleY = bboxHeight > 0 ? targetHeight / bboxHeight : 1;
+        if (Math.abs(scaleX - 1) > 0.0001 || Math.abs(scaleY - 1) > 0.0001) {
+          tx = tx.scale(scaleX, scaleY, [x, y]);
+        }
+
         const flipX = childStyle.flipX ?? 1;
         const flipY = childStyle.flipY ?? 1;
-        const center = [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
+        const center = [x + targetWidth / 2, y + targetHeight / 2];
         if (flipX !== 1 || flipY !== 1) {
           tx = tx.scale(flipX, flipY, center);
         }
@@ -1467,13 +1764,13 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     }
     const drawingGroup = (group as any).drawingElement;
     const bounds = drawingGroup?.bbox?.();
-    if (drawingGroup?.transform && bounds) {
+    if (drawingGroup?.transform && bounds?.origin && bounds?.size) {
+      const center = [
+        bounds.origin.x + bounds.size.width / 2,
+        bounds.origin.y + bounds.size.height / 2
+      ];
       drawingGroup.transform(
-        geometry.transform().scale(
-          flipX,
-          flipY,
-          [bounds.x + bounds.width / 2, bounds.y + bounds.height / 2]
-        )
+        geometry.transform().scale(flipX, flipY, center)
       );
     }
   }
@@ -1483,10 +1780,11 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   public connections: ConnectionOptions[] =[];
   public shapeDefaults: ShapeDefaults = {
     visual: this.visualTemplate,
+    editable: {
+      connect: false // This disables the hover connection dots safely
+    }
   };
-onEvent(type: string, event: any): void {
-    console.log("Event:", type, event, event.item?.type, event.item?.shape, event.item?.content?.text || event.item?.id);
-}
+
 public markers:any = [];
 public performMapperFrom(In) {
     
@@ -1507,7 +1805,30 @@ public performMapperFrom(In) {
     return OutRec;
 }
 public isDiagramInitializing = true;
-async  removeUnusedShapes(){
+public expData ={};
+////
+async  prepareShapes(){
+  function formatData(input) {
+  const result = {};
+  
+  input.forEach(item => {
+    // Extract tag by removing .VAL and the outer curly braces
+    const tag = item.EXPRESSION_DATA
+      .replace('.VAL', '')      // Remove .VAL
+      .replace(/[{}]/g, '');   // Remove { and }
+    
+    if (!result[tag]) {
+      result[tag] = [];
+    }
+    
+    result[tag].push({
+      shape_id: `${item.SHAPE_TYPE}:${item.SHAPE_ID}`,
+      expression: item.EXPRESSION_DATA
+    });
+  });
+  
+  return result;
+}
   let shapesIDs = "";
   for (let i =0; i< this.shapes.length; i++){
     let shapeID = this.shapes[i].id;
@@ -1519,20 +1840,121 @@ async  removeUnusedShapes(){
         shapesIDs = shapesIDs + shapeID;
     }
   }
-  if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:shapesIDs:", shapesIDs);
+  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesIDs:", shapesIDs);
+  //removeUnusedShapes
   let statement_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SHAPE_DISPLAY_GENERAL = "DELETE from SCD_SHAPE_DISPLAY_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_SHAPE_INPUT_GENERAL = "DELETE from SCD_SHAPE_INPUT_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_SHAPE_INPUT_APPEARANCE = "DELETE from SCD_SHAPE_INPUT_APPEARANCE where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_SHAPE_CONNECTION = "DELETE from SCD_SHAPE_CONNECTION where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
+  let statement_SCD_SHAPE_GENERAL = "DELETE from SCD_SHAPE_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_BUTTON_GENERAL = "DELETE from SCD_BUTTON_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_BUTTON_ACTION = "DELETE from SCD_BUTTON_ACTION where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
+  let statement_SCD_BUTTON_APPEARANCE = "DELETE from SCD_BUTTON_APPEARANCE where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_BUTTON_PUSH_GENERAL = "DELETE from SCD_BUTTON_PUSH_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
+  let statement_SCD_SHAPE_STATE = "DELETE from SCD_SHAPE_STATE where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                    
+  let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
+  let statement_SCD_MESSAGE_GENERAL = "DELETE from SCD_MESSAGE_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
+  let statement_SCD_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                        
+                
   let body_defs = [
      {
         "_QUERY": "EXECSQL",
         "_STMT": statement_TEXT_GENERAL
-      }];
-  if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes_defs:body_defs:", body_defs);
-  let data_defs = await this.starServices.execSQLBody(this, body_defs, this.starServices.MASTER_DB);
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SHAPE_DISPLAY_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_INPUT_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_INPUT_APPEARANCE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_CONNECTION
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_ACTION
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_APPEARANCE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_BUTTON_PUSH_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_SHAPE_STATE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_TIMING
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_MESSAGE_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_TEXT_GENERAL
+      }
+
+    ];
+  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
+  let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
 
   let statement = "DELETE from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
   let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
+  let statement_expressions = "SELECT A.SHAPE_ID, B.EXPRESSION_DATA , A.SHAPE_TYPE "
+                              +"    FROM SCD_SHAPE A, SCD_SHAPE_DISPLAY_GENERAL B "
+                              +"    WHERE A.SHAPE_ID = B.SHAPE_ID "
+                              +"    AND A.DISPLAY_ID = " + this.form.value.DISPLAY_ID
+                              +"    AND (B.EXPRESSION_DATA != '' or B.EXPRESSION_DATA is not null) ";
+
     let body = [
       {
         "_QUERY": "EXECSQL",
@@ -1541,21 +1963,41 @@ async  removeUnusedShapes(){
       {
       "_QUERY": "GET_SCD_SHAPE_QUERY",
       "_WHERE": whereClause
-              
-      }
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_expressions
+      },
     ];
-    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:body:", body);
-    let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
-    if (this.paramConfig.DEBUG_FLAG) console.log("removeUnusedShapes:data[1].data:", data[1].data);
+    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:body:", body);
+    let data = await this.starServices.execSQLBody(this, body, "");
+    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:data[1].data:", data[1].data);
     if (typeof data[1].data != "undefined"){
       this.scdShapes = data[1].data;
     } 
+    if (typeof data[2].data != "undefined"){
+      let expData = data[2].data;
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", JSON.stringify(expData));
+      this.expData = formatData(expData);
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", this.expData);
+    } 
 }
+
+////
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
     if (this.paramConfig.DEBUG_FLAG) console.log("OutRec:1:", OutRec)
-
-    let dwg = JSON.parse(OutRec.DiagramData);
+    let dwg;
+    if (OutRec.DiagramData == ""){
+      dwg = {
+        "shapes": [
+          ],
+        "connections": [
+                ]
+      }
+    }
+    else
+      dwg = JSON.parse(OutRec.DiagramData);
     if (this.paramConfig.DEBUG_FLAG) console.log("dwg:1:", dwg)
     this.isDiagramInitializing = true;
     this.shapes = dwg.shapes;
@@ -1563,7 +2005,8 @@ public mapSampleData() {
     this.editable = this.buildEditable();
 
     // Generate the JSON
-    const result = this.buildHierarchy(this.dbRows);
+    let diagramMenus = this.diagramMenus["DIAGRAM"]
+    const result = this.buildHierarchy(diagramMenus);
     this.items=result;
 
     requestAnimationFrame(() => {
@@ -1571,7 +2014,7 @@ public mapSampleData() {
             this.isDiagramInitializing = false;
         });
     });
-    this.removeUnusedShapes();
+    this.prepareShapes();
 }
 
 // Simulating your database results
@@ -1592,16 +2035,19 @@ public buildHierarchy(rows) {
     const childrenMap = {};
     const itemMap = {}; // Store item details by name
     
+    
     rows.forEach(row => {
         const itemName = row.Item;
         const menuName = row.Menu;
         const itemId = row.Id || row.ID; // Handle both Id and ID
+        const dataItem = row.dataItem ||  null; // Handle both dataItem and dataitem
         
         // Store item details
         if (!itemMap[itemName]) {
             itemMap[itemName] = {
                 text: itemName,
                 Id: itemId,
+                dataItem:dataItem,
                 isSeparator: itemName === "SEP"
             };
         } else if (itemId) {
@@ -1618,6 +2064,7 @@ public buildHierarchy(rows) {
         childrenMap[menuName].push({
             name: itemName,
             id: itemId,
+            dataItem:dataItem,
             isSeparator: itemName === "SEP"
         });
     });
@@ -1634,7 +2081,8 @@ public buildHierarchy(rows) {
         
         // Create node
         const node:any = { 
-            text: itemName
+            text: itemName,
+            dataItem: itemMap[itemName] ? itemMap[itemName].dataItem : null
         };
         
         // Add Id if it exists
@@ -1690,6 +2138,7 @@ public onItemSelectItem (menuType,event){
   public  currentShapeType: string = "";
   private pressTimer: any = null;
   public isEditMode: boolean = false;
+  public showDiagramToolBar: boolean = true;
   
   // Context Menu properties
   public showContextMenu: boolean = true;
@@ -1723,25 +2172,70 @@ public lastClickX: number = 0;
 public lastClickY: number = 0;
 
 // ===== CLICK HANDLER =====
-public onDiagramClick(event: any): void {
+  public onDiagramClick(event: any): void {
     this.lastClickX = event.offsetX || event.layerX || 0;
     this.lastClickY = event.offsetY || event.layerY || 0;
+    if (this.event.text != "FreeHand") {
+      if (this.insertShapeFlag == true) {
+        let shapeType = this.event.text;
+        let options = null;
+        if ( (shapeType == "Line") || (shapeType == "Polygon") || (shapeType == "Polyline")
+        || (shapeType == "Polyline") || (shapeType == "Rectangle") || (shapeType == "Rounded Rectangle")
+        || (shapeType == "Wedge") || (shapeType == "Arrow") || (shapeType == "Button")  
+        || (shapeType == "Push Button") || (shapeType == "Momentry")  || (shapeType == "Maintained")
+        || (shapeType == "Latched") || (shapeType == "Multistate") || (shapeType == "Interlocked")
+        || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") || (shapeType == "Time and Date Display")
+        || (shapeType == "Tag Label") || (shapeType == "Local Message")|| (shapeType == "Text")
+         )
+          options = {
+            width: 180,
+            height: 24,
+            text: "",
+            fillColor: "transparent",
+            x: this.lastClickX,
+            y: this.lastClickY,
+          };
+        if ((shapeType == "Button") || (shapeType == "Momentry") 
+          || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
+          || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
+          || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
+          || (shapeType == "Text") 
+        ) {
+          options.fillColor = "#D3D3D3"
+        }
+
+        this.insertShape(shapeType, options);
+        this.insertShapeFlag = false;
+
+        setTimeout(() => {
+          //this.ON_CLICK_CONTEXT_MENU(this.menuType,this.event);
+        }, 500);
+      }
+    }
+    let target = event.target.outerHTML;
+    if (target.startsWith("<svg")) {
+      console.log("Clicked on empty space");
+      //this.currentShapeId = "";
+      this.currentShapeType = "";
+      // this.showContextMenuAt(event.pageX, event.pageY, null);
+    }
     console.log(`📍 checking:Click: (${this.lastClickX}, ${this.lastClickY})`);
-    
+
     // 🔑 Clear any existing timer
     if (this.clickTimer) {
-        clearTimeout(this.clickTimer);
-        this.clickTimer = null;
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
     }
-    
+
     // 🔑 Set a timer to detect part on already-selected shapes
     this.clickTimer = setTimeout(() => {
-        this.detectPartAtClick(this.lastClickX, this.lastClickY, event);
-        this.clickTimer = null;
+      this.detectPartAtClick(this.lastClickX, this.lastClickY, event);
+      this.clickTimer = null;
     }, 100);
 
     this.ON_CLICK(event);
-}
+  }
+
 public detectPartAtClick(clickX: number, clickY: number, event): void {
     // 🔑 Use currentShapeId if available
     let foundContainerId: string | null = this.currentShapeId;
@@ -1845,7 +2339,7 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
         "_STMT": statement
       }
     ];
-    let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+    let data = await this.starServices.execSQLBody(this, body, "");
     if (this.paramConfig.DEBUG_FLAG) console.log("getMenu:data[0].data:", data[0].data);
     if (typeof data[0].data != "undefined") {
       this.diagramMenus = this.restructureMenuData(data[0].data);
@@ -1868,7 +2362,8 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
       result[menuType].push({
         Menu: item.MENU,
         Item: item.ITEM,
-        Id : item.ID
+        Id : item.ID,
+        dataItem : item
       });
 
       return result;
@@ -1885,18 +2380,20 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
 
   // ============= Server Management Methods (using integration service) =============
   
-  async addNewServer( name, endpoint): Promise<void> {
+  async addNewServer(name, endpoint): Promise<void> {
         // const name = prompt('Enter server name:');
         // const endpoint = prompt('Enter OPC UA endpoint:');
+        let  result;
         if (name && endpoint) {
             console.log("opcua:addNewServer:name", name, endpoint)
-            const result = await this.scadaIntegration.addServer( name, endpoint);
+             result = await this.scadaIntegration.addServer(name, endpoint);
             if (result) {
                 console.log('opcua:Server added:', result);
             } else {
                 alert('opcua:Failed to add server');
             }
         }
+        return result;
     }
 
   async removeServer(serverId: number): Promise<void> {
@@ -1980,10 +2477,21 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
   this.isEditMode = !this.isEditMode;
   
   if (this.isEditMode) {
+      this.isDrag = true;
+       this.isRotate = true;
+       this.isResize = true;
+       this.isRemove = true;
+       this.editable = this.buildEditable();
+
     // Disable polling when entering edit mode
     this.scadaIntegration.disablePolling();
     console.log('Edit mode: SCADA polling stopped');
   } else {
+      this.isDrag = false;
+       this.isRotate = false;
+       this.isResize = false;
+       this.isRemove = false;
+       this.editable = this.buildEditable();
     // Re-enable polling when exiting edit mode
     this.scadaIntegration.enablePolling();
     // Optionally refresh data immediately
@@ -2059,24 +2567,25 @@ public findPartAt(event): string | null {
 
     if (!container)
       return null;
+    
+  const definition = container.dataItem.definition;
+  if (typeof definition != "undefined"){
+        const shapeCount = definition.shapes?.length || 0;
 
-    const definition = container.dataItem.definition;
+        let part;
 
-    const shapeCount = definition.shapes?.length || 0;
+        if (index < shapeCount) {
 
-    let part;
+          part = definition.shapes[index];
 
-    if (index < shapeCount) {
+        } else {
 
-      part = definition.shapes[index];
+          part = definition.lines[index - shapeCount];
 
-    } else {
+        }
 
-      part = definition.lines[index - shapeCount];
-
+        return part?.id ?? this.currentShapeId;
     }
-
-    return part?.id ?? this.currentShapeId;
   }
   public updateShapes(){
    if (this.isDiagramInitializing)
@@ -2182,7 +2691,7 @@ public popupTop = 0;
 public selectedPartId = "";
 public ShapeMenu;
 public selectedShape;
-public valueChange(value: any): void {
+public valueChange_del(value: any): void {
   console.log ("valueChange:event:",event)
     // Only start a timer if a valid item was chosen (avoids loop on reset)
     if (value !== null && value !== undefined) {
@@ -2290,8 +2799,11 @@ public valueChange(value: any): void {
    * Open property dialog - Replacement for starlib1.dialog_openDialog
    * Similar to openWin in scd-mdi-win.component.ts
    */
- public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType): void {
-  console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize);
+ public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType,action,SHAPE_ID,title): void {
+  console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize, shapeType);
+  if (typeof shapeType !="undefined"){
+    shapeType = shapeType.toLowerCase();
+  }
   
   // Find the dialog properties
   const dialogDef = this.dialogProperties.find(x => x.Id === comp);
@@ -2314,15 +2826,18 @@ public valueChange(value: any): void {
     data: {
       comp: comp,
       maximize: Maximize,
-      action : "new",
+      action : action,
       DISPLAY_ID:this.form.value.DISPLAY_ID,
-      SHAPE_TYPE: shapeType.toLowerCase()
+      SHAPE_TYPE: shapeType,
+      SHAPE_ID : SHAPE_ID
     }
   };
 
   // Get the component name for the title
   const componentName = dialogDef.Component || comp;
-  const title = this.getDialogTitle(componentName);
+  if (title == '' || title == null) {
+    title = this.getDialogTitle(componentName);
+  }
 
   // Set property dialog data
   this.propertyDialogData = {
@@ -2590,7 +3105,7 @@ private setupPropertyDialogOutputs(): void {
         if (componentConfig.masterParams !== null){
           if ( componentConfig.masterParams.action == "insert"){
             console.log("Property dialog: Received componentConfig from child:componentConfig.masterParams:",componentConfig.masterParams);
-            this.insertShape (componentConfig.masterParams.data, componentConfig.masterParams.shapeType)
+            //this.insertShape (componentConfig.masterParams.data, componentConfig.masterParams.shapeType)
           }
         }
 
@@ -2628,10 +3143,12 @@ onContextMenuSelect(event){
   console.log("DEBUG_IT:onContextMenuSelect:event:",event)
   this.ON_CLICK_CONTEXT_MENU('CONTEXT_MENU', event)
    event.preventDefault();
-    event.stopPropagation();  
+   //event.stopPropagation();  
 }
 onDiagramContextMenu(event){
   console.log("DEBUG_IT:onDiagramContextMenu:event:",event)
+   this.insertShapeFlag = false;
+  
 }
 public scdShapes;
 public getShapeInfo(){
@@ -2646,23 +3163,287 @@ public getShapeInfo(){
 
   return shapeInfo;
 }
-public insertShape (data, shapeType){
-  const text = "Rich Text";
-  this.addLibraryShape("richText", { 
-    text: text || "Rich Text", 
-    width: 190, 
-    height: 90, 
-    fillColor: "#fff7d6" 
-  });
+   async insertSCDShapeTables(shapeID, shapeType) {
+    function groupByFieldName<T extends { FIELD_NAME: string; FIELD_VALUE: any }>(
+      data: T[]
+    ): Array<Array<{ FIELD_NAME: string; FIELD_VALUE: any }>> {
+      if (!data?.length) return [];
+
+      // Counter: how many items of each FIELD_NAME we've already placed
+      const counters: Record<string, number> = {};
+
+      // Result buckets — each entry is now a trimmed { FIELD_NAME, FIELD_VALUE }
+      const groups: Array<Array<{ FIELD_NAME: string; FIELD_VALUE: any }>> = [];
+
+      for (const item of data) {
+        const key = item.FIELD_NAME;
+        const idx = counters[key] ?? 0;
+
+        // Make sure the bucket exists
+        if (!groups[idx]) groups[idx] = [];
+
+        // Push only the two fields we care about
+        groups[idx].push({
+          FIELD_NAME: item.FIELD_NAME,
+          FIELD_VALUE: item.FIELD_VALUE,
+        });
+
+        counters[key] = idx + 1;
+      }
+
+      return groups;
+    }
+    console.log("insertSCDShapeTables:shapeType:", shapeType)
+    let tables = [];
+    switch (shapeType) {
+      case 'Numeric Display':
+        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
+        break;
+      case 'String Display':
+        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
+        break;
+      case 'Time and Date Display':
+        tables.push('INSERT_SCD_MESSAGE_GENERAL');
+        break;
+      case 'Tag Label':
+        tables.push('INSERT_SCD_TAG_LABEL_GENERAL');
+        break;
+      case 'Local Message':
+        tables.push('INSERT_SCD_MESSAGE_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'Text':
+        tables.push('INSERT_SCD_TEXT_GENERAL');
+        break;
+      case 'Numeric Input':
+        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'String Input':
+        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
+        break;
+      case 'Momentry':
+      case 'Maintained':
+      case 'Latched':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
+      case 'Interlocked':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
+      case 'Multistate':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
+      case 'Ramp Button':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
+      case 'Navigation Button':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
+      case 'Panel':
+      case 'Arc':
+      case 'Elipse':
+      case 'FreeHand':
+      case 'Line':
+      case 'Polygon':
+      case 'Polyline':
+      case 'Rectangle':
+      case 'Rounded Rectangle':
+      case 'Wedge':
+      case 'Arrow':
+        tables.push('INSERT_SCD_SHAPE_GENERAL');
+        break;
+      case 'Button':
+        tables.push('INSERT_SCD_BUTTON_GENERAL');
+        tables.push('INSERT_SCD_BUTTON_ACTION');
+        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
+        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
+        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
+        break;
+      default:
+        break;
+    }
+    console.log("insertSCDShapeTables:tables:", shapeType, tables)
+    let butApp = 0;
+    if (tables.length > 0) {
+      for (let i = 0; i < tables.length; i++) {
+        let useshapeType = null;
+        if (tables[i] == "INSERT_SCD_SHAPE_CONNECTION") {
+          useshapeType = shapeType;
+          if ((shapeType == "Maintained") || (shapeType == "Multistate"))
+            useshapeType = "Momentry";
+        }
+        let TableDefauls = await this.starlib1.setShapeDefaults(tables[i], useshapeType);
+        console.log("insertSCDShapeTables:TableDefauls:", JSON.stringify(TableDefauls));
+        let TableDefaulsArr = groupByFieldName(TableDefauls);
+        console.log("insertSCDShapeTables:TableDefauls:new", TableDefaulsArr);
+        for (let k = 0; k < TableDefaulsArr.length; k++) {
+          TableDefauls = TableDefaulsArr[k];
+          console.log("insertSCDShapeTables:TableDefauls:new", TableDefauls);
+          const keys = Object.keys(TableDefauls);
+          console.log("insertSCDShapeTables:keys:", keys)
+          let object = {};
+          for (let j = 0; j < TableDefauls.length; j++) {
+            let field = TableDefauls[j].FIELD_NAME;
+            let val = TableDefauls[j].FIELD_VALUE;
+            object[field] = val;
+          }
+          
+          if (typeof object != "undefined" && Object.keys(object).length > 0) {
+            object['SHAPE_ID'] = shapeID;
+            object['_QUERY'] = tables[i];
+            console.log("insertSCDShapeTables:object:", object)
+            if (tables[i] == "INSERT_SCD_SHAPE_STATE") {
+              if (shapeType == "Navigation Button") {
+                if (butApp == 0)
+                  object['STATE_NAME'] = "ACTIVE";
+                else if (butApp == 1)
+                  object['STATE_NAME'] = "INACTIVE";
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              }
+              else if ( (shapeType == "Maintained") || (shapeType == "Momentry") || (shapeType == "Latched") 
+                || (shapeType == "Multistate") || (shapeType == "Interlocked") ) {
+                if (butApp == 0){
+                  object['STATE_NAME'] = "State0";
+                  object['STATE_ID'] = "0";
+                  object['VALUE'] = "0";
+                }
+                else if (butApp == 1){
+                  object['STATE_NAME'] = "State1";
+                  object['STATE_ID'] = "1";
+                  object['VALUE'] = "1";
+                }
+                else if (butApp == 2){
+                  object['STATE_NAME'] = "Error";
+                  object['STATE_ID'] = "2";
+                  object['VALUE'] = "2";
+                }
+
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              }
+              else if (shapeType == "Ramp Button") {
+                if (butApp == 0)
+                  object['STATE_NAME'] = "LABEL";
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              }
+            }
+            if (tables[i] == "INSERT_SCD_BUTTON_APPEARANCE") {
+                  if (butApp == 0)
+                  object['BUTTON_APPEARANCE'] = "UP";
+                else if (butApp == 1)
+                  object['BUTTON_APPEARANCE'] = "DOWN";
+                else if (butApp == 2)
+                  object['BUTTON_APPEARANCE'] = "DISABLED";
+                butApp++;
+            }
+            let body = [];
+            body.push(object);
+            console.log("insertSCDShapeTables:body:", body)
+            let data = await this.starServices.execSQLBody(this, body, "");
+            if (this.paramConfig.DEBUG_FLAG) console.log("insertSCDShapeTables:", data);
+          }
+        }
+      }
+    }
+  }
+public menuType;
+public event;
+public insertShapeFlag = false;
+async insertSCDShape(kendoui_content, shapeType){
+      const diagramX =
+        (this.lastClickX - this.currentPan.x) / this.zoomLevel;
+      const diagramY =
+        (this.lastClickY - this.currentPan.y) / this.zoomLevel;
+      kendoui_content[diagramX] = diagramX;
+      kendoui_content[diagramY] = diagramY;
+      let body = [
+        {
+          "_QUERY": "INSERT_SCD_SHAPE",
+          "DISPLAY_ID": this.form.value.DISPLAY_ID,
+          "SHAPE_TYPE": shapeType,
+          "HEIGHT": 100,
+          "WIDTH": 100,
+          "TOP": diagramY,
+          "LEFT": diagramX,
+          "NAME": kendoui_content.id,
+          "VISIBLE": 1,
+          "KEY_NAVIGATION": 1,
+          "FOCUS_HIGHLIGHT": 0,
+          "POINTER_HIGHLIGHT": 1,
+          "TAB_INDEX": 1,
+          "TOOLTIP_TEXT": kendoui_content.id
+        },
+        {
+          "_QUERY": "GET_LAST_ID"
+        }
+      ];
+      let data = await this.starServices.execSQLBody(this, body, "");
+      if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:data[1].data:", data[1].data[0]);
+      if (typeof data[1].data != "undefined") {
+        let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
+        kendoui_content.id =    kendoui_content.id + ":" + last_insert_rowid;
+        kendoui_content.shapeID = last_insert_rowid;
+        if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
+      }
+      return kendoui_content;
 }
+async insertShape(shapeType, options) {
+    let kendoui_content: any = {
+      id: shapeType
+    }
+    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
+    await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType)
+    let kind = this.shapeToIconKey[shapeType] ?? 'Text';
+    if (options == null) {
+      options = { //richText
+        text: "",
+        width: 190,
+        height: 90,
+        x: this.lastClickX,
+        y: this.lastClickY,
+        SHAPE_ID: kendoui_content.id,
+        SHAPE_TYPE: shapeType,
+        fillColor: "#fff7d6"
+      }
+    }
+    else{
+      options['SHAPE_ID'] = kendoui_content.id;
+      options['SHAPE_TYPE'] = shapeType;
+    }
+    console.log("kind:",kind,"shapeType:", shapeType, "options:", options);
+    this.addLibraryShape(kind, options, true);
+  }
 
 //////////
 public statusMessage = "Select a shape to edit it.";
 public freehandMode = false;
-  private freehandPoints: Array<{ x: number; y: number }> = [];
-  private freehandPointerId: number | null = null;
-  public freehandPreviewPath = "";
-  private freehandPreviewPoints: Array<{ x: number; y: number }> = [];
+private freehandPoints: Array<{ x: number; y: number }> = [];
+private freehandPointerId: number | null = null;
+public freehandPreviewPath = "";
+private freehandPreviewPoints: Array<{ x: number; y: number }> = [];
+public richTextEditorOpen = false;
+public richTextHtml = '<p><strong>Rich Text</strong></p>';
 private addShapeCounter = 0;
 public readonly gridSize = 20;
 
@@ -2695,12 +3476,176 @@ private uniqueShapeId(prefix: string): string {
       arc: "Arc",
       freehand: "FreeHand",
       polygon: "Polygon",
-      polyline: "Polyline"
+      polyline: "Polyline",
+      container: "Container"
     };
     return titles[kind] || "Shape";
   }
   
   // 
+  public addRichText(): void {
+    this.richTextHtml = '<p><strong>Rich Text</strong></p>';
+    this.richTextEditorOpen = true;
+    this.statusMessage = "Use the Kendo Editor to format the Rich Text, then click Add to Diagram.";
+  }
+
+  public cancelRichText(): void {
+    this.richTextEditorOpen = false;
+    this.statusMessage = "Rich Text creation cancelled.";
+  }
+
+  public commitRichText(): void {
+    const blocks = this.htmlToRichTextBlocks(this.richTextHtml);
+    if (!blocks.length) {
+      this.statusMessage = "Enter some Rich Text before adding the shape.";
+      return;
+    }
+
+    this.richTextEditorOpen = false;
+    this.addLibraryShape("richText", {
+      richTextHtml: this.richTextHtml,
+      richTextBlocks: blocks,
+      width: 320,
+      height: 180,
+      fillColor: "#fffdf7"
+    });
+  }
+
+  /** Convert Kendo Editor HTML into Diagram ShapeRichTextContent blocks. */
+  private htmlToRichTextBlocks(html: string): any[] {
+    if (typeof DOMParser === "undefined") {
+      const text = String(html || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+      return text ? [{ children: [{ text }] }] : [];
+    }
+
+    const doc = new DOMParser().parseFromString(html || "", "text/html");
+    type RunStyle = {
+      bold?: boolean; italic?: boolean; underline?: boolean; color?: string;
+      fontSize?: number; fontFamily?: string;
+    };
+
+    const withElementStyle = (element: Element, inherited: RunStyle): RunStyle => {
+      const next: RunStyle = { ...inherited };
+      const tag = element.tagName.toLowerCase();
+      const style = (element as HTMLElement).style;
+      if (tag === "strong" || tag === "b" || style.fontWeight === "bold" || Number(style.fontWeight) >= 600) next.bold = true;
+      if (tag === "em" || tag === "i" || style.fontStyle === "italic") next.italic = true;
+      if (tag === "u" || style.textDecoration.includes("underline") || style.textDecorationLine.includes("underline")) next.underline = true;
+      if (style.color) next.color = style.color;
+      const legacyColor = element.getAttribute("color");
+      if (!next.color && legacyColor) next.color = legacyColor;
+      if (style.fontFamily) next.fontFamily = style.fontFamily;
+      if (style.fontSize) {
+        const numeric = Number.parseFloat(style.fontSize);
+        if (Number.isFinite(numeric)) next.fontSize = numeric;
+      }
+      if (/^h[1-6]$/.test(tag)) {
+        next.bold = true;
+        const headingSizes: Record<string, number> = { h1: 32, h2: 28, h3: 24, h4: 20, h5: 18, h6: 16 };
+        next.fontSize = headingSizes[tag] ?? next.fontSize;
+      }
+      return next;
+    };
+
+    const inlineRuns = (node: Node, inherited: RunStyle = {}): any[] => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent ?? "";
+        if (!text) return [];
+        const run: any = { text };
+        if (inherited.bold) run.bold = true;
+        if (inherited.italic) run.italic = true;
+        if (inherited.underline) run.underline = true;
+        if (inherited.color) run.color = inherited.color;
+        if (inherited.fontSize) run.fontSize = inherited.fontSize;
+        if (inherited.fontFamily) run.fontFamily = inherited.fontFamily;
+        return [run];
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return [];
+
+      const element = node as Element;
+      const tag = element.tagName.toLowerCase();
+      if (tag === "br") return [{ type: "break" }];
+      if (tag === "img") {
+        const src = element.getAttribute("src") || "";
+        if (!src) return [];
+        const image: any = { type: "image", src };
+        const width = Number.parseFloat(element.getAttribute("width") || (element as HTMLElement).style.width || "");
+        const height = Number.parseFloat(element.getAttribute("height") || (element as HTMLElement).style.height || "");
+        if (Number.isFinite(width) && width > 0) image.width = width;
+        if (Number.isFinite(height) && height > 0) image.height = height;
+        return [image];
+      }
+
+      const nextStyle = withElementStyle(element, inherited);
+      return Array.from(element.childNodes).flatMap(child => inlineRuns(child, nextStyle));
+    };
+
+    const blocks: any[] = [];
+    const blockTags = new Set(["p", "div", "li", "blockquote", "h1", "h2", "h3", "h4", "h5", "h6"]);
+    const appendBlock = (node: Node): void => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element;
+        const tag = element.tagName.toLowerCase();
+        if (tag === "ul" || tag === "ol") {
+          Array.from(element.children).forEach(child => appendBlock(child));
+          return;
+        }
+        if (blockTags.has(tag)) {
+          const children = inlineRuns(element, withElementStyle(element, {}));
+          if (children.some(item => item.type === "image" || item.type === "break" || String(item.text || "").trim())) {
+            blocks.push({ children });
+          }
+          return;
+        }
+      }
+      const children = inlineRuns(node);
+      if (children.some(item => item.type === "image" || item.type === "break" || String(item.text || "").trim())) {
+        blocks.push({ children });
+      }
+    };
+
+    Array.from(doc.body.childNodes).forEach(node => appendBlock(node));
+    return blocks;
+  }
+
+  public addImage(): void {
+    const source = typeof window !== "undefined"
+      ? window.prompt("Enter an image URL (http(s), data URL, or app asset path):", "")
+      : "";
+    if (source === null) {
+      return;
+    }
+    this.addLibraryShape("image", { source: source.trim(), width: 180, height: 120, fillColor: "#f6f7f8" });
+  }
+
+  public addEllipse(): void {
+    this.addLibraryShape("ellipse", { width: 150, height: 100, fillColor: "#d9e8f5" });
+  }
+
+  public addLine(): void {
+    this.addLibraryShape("line", { width: 180, height: 24, fillColor: "transparent" });
+  }
+
+  public addRectangle(): void {
+    this.addLibraryShape("rectangle", { width: 160, height: 100, fillColor: "#d9e8f5" });
+  }
+
+  public addRoundedRectangle(): void {
+    this.addLibraryShape("roundedRectangle", { width: 190, height: 100, fillColor: "#d9e8f5" });
+  }
+
+  public addArc(): void {
+    this.addLibraryShape("arc", { width: 170, height: 95, fillColor: "transparent" });
+  }
+
+  public addPolygon(): void {
+    this.addLibraryShape("polygon", { width: 140, height: 120, fillColor: "#e9defa" });
+  }
+
+  public addPolyline(): void {
+    this.addLibraryShape("polyline", { width: 180, height: 110, fillColor: "transparent" });
+  }
+ 
   public toggleFreehandMode(): void {
     this.freehandMode = !this.freehandMode;
     this.freehandPoints = [];
@@ -2755,7 +3700,7 @@ private uniqueShapeId(prefix: string): string {
     }
   }
 
-  public onFreehandPointerUp(event: PointerEvent): void {
+public onFreehandPointerUp(event: PointerEvent): void {
     if (!this.freehandMode || this.freehandPointerId !== event.pointerId) {
       return;
     }
@@ -2785,7 +3730,15 @@ private uniqueShapeId(prefix: string): string {
     this.freehandPoints = [];
     this.freehandPreviewPoints = [];
     this.freehandPreviewPath = "";
-    this.addLibraryShape("freehand", { x: minX, y: minY, width, height, points, fillColor: "transparent" }, true);
+    if (this.insertShapeFlag == true){
+        let shapeType = this.event.text;
+        let options = { x: minX, y: minY, width, height, points, fillColor: "transparent" };
+        this.insertShape ( shapeType,options);
+        this.insertShapeFlag = false;
+        
+        
+      }
+    
   }
 
   private pointerToStage(event: PointerEvent): { x: number; y: number } | null {
@@ -2815,71 +3768,87 @@ private uniqueShapeId(prefix: string): string {
     return { x: point.x, y: point.y };
   }
   private addLibraryShape(kind: string, options: any = {}, exactPosition: boolean = false): void {
-  if (!this.diagram) {
-    this.statusMessage = "The diagram is not ready yet.";
-    return;
+    if (!this.diagram) {
+      this.statusMessage = "The diagram is not ready yet.";
+      return;
+    }
+    const position = exactPosition
+      ? { x: Number(options.x) || 0, y: Number(options.y) || 0 }
+      : this.nextInsertPosition();
+    const width = Math.max(20, Number(options.width) || 140);
+    const height = Math.max(20, Number(options.height) || 90);
+    let id = this.uniqueShapeId(kind);
+    if (typeof options.SHAPE_ID != "undefined" )
+      id =   options.SHAPE_ID ;
+    const dataItem: any = {
+      type: "libraryShape",
+      title: this.libraryShapeTitle(kind),
+      libraryKind: kind,
+      width,
+      height,
+      strokeColor: options.strokeColor || "#2f4858",
+      fillColor: options.fillColor || "#d9e8f5",
+      editorStyle: { flipX: 1, flipY: 1 },
+      ...options
+    };
+    delete dataItem.x;
+    delete dataItem.y;
+
+    const standardType = kind === "ellipse"
+      ? "circle"
+      : kind === "image"
+        ? "image"
+        : "rectangle";
+    const model: any = {
+      id,
+      type: standardType,
+      x: position.x,
+      y: position.y,
+      width,
+      height,
+      dataItem
+    };
+    if (kind === "roundedRectangle") {
+      model.cornerRadius = Math.min(22, height / 2);
+    }
+    if (kind === "image") {
+      model.source = dataItem.source;
+    }
+    if (kind === "richText") {
+      model.content = {
+        blocks: Array.isArray(dataItem.richTextBlocks) ? dataItem.richTextBlocks : [{ children: [{ text: "Rich Text" }] }],
+        align: "top left",
+        padding: 10,
+        margin: 2,
+        color: "#333333",
+        fontSize: 15
+      };
+    }
+    if (kind === "Text") {
+      model.content = {
+       // blocks: Array.isArray(dataItem.TextBlocks) ? dataItem.TextBlocks : [{ children: [{ text: "Rich Text" }] }],
+        align: "top left",
+        padding: 10,
+        margin: 2,
+        color: "#333333",
+        fontSize: 15
+      };
+    }
+    (this.shapes as any[]).push(model);
+    const runtime = this.diagram.addShape(model, true);
+    this.diagram.deselect();
+    this.diagram.select(runtime);
+    this.syncRuntimeShapeToModel(runtime);
+    this.schedulePersistState();
+    this.statusMessage = `${this.libraryShapeTitle(kind)} added to the diagram.`;
+    setTimeout(() => this.syncInspectorFromSelection(false));
   }
-  
-  const position = exactPosition
-    ? { x: Number(options.x) || 0, y: Number(options.y) || 0 }
-    : this.nextInsertPosition();
-  
-  const width = Math.max(20, Number(options.width) || 140);
-  const height = Math.max(20, Number(options.height) || 90);
-  const id = this.uniqueShapeId(kind);
-  
-  // Create library shape data
-  const dataItem: LibraryShapeData = {
-    type: 'libraryShape',
-    title: this.libraryShapeTitle(kind),
-    libraryKind: kind,
-    width,
-    height,
-    strokeColor: options.strokeColor || "#2f4858",
-    fillColor: options.fillColor || "#d9e8f5",
-    editorStyle: { flipX: 1, flipY: 1 },
-    ...(options.editorStyle ?? {})
-  };
-  
-  // Remove x/y from dataItem (they're on the shape)
-  delete (dataItem as any).x;
-  delete (dataItem as any).y;
-  
-  // Create the shape model
-  const model: any = {
-    id,
-    type: kind === "ellipse" ? "circle" : "rectangle",
-    x: position.x,
-    y: position.y,
-    width,
-    height,
-    dataItem
-  };
-  
-  if (kind === "roundedRectangle") {
-    model.cornerRadius = Math.min(22, height / 2);
-  }
-  if (kind === "image") {
-    model.source = dataItem.source;
-  }
-  
-  // Add to application model
-  (this.shapes as any[]).push(model);
-  
-  // Add to diagram - using the visual template from shapeDefaults
-  const runtime = this.diagram.addShape(model, true);
-  
-  // Select the new shape
-  this.diagram.deselect();
-  this.diagram.select(runtime);
-  
-  
-  // Update the display
-  this.updateShapes();
-  
-  this.statusMessage = `${this.libraryShapeTitle(kind)} added to the diagram.`;
-}
   // Add these methods to handle library shape rendering
+  private schedulePersistState(){
+  setTimeout(() => {
+        this.updateShapes();
+      }, 100);
+    }
   private drawLibraryShape(dataItem: any, offsetX: number = 0, offsetY: number = 0, parentStyle?: ShapeEditorStyle): Group {
     const group = new Group();
     const width = Math.max(20, Number(dataItem.width) || 140);
@@ -2896,28 +3865,62 @@ private uniqueShapeId(prefix: string): string {
     const kind = dataItem.libraryKind;
 
     if (kind === "richText") {
+      group.append(new Rectangle({
+        x, y, width, height, cornerRadius: 4,
+        stroke: { color: stroke},
+        fill: { color: fill }
+      }));
+
+      // The supplied project is on Kendo UI 21.x (Angular 18). Native Diagram
+      // rich-text blocks were introduced later, so keep the exact Kendo
+      // blocks model in model.content AND render those same blocks here for
+      // backwards-compatible visual output. When the project is upgraded, the
+      // stored data is already in the official ShapeRichTextContent format.
+      this.appendRichTextBlocks(
+        group,
+        Array.isArray(dataItem.richTextBlocks) ? dataItem.richTextBlocks : [],
+        x + 10,
+        y + 10,
+        Math.max(20, width - 20),
+        Math.max(20, height - 20)
+      );
+      return group;
+    }
+    if ( (kind === "Text")||(kind === "numeric")||(kind === "numericInput")
+     ||(kind === "button") ||(kind === "buttonmomentry") || (kind === "buttonMaintained") 
+     || (kind === "buttonLatched") || (kind === "buttonMultistate") || (kind === "buttonInterlocked")
+     || (kind === "rampButton") || (kind === "navButton") || (kind === "timeDateDisplay") || (kind === "tagLabel")
+     || (kind === "localMessage") || (kind === "text") || (kind === "stringInput") || (kind === "stringDisplay")
+     ) {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
-        stroke: { color: stroke, width: 1 },
+        stroke: { color: stroke},
         fill: { color: fill }
       });
+      const fontSize = Math.max(8, Number(dataItem.fontSize) || 16);
+      const fontFamily = typeof dataItem.fontFamily === "string" && dataItem.fontFamily.length
+        ? dataItem.fontFamily
+        : "Arial, sans-serif";
+      const textColor = style.strokeColor || dataItem.textColor || "#1f2937";
       const text = new TextBlock({
-        text: String(dataItem.text || "Rich Text"),
+        text: String(dataItem.text ),
         x: x + 10,
         y: y + 12,
-        fill: style.strokeColor || dataItem.textColor || "#1f2937"
+        fill: textColor,
+        fontSize,
+        fontFamily,
+        fontWeight: dataItem.fontWeight || "normal"
       });
-      text.options.fontSize = Number(dataItem.fontSize) || 16;
-      text.options.fontWeight = dataItem.fontWeight || "bold";
       group.append(background);
       group.append(text);
       return group;
+      
     }
 
     if (kind === "image") {
       const background = new Rectangle({
         x, y, width, height,
-        stroke: { color: stroke, width: 1 },
+        stroke: { color: stroke},
         fill: { color: fill }
       });
       group.append(background);
@@ -2931,7 +3934,7 @@ private uniqueShapeId(prefix: string): string {
       return group;
     }
 
-    if (kind === "ellipse") {
+    if (kind === "ellipse" || kind === "wedge") {
       const rx = width / 2;
       const ry = height / 2;
       const cx = x + rx;
@@ -2944,11 +3947,15 @@ private uniqueShapeId(prefix: string): string {
       return group;
     }
 
-    if (kind === "line") {
-      group.append(new Line({
-        start: { x, y: y + height / 2 },
-        end: { x: x + width, y: y + height / 2 },
-        stroke: { color: stroke, width: 3 }
+    if ( (kind === "line")||(kind === "arrow") ) {
+      // Render Line using the same lightweight Path approach as Arc.
+      // The Diagram shape model owns the selectable/resizable bounds; the
+      // visible geometry is only the line itself.
+      const centerY = y + height / 2;
+      group.append(new Path({
+        data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: "transparent" }
       }));
       return group;
     }
@@ -2960,6 +3967,100 @@ private uniqueShapeId(prefix: string): string {
         stroke: { color: stroke, width: 2 },
         fill: { color: fill }
       }));
+      return group;
+    }
+    if (kind === "container") {
+      // Fill percent = value / max, clamped to 0-100%. Drawn as a rounded tank
+      // body on a base band with two feet (matching the reference artwork):
+      // an always-visible header holds the "NN% full" label and a gauge line,
+      // and the liquid gauge fills the region below that from the bottom up.
+      const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
+      const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
+      const ratio = Math.max(0, Math.min(1, value / max));
+
+      const bodyColor = "#0d1fa8";
+      const liquidBorder = "#e53935";
+      const bandHeight = Math.min(height * 0.14, 34);
+      const bodyHeight = Math.max(10, height - bandHeight);
+      const radius = Math.min(width, height) * 0.22;
+      const inset = 6;
+      const headerHeight = Math.max(18, bodyHeight * 0.16);
+
+      // Body: rounded top corners, flat bottom (sits flush on the base band).
+      // Rectangle only supports one uniform cornerRadius on all four corners,
+      // so a mixed rounded-top/flat-bottom silhouette needs a hand-built path.
+      const bodyPath = radius > 0
+        ? `M ${x},${y + radius} A ${radius},${radius} 0 0 1 ${x + radius},${y} `
+          + `L ${x + width - radius},${y} A ${radius},${radius} 0 0 1 ${x + width},${y + radius} `
+          + `L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`
+        : `M ${x},${y} L ${x + width},${y} L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`;
+      group.append(new Path({
+        data: bodyPath,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: bodyColor }
+      }));
+
+      // Base band: rounded bottom corners, flat top (sits flush under the body).
+      const bandY = y + bodyHeight;
+      const bandRadius = Math.min(radius, bandHeight);
+      const bandPath = bandRadius > 0
+        ? `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight - bandRadius} `
+          + `A ${bandRadius},${bandRadius} 0 0 1 ${x + width - bandRadius},${bandY + bandHeight} `
+          + `L ${x + bandRadius},${bandY + bandHeight} A ${bandRadius},${bandRadius} 0 0 1 ${x},${bandY + bandHeight - bandRadius} Z`
+        : `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight} L ${x},${bandY + bandHeight} Z`;
+      group.append(new Path({
+        data: bandPath,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: bodyColor }
+      }));
+
+      // Two feet tabs on the band.
+      const footWidth = Math.max(6, width * 0.09);
+      const footHeight = Math.max(4, bandHeight * 0.45);
+      const footY = bandY + bandHeight - footHeight * 0.5;
+      [x + width * 0.28 - footWidth / 2, x + width * 0.72 - footWidth / 2].forEach(footX => {
+        group.append(new Rectangle({
+          x: footX, y: footY, width: footWidth, height: footHeight,
+          cornerRadius: 2,
+          stroke: { color: stroke, width: 1.5 },
+          fill: { color: bodyColor }
+        }));
+      });
+
+      // Gauge line separating the header from the liquid area, then the liquid
+      // itself, inset within the body and anchored to the body's flat bottom.
+      const gaugeTop = y + headerHeight;
+      group.append(new Path({
+        data: `M ${x + 4},${gaugeTop} L ${x + width - 4},${gaugeTop}`,
+        stroke: { color: stroke, width: 1.5 },
+        fill: { color: "transparent" }
+      }));
+
+      const gaugeBottom = y + bodyHeight - inset;
+      const gaugeHeight = Math.max(0, gaugeBottom - gaugeTop);
+      if (ratio > 0 && gaugeHeight > 0) {
+        const fillHeight = gaugeHeight * ratio;
+        group.append(new Rectangle({
+          x: x + inset,
+          y: gaugeBottom - fillHeight,
+          width: Math.max(0, width - inset * 2),
+          height: fillHeight,
+          stroke: { color: liquidBorder, width: 2 },
+          fill: { color: fill }
+        }));
+      }
+
+      const label = new TextBlock({
+        text: `${Math.round(ratio * 100)}% full`,
+        x: x + width / 2,
+        y: y + 6,
+        fill: "#ffffff"
+      });
+      label.options.fontSize = 13;
+      label.options.fontWeight = "bold";
+      label.options.textAnchor = "middle";
+      group.append(label);
+
       return group;
     }
 
@@ -3051,49 +4152,77 @@ private readRotation(shape: any): number {
     return 0;
   }
 private syncRuntimeShapeToModel(shape: any): void {
-  // Skip if still initializing
-  if (this.isDiagramInitializing) {
+      if (this.isDiagramInitializing) {
     return;
   }
+    const model = this.modelForShape(shape);
+    if (!model || typeof shape?.bounds !== "function") {
+      return;
+    }
 
-  const model = this.modelForShape(shape);
-  if (!model || typeof shape.bounds !== "function") {
-    return;
+    const bounds = shape.bounds();
+    model.x = bounds.x;
+    model.y = bounds.y;
+    model.width = bounds.width;
+    model.height = bounds.height;
+    model.rotation = { angle: this.readRotation(shape) };
+
+    const runtimeData = this.shapeDataItem(shape);
+    if (runtimeData && typeof runtimeData === "object") {
+      runtimeData.width = bounds.width;
+      runtimeData.height = bounds.height;
+    }
+    if (runtimeData?.editorStyle) {
+      model.dataItem ??= {};
+      const modelData = model.dataItem?.dataItem ?? model.dataItem;
+      modelData.editorStyle = this.clonePlain(runtimeData.editorStyle);
+    }
+
+    // The runtime shape's dataItem is not always the same object reference as
+    // this.shapes' own dataItem (this.shapes is what gets persisted), so a
+    // library shape's (ellipse/rectangle/etc.) size read via dataItem.width by
+    // drawLibraryShape can silently go stale relative to the persisted model
+    // unless it is written here too.
+    if (model.dataItem && typeof model.dataItem === "object") {
+      const modelData = model.dataItem?.dataItem ?? model.dataItem;
+      if (modelData && typeof modelData === "object" && "width" in modelData) {
+        modelData.width = bounds.width;
+        modelData.height = bounds.height;
+      }
+    }
+
+    this.schedulePersistState();
   }
-
-  const bounds = shape.bounds();
-
-  // Update the application model
-  model.x = bounds.x;
-  model.y = bounds.y;
-  // model.width = bounds.width;
-  // model.height = bounds.height;
-  model.rotation = { angle: this.readRotation(shape) };
-
-  // Update the runtime data item
-  const runtimeData = this.shapeDataItem(shape);
-  if (runtimeData && typeof runtimeData === "object") {
-    // runtimeData.width = bounds.width;
-    // runtimeData.height = bounds.height;
-    runtimeData.rotation = { angle: this.readRotation(shape) };
-  }
-
-  console.log("SYNC RUNTIME → MODEL:", {
-    id: model.id,
-    x: model.x,
-    y: model.y,
-    width: model.width,
-    height: model.height
-  });
-  console.log("syncRuntimeShapeToModel:this.isDiagramInitializing:", this.isDiagramInitializing)
-  
-}
 // Add these properties
 public showGrid: boolean = false;
 public snapEnabled: boolean = true;
 public rotationAngle: number = 0;
 public strokeColor: string = "#333333";
 public fillColor: string = "#d9e8f5";
+public selectedRichTextFontFamily = "Arial";
+public selectedRichTextFontSize = 16;
+// Container fill: percentage shown = (value / max) * 100, clamped 0-100%.
+public selectedContainerValue = 30;
+public selectedContainerMax = 100;
+// Explicit Kendo Editor choices requested in review.
+  public readonly richTextFontFamilies = [
+    { text: "Arial", fontName: "Arial, Helvetica, sans-serif" },
+    { text: "Calibri", fontName: "Calibri, Arial, sans-serif" },
+    { text: "Times New Roman", fontName: "Times New Roman, Times, serif" },
+    { text: "Georgia", fontName: "Georgia, Times, serif" },
+    { text: "Courier New", fontName: "Courier New, Courier, monospace" }
+  ];
+
+  public readonly richTextFontSizes = [
+    { text: "10px", size: 10 },
+    { text: "12px", size: 12 },
+    { text: "14px", size: 14 },
+    { text: "16px", size: 16 },
+    { text: "18px", size: 18 },
+    { text: "20px", size: 20 },
+    { text: "24px", size: 24 },
+    { text: "32px", size: 32 }
+  ];
 
 // Add these methods for the toolbar functionality
 
@@ -3111,7 +4240,36 @@ public toggleSnap(): void {
     ? "Snap ON: shapes move in grid steps."
     : "Snap OFF: shapes move freely.";
 }
+public zoomOut(): void {
+  console.log("zoomOut", this.zoomLevel, this.zoomMin);
 
+  const newZoom = this.zoomLevel - 0.1;
+
+  if (newZoom < this.zoomMin) {
+    return;
+  }
+  const shapes = this.diagram.diagramShapes;
+  const box = this.diagram.boundingBox(shapes);
+  this.zoomLevel = newZoom;
+
+  
+}
+
+public zoomIn(): void {
+  console.log("zoomIn", this.zoomLevel, this.zoomMax);
+
+  const newZoom = this.zoomLevel + 0.1;
+
+  if (newZoom > this.zoomMax) {
+    return;
+  }
+
+  this.zoomLevel = newZoom;
+  const shapes = this.diagram.diagramShapes;
+  const box = this.diagram.boundingBox(shapes);
+
+  
+}
 public zoomToFit(): void {
     if (!this.diagram || !this.diagram.diagramShapes.length) {
       this.statusMessage = "There are no shapes to fit.";
@@ -3229,7 +4387,7 @@ public alignToGrid(): void {
     this.statusMessage = "Select at least one shape to align to the grid.";
     return;
   }
-  this.alignShapesToGrid(shapes);
+  this.alignShapesToGrid(shapes, true);
 }
 
 
@@ -3269,7 +4427,7 @@ public applyStrokeColor(): void {
     color: string
   ): void {
     const beforeBounds = typeof shape?.bounds === "function"
-      ? { ...shape.bounds() }
+      ? shape.bounds() //was ? { ...shape.bounds() }
       : null;
     const beforeRotation = this.readRotation(shape);
     const roots = [shape?.shapeVisual, shape?.visual].filter(Boolean);
@@ -3397,164 +4555,208 @@ public applyStrokeColor(): void {
   }
 
 public groupSelected(): void {
-  if (!this.diagram) {
-    return;
-  }
+    if (!this.diagram) {
+      return;
+    }
 
-  const selected = this.selectedShapes();
-  if (selected.length < 2) {
-    this.statusMessage = "Select at least two shapes to group them.";
-    return;
-  }
+    const selected = this.selectedShapes();
+    if (selected.length < 2) {
+      this.statusMessage = "Select at least two shapes to group them.";
+      return;
+    }
 
-  // Capture runtime edits
-  selected.forEach(shape => this.syncRuntimeShapeToModel(shape));
-  const selectedIds = new Set(selected.map(shape => this.runtimeShapeId(shape)).filter(Boolean));
-  const selectedModels = (this.shapes as any[]).filter(model => selectedIds.has(String(model?.id ?? "")));
-  
-  if (selectedModels.length < 2) {
-    this.statusMessage = "Unable to resolve the selected shapes in application memory.";
-    return;
-  }
+    // Snapshot the LIVE runtime shapes. This is important for duplicated and
+    // compound/custom shapes: the clipboard can create a runtime item before
+    // application memory has a completely independent model for it. Building
+    // the group children from runtime bounds/data guarantees that every
+    // selected visual is represented exactly once.
+    selected.forEach(shape => this.syncRuntimeShapeToModel(shape));
 
-  const box = this.diagram.boundingBox(selected);
-  if (!box || box.width <= 0 || box.height <= 0) {
-    return;
-  }
+    const selectedBounds = selected.map(shape => shape.bounds());
+    const minX = Math.min(...selectedBounds.map(bounds => bounds.x));
+    const minY = Math.min(...selectedBounds.map(bounds => bounds.y));
+    const maxX = Math.max(...selectedBounds.map(bounds => bounds.x + bounds.width));
+    const maxY = Math.max(...selectedBounds.map(bounds => bounds.y + bounds.height));
+    // Rect (not a plain literal) - it is reused as the argument to
+    // shape.bounds(), which requires a real Rect (calls rect.topLeft()).
+    const box = new Rect(minX, minY, maxX - minX, maxY - minY);
+    if (box.width <= 0 || box.height <= 0) {
+      return;
+    }
 
-  const children = selectedModels.map(model => {
-    const child = this.clonePlain(model);
-    child.x = (Number(child.x) || 0) - box.x;
-    child.y = (Number(child.y) || 0) - box.y;
-    delete child.visual;
-    return child;
-  });
+    const children = selected.map((shape, index) => {
+      const bounds = shape.bounds();
+      const model = this.modelForShape(shape);
+      const child: any = model
+        ? this.clonePlain(model)
+        : (this.createModelFromRuntimeShape(shape) || {});
 
-  const groupId = this.uniqueShapeId("group");
-  const groupModel: any = {
-    id: groupId,
-    x: box.x,
-    y: box.y,
-    width: box.width,
-    height: box.height,
-    dataItem: {
-      type: "group",
-      title: `Group (${children.length} shapes)`,
-      groupChildren: children,
-      groupOriginalWidth: box.width,
-      groupOriginalHeight: box.height,
+      child.id = String(child.id || `group-child-${index + 1}`);
+      child.x = bounds.x - box.x;
+      child.y = bounds.y - box.y;
+      child.width = bounds.width;
+      child.height = bounds.height;
+      child.rotation = { angle: this.readRotation(shape) };
+      child.dataItem = this.clonePlain(this.shapeDataItem(shape) ?? child.dataItem ?? {});
+
+      const childData = child.dataItem?.dataItem ?? child.dataItem;
+      if (childData && typeof childData === "object") {
+        childData.width = bounds.width;
+        childData.height = bounds.height;
+      }
+
+      // Functions cannot be serialized and the shared visual template is
+      // supplied by shapeDefaults when the child is later restored.
+      delete child.visual;
+      return child;
+    });
+
+    const selectedIds = selected
+      .map(shape => this.runtimeShapeId(shape))
+      .filter(Boolean);
+
+    const groupId = this.uniqueShapeId("group");
+    const groupModel: any = {
+      id: groupId,
+      type: "rectangle",
+      x: box.x,
+      y: box.y,
       width: box.width,
       height: box.height,
-      editorStyle: { flipX: 1, flipY: 1 }
+      dataItem: {
+        type: "group",
+        title: `Group (${children.length} shapes)`,
+        groupChildren: children,
+        groupOriginalWidth: box.width,
+        groupOriginalHeight: box.height,
+        width: box.width,
+        height: box.height,
+        editorStyle: { flipX: 1, flipY: 1 }
+      }
+    };
+
+    this.diagram.remove(selected, true);
+    this.removeModelsByIds(selectedIds);
+    (this.shapes as any[]).push(groupModel);
+
+    const groupedShape = this.diagram.addShape(groupModel, true);
+
+    // Kendo may re-measure a custom visual during creation. Apply the intended
+    // union bounds AFTER the visual exists, and once more on the next task, so
+    // non-simple/compound children cannot collapse to a content-only bbox.
+    groupedShape.bounds(box);
+    groupedShape.updateModel?.(true);
+
+    this.diagram.deselect();
+    this.diagram.select(groupedShape);
+    this.syncRuntimeShapeToModel(groupedShape);
+    this.schedulePersistState();
+    this.statusMessage = `Grouped ${children.length} shapes into one shape.`;
+
+    setTimeout(() => {
+      if (typeof groupedShape?.bounds === "function") {
+        groupedShape.bounds(box);
+        groupedShape.updateModel?.(true);
+        groupedShape.refreshConnections?.();
+        this.syncRuntimeShapeToModel(groupedShape);
+      }
+      this.syncInspectorFromSelection(false);
+    });
+  }
+    public ungroupSelected(): void {
+    if (!this.diagram) {
+      return;
     }
-  };
-
-  this.diagram.remove(selected, true);
-  this.removeModelsByIds([...selectedIds]);
-  (this.shapes as any[]).push(groupModel);
-  const groupedShape = this.diagram.addShape(groupModel, true);
-  this.diagram.deselect();
-  this.diagram.select(groupedShape);
-  this.syncRuntimeShapeToModel(groupedShape);
-  this.updateShapes();
-  this.statusMessage = `Grouped ${children.length} shapes into one shape.`;
-}
-
-public ungroupSelected(): void {
-  if (!this.diagram) {
-    return;
-  }
-  const selected = this.selectedShapes();
-  if (selected.length !== 1 || !this.isGroupRuntimeShape(selected[0])) {
-    this.statusMessage = "Select one grouped shape to ungroup it.";
-    return;
-  }
-
-  const groupShape = selected[0];
-  this.syncRuntimeShapeToModel(groupShape);
-  const groupModel = this.modelForShape(groupShape);
-  const dataItem = this.shapeDataItem(groupShape);
-  const children = this.clonePlain<any[]>(dataItem?.groupChildren || []);
-  
-  if (!groupModel || !children.length) {
-    this.statusMessage = "This group does not contain restorable child shapes.";
-    return;
-  }
-
-  const bounds = groupShape.bounds();
-  const originalWidth = Math.max(1, Number(dataItem.groupOriginalWidth) || Number(groupModel.width) || bounds.width);
-  const originalHeight = Math.max(1, Number(dataItem.groupOriginalHeight) || Number(groupModel.height) || bounds.height);
-  const scaleX = bounds.width / originalWidth;
-  const scaleY = bounds.height / originalHeight;
-  const groupAngle = this.readRotation(groupShape);
-  const groupStyle = dataItem.editorStyle || {};
-  const parentFlipX = groupStyle.flipX === -1 ? -1 : 1;
-  const parentFlipY = groupStyle.flipY === -1 ? -1 : 1;
-  const centerX = bounds.x + bounds.width / 2;
-  const centerY = bounds.y + bounds.height / 2;
-  const angleRadians = groupAngle * Math.PI / 180;
-  const cos = Math.cos(angleRadians);
-  const sin = Math.sin(angleRadians);
-
-  this.diagram.remove([groupShape], true);
-  this.removeModelsByIds([this.runtimeShapeId(groupShape)]);
-
-  const restoredRuntime: any[] = [];
-  for (const storedChild of children) {
-    const child = this.clonePlain<any>(storedChild);
-    const localWidth = Math.max(1, Number(child.width) || 100);
-    const localHeight = Math.max(1, Number(child.height) || 100);
-    let localX = Number(child.x) || 0;
-    let localY = Number(child.y) || 0;
-
-    if (parentFlipX === -1) {
-      localX = originalWidth - localX - localWidth;
-    }
-    if (parentFlipY === -1) {
-      localY = originalHeight - localY - localHeight;
+    const selected = this.selectedShapes();
+    if (selected.length !== 1 || !this.isGroupRuntimeShape(selected[0])) {
+      this.statusMessage = "Select one grouped shape to ungroup it.";
+      return;
     }
 
-    const childWidth = localWidth * Math.abs(scaleX);
-    const childHeight = localHeight * Math.abs(scaleY);
-    let childCenterX = bounds.x + (localX + localWidth / 2) * scaleX;
-    let childCenterY = bounds.y + (localY + localHeight / 2) * scaleY;
-
-    if (groupAngle) {
-      const dx = childCenterX - centerX;
-      const dy = childCenterY - centerY;
-      childCenterX = centerX + dx * cos - dy * sin;
-      childCenterY = centerY + dx * sin + dy * cos;
+    const groupShape = selected[0];
+    this.syncRuntimeShapeToModel(groupShape);
+    const groupModel = this.modelForShape(groupShape);
+    const dataItem = this.shapeDataItem(groupShape);
+    const children = this.clonePlain<any[]>(dataItem?.groupChildren || []);
+    if (!groupModel || !children.length) {
+      this.statusMessage = "This group does not contain restorable child shapes.";
+      return;
     }
 
-    child.id = this.uniqueShapeId(String(child.id || "shape"));
-    child.x = childCenterX - childWidth / 2;
-    child.y = childCenterY - childHeight / 2;
-    child.width = childWidth;
-    child.height = childHeight;
-    const childAngle = Number(child?.rotation?.angle) || 0;
-    child.rotation = { angle: childAngle + groupAngle };
+    const bounds = groupShape.bounds();
+    const originalWidth = Math.max(1, Number(dataItem.groupOriginalWidth) || Number(groupModel.width) || bounds.width);
+    const originalHeight = Math.max(1, Number(dataItem.groupOriginalHeight) || Number(groupModel.height) || bounds.height);
+    const scaleX = bounds.width / originalWidth;
+    const scaleY = bounds.height / originalHeight;
+    const groupAngle = this.readRotation(groupShape);
+    const groupStyle = dataItem.editorStyle || {};
+    const parentFlipX = groupStyle.flipX === -1 ? -1 : 1;
+    const parentFlipY = groupStyle.flipY === -1 ? -1 : 1;
+    const centerX = bounds.x + bounds.width / 2;
+    const centerY = bounds.y + bounds.height / 2;
+    const angleRadians = groupAngle * Math.PI / 180;
+    const cos = Math.cos(angleRadians);
+    const sin = Math.sin(angleRadians);
 
-    child.dataItem ??= {};
-    const childData = child.dataItem?.dataItem ?? child.dataItem;
-    childData.width = childWidth;
-    childData.height = childHeight;
-    childData.editorStyle ??= { flipX: 1, flipY: 1 };
-    childData.editorStyle.flipX = (childData.editorStyle.flipX ?? 1) * parentFlipX;
-    childData.editorStyle.flipY = (childData.editorStyle.flipY ?? 1) * parentFlipY;
+    this.diagram.remove([groupShape], true);
+    this.removeModelsByIds([this.runtimeShapeId(groupShape)]);
 
-    (this.shapes as any[]).push(child);
-    restoredRuntime.push(this.diagram.addShape(child, true));
+    const restoredRuntime: any[] = [];
+    for (const storedChild of children) {
+      const child = this.clonePlain<any>(storedChild);
+      const localWidth = Math.max(1, Number(child.width) || 100);
+      const localHeight = Math.max(1, Number(child.height) || 100);
+      let localX = Number(child.x) || 0;
+      let localY = Number(child.y) || 0;
+
+      if (parentFlipX === -1) {
+        localX = originalWidth - localX - localWidth;
+      }
+      if (parentFlipY === -1) {
+        localY = originalHeight - localY - localHeight;
+      }
+
+      const childWidth = localWidth * Math.abs(scaleX);
+      const childHeight = localHeight * Math.abs(scaleY);
+      let childCenterX = bounds.x + (localX + localWidth / 2) * scaleX;
+      let childCenterY = bounds.y + (localY + localHeight / 2) * scaleY;
+
+      if (groupAngle) {
+        const dx = childCenterX - centerX;
+        const dy = childCenterY - centerY;
+        childCenterX = centerX + dx * cos - dy * sin;
+        childCenterY = centerY + dx * sin + dy * cos;
+      }
+
+      child.id = this.uniqueShapeId(String(child.id || "shape"));
+      child.x = childCenterX - childWidth / 2;
+      child.y = childCenterY - childHeight / 2;
+      child.width = childWidth;
+      child.height = childHeight;
+      const childAngle = Number(child?.rotation?.angle) || 0;
+      child.rotation = { angle: childAngle + groupAngle };
+
+      child.dataItem ??= {};
+      const childData = child.dataItem?.dataItem ?? child.dataItem;
+      childData.width = childWidth;
+      childData.height = childHeight;
+      childData.editorStyle ??= { flipX: 1, flipY: 1 };
+      childData.editorStyle.flipX = (childData.editorStyle.flipX ?? 1) * parentFlipX;
+      childData.editorStyle.flipY = (childData.editorStyle.flipY ?? 1) * parentFlipY;
+
+      (this.shapes as any[]).push(child);
+      restoredRuntime.push(this.diagram.addShape(child, true));
+    }
+
+    this.diagram.deselect();
+    if (restoredRuntime.length) {
+      this.diagram.select(restoredRuntime);
+    }
+    this.synchronizeModelsWithRuntime();
+    this.schedulePersistState();
+    this.statusMessage = `Ungrouped into ${restoredRuntime.length} separate shapes.`;
+    setTimeout(() => this.syncInspectorFromSelection(false));
   }
-
-  this.diagram.deselect();
-  if (restoredRuntime.length) {
-    this.diagram.select(restoredRuntime);
-  }
-  this.synchronizeModelsWithRuntime();
-  this.updateShapes();
-  this.statusMessage = `Ungrouped into ${restoredRuntime.length} separate shapes.`;
-}
-
 // ===== Helper methods =====
 private selectedShapes(): any[] {
   if (!this.diagram) {
@@ -3578,18 +4780,19 @@ private requireSelection(action: string): boolean {
   return true;
 }
 
-private alignShapesToGrid(shapes: any[]): void {
-  const gridSize = 20;
-  for (const shape of shapes) {
-    const bounds = shape.bounds();
-    const x = Math.round(bounds.x / gridSize) * gridSize;
-    const y = Math.round(bounds.y / gridSize) * gridSize;
-    shape.position({ x, y });
-    shape.refreshConnections?.();
-    this.syncRuntimeShapeToModel(shape);
+private alignShapesToGrid(shapes: any[], showStatus: boolean): void {
+    for (const shape of shapes) {
+      const bounds = shape.bounds();
+      const x = Math.round(bounds.x / this.gridSize) * this.gridSize;
+      const y = Math.round(bounds.y / this.gridSize) * this.gridSize;
+      this.moveShapePreservingBounds(shape, x, y, true);
+    }
+
+    if (showStatus) {
+      this.statusMessage = `Aligned ${shapes.length} shape${shapes.length === 1 ? "" : "s"} to the ${this.gridSize}px grid.`;
+    }
+    setTimeout(() => this.syncInspectorFromSelection(false));
   }
-  this.statusMessage = `Aligned ${shapes.length} shape${shapes.length === 1 ? "" : "s"} to the grid.`;
-}
 
 private isGroupRuntimeShape(shape: any): boolean {
   return Array.isArray(this.shapeDataItem(shape)?.groupChildren);
@@ -3689,6 +4892,15 @@ private clonePlain<T>(value: T): T {
 }
 
   private refreshCustomShape(shape: any): void {
+    // Preserve the Diagram model geometry before redrawing the custom visual.
+    // Kendo may otherwise recalculate bounds from the visible Path itself.
+    // That is especially destructive for Line and Arc, whose rendered stroke
+    // occupies only a few pixels of the full selectable shape bounds.
+    const previousBounds = typeof shape?.bounds === "function"
+      ? shape.bounds()
+      : null;
+    const previousRotation = this.readRotation(shape);
+
     // The custom visual reads editorStyle from the data item, so rerun the
     // visual template after a color/fill/flip change.
     if (typeof shape.redrawVisual === "function") {
@@ -3697,6 +4909,15 @@ private clonePlain<T>(value: T): T {
       shape.refresh();
     } else if (typeof shape.redraw === "function") {
       shape.redraw({});
+    }
+
+    // Put the logical shape bounds back exactly as they were before the visual
+    // refresh. Appearance changes must never resize or reposition the object.
+    if (previousBounds && typeof shape?.bounds === "function") {
+      shape.bounds(previousBounds);
+    }
+    if (previousRotation && typeof shape?.rotate === "function") {
+      shape.rotate(previousRotation);
     }
 
     shape.refreshConnections?.();
@@ -3731,8 +4952,8 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     ];
     
     for (const candidate of runtimeCandidates) {
-      if (candidate && typeof candidate === "object" && candidate.definition) {
-        candidate.editorStyle = style;
+      if (candidate && typeof candidate === "object") {
+        candidate.editorStyle = this.clonePlain(style);
       }
     }
     
@@ -3743,7 +4964,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       modelData.editorStyle = this.clonePlain(style);
     }
 
-    //this.schedulePersistState();
+    this.schedulePersistState();
   }
   public flipHorizontal(): void {
     this.toggleFlip("horizontal");
@@ -3883,7 +5104,680 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       : [...selectedModels, ...otherModels];
 
     this.shapes.splice(0, this.shapes.length, ...ordered);
-    //this.schedulePersistState();
+    this.schedulePersistState();
   }
+  private appendRichTextBlocks(
+    group: Group,
+    blocks: any[],
+    startX: number,
+    startY: number,
+    maxWidth: number,
+    maxHeight: number
+  ): void {
+    let cursorY = startY;
+    const bottom = startY + maxHeight;
+    const defaultFontSize = 15;
+
+    const estimatedWidth = (text: string, fontSize: number, bold: boolean): number => {
+      // Kendo's Diagram TextBlock does not expose a synchronous measurement
+      // helper. This estimate is slightly generous, which gives stable wrapping
+      // across common fonts rather than clipping the next run.
+      return Math.max(1, text.length * fontSize * (bold ? 0.64 : 0.58));
+    };
+
+    for (const block of blocks || []) {
+      if (cursorY >= bottom) break;
+      let cursorX = startX;
+      let lineHeight = defaultFontSize * 1.45;
+      const children = Array.isArray(block?.children) ? block.children : [];
+
+      const newLine = (): void => {
+        cursorX = startX;
+        cursorY += lineHeight;
+        lineHeight = defaultFontSize * 1.45;
+      };
+
+      for (const child of children) {
+        if (cursorY >= bottom) break;
+        if (child?.type === "break") {
+          newLine();
+          continue;
+        }
+
+        if (child?.type === "image" && child?.src) {
+          const imageWidth = Math.max(12, Math.min(Number(child.width) || 48, maxWidth));
+          const imageHeight = Math.max(12, Number(child.height) || 36);
+          if (cursorX > startX && cursorX + imageWidth > startX + maxWidth) newLine();
+          if (cursorY + imageHeight <= bottom) {
+            group.append(new DiagramImage({
+              source: String(child.src),
+              x: cursorX,
+              y: cursorY,
+              width: imageWidth,
+              height: imageHeight
+            }));
+          }
+          cursorX += imageWidth + 5;
+          lineHeight = Math.max(lineHeight, imageHeight + 4);
+          continue;
+        }
+
+        const rawText = String(child?.text ?? "");
+        if (!rawText) continue;
+        const fontSize = Math.max(8, Number(child?.fontSize) || defaultFontSize);
+        const bold = child?.bold === true;
+        const italic = child?.italic === true;
+        const underline = child?.underline === true;
+        const color = String(child?.color || "#333333");
+        const fontFamily = String(child?.fontFamily || "sans-serif");
+        lineHeight = Math.max(lineHeight, fontSize * 1.45);
+
+        // Preserve whitespace while still allowing natural wrapping.
+        const pieces = rawText.split(/(\s+)/).filter(piece => piece.length > 0);
+        for (const piece of pieces) {
+          if (cursorY >= bottom) break;
+          const pieceWidth = estimatedWidth(piece, fontSize, bold);
+          const isOnlyWhitespace = /^\s+$/.test(piece);
+          if (!isOnlyWhitespace && cursorX > startX && cursorX + pieceWidth > startX + maxWidth) newLine();
+          if (cursorY >= bottom) break;
+
+          const textBlock = new TextBlock({
+            text: piece,
+            x: cursorX,
+            y: cursorY,
+            fill: color
+          });
+          textBlock.options.fontSize = fontSize;
+          textBlock.options.fontWeight = bold ? "bold" : "normal";
+          textBlock.options.fontStyle = italic ? "italic" : "normal";
+          textBlock.options.fontFamily = fontFamily;
+          group.append(textBlock);
+
+          if (underline && !isOnlyWhitespace) {
+            group.append(new Line({
+              start: { x: cursorX, y: cursorY + fontSize + 2 },
+              end: { x: Math.min(startX + maxWidth, cursorX + pieceWidth), y: cursorY + fontSize + 2 },
+              stroke: { color}
+            }));
+          }
+          cursorX += pieceWidth;
+        }
+      }
+
+      // Paragraph separation. Avoid double-advancing an empty block.
+      cursorY += Math.max(lineHeight, defaultFontSize * 1.45);
+    }
+  }
+  /**
+   * Debounce browser storage writes so resize/drag events do not synchronously
+   * serialize the whole diagram on every intermediate pixel.
+   */
+  /** Repair only the exact legacy Line/Arc shrink signature (20x20). */
+  private repairLegacyAppearanceShrink(savedShapes: any[]): void {
+    const repairOne = (model: any): void => {
+      const dataItem = model?.dataItem?.dataItem ?? model?.dataItem;
+      const kind = dataItem?.libraryKind;
+      const width = Number(model?.width ?? dataItem?.width);
+      const height = Number(model?.height ?? dataItem?.height);
+      const hasAppearanceOverride = Boolean(dataItem?.editorStyle?.strokeColor || dataItem?.editorStyle?.fillColor);
+
+      if (hasAppearanceOverride && width <= 20.01 && height <= 20.01) {
+        if (kind === "line") {
+          model.width = 180;
+          model.height = 24;
+          dataItem.width = 180;
+          dataItem.height = 24;
+        } else if (kind === "arc") {
+          model.width = 170;
+          model.height = 95;
+          dataItem.width = 170;
+          dataItem.height = 95;
+        }
+      }
+
+      const groupChildren = dataItem?.groupChildren;
+      if (Array.isArray(groupChildren)) {
+        for (const child of groupChildren) {
+          repairOne(child);
+        }
+      }
+    };
+
+    for (const shape of savedShapes) {
+      repairOne(shape);
+    }
+  }
+
+  /**
+   * Move a shape without letting custom visuals alter width/height. Using the
+   * complete bounds rectangle is reliable for standard, compound, grouped,
+   * line/arc, and resized shapes.
+   */
+  private moveShapePreservingBounds(shape: any, x: number, y: number, syncModel: boolean): void {
+    if (!shape || typeof shape.bounds !== "function") {
+      return;
+    }
+
+    const bounds = shape.bounds();
+    // Shape.bounds() requires a Rect instance (it calls rect.topLeft()
+    // internally) - a plain {x,y,width,height} literal throws.
+    const nextBounds = new Rect(x, y, bounds.width, bounds.height);
+
+    shape.bounds(nextBounds);
+    shape.updateModel?.(true);
+    shape.refreshConnections?.();
+
+    if (syncModel) {
+      this.syncRuntimeShapeToModel(shape);
+    }
+  }
+  public addContainer(): void {
+    this.addLibraryShape("container", {
+      width: 140,
+      height: 240,
+      strokeColor: "#00bcd4",
+      fillColor: "#00e5ff",
+      containerValue: this.selectedContainerValue,
+      containerMax: this.selectedContainerMax
+    });
+  }
+  public applySelectedRichTextFontFamily(): void {
+    this.applySelectedRichTextFormatting({
+      fontFamily: this.selectedRichTextFontFamily
+    });
+  }
+
+  public applySelectedRichTextFontSize(): void {
+    this.applySelectedRichTextFormatting({
+      fontSize: Number(this.selectedRichTextFontSize)
+    });
+  }
+
+  private applySelectedRichTextFormatting(
+    patch: { fontFamily?: string; fontSize?: number }
+  ): void {
+    const shapes = this.selectedShapes().filter(
+      shape => this.shapeDataItem(shape)?.libraryKind === "richText"
+    );
+
+    if (!shapes.length) {
+      this.statusMessage = "Select a Rich Text shape first.";
+      return;
+    }
+
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      const model = this.modelForShape(shape);
+      const blocks = this.clonePlain<any[]>(
+        dataItem?.richTextBlocks
+        ?? model?.content?.blocks
+        ?? []
+      );
+
+      for (const block of blocks) {
+        for (const child of block?.children || []) {
+          if (typeof child?.text !== "string") {
+            continue;
+          }
+
+          if (patch.fontFamily) {
+            child.fontFamily = patch.fontFamily;
+          }
+
+          if (patch.fontSize) {
+            child.fontSize = patch.fontSize;
+          }
+        }
+      }
+
+      if (dataItem) {
+        dataItem.richTextBlocks = this.clonePlain(blocks);
+      }
+
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.richTextBlocks = this.clonePlain(blocks);
+        model.content = {
+          ...(model.content || {}),
+          blocks: this.clonePlain(blocks)
+        };
+      }
+
+      shape.redraw?.({ content: model?.content });
+      shape.refreshConnections?.();
+      this.syncRuntimeShapeToModel(shape);
+    }
+
+    this.schedulePersistState();
+    this.statusMessage = "Rich Text formatting updated.";
+  }
+
+  public applySelectedContainerValue(): void {
+    this.applySelectedContainerFill({ value: Number(this.selectedContainerValue) });
+  }
+
+  public applySelectedContainerMax(): void {
+    this.applySelectedContainerFill({ max: Number(this.selectedContainerMax) });
+  }
+
+  private applySelectedContainerFill(patch: { value?: number; max?: number }): void {
+    const shapes = this.selectedShapes().filter(
+      shape => this.shapeDataItem(shape)?.libraryKind === "container"
+    );
+
+    if (!shapes.length) {
+      this.statusMessage = "Select a Container shape first.";
+      return;
+    }
+
+    let lastRatio = 0;
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      if (!dataItem) {
+        continue;
+      }
+
+      if (patch.value !== undefined && Number.isFinite(patch.value)) {
+        dataItem.containerValue = patch.value;
+      }
+      if (patch.max !== undefined && Number.isFinite(patch.max) && patch.max > 0) {
+        dataItem.containerMax = patch.max;
+      }
+
+      const model = this.modelForShape(shape);
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.containerValue = dataItem.containerValue;
+        modelData.containerMax = dataItem.containerMax;
+      }
+
+      const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
+      const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
+      lastRatio = Math.max(0, Math.min(1, value / max));
+
+      // redrawVisual()/refresh() re-run the visual template (picking up the new
+      // fill percentage) while refreshCustomShape puts bounds/rotation back
+      // afterward, since redrawing a custom visual can otherwise re-derive them
+      // from the redrawn content.
+      this.refreshCustomShape(shape);
+    }
+
+    this.statusMessage = `Container fill set to ${Math.round(lastRatio * 100)}%.`;
+  }
+  public rotateRight(): void {
+    this.rotateSelectedBy(90);
+  }
+
+  public rotateLeft(): void {
+    this.rotateSelectedBy(-90);
+  }
+  private rotateSelectedBy(delta: number): void {
+    const shapes = this.selectedShapes();
+    if (!shapes.length) {
+      this.statusMessage = `Select at least one shape to rotate ${delta > 0 ? "right" : "left"}.`;
+      return;
+    }
+
+    for (const shape of shapes) {
+      const currentAngle = this.readRotation(shape);
+      const nextAngle = ((currentAngle + delta) % 360 + 360) % 360;
+      shape.rotate(nextAngle, undefined, true);
+      shape.refreshConnections?.();
+      this.syncRuntimeShapeToModel(shape);
+    }
+
+    this.statusMessage = `Rotated ${shapes.length} shape${shapes.length === 1 ? "" : "s"} ${delta > 0 ? "right" : "left"} by 90°.`;
+    setTimeout(() => this.syncInspectorFromSelection(false));
+  }
+    private applyDiagramChangeToAppMemory(event: any): void {
+    const removed = this.eventItems(event?.removed);
+    console.log("removed:",removed)
+    if (removed.length) {
+      this.removeModelsByIds(
+        removed.map(item => this.runtimeShapeId(item)).filter(Boolean)
+      );
+    }
+
+    if (this.eventItems(event?.added).length || removed.length) {
+      // Let Kendo finish assigning IDs/data to pasted shapes first.
+      setTimeout(() => this.synchronizeModelsWithRuntime());
+    }
+  }
+    private eventItems(value: any): any[] {
+    if (!value) {
+      return [];
+    }
+    return Array.isArray(value) ? value : [value];
+  }
+  pendingShapeType = '';
+
+  /**
+   * SVG icons per shape family.
+   * Each entry returns the inner SVG markup (no xmlns needed — we add it).
+   */
+  private readonly cursorIcons: Record<string, string> = {
+    // ── Basic geometry ──
+    rectangle:
+      `<rect x="3" y="6" width="18" height="14" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    roundedRectangle:
+      `<rect x="3" y="6" width="18" height="14" rx="4" ry="4" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    ellipse:
+      `<ellipse cx="12" cy="13" rx="9" ry="7" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    arc:
+      `<path d="M3 20 A9 9 0 0 1 21 20" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    wedge:
+      `<path d="M3 20 L12 4 L21 20 Z" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    polygon:
+      `<path d="M12 3 L21 9 L18 20 L6 20 L3 9 Z" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    polyline:
+      `<path d="M3 18 L9 8 L15 16 L21 6" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    line:
+      `<line x1="3" y1="20" x2="21" y2="6" stroke="#e94560" stroke-width="2"/>`,
+    freehand:
+      `<path d="M3 18 C6 10 9 20 12 12 C15 4 18 16 21 10" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    vector:
+      `<path d="M4 18 L14 6" stroke="#e94560" stroke-width="2"/><circle cx="14" cy="6" r="2" fill="#e94560"/>`,
+
+    // ── Buttons ──
+    button:
+      `<rect x="3" y="7" width="18" height="12" rx="6" ry="6" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="12" cy="13" r="2" fill="#e94560"/>`,
+    navButton:
+      `<circle cx="12" cy="13" r="9" fill="none" stroke="#e94560" stroke-width="2"/><path d="M9 13 L15 13 M13 10 L16 13 L13 16" stroke="#e94560" stroke-width="2" fill="none"/>`,
+    rampButton:
+      `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>`,
+    pushbutton:
+      `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>`,
+    buttonmomentry:
+      `<rect x="3" y="9" width="18" height="11" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+        `<path d="M12 3 L12 7 M9 5 L12 8 L15 5" fill="none" stroke="#7945e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    buttonMaintained:
+      `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
+      `<circle cx="19" cy="13" r="1.5" fill="#e94560"/>`,
+    buttonLatched:
+      `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
+      `<path d="M19 10 L21 10 L21 13" fill="none" stroke="#e94560" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`,
+    buttonMultistate:
+      `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
+      `<circle cx="8" cy="16" r="1" fill="#e94560"/>` +
+      `<circle cx="12" cy="16" r="1" fill="#e94560"/>` +
+      `<circle cx="16" cy="16" r="1" fill="#e94560"/>`,
+    buttonInterlocked:
+        `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+        `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
+        `<circle cx="17" cy="13" r="1.8" fill="none" stroke="#e94560" stroke-width="1.3"/>` +
+        `<circle cx="19.5" cy="13" r="1.8" fill="none" stroke="#e94560" stroke-width="1.3"/>`,
+        
+    // ── Display / data ──
+    display:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">7</text>`,
+    stringDisplay:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<text x="12" y="15" font-size="7" font-weight="bold" text-anchor="middle" fill="#e94560" font-family="monospace">abc</text>`,
+    timeDateDisplay:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<circle cx="12" cy="12" r="4" fill="none" stroke="#e94560" stroke-width="1.3"/>` +
+      `<path d="M12 9.5 L12 12 L13.8 13" fill="none" stroke="#e94560" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>`,
+    numericInput:
+    `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+    `<text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">#</text>` +
+    // up-pointing arrow outside the lower-right corner (same style as stringInput)
+    `<path d="M20 22 L20 17 M20 17 L18 19 M20 17 L22 19" fill="none" stroke="#e94560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+    input:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><line x1="6" y1="10" x2="6" y2="14" stroke="#e94560" stroke-width="2"/>`,
+    
+    stringInput:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<text x="12" y="15" font-size="7" font-weight="bold" text-anchor="middle" fill="#e94560" font-family="monospace">abc</text>` +
+      // vertical arrow pointing UP, sitting outside the lower-right corner
+      `<path d="M20 22 L20 17 M20 17 L18 19 M20 17 L22 19" fill="none" stroke="#e94560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+
+    numeric:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">#</text>`,
+    scale:
+      `<rect x="3" y="12" width="18" height="4" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="12" x2="7" y2="16" stroke="#e94560"/><line x1="12" y1="12" x2="12" y2="16" stroke="#e94560"/><line x1="17" y1="12" x2="17" y2="16" stroke="#e94560"/>`,
+    gauge:
+      `<path d="M4 18 A8 8 0 0 1 20 18" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="18" x2="16" y2="12" stroke="#e94560" stroke-width="2"/>`,
+    bar:
+      `<rect x="4" y="12" width="4" height="8" fill="#e94560"/><rect x="10" y="8" width="4" height="12" fill="#e94560"/><rect x="16" y="4" width="4" height="16" fill="#e94560"/>`,
+    graph:
+      `<path d="M3 20 L9 12 L14 16 L21 6" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    list:
+      `<line x1="4" y1="7" x2="20" y2="7" stroke="#e94560" stroke-width="2"/><line x1="4" y1="13" x2="20" y2="13" stroke="#e94560" stroke-width="2"/><line x1="4" y1="19" x2="20" y2="19" stroke="#e94560" stroke-width="2"/>`,
+
+    // ── Indicators ──
+    indicator:
+      `<circle cx="12" cy="13" r="6" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="12" cy="13" r="2" fill="#e94560"/>`,
+    piloted:
+      `<circle cx="12" cy="13" r="7" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="6" x2="12" y2="9" stroke="#e94560" stroke-width="2"/>`,
+
+    // ── Navigation / keys ──
+    arrow:
+      `<path d="M4 13 L16 13 M12 8 L18 13 L12 18" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    pageUp:
+      `<path d="M7 15 L12 9 L17 15" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="19" x2="17" y2="19" stroke="#e94560" stroke-width="2"/>`,
+    pageDown:
+      `<path d="M7 11 L12 17 L17 11" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="7" x2="17" y2="7" stroke="#e94560" stroke-width="2"/>`,
+    enter:
+      `<path d="M18 6 L18 13 L7 13 M10 10 L7 13 L10 16" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    backspace:
+      `<path d="M8 6 L20 6 L20 20 L8 20 L3 13 Z" fill="none" stroke="#e94560" stroke-width="2"/><line x1="11" y1="10" x2="17" y2="16" stroke="#e94560" stroke-width="2"/><line x1="17" y1="10" x2="11" y2="16" stroke="#e94560" stroke-width="2"/>`,
+
+    // ── Text / media ──
+    text:
+      `<text x="12" y="19" font-size="18" font-weight="bold" text-anchor="middle" fill="#e94560" font-family="serif">T</text>`,
+    tagLabel:
+      `<path d="M4 7 L20 7 L20 19 L4 19 L2 13 Z" fill="none" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>` +
+      `<path d="M6 12 L16 12" stroke="#e94560" stroke-width="1.5" stroke-linecap="round"/>` +
+      `<path d="M6 15 L14 15" stroke="#e94560" stroke-width="1.5" stroke-linecap="round"/>`,
+    localMessage:
+      `<path d="M4 6 L20 6 A2 2 0 0 1 22 8 L22 16 A2 2 0 0 1 20 18 L10 18 L6 21 L6 18 L4 18 A2 2 0 0 1 2 16 L2 8 A2 2 0 0 1 4 6 Z" fill="none" stroke="#e94560" stroke-width="1.8" stroke-linejoin="round"/>` +
+      `<path d="M6 10 L18 10" stroke="#e94560" stroke-width="1.3" stroke-linecap="round"/>` +
+      `<path d="M6 13 L15 13" stroke="#e94560" stroke-width="1.3" stroke-linecap="round"/>` +
+      `<path d="M6 16 L12 16" stroke="#e94560" stroke-width="1.3" stroke-linecap="round"/>`,
+    image:
+      `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="9" cy="11" r="2" fill="#e94560"/><path d="M4 18 L10 13 L14 17 L18 14 L21 17" fill="none" stroke="#e94560" stroke-width="2"/>`,
+    browser:
+      `<rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#e94560" stroke-width="2"/><circle cx="6" cy="8" r="1" fill="#e94560"/>`,
+
+    // ── Generic fallback ──
+    default:
+      `<rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2" stroke-dasharray="3 2"/><line x1="12" y1="9" x2="12" y2="15" stroke="#e94560" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="#e94560" stroke-width="2"/>`,
+  };
+
+  /**
+   * Map each of your shape-type strings → an icon family key.
+   * Anything not listed falls back to 'default'.
+   */
+  private readonly shapeToIconKey: Record<string, string> = {
+    'Arc': 'arc',
+    'Vector': 'vector',
+    'FreeHand': 'freehand',
+    'Elipse': 'ellipse',
+    'Rounded Rectangle': 'roundedRectangle',
+    'Rectangle': 'rectangle',
+    'Wedge': 'wedge',
+    'Polyline': 'polyline',
+    'Polygon': 'polygon',
+    'Line': 'line',
+     'Interlocked': 'buttonInterlocked',
+    'Multistate': 'buttonMultistate',
+    'Latched': 'buttonLatched',
+    'Maintained': 'button',
+    'Momentry': 'buttonmomentry',
+    'Push Button': '"pushbutton',
+    'Navigation Button': 'navButton',
+    'Ramp Button': 'rampButton',
+    'Button': 'button',
+    'Buttons': 'button',
+    
+    'String Display': 'stringDisplay',
+    'String Input': 'stringInput',
+    'Numeric Input': 'numericInput',
+    'Numeric Display': 'numeric',
+    'Data': 'numeric',
+    'Scale': 'scale',
+    'Gauge': 'gauge',
+    'Bar': 'bar',
+    'Graph': 'graph',
+    'List': 'list',
+    'Multiple': 'list',
+    'Indicator': 'indicator',
+    'Page  Up': 'pageUp',
+    'Page  Down': 'pageDown',
+    'Move Up': 'arrow',
+    'Move Down': 'arrow',
+    'Move Right': 'arrow',
+    'Move Left': 'arrow',
+    'Enter': 'enter',
+    'End': 'arrow',
+    'Backspace': 'backspace',
+    'Navigation': 'navButton',
+    'Arrow': 'arrow',
+    'Display': 'display',
+    'Piloted': 'piloted',
+    'Control': 'button',
+    'List Indicator': 'list',
+    'String': 'text',
+    'Numeric': 'numeric',
+    'Time and Date Display': 'timeDateDisplay',
+    'Local Message': 'localMessage',
+    'Tag Label': 'tagLabel',
+    'Banner': 'text',
+    'Alarms and Events': 'list',
+    'Status Explorer': 'list',
+    'Log Viewer': 'list',
+    'Summary': 'list',
+    'Symbol': 'polygon',
+    'Web Browser': 'browser',
+    'Image': 'image',
+    'Text': 'text',
+    'Panel': 'rectangle',
+  };
+
+  /**
+   * Build a data-URI cursor for the currently pending shape type.
+   * Returns 'crosshair' if no shape is pending.
+   */
+    get insertCursor(): string {
+    if (!this.insertShapeFlag) return 'default';
+
+    const iconKey = this.shapeToIconKey[this.pendingShapeType] ?? 'default';
+    const iconSvg = this.cursorIcons[iconKey] ?? this.cursorIcons['default'];
+
+    // 24×24 canvas. Hotspot at (2,2) = top-left area of the icon.
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">` +
+        // small arrow pointer behind the icon
+        `<path d="M0 0 L0 10 L3 7 L5 12 L7 11 L5 6 L9 6 Z" fill="black" stroke="white" stroke-width="1"/>` +
+        iconSvg +
+      `</svg>`;
+
+    // encodeURIComponent keeps the SVG safe inside a CSS url()
+    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 4 4, crosshair`;
+  }
+
+  processButton(action: string, event?: any): void {
+    this.insertShapeFlag = false;
+  switch (action) {
+
+    // ── Display controls ──
+    case 'toggleGrid':
+      this.toggleGrid();
+      break;
+
+    case 'toggleSnap':
+      this.toggleSnap();
+      break;
+
+    case 'zoomOut':
+      this.zoomOut();
+      break;
+
+    case 'zoomIn':
+      this.zoomIn();
+      break;
+
+    case 'zoomToFit':
+      this.zoomToFit();
+      break;
+
+    // ── Shape edit controls ──
+    case 'copySelected':
+      this.copySelected();
+      break;
+
+    case 'paste':
+      this.paste();
+      break;
+
+    case 'deleteSelected':
+      this.deleteSelected();
+      break;
+
+    case 'duplicateSelected':
+      this.duplicateSelected();
+      break;
+
+    case 'sendToBack':
+      this.sendToBack();
+      break;
+
+    case 'bringToFront':
+      this.bringToFront();
+      break;
+
+    case 'alignToGrid':
+      this.alignToGrid();
+      break;
+
+    case 'flipHorizontal':
+      this.flipHorizontal();
+      break;
+
+    case 'flipVertical':
+      this.flipVertical();
+      break;
+
+    case 'rotateRight':
+      this.rotateRight();
+      break;
+
+    case 'rotateLeft':
+      this.rotateLeft();
+      break;
+
+    case 'applyRotation':
+      this.applyRotation();
+      break;
+
+    // ── Colors ──
+    case 'applyStrokeColor':
+      this.applyStrokeColor();
+      break;
+
+    case 'applyFillColor':
+      this.applyFillColor();
+      break;
+
+    // ── Grouping ──
+    case 'groupSelected':
+      this.groupSelected();
+      break;
+
+    case 'ungroupSelected':
+      this.ungroupSelected();
+      break;
+
+    // ── Unknown action ──
+    default:
+      console.warn(`[processButton] Unknown action: "${action}"`);
+      break;
+  }
+}
 }
 

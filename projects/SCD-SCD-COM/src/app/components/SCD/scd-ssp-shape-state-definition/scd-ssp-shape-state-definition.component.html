@@ -86,6 +86,19 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSAME_AS_ACTIVE_APPEARANCETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSAME_AS_ACTIVE_APPEARANCE >
+		<kendo-label *ngIf="(!labelSAME_AS_ACTIVE_APPEARANCETop && !isPhonePortrait) && labelSAME_AS_ACTIVE_APPEARANCEVisible" class="form-label" [for]="SAME_AS_ACTIVE_APPEARANCE" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE','Same as active appearance')"></kendo-label>
+		<label *ngIf="(labelSAME_AS_ACTIVE_APPEARANCETop || isPhonePortrait) && labelSAME_AS_ACTIVE_APPEARANCEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE','Same as active appearance')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SAME_AS_ACTIVE_APPEARANCE"
+  #SAME_AS_ACTIVE_APPEARANCE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE_Hint','Please enter Same as active appearance.')"		(click)="ON_CLICK_SAME_AS_ACTIVE_APPEARANCE($event)"
+ (change)="onChange_SAME_AS_ACTIVE_APPEARANCE($event)"      adaptiveMode="auto" 
+	 name="SAME_AS_ACTIVE_APPEARANCE"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE_Hint','Please enter Same as active appearance.')" 
+[position]="'top'" [showOn]="'hover'"  
+ />
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">

@@ -30,6 +30,7 @@ import {   scdshapeStateScdSslShapeStatesList , componentConfigDef } from '@mode
 'PATTERN_STYLE' : new FormControl(dataItem.PATTERN_STYLE  , ) ,
 'PATTERN_COLOR' : new FormControl(dataItem.PATTERN_COLOR  , ) ,
 'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) ,
+'SAME_AS_ACTIVE_APPEARANCE' : new FormControl(dataItem.SAME_AS_ACTIVE_APPEARANCE  , ) ,
 'CAPTION' : new FormControl(dataItem.CAPTION  , ) ,
 'FONT_NAME' : new FormControl(dataItem.FONT_NAME  , ) ,
 'FONT_SIZE' : new FormControl(dataItem.FONT_SIZE  , ) ,
@@ -146,6 +147,7 @@ public visibleBLINK = false;
 public visiblePATTERN_STYLE = false;
 public visiblePATTERN_COLOR = false;
 public visibleINSERT_VARIABLE = false;
+public visibleSAME_AS_ACTIVE_APPEARANCE = false;
 public visibleCAPTION = false;
 public visibleFONT_NAME = false;
 public visibleFONT_SIZE = false;
@@ -1043,6 +1045,26 @@ async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(formGroup) {
 
 }
 
+async WHEN_VALIDATE_ITEM_SAME_AS_ACTIVE_APPEARANCE(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['SAME_AS_ACTIVE_APPEARANCE'] != "undefined" ) 
+      this.formGroup.controls['SAME_AS_ACTIVE_APPEARANCE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['SAME_AS_ACTIVE_APPEARANCE'] != "undefined" ) 
+     this.formGroup.get('SAME_AS_ACTIVE_APPEARANCE').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SAME_AS_ACTIVE_APPEARANCE(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_CAPTION(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1455,6 +1477,9 @@ async WHEN_VALIDATE_ITEM_IMAGE_ALIGNMENT(formGroup) {
  } 
  async valueChangeINSERT_VARIABLE(value: any) { 
  await this.WHEN_VALIDATE_ITEM_INSERT_VARIABLE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_SAME_AS_ACTIVE_APPEARANCE() { 
+  await this.WHEN_VALIDATE_ITEM_SAME_AS_ACTIVE_APPEARANCE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_CAPTION() { 
   await this.WHEN_VALIDATE_ITEM_CAPTION(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  

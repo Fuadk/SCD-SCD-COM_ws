@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -26,9 +27,9 @@ import { scdgaugeDisplayScdGdGaugeDisplay , componentConfigDef} from '@modeldir/
 'THRESHOLD_1_VALUE' : new FormControl(dataItem.THRESHOLD_1_VALUE  , ) ,
 'FILL_COLOR_1' : new FormControl(dataItem.FILL_COLOR_1  , ) ,
 'BLINK_1' : new FormControl(dataItem.BLINK_1  , ) ,
+'THRESHOLD_2_VALUE' : new FormControl(dataItem.THRESHOLD_2_VALUE  , ) ,
 'FILL_COLOR_2' : new FormControl(dataItem.FILL_COLOR_2  , ) ,
-'BLINK_2' : new FormControl(dataItem.BLINK_2  , ) ,
-'THRESHOLD_2_VALUE' : new FormControl(dataItem.THRESHOLD_2_VALUE  , ) 
+'BLINK_2' : new FormControl(dataItem.BLINK_2  , ) 
 });
 
 declare function getParamConfig():any;
@@ -57,6 +58,7 @@ export class ScdGaugeDisplayScdGdGaugeDisplayFormdivsComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -117,12 +119,12 @@ public labelFILL_COLOR_1Top=true;
 public labelFILL_COLOR_1Visible=true;
 public labelBLINK_1Top=true;
 public labelBLINK_1Visible=true;
+public labelTHRESHOLD_2_VALUETop=true;
+public labelTHRESHOLD_2_VALUEVisible=true;
 public labelFILL_COLOR_2Top=true;
 public labelFILL_COLOR_2Visible=true;
 public labelBLINK_2Top=true;
 public labelBLINK_2Visible=true;
-public labelTHRESHOLD_2_VALUETop=true;
-public labelTHRESHOLD_2_VALUEVisible=true;
 
 public visibleGAUGE_DISPLAY_ID = false;
 public visibleSHAPE_ID = false;
@@ -136,9 +138,9 @@ public visibleTHRESHOLD_TYPE = true;
 public visibleTHRESHOLD_1_VALUE = true;
 public visibleFILL_COLOR_1 = true;
 public visibleBLINK_1 = true;
+public visibleTHRESHOLD_2_VALUE = true;
 public visibleFILL_COLOR_2 = true;
 public visibleBLINK_2 = true;
-public visibleTHRESHOLD_2_VALUE = true;
 
 public disableGAUGE_DISPLAY_ID = false;
 public disableSHAPE_ID = false;
@@ -152,9 +154,9 @@ public disableTHRESHOLD_TYPE = false;
 public disableTHRESHOLD_1_VALUE = false;
 public disableFILL_COLOR_1 = false;
 public disableBLINK_1 = false;
+public disableTHRESHOLD_2_VALUE = false;
 public disableFILL_COLOR_2 = false;
 public disableBLINK_2 = false;
-public disableTHRESHOLD_2_VALUE = false;
 
 
   
@@ -164,8 +166,10 @@ public disableTHRESHOLD_2_VALUE = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -237,8 +241,30 @@ public disableTHRESHOLD_2_VALUE = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -482,6 +508,17 @@ public disableTHRESHOLD_2_VALUE = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -531,7 +568,7 @@ public lookupArrDef:any =[];
 public setlookupArrDef(){
 this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"DIGITS_AFTER_DECIMAL\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"DIGITS_AFTER_DECIMAL\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG +0",
 			"lkpArrName":"lkpArrDIGITS_AFTER_DECIMAL"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"NUMBER_OF_THRESHOLDS\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrNUMBER_OF_THRESHOLDS"},
@@ -694,7 +731,41 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
+    console.log("WHEN_NOTIFY:ComponentConfig.masterSelector:",
+ComponentConfig.masterSelector)
+
+if (ComponentConfig.masterSelector != null) {
+    //alert(ComponentConfig.masterSelector)
+    let masterSelector = ComponentConfig.masterSelector;
+    if (masterSelector.includes("gauge")) {
+        this.generalMode = "GAUGE";
+        //alert(this.generalMode);
+    }
     
+    console.log("WHEN_NOTIFY:this.generalMode:",this.generalMode)
+    switch (this.generalMode) {
+        
+        case 'GAUGE':
+            // this.FormStepsArr[2].visible = false;
+            // this.FormStepsArr[3].visible = false;
+            // this.FormStepsArr[4].visible = false;
+            // this.FormStepsArr[5].visible = false;
+            // this.FormStepsArr[6].visible = false;
+
+            // this.visibleBORDER_STYLE = false;
+            // this.visibleBORDER_WIDTH = false;
+            // this.visibleBORDER_USES_BACK_COLOR = false;
+            // this.visibleFILL_STYLE = false;
+            // this.visibleBLINK = false;
+            // this.visibleBORDER_COLOR = false;
+
+            //alert(this.generalMode);
+            break;
+        
+        default:
+            break;
+    }
+}
   }
   async WHEN_NEW_FORM_INSTANCE(){
     	if (!this.isChild){
@@ -1001,6 +1072,26 @@ async WHEN_VALIDATE_ITEM_BLINK_1(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_THRESHOLD_2_VALUE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['THRESHOLD_2_VALUE'] != "undefined" ) 
+      this.form.controls['THRESHOLD_2_VALUE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['THRESHOLD_2_VALUE'] != "undefined" ) 
+     this.form.get('THRESHOLD_2_VALUE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_THRESHOLD_2_VALUE(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_FILL_COLOR_2(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1038,26 +1129,6 @@ async WHEN_VALIDATE_ITEM_BLINK_2(value) {
  }
 
  async ON_CLICK_BLINK_2(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_THRESHOLD_2_VALUE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['THRESHOLD_2_VALUE'] != "undefined" ) 
-      this.form.controls['THRESHOLD_2_VALUE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['THRESHOLD_2_VALUE'] != "undefined" ) 
-     this.form.get('THRESHOLD_2_VALUE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_THRESHOLD_2_VALUE(event){
 
 }
  
@@ -1151,6 +1222,15 @@ async WHEN_VALIDATE_ITEM_THRESHOLD_2_VALUE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onChange_THRESHOLD_2_VALUE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_THRESHOLD_2_VALUE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onValueChange_FILL_COLOR_2(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_FILL_COLOR_2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
@@ -1165,17 +1245,8 @@ async WHEN_VALIDATE_ITEM_THRESHOLD_2_VALUE(value) {
  await   this.WHEN_VALIDATE_ITEM_BLINK_2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
- } 
- async onChange_THRESHOLD_2_VALUE(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_THRESHOLD_2_VALUE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
  }
-
+public generalMode = "";
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

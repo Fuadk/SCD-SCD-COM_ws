@@ -35,38 +35,41 @@ import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scddisplayScdScdDisplayDiagram , componentConfigDef} from '@modeldir/model';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../../../services/scada-integration.service';
 import { ServerConfig } from '../../../services/scada.service';
-import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
-import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
-import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
+import {ScdAllAlarmsComponent} from '../scd-all-alarms/scd-all-alarms.component';
+import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
+import {ScdArrowButtonTimingComponent} from '../scd-arrow-button-timing/scd-arrow-button-timing.component';
+import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
+import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
+import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
+import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
+import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
+import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
+import {ScdDisplayKeysScreenComponent} from '../scd-display-keys-screen/scd-display-keys-screen.component';
+import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
+import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
+import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
+import {ScdGridPropertiesSettingsComponent} from '../scd-grid-properties-settings/scd-grid-properties-settings.component';
+import {ScdJavascriptCodeScreenComponent} from '../scd-javascript-code-screen/scd-javascript-code-screen.component';
 import {ScdListIndicatorPropertiesComponent} from '../scd-list-indicator-properties/scd-list-indicator-properties.component';
 import {ScdListIndicatorStatesPropertiesComponent} from '../scd-list-indicator-states-properties/scd-list-indicator-states-properties.component';
-import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
-import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
-import {ScdScalePropertiesComponent} from '../scd-scale-properties/scd-scale-properties.component';
-import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
-import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
-import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
-import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
-import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
-import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
+import {ScdLocalMessagePropertiesComponent} from '../scd-local-message-properties/scd-local-message-properties.component';
 import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
-import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
-import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
-import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
-import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
-import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
-import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
-import {ScdShapePropertiesComponent} from '../scd-shape-properties/scd-shape-properties.component';
-import {ScdDisplayKeysScreenComponent} from '../scd-display-keys-screen/scd-display-keys-screen.component';
-import {ScdJavascriptCodeScreenComponent} from '../scd-javascript-code-screen/scd-javascript-code-screen.component';
-import {ScdGridPropertiesSettingsComponent} from '../scd-grid-properties-settings/scd-grid-properties-settings.component';
-import {ScdAllAlarmsComponent} from '../scd-all-alarms/scd-all-alarms.component';
-import {ScdArrowButtonTimingComponent} from '../scd-arrow-button-timing/scd-arrow-button-timing.component';
-import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
+import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
+import {ScdNavigationButtonPropertiesComponent} from '../scd-navigation-button-properties/scd-navigation-button-properties.component';
 import {ScdNumericDisplayPropertiesComponent} from '../scd-numeric-display-properties/scd-numeric-display-properties.component';
+import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
+import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
+import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
+import {ScdRampButtonTimingComponent} from '../scd-ramp-button-timing/scd-ramp-button-timing.component';
+import {ScdScalePropertiesComponent} from '../scd-scale-properties/scd-scale-properties.component';
+import {ScdShapePropertiesComponent} from '../scd-shape-properties/scd-shape-properties.component';
 import {ScdStringDisplayPropertiesComponent} from '../scd-string-display-properties/scd-string-display-properties.component';
 import {ScdStringInputPropertiesComponent} from '../scd-string-input-properties/scd-string-input-properties.component';
-import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
+import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
+import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
+import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
+import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
+import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
@@ -815,9 +818,9 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    // if (!this.isChild) {
-//   this.executeQuery(this.form.value);
-// }
+    if (!this.isChild) {
+  this.executeQuery(this.form.value);
+}
 
 console.log("WHEN_NEW_FORM_INSTANCE");
 var href = window.location.href;
@@ -957,11 +960,63 @@ if (array.length > 2) {
         case 'Numeric Display':
           Id = 'Numeric_Display_Properties';
           break;
+        case 'String Display':
+          Id = 'String_Display_Properties';
+          break;
+        case 'Time and Date Display':
+          Id = 'Message_Date_Properties';
+          title = shapeType + '  Properties';
+          break;
+        case 'Local Message':
+          Id = 'Local_Message_Properties';
+          title = shapeType + '  Properties';
+          break;
+        case 'Text':
+          Id = 'Text_Properties';
+          title = shapeType + '  Properties';
+          break;
+        case 'Tag Label':
+          Id = 'Tag_Label_Properties';
+          title = shapeType + '  Properties';
+          break;
         case 'Numeric Input':
           Id = 'Numeric_Input_Properties';
           break;
+        case 'String Input':
+          Id = 'String_Input_Properties';
+          break;
         case 'Button':
           Id = 'Button_Properties';
+          break;
+        case 'Bar':
+          Id = 'Bar_Graph_Properties';
+          break;
+        case 'Scale':
+          Id = 'Scale_Properties';
+          break;
+        case 'Gauge':
+          Id = 'Gauge_Properties';
+          break;
+        case 'Multiple':
+          Id = 'Multistate_Indicator_Properties';
+          break;
+        case 'List':
+          Id = 'List_Indicator_Properties';
+          break;
+        case 'Backspace':
+        case 'End':
+        case 'Enter':
+          Id = 'Arrow_Button_Properties';
+          title = shapeType + ' Properties';
+          break;
+        case 'Move Left':
+        case 'Move Right':
+        case 'Move Down':
+        case 'Move Up':
+        case 'Page Up':
+        case 'Page Down':
+          Id = 'Arrow_Timing_Properties';
+          title = shapeType + ' Properties';
           break;
         case 'Momentry':
         case 'Maintained':
@@ -973,6 +1028,14 @@ if (array.length > 2) {
         case 'Multistate':
           Id = 'Arrow_Button_Timing';
           title = shapeType + ' Push Button Properties';
+          break;
+        case 'Ramp Button':
+          Id = 'Ramp_Button_Timing';
+          title = shapeType + ' Properties';
+          break;
+        case 'Navigation Button':
+          Id = 'Navigation_Button_Properties';
+          title = shapeType + ' Properties';
           break;
         case 'Arrow':
           Id = 'Arrow_Properties';
@@ -1813,6 +1876,7 @@ public performMapperFrom(In) {
 }
 public isDiagramInitializing = true;
 public expData ={};
+////
 async  prepareShapes(){
   function formatData(input) {
   const result = {};
@@ -1880,10 +1944,38 @@ async  prepareShapes(){
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
   let statement_SCD_SHAPE_STATE = "DELETE from SCD_SHAPE_STATE where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
-let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                    
+  let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                           
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
+  let statement_SCD_MESSAGE_GENERAL = "DELETE from SCD_MESSAGE_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
+  let statement_SCD_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_GRAPH_GENERAL = "DELETE from SCD_GRAPH_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
+  let statement_SCD_MULTISTATE_INDICATOR_GENERAL = "DELETE from SCD_MULTISTATE_INDICATOR_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
+  let statement_SCD_LIST_INDICATOR_GENERAL = "DELETE from SCD_LIST_INDICATOR_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
+  let statement_SCD_LIST_INDICATOR_STATE = "DELETE from SCD_LIST_INDICATOR_STATE where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_ARROW_BUTTON_GENERAL = "DELETE from SCD_ARROW_BUTTON_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_ARROW_BUTTON_LABEL = "DELETE from SCD_ARROW_BUTTON_LABEL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_ARROW_BUTTON_TIMINGE = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                                    
+                
   let body_defs = [
      {
         "_QUERY": "EXECSQL",
@@ -1932,6 +2024,42 @@ let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING whe
            {
         "_QUERY": "EXECSQL",
         "_STMT": statement_SCD_ARROW_BUTTON_TIMING
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_MESSAGE_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_TEXT_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_GRAPH_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_MULTISTATE_INDICATOR_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_LIST_INDICATOR_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_LIST_INDICATOR_STATE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_LABEL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_TIMINGE
       }
 
     ];
@@ -1974,6 +2102,7 @@ let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING whe
     } 
 }
 
+////
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
     if (this.paramConfig.DEBUG_FLAG) console.log("OutRec:1:", OutRec)
@@ -2174,6 +2303,13 @@ public lastClickY: number = 0;
         || (shapeType == "Wedge") || (shapeType == "Arrow") || (shapeType == "Button")  
         || (shapeType == "Push Button") || (shapeType == "Momentry")  || (shapeType == "Maintained")
         || (shapeType == "Latched") || (shapeType == "Multistate") || (shapeType == "Interlocked")
+        || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") || (shapeType == "Time and Date Display")
+        || (shapeType == "Tag Label") || (shapeType == "Local Message")|| (shapeType == "Text")
+        || (shapeType == "Bar") || (shapeType == "Gauge")|| (shapeType == "Scale")
+        || (shapeType == "Multiple") || (shapeType == "List") 
+        || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
+        || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
+        || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
          )
           options = {
             width: 180,
@@ -2185,7 +2321,13 @@ public lastClickY: number = 0;
           };
         if ((shapeType == "Button") || (shapeType == "Momentry") 
           || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
-          || (shapeType == "Interlocked") 
+          || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
+          || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
+          || (shapeType == "Text") || (shapeType == "Text")  || (shapeType == "Bar") || (shapeType == "Gauge") 
+          || (shapeType == "Scale") || (shapeType == "Multiple") || (shapeType == "List") 
+          || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
+          || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
+          || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
         ) {
           options.fillColor = "#D3D3D3"
         }
@@ -2693,7 +2835,7 @@ public valueChange_del(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"1000","Height":"800","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"700","Maximize":"Y"},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"34","Component":"Arrow_Button_Timing","Width":"700","Height":"700","Maximize":null},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""}]
+  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"34","Component":"Arrow_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"37","Component":"Local_Message_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"35","Component":"Navigation_Button_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"1000","Height":"800","Maximize":""},{"Id":"36","Component":"Ramp_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"800","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -2701,70 +2843,76 @@ public valueChange_del(value: any): void {
     }
 
     	switch (shapeType) {
-		case '1': 
-		return ScdPushButtonPropertiesComponent; 
-		case '10': 
-		return ScdSymbolStatesPropertiesComponent; 
-		case '11': 
-		return ScdSymbolPropertiesComponent; 
+		case '33': 
+		return ScdAllAlarmsComponent; 
+		case '17': 
+		return ScdArrowButtonPropertiesComponent; 
+		case '34': 
+		return ScdArrowButtonTimingComponent; 
+		case '19': 
+		return ScdArrowPropertiesComponent; 
+		case '18': 
+		return ScdArrowTimingPropertiesComponent; 
+		case '14': 
+		return ScdBarGraphPropertiesComponent; 
+		case '24': 
+		return ScdBrowserPropertiesComponent; 
+		case '4': 
+		return ScdButtonPropertiesComponent; 
+		case '20': 
+		return ScdControlListSelectorPropertiesComponent; 
+		case '30': 
+		return ScdDisplayKeysScreenComponent; 
+		case '21': 
+		return ScdDisplayListSelectorPropertiesComponent; 
+		case '28': 
+		return ScdDisplaySettingsScreenComponent; 
+		case '15': 
+		return ScdGaugePropertiesComponent; 
+		case '32': 
+		return ScdGridPropertiesSettingsComponent; 
+		case '31': 
+		return ScdJavascriptCodeScreenComponent; 
 		case '12': 
 		return ScdListIndicatorPropertiesComponent; 
 		case '13': 
 		return ScdListIndicatorStatesPropertiesComponent; 
-		case '14': 
-		return ScdBarGraphPropertiesComponent; 
-		case '15': 
-		return ScdGaugePropertiesComponent; 
-		case '16': 
-		return ScdScalePropertiesComponent; 
-		case '17': 
-		return ScdArrowButtonPropertiesComponent; 
-		case '18': 
-		return ScdArrowTimingPropertiesComponent; 
-		case '19': 
-		return ScdArrowPropertiesComponent; 
-		case '2': 
-		return ScdTextPropertiesComponent; 
-		case '20': 
-		return ScdControlListSelectorPropertiesComponent; 
-		case '21': 
-		return ScdDisplayListSelectorPropertiesComponent; 
+		case '37': 
+		return ScdLocalMessagePropertiesComponent; 
 		case '22': 
 		return ScdMessageDatePropertiesComponent; 
-		case '23': 
-		return ScdTagLabelPropertiesComponent; 
-		case '24': 
-		return ScdBrowserPropertiesComponent; 
-		case '25': 
-		return ScdPilotedListSelectorPropertiesComponent; 
-		case '27': 
-		return ScdNumericInputPropertiesComponent; 
-		case '28': 
-		return ScdDisplaySettingsScreenComponent; 
-		case '29': 
-		return ScdSymbolfactoryplusComponent; 
-		case '3': 
-		return ScdShapePropertiesComponent; 
-		case '30': 
-		return ScdDisplayKeysScreenComponent; 
-		case '31': 
-		return ScdJavascriptCodeScreenComponent; 
-		case '32': 
-		return ScdGridPropertiesSettingsComponent; 
-		case '33': 
-		return ScdAllAlarmsComponent; 
-		case '34': 
-		return ScdArrowButtonTimingComponent; 
-		case '4': 
-		return ScdButtonPropertiesComponent; 
+		case '9': 
+		return ScdMultistateIndicatorPropertiesComponent; 
+		case '35': 
+		return ScdNavigationButtonPropertiesComponent; 
 		case '5': 
 		return ScdNumericDisplayPropertiesComponent; 
+		case '27': 
+		return ScdNumericInputPropertiesComponent; 
+		case '25': 
+		return ScdPilotedListSelectorPropertiesComponent; 
+		case '1': 
+		return ScdPushButtonPropertiesComponent; 
+		case '36': 
+		return ScdRampButtonTimingComponent; 
+		case '16': 
+		return ScdScalePropertiesComponent; 
+		case '3': 
+		return ScdShapePropertiesComponent; 
 		case '7': 
 		return ScdStringDisplayPropertiesComponent; 
 		case '8': 
 		return ScdStringInputPropertiesComponent; 
-		case '9': 
-		return ScdMultistateIndicatorPropertiesComponent; 
+		case '11': 
+		return ScdSymbolPropertiesComponent; 
+		case '10': 
+		return ScdSymbolStatesPropertiesComponent; 
+		case '29': 
+		return ScdSymbolfactoryplusComponent; 
+		case '23': 
+		return ScdTagLabelPropertiesComponent; 
+		case '2': 
+		return ScdTextPropertiesComponent; 
 	default:
 	return null;
 	}
@@ -3159,7 +3307,8 @@ public getShapeInfo(){
 
   return shapeInfo;
 }
- async insertSCDShapeTables(shapeID, shapeType) {
+
+   async insertSCDShapeTables(shapeID, shapeType) {
     function groupByFieldName<T extends { FIELD_NAME: string; FIELD_VALUE: any }>(
       data: T[]
     ): Array<Array<{ FIELD_NAME: string; FIELD_VALUE: any }>> {
@@ -3195,24 +3344,108 @@ public getShapeInfo(){
       case 'Numeric Display':
         tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
         break;
+      case 'String Display':
+        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
+        break;
+      case 'Time and Date Display':
+        tables.push('INSERT_SCD_MESSAGE_GENERAL');
+        break;
+      case 'Tag Label':
+        tables.push('INSERT_SCD_TAG_LABEL_GENERAL');
+        break;
+      case 'Local Message':
+        tables.push('INSERT_SCD_MESSAGE_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'Text':
+        tables.push('INSERT_SCD_TEXT_GENERAL');
+        break;
       case 'Numeric Input':
         tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
         tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
         tables.push('INSERT_SCD_SHAPE_CONNECTION');
         break;
+      case 'String Input':
+        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
+        break;
+      case 'Bar':
+        tables.push('INSERT_SCD_GRAPH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'Scale':
+        tables.push('INSERT_SCD_GRAPH_GENERAL');
+        break;
+      case 'Gauge':
+        tables.push('INSERT_SCD_GRAPH_GENERAL');
+        tables.push('INSERT_SCD_GAUGE_DISPLAY');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break; 
+      case 'Multiple':
+        tables.push('INSERT_SCD_MULTISTATE_INDICATOR_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break; 
+      case 'List':
+        tables.push('INSERT_SCD_LIST_INDICATOR_GENERAL');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'Backspace':
+      case 'End':
+      case 'Enter':
+        tables.push('INSERT_SCD_ARROW_BUTTON_GENERAL');
+        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
+        break; 
+      case 'Move Left':
+      case 'Move Right':
+      case 'Move Down':
+      case 'Move Up':
+      case 'Page Up':
+      case 'Page Down':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
+        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
+        break; 
       case 'Momentry':
       case 'Maintained':
       case 'Latched':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
       case 'Interlocked':
         tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
         tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        tables.push('INSERT_SCD_SHAPE_STATE');
         tables.push('INSERT_SCD_SHAPE_STATE');
         break;
       case 'Multistate':
         tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
         tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_SHAPE_STATE');
         tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
+      case 'Ramp Button':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        break;
+      case 'Navigation Button':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
         break;
       case 'Panel':
       case 'Arc':
@@ -3242,9 +3475,9 @@ public getShapeInfo(){
     if (tables.length > 0) {
       for (let i = 0; i < tables.length; i++) {
         let useshapeType = null;
-        if (tables[i] == "INSERT_SCD_SHAPE_CONNECTION"){
+        if (tables[i] == "INSERT_SCD_SHAPE_CONNECTION") {
           useshapeType = shapeType;
-          if ( (shapeType == "Maintained")  || (shapeType == "Multistate")  ) 
+          if ((shapeType == "Maintained") || (shapeType == "Multistate"))
             useshapeType = "Momentry";
         }
         let TableDefauls = await this.starlib1.setShapeDefaults(tables[i], useshapeType);
@@ -3262,18 +3495,105 @@ public getShapeInfo(){
             let val = TableDefauls[j].FIELD_VALUE;
             object[field] = val;
           }
-          console.log("insertSCDShapeTables:object:", object)
+          
           if (typeof object != "undefined" && Object.keys(object).length > 0) {
             object['SHAPE_ID'] = shapeID;
             object['_QUERY'] = tables[i];
+            console.log("insertSCDShapeTables:object:", object)
+            if (tables[i] == "INSERT_SCD_SHAPE_STATE") {
+              if (shapeType == "Navigation Button") {
+                if (butApp == 0)
+                  object['STATE_NAME'] = "ACTIVE";
+                else if (butApp == 1)
+                  object['STATE_NAME'] = "INACTIVE";
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              }
+              else if ( (shapeType == "Maintained") || (shapeType == "Momentry") || (shapeType == "Latched") 
+                || (shapeType == "Multistate") || (shapeType == "Interlocked") || (shapeType == "Multiple") 
+                || (shapeType == "List") 
+                ) {
+                if (butApp == 0){
+                  object['STATE_NAME'] = "State0";
+                  object['STATE_ID'] = "0";
+                  object['VALUE'] = "0";
+                }
+                else if (butApp == 1){
+                  object['STATE_NAME'] = "State1";
+                  object['STATE_ID'] = "1";
+                  object['VALUE'] = "1";
+                }
+                else if (butApp == 2){
+                  object['STATE_NAME'] = "Error";
+                  if (shapeType == "Multiple") 
+                    object['STATE_NAME'] = "State2";
+                  object['STATE_ID'] = "2";
+                  object['VALUE'] = "2";
+                }
+                else if (butApp == 3){
+                  object['STATE_NAME'] = "Error";
+                  object['STATE_ID'] = "3";
+                  object['VALUE'] = "3";
+                }
+
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              }
+              else if (shapeType == "Ramp Button") {
+                if (butApp == 0)
+                  object['STATE_NAME'] = "LABEL";
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              }
+            }
+            if (tables[i] == "INSERT_SCD_LIST_INDICATOR_STATE") {
+                if (butApp == 0){
+                  object['STATE_NAME'] = "State0";
+                  object['STATE_ID'] = "0";
+                  object['VALUE'] = "0";
+                }
+                else if (butApp == 1){
+                  object['STATE_NAME'] = "State1";
+                  object['STATE_ID'] = "1";
+                  object['VALUE'] = "1";
+                }
+                else if (butApp == 2){
+                  object['STATE_NAME'] = "State2";
+                  object['STATE_ID'] = "2";
+                  object['VALUE'] = "2";
+                }
+                else if (butApp == 3){
+                  object['STATE_NAME'] = "State3";
+                  object['STATE_ID'] = "3";
+                  object['VALUE'] = "3";
+                }
+                else if (butApp == 4){
+                  object['STATE_NAME'] = "State4";
+                  object['STATE_ID'] = "4";
+                  object['VALUE'] = "4";
+                }
+
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              
+            }
             if (tables[i] == "INSERT_SCD_BUTTON_APPEARANCE") {
-              if (butApp == 0)
-                object['BUTTON_APPEARANCE'] = "UP";
-              else if (butApp == 1)
-                object['BUTTON_APPEARANCE'] = "DOWN";
-              else if (butApp == 2)
-                object['BUTTON_APPEARANCE'] = "DISABLED";
-              butApp++;
+                  if (butApp == 0)
+                  object['BUTTON_APPEARANCE'] = "UP";
+                else if (butApp == 1)
+                  object['BUTTON_APPEARANCE'] = "DOWN";
+                else if (butApp == 2)
+                  object['BUTTON_APPEARANCE'] = "DISABLED";
+                butApp++;
+            }
+            if (tables[i] == "INSERT_SCD_GRAPH_GENERAL") {
+              if (shapeType == "Gauge"){
+                object['BACK_COLOR'] = " #D3D3D3";
+                object['FILL_COLOR'] = "#AAFF00";
+              }
+              else if (shapeType == "Scale"){
+                object['BACK_COLOR'] = " #000000";
+              }
             }
             let body = [];
             body.push(object);
@@ -3285,6 +3605,7 @@ public getShapeInfo(){
       }
     }
   }
+
 
 public menuType;
 public event;
@@ -3805,9 +4126,16 @@ public onFreehandPointerUp(event: PointerEvent): void {
       );
       return group;
     }
-    if ( (kind === "Text")||(kind === "numeric")||(kind === "input")
+    if ( (kind === "Text")||(kind === "numeric")||(kind === "numericInput")
      ||(kind === "button") ||(kind === "buttonmomentry") || (kind === "buttonMaintained") 
      || (kind === "buttonLatched") || (kind === "buttonMultistate") || (kind === "buttonInterlocked")
+     || (kind === "rampButton") || (kind === "navButton") || (kind === "timeDateDisplay") || (kind === "tagLabel")
+     || (kind === "localMessage") || (kind === "text") || (kind === "stringInput") || (kind === "stringDisplay")
+     || (kind === "bar") || (kind === "gauge") || (kind === "scale")  || (kind === "multiple")
+     || (kind === "list")
+     || (kind == "backspace")  || (kind == "end")  || (kind == "enter") 
+     || (kind == "moveleft")  || (kind == "moveright")  || (kind == "movedown") 
+     || (kind == "moveup")  || (kind == "pageup")  || (kind == "pagedown") 
      ) {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
@@ -5432,14 +5760,50 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     // ── Display / data ──
     display:
       `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">7</text>`,
+    stringDisplay:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<text x="12" y="15" font-size="7" font-weight="bold" text-anchor="middle" fill="#e94560" font-family="monospace">abc</text>`,
+    timeDateDisplay:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<circle cx="12" cy="12" r="4" fill="none" stroke="#e94560" stroke-width="1.3"/>` +
+      `<path d="M12 9.5 L12 12 L13.8 13" fill="none" stroke="#e94560" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>`,
+    numericInput:
+    `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+    `<text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">#</text>` +
+    // up-pointing arrow outside the lower-right corner (same style as stringInput)
+    `<path d="M20 22 L20 17 M20 17 L18 19 M20 17 L22 19" fill="none" stroke="#e94560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
     input:
       `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><line x1="6" y1="10" x2="6" y2="14" stroke="#e94560" stroke-width="2"/>`,
+    
+    stringInput:
+      `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<text x="12" y="15" font-size="7" font-weight="bold" text-anchor="middle" fill="#e94560" font-family="monospace">abc</text>` +
+      // vertical arrow pointing UP, sitting outside the lower-right corner
+      `<path d="M20 22 L20 17 M20 17 L18 19 M20 17 L22 19" fill="none" stroke="#e94560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+
     numeric:
       `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">#</text>`,
     scale:
-      `<rect x="3" y="12" width="18" height="4" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="12" x2="7" y2="16" stroke="#e94560"/><line x1="12" y1="12" x2="12" y2="16" stroke="#e94560"/><line x1="17" y1="12" x2="17" y2="16" stroke="#e94560"/>`,
+      `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      // Y axis (vertical) and X axis (horizontal) forming an L at the lower-left
+      `<path d="M7 16 L7 9" stroke="#e94560" stroke-width="1.6" stroke-linecap="round"/>` +
+      `<path d="M7 16 L17 16" stroke="#e94560" stroke-width="1.6" stroke-linecap="round"/>` +
+      // small arrowheads on the axes
+      `<path d="M6.4 9.6 L7 9 L7.6 9.6" fill="none" stroke="#e94560" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>` +
+      `<path d="M16.4 15.4 L17 16 L16.4 16.6" fill="none" stroke="#e94560" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>` +
+      // plotted line (zigzag showing a rising trend)
+      `<path d="M7.5 14.5 L10 12 L12.5 13.2 L15 9.5" fill="none" stroke="#e94560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>` +
+      // data point at the end of the line
+      `<circle cx="15" cy="9.5" r="1" fill="#e94560"/>`,
+
     gauge:
-      `<path d="M4 18 A8 8 0 0 1 20 18" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="18" x2="16" y2="12" stroke="#e94560" stroke-width="2"/>`,
+      `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<path d="M7 16 A5 5 0 0 1 17 16" fill="none" stroke="#e94560" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<path d="M8 13.5 L8.7 14" stroke="#e94560" stroke-width="1.1" stroke-linecap="round"/>` +
+      `<path d="M12 11 L12 12" stroke="#e94560" stroke-width="1.1" stroke-linecap="round"/>` +
+      `<path d="M16 13.5 L15.3 14" stroke="#e94560" stroke-width="1.1" stroke-linecap="round"/>` +
+      `<path d="M12 16 L15 12.5" stroke="#e94560" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<circle cx="12" cy="16" r="1.1" fill="#e94560"/>`,
     bar:
       `<rect x="4" y="12" width="4" height="8" fill="#e94560"/><rect x="10" y="8" width="4" height="12" fill="#e94560"/><rect x="16" y="4" width="4" height="16" fill="#e94560"/>`,
     graph:
@@ -5448,18 +5812,46 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       `<line x1="4" y1="7" x2="20" y2="7" stroke="#e94560" stroke-width="2"/><line x1="4" y1="13" x2="20" y2="13" stroke="#e94560" stroke-width="2"/><line x1="4" y1="19" x2="20" y2="19" stroke="#e94560" stroke-width="2"/>`,
 
     // ── Indicators ──
+    multiple:
+          `<line x1="4"  y1="5"  x2="16" y2="5"  stroke="#e94560" stroke-width="2"/>
+          <line x1="4"  y1="11" x2="16" y2="11" stroke="#e94560" stroke-width="2"/>
+          <line x1="4"  y1="17" x2="16" y2="17" stroke="#e94560" stroke-width="2"/>
+          <line x1="8"  y1="9"  x2="20" y2="9"  stroke="#e94560" stroke-width="2" opacity="0.6"/>
+          <line x1="8"  y1="15" x2="20" y2="15" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+          <line x1="8"  y1="21" x2="20" y2="21" stroke="#e94560" stroke-width="2" opacity="0.6"/>`,
     indicator:
       `<circle cx="12" cy="13" r="6" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="12" cy="13" r="2" fill="#e94560"/>`,
     piloted:
       `<circle cx="12" cy="13" r="7" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="6" x2="12" y2="9" stroke="#e94560" stroke-width="2"/>`,
 
     // ── Navigation / keys ──
+    end:
+      `<line x1="18" y1="6" x2="18" y2="20" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <path d="M4 13 L15 13" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>`,
+    moveleft:
+      `<path d="M20 13 L6 13 M11 8 L5 13 L11 18"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
+    moveright:
+      `<path d="M4 13 L16 13 M12 8 L18 13 L12 18"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
+    movedown:
+      `<path d="M12 4 L12 18 M7 13 L12 19 L17 13"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
+    moveup:
+      `<path d="M12 20 L12 6 M7 11 L12 5 L17 11"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
     arrow:
       `<path d="M4 13 L16 13 M12 8 L18 13 L12 18" fill="none" stroke="#e94560" stroke-width="2"/>`,
-    pageUp:
-      `<path d="M7 15 L12 9 L17 15" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="19" x2="17" y2="19" stroke="#e94560" stroke-width="2"/>`,
-    pageDown:
-      `<path d="M7 11 L12 17 L17 11" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="7" x2="17" y2="7" stroke="#e94560" stroke-width="2"/>`,
+    pageup:
+      `<path d="M7 18 L12 12 L17 18 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M7 12 L12 6  L17 12 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>`,
+    pagedown:
+      `<path d="M7 6 L12 12 L17 6 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M7 12 L12 18 L17 12 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>`,
     enter:
       `<path d="M18 6 L18 13 L7 13 M10 10 L7 13 L10 16" fill="none" stroke="#e94560" stroke-width="2"/>`,
     backspace:
@@ -5468,6 +5860,15 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     // ── Text / media ──
     text:
       `<text x="12" y="19" font-size="18" font-weight="bold" text-anchor="middle" fill="#e94560" font-family="serif">T</text>`,
+    tagLabel:
+      `<path d="M4 7 L20 7 L20 19 L4 19 L2 13 Z" fill="none" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>` +
+      `<path d="M6 12 L16 12" stroke="#e94560" stroke-width="1.5" stroke-linecap="round"/>` +
+      `<path d="M6 15 L14 15" stroke="#e94560" stroke-width="1.5" stroke-linecap="round"/>`,
+    localMessage:
+      `<path d="M4 6 L20 6 A2 2 0 0 1 22 8 L22 16 A2 2 0 0 1 20 18 L10 18 L6 21 L6 18 L4 18 A2 2 0 0 1 2 16 L2 8 A2 2 0 0 1 4 6 Z" fill="none" stroke="#e94560" stroke-width="1.8" stroke-linejoin="round"/>` +
+      `<path d="M6 10 L18 10" stroke="#e94560" stroke-width="1.3" stroke-linecap="round"/>` +
+      `<path d="M6 13 L15 13" stroke="#e94560" stroke-width="1.3" stroke-linecap="round"/>` +
+      `<path d="M6 16 L12 16" stroke="#e94560" stroke-width="1.3" stroke-linecap="round"/>`,
     image:
       `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="9" cy="11" r="2" fill="#e94560"/><path d="M4 18 L10 13 L14 17 L18 14 L21 17" fill="none" stroke="#e94560" stroke-width="2"/>`,
     browser:
@@ -5500,13 +5901,13 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Momentry': 'buttonmomentry',
     'Push Button': '"pushbutton',
     'Navigation Button': 'navButton',
-    'Ramp  Button': 'rampButton',
+    'Ramp Button': 'rampButton',
     'Button': 'button',
     'Buttons': 'button',
     
-    'String Display': 'display',
-    'String Input': 'input',
-    'Numeric Input': 'input',
+    'String Display': 'stringDisplay',
+    'String Input': 'stringInput',
+    'Numeric Input': 'numericInput',
     'Numeric Display': 'numeric',
     'Data': 'numeric',
     'Scale': 'scale',
@@ -5514,28 +5915,28 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Bar': 'bar',
     'Graph': 'graph',
     'List': 'list',
-    'Multiple': 'list',
+    'Multiple': 'multiple',
     'Indicator': 'indicator',
-    'Page  Up': 'pageUp',
-    'Page  Down': 'pageDown',
-    'Move Up': 'arrow',
-    'Move Down': 'arrow',
-    'Move Right': 'arrow',
-    'Move Left': 'arrow',
+    'Page Up': 'pageup',
+    'Page Down': 'pagedown',
+    'Move Up': 'moveup',
+    'Move Down': 'movedown',
+    'Move Right': 'moveright',
+    'Move Left': 'moveleft',
     'Enter': 'enter',
-    'End': 'arrow',
+    'End': 'end',
     'Backspace': 'backspace',
-    'Navigation': 'navButton',
-    'Arrow': 'arrow',
+    //'Navigation': 'navButton',
+    //'Arrow': 'arrow',
     'Display': 'display',
     'Piloted': 'piloted',
     'Control': 'button',
     'List Indicator': 'list',
     'String': 'text',
     'Numeric': 'numeric',
-    'Time and Date Display': 'display',
-    'Local Message': 'text',
-    'Tag Label': 'text',
+    'Time and Date Display': 'timeDateDisplay',
+    'Local Message': 'localMessage',
+    'Tag Label': 'tagLabel',
     'Banner': 'text',
     'Alarms and Events': 'list',
     'Status Explorer': 'list',

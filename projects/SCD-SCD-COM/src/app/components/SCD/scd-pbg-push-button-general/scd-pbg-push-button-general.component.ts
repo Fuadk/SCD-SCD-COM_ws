@@ -20,11 +20,11 @@ import { scdbuttonPushGeneralScdPbgPushButtonGeneral , componentConfigDef} from 
 'BORDER_WIDTH' : new FormControl(dataItem.BORDER_WIDTH  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'BORDER_USES_BACK_COLOR' : new FormControl(dataItem.BORDER_USES_BACK_COLOR  , ) ,
+'BLINK' : new FormControl(dataItem.BLINK  , ) ,
+'BORDER_COLOR' : new FormControl(dataItem.BORDER_COLOR  , ) ,
 'HIGHLIGHT_COLOR' : new FormControl(dataItem.HIGHLIGHT_COLOR  , ) ,
 'BACK_COLOR' : new FormControl(dataItem.BACK_COLOR  , ) ,
-'BORDER_COLOR' : new FormControl(dataItem.BORDER_COLOR  , ) ,
 'PATTERN_COLOR' : new FormControl(dataItem.PATTERN_COLOR  , ) ,
-'BLINK' : new FormControl(dataItem.BLINK  , ) ,
 'BACK_STYLE' : new FormControl(dataItem.BACK_STYLE  , ) ,
 'SHAPE_TYPE' : new FormControl(dataItem.SHAPE_TYPE  , ) ,
 'NAVIGATION_ACTION' : new FormControl(dataItem.NAVIGATION_ACTION  , ) ,
@@ -118,16 +118,16 @@ public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
 public labelBORDER_USES_BACK_COLORTop=false;
 public labelBORDER_USES_BACK_COLORVisible=true;
+public labelBLINKTop=false;
+public labelBLINKVisible=true;
+public labelBORDER_COLORTop=false;
+public labelBORDER_COLORVisible=true;
 public labelHIGHLIGHT_COLORTop=false;
 public labelHIGHLIGHT_COLORVisible=true;
 public labelBACK_COLORTop=false;
 public labelBACK_COLORVisible=true;
-public labelBORDER_COLORTop=false;
-public labelBORDER_COLORVisible=true;
 public labelPATTERN_COLORTop=false;
 public labelPATTERN_COLORVisible=true;
-public labelBLINKTop=false;
-public labelBLINKVisible=true;
 public labelBACK_STYLETop=false;
 public labelBACK_STYLEVisible=true;
 public labelSHAPE_TYPETop=false;
@@ -170,11 +170,11 @@ public visibleBORDER_STYLE = true;
 public visibleBORDER_WIDTH = true;
 public visibleSHAPE_ID = false;
 public visibleBORDER_USES_BACK_COLOR = true;
+public visibleBLINK = true;
+public visibleBORDER_COLOR = true;
 public visibleHIGHLIGHT_COLOR = true;
 public visibleBACK_COLOR = true;
-public visibleBORDER_COLOR = true;
 public visiblePATTERN_COLOR = true;
-public visibleBLINK = true;
 public visibleBACK_STYLE = true;
 public visibleSHAPE_TYPE = true;
 public visibleNAVIGATION_ACTION = true;
@@ -199,11 +199,11 @@ public disableBORDER_STYLE = false;
 public disableBORDER_WIDTH = false;
 public disableSHAPE_ID = false;
 public disableBORDER_USES_BACK_COLOR = false;
+public disableBLINK = false;
+public disableBORDER_COLOR = false;
 public disableHIGHLIGHT_COLOR = false;
 public disableBACK_COLOR = false;
-public disableBORDER_COLOR = false;
 public disablePATTERN_COLOR = false;
-public disableBLINK = false;
 public disableBACK_STYLE = false;
 public disableSHAPE_TYPE = false;
 public disableNAVIGATION_ACTION = false;
@@ -879,13 +879,14 @@ public printScreen(){
       this.visibleBLINK = false;
       this.visibleLOWER_LIMIT = false;
       break;
-    case 'RAMP':
+    case 'RAMP BUTTON':
       this.visibleNAVIGATION_ACTION = false;
       this.visibleBUTTON_ACTION = false;
       this.visibleHOLD_TIME = false;
       this.visibleBUTTON_VALUE = false;
       this.visibleLATCH_RESET_TYPE = false;
       this.visibleLOWER_LIMIT = false;
+      this.FormStepsArr[3].visible = false; //State settings
       break;
     case "INTERLOCKED":
       this.visibleBACK_COLOR = false;
@@ -948,6 +949,35 @@ public printScreen(){
       this.visibleBUTTON_VALUE = false;
       this.visibleLATCH_RESET_TYPE = false;
 
+      this.FormStepsArr[3].visible = false;
+      break;
+    case "NAVIGATION BUTTON":
+      this.visibleBACK_COLOR = false;
+      this.visibleBORDER_COLOR = false;
+      this.visiblePATTERN_COLOR = false;
+      this.visibleBLINK = false;
+
+
+      this.visibleUSE_VARIABLE_LOWER_UPPER_LIMIT = false;
+      this.visibleUSE_VARIABLE_RAMP_VALUE = false;
+      this.visibleRAMP_UP_DOWN = false;
+      this.visibleUPPER_LIMIT = false;
+      this.visibleRAMP_VALUE = false;
+      this.visibleBUTTON_VALUE = false;
+      this.visibleLATCH_RESET_TYPE = false;
+
+      this.visibleBUTTON_ACTION = false;
+      this.visibleHOLD_TIME = false;
+
+      this.FormStepsArr[3].visible = false;
+      break;
+    case 'MOVE LEFT':
+    case 'MOVE RIGHT':
+    case 'MOVE DOWN':
+    case 'MOVE UP':
+    case 'PAGE UP':
+    case 'PAGE DOWN':
+      this.FormStepsArr[2].visible = false;
       this.FormStepsArr[3].visible = false;
       break;
 
@@ -1120,6 +1150,46 @@ async WHEN_VALIDATE_ITEM_BORDER_USES_BACK_COLOR(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_BLINK(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BLINK'] != "undefined" ) 
+      this.form.controls['BLINK'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BLINK'] != "undefined" ) 
+     this.form.get('BLINK').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BLINK(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BORDER_COLOR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BORDER_COLOR'] != "undefined" ) 
+      this.form.controls['BORDER_COLOR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BORDER_COLOR'] != "undefined" ) 
+     this.form.get('BORDER_COLOR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BORDER_COLOR(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_HIGHLIGHT_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1160,26 +1230,6 @@ async WHEN_VALIDATE_ITEM_BACK_COLOR(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_BORDER_COLOR(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BORDER_COLOR'] != "undefined" ) 
-      this.form.controls['BORDER_COLOR'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['BORDER_COLOR'] != "undefined" ) 
-     this.form.get('BORDER_COLOR').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BORDER_COLOR(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_PATTERN_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1197,26 +1247,6 @@ async WHEN_VALIDATE_ITEM_PATTERN_COLOR(value) {
  }
 
  async ON_CLICK_PATTERN_COLOR(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_BLINK(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BLINK'] != "undefined" ) 
-      this.form.controls['BLINK'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['BLINK'] != "undefined" ) 
-     this.form.get('BLINK').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BLINK(event){
 
 }
 
@@ -1619,6 +1649,21 @@ async WHEN_VALIDATE_ITEM_AUDIO(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onChange_BLINK(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_BLINK(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_BORDER_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_BORDER_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onValueChange_HIGHLIGHT_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_HIGHLIGHT_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
@@ -1631,27 +1676,12 @@ async WHEN_VALIDATE_ITEM_AUDIO(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_BORDER_COLOR(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BORDER_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_PATTERN_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_PATTERN_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onChange_BLINK(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_BLINK(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
  async onValueChange_BACK_STYLE(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_BACK_STYLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 

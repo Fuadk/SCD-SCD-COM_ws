@@ -20,8 +20,8 @@ import { scdshapeInputGeneralScdSigShapeInputGeneral , componentConfigDef} from 
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'DEFAULT_DATA' : new FormControl(dataItem.DEFAULT_DATA  , ) ,
 'TAB_INDEX' : new FormControl(dataItem.TAB_INDEX  , ) ,
-'SECURITY' : new FormControl(dataItem.SECURITY  , ) ,
 'DISPLAY_ON_SCREEN_KEYBOARD' : new FormControl(dataItem.DISPLAY_ON_SCREEN_KEYBOARD  , ) ,
+'SECURITY' : new FormControl(dataItem.SECURITY  , ) ,
 'CAPTION' : new FormControl(dataItem.CAPTION  , ) ,
 'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) ,
 'CONTINUOUSLY_UPDATE' : new FormControl(dataItem.CONTINUOUSLY_UPDATE  , ) ,
@@ -98,14 +98,16 @@ public labelTAGTop=false;
 public labelTAGVisible=true;
 public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
+public labelTAG_BUTTop=false;
+public labelTAG_BUTVisible=true;
 public labelDEFAULT_DATATop=false;
 public labelDEFAULT_DATAVisible=true;
 public labelTAB_INDEXTop=false;
 public labelTAB_INDEXVisible=true;
-public labelSECURITYTop=false;
-public labelSECURITYVisible=true;
 public labelDISPLAY_ON_SCREEN_KEYBOARDTop=false;
 public labelDISPLAY_ON_SCREEN_KEYBOARDVisible=true;
+public labelSECURITYTop=false;
+public labelSECURITYVisible=true;
 public labelCAPTIONTop=false;
 public labelCAPTIONVisible=true;
 public labelINSERT_VARIABLETop=false;
@@ -122,10 +124,11 @@ public labelCONFIGURE_ESIGNATURE_SIGVisible=true;
 public visibleSHAPE_INPUT_GENERAL_ID = false;
 public visibleTAG = true;
 public visibleSHAPE_ID = false;
+public visibleTAG_BUT = true;
 public visibleDEFAULT_DATA = true;
 public visibleTAB_INDEX = true;
-public visibleSECURITY = true;
 public visibleDISPLAY_ON_SCREEN_KEYBOARD = true;
+public visibleSECURITY = true;
 public visibleCAPTION = true;
 public visibleINSERT_VARIABLE = true;
 public visibleCONTINUOUSLY_UPDATE = true;
@@ -136,10 +139,11 @@ public visibleCONFIGURE_ESIGNATURE_SIG = true;
 public disableSHAPE_INPUT_GENERAL_ID = false;
 public disableTAG = false;
 public disableSHAPE_ID = false;
+public disableTAG_BUT = false;
 public disableDEFAULT_DATA = false;
 public disableTAB_INDEX = false;
-public disableSECURITY = false;
 public disableDISPLAY_ON_SCREEN_KEYBOARD = false;
+public disableSECURITY = false;
 public disableCAPTION = false;
 public disableINSERT_VARIABLE = false;
 public disableCONTINUOUSLY_UPDATE = false;
@@ -147,6 +151,7 @@ public disableDISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOST = false;
 public disableE_SIGNATURE_SETTINGS = false;
 public disableCONFIGURE_ESIGNATURE_SIG = false;
 
+public variableTAG_BUT;
 public variableCONFIGURE_ESIGNATURE_SIG;
 
   
@@ -721,11 +726,36 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    if (ComponentConfig.masterParams != null) {
-      console.log("WHEN_NOTIFY:ComponentConfig.masterParams:", ComponentConfig.masterParams.data)
-      // if (ComponentConfig.masterParams.data.SHAPE_TYPE == "Numeric Input") {
-      //   this.visibleE_SIGNATURE_SETTINGS = false;
-      // }
+    
+
+if (ComponentConfig.masterSelector != null) {
+    //alert(ComponentConfig.masterSelector )
+    console.log("ComponentConfig.masterParams :",
+        ComponentConfig.masterParams )
+    
+    let masterSelector = ComponentConfig.masterSelector;
+    if (masterSelector.includes("numeric")){
+        this.appMode = "NUMERIC";
+    }
+    if (masterSelector.includes("string")){
+        this.appMode = "STRING";
+    }
+       
+    switch (this.appMode) {
+        case 'NUMERIC':
+            this.visibleTAG_BUT = false;
+           // this.FormStepsArr[1].visible = false;
+            //alert(this.appMode);
+            break;
+        case 'STRING':
+
+          //  this.FormStepsArr[2].visible = false;
+           // this.FormStepsArr[4].visible = false;
+            //alert(this.appMode);
+            break;
+        default:
+            break;
+    }
 }
   }
   async WHEN_NEW_FORM_INSTANCE(){
@@ -853,6 +883,26 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_TAG_BUT(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['TAG_BUT'] != "undefined" ) 
+      this.form.controls['TAG_BUT'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['TAG_BUT'] != "undefined" ) 
+     this.form.get('TAG_BUT').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_TAG_BUT(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_DEFAULT_DATA(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -893,26 +943,6 @@ async WHEN_VALIDATE_ITEM_TAB_INDEX(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_SECURITY(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SECURITY'] != "undefined" ) 
-      this.form.controls['SECURITY'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['SECURITY'] != "undefined" ) 
-     this.form.get('SECURITY').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SECURITY(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_DISPLAY_ON_SCREEN_KEYBOARD(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -930,6 +960,26 @@ async WHEN_VALIDATE_ITEM_DISPLAY_ON_SCREEN_KEYBOARD(value) {
  }
 
  async ON_CLICK_DISPLAY_ON_SCREEN_KEYBOARD(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SECURITY(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SECURITY'] != "undefined" ) 
+      this.form.controls['SECURITY'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SECURITY'] != "undefined" ) 
+     this.form.get('SECURITY').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SECURITY(event){
 
 }
 
@@ -1077,6 +1127,12 @@ async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_TAG_BUT(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_TAG_BUT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_DEFAULT_DATA(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1095,12 +1151,6 @@ async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_SECURITY(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SECURITY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_DISPLAY_ON_SCREEN_KEYBOARD(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1110,6 +1160,12 @@ async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onValueChange_SECURITY(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_SECURITY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onValueChange_CAPTION(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_CAPTION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
@@ -1155,7 +1211,7 @@ async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE_SIG(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }
-
+public appMode = "";
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

@@ -1,10 +1,10 @@
 <div>
-        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_ramp_button_timing.scd_ramp_button_timing.component_title","") }}</legend> 
         <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
 
 <kendo-tabstrip-tab [selected]="true">
     <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.compsTitleID1","Common") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_ramp_button_timing.scd_ramp_button_timing.compsTitleID1","Common") }}</legend>
      </ng-template>
     <ng-template kendoTabContent>
         <app-scd-tp-common-screen 
@@ -20,29 +20,57 @@
   </kendo-tabstrip-tab>
        <kendo-tabstrip-tab>
        <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.compsTitleID2","General") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_ramp_button_timing.scd_ramp_button_timing.compsTitleID2","General") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-sig-shape-input-general [detail_Input]="formdivs_1_SCD_SHAPE_INPUT_GENERAL"  
+        <app-scd-pbg-push-button-general [detail_Input]="formdivs_1_SCD_BUTTON_PUSH_GENERAL"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_SHAPE_INPUT_GENERALFormdivs_1Config">
-        </app-scd-sig-shape-input-general >
+                      [setComponentConfig_Input]="SCD_BUTTON_PUSH_GENERALFormdivs_1Config">
+        </app-scd-pbg-push-button-general >
 
 </ng-template>
 </kendo-tabstrip-tab>
        <kendo-tabstrip-tab>
        <ng-template   kendoTabTitle>
-      <legend>{{ this.starServices.getNLS([],"scd_string_input_properties.scd_string_input_properties.compsTitleID3","Appearance") }}</legend>
+      <legend>{{ this.starServices.getNLS([],"scd_ramp_button_timing.scd_ramp_button_timing.compsTitleID3","Label") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-sia-shape-input-appearance [detail_Input]="formdivs_2_SCD_SHAPE_INPUT_APPEARANCE"  
+        <app-scd-ssd-shape-state-definition [detail_Input]="formdivs_2_SCD_SHAPE_STATE"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_SHAPE_INPUT_APPEARANCEFormdivs_2Config">
-        </app-scd-sia-shape-input-appearance >
+                      [setComponentConfig_Input]="SCD_SHAPE_STATEFormdivs_2Config">
+        </app-scd-ssd-shape-state-definition >
+
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_ramp_button_timing.scd_ramp_button_timing.compsTitleID4","Timing") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-abt-arrow-button-timing [detail_Input]="form_3_SCD_ARROW_BUTTON_TIMING"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 4)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ARROW_BUTTON_TIMINGForm_3Config">
+        </app-scd-abt-arrow-button-timing >
+
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_ramp_button_timing.scd_ramp_button_timing.compsTitleID5","Connections") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-sc-shape-connections [detail_Input]="grid_4_SCD_SHAPE_CONNECTION"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 5)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_SHAPE_CONNECTIONGrid_4Config">
+        </app-scd-sc-shape-connections >
 
 </ng-template>
 </kendo-tabstrip-tab>

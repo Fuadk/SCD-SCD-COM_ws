@@ -107,6 +107,10 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BORDER_USES_BACK_COLOR"
   #BORDER_USES_BACK_COLOR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"		(click)="ON_CLICK_BORDER_USES_BACK_COLOR($event)"
  (change)="onChange_BORDER_USES_BACK_COLOR($event)"      adaptiveMode="auto" 
+	 name="BORDER_USES_BACK_COLOR"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')" 
+[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 

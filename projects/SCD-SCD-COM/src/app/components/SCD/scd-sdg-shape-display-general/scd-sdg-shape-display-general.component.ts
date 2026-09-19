@@ -572,7 +572,7 @@ this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM
 			"lkpArrName":"lkpArrOVERFLOW"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"DECIMAL_PLACES\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrDECIMAL_PLACES"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"JUSTIFICATION\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"JUSTIFICATION\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODE",
 			"lkpArrName":"lkpArrJUSTIFICATION"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"LEADING_CHARACTER\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrLEADING_CHARACTER"}];
@@ -754,26 +754,20 @@ public printScreen(){
           rec.visible = false;
         }
       }
-    //   if (ComponentConfig.masterParams.data.action == "new") {
-    //     this.formInitialValues = await this.starlib1.setShapeDefaults(this.insertCMD);
-    //     this.form.reset(this.formInitialValues);
-    //     this.form.markAsDirty();
-    //   }
     }
 
     if (ComponentConfig.masterSelector != null) {
       //alert(ComponentConfig.masterSelector )
+      console.log("WHEN_NOTIFY:ComponentConfig.masterSelector:", ComponentConfig.masterSelector)
       let masterSelector = ComponentConfig.masterSelector;
       if (masterSelector.includes("string")) {
         this.generalMode = "STRING";
-        //alert(this.generalMode);
-      }
-
+        }
+        console.log ("WHEN_NOTIFY:this.generalMode:", this.generalMode)
       switch (this.generalMode) {
         case 'STRING':
           this.FormStepsArr[2].visible = false;
           this.FormStepsArr[4].visible = false;
-          //alert(this.generalMode);
           break;
         default:
           break;

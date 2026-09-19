@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -34,9 +35,9 @@ import { scdmessageGeneralScdMgMessageGeneral , componentConfigDef} from '@model
 'FONT_UNDERLINE' : new FormControl(dataItem.FONT_UNDERLINE  , ) ,
 'ALIGNMENT' : new FormControl(dataItem.ALIGNMENT  , ) ,
 'WORD_WRAP' : new FormControl(dataItem.WORD_WRAP  , ) ,
-'USE_ECHO_MESSAGE' : new FormControl(dataItem.USE_ECHO_MESSAGE  , ) ,
 'MESSAGE_FILE' : new FormControl(dataItem.MESSAGE_FILE  , ) ,
 'USE_VARIABLE_AS_MESSAGE_FILE' : new FormControl(dataItem.USE_VARIABLE_AS_MESSAGE_FILE  , ) ,
+'USE_ECHO_MESSAGE' : new FormControl(dataItem.USE_ECHO_MESSAGE  , ) ,
 'TIME_AND_DATE_FORMAT' : new FormControl(dataItem.TIME_AND_DATE_FORMAT  , ) 
 });
 
@@ -66,6 +67,7 @@ export class ScdMessageGeneralScdMgMessageGeneralFormdivsComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -142,14 +144,14 @@ public labelALIGNMENTTop=false;
 public labelALIGNMENTVisible=true;
 public labelWORD_WRAPTop=false;
 public labelWORD_WRAPVisible=true;
-public labelUSE_ECHO_MESSAGETop=false;
-public labelUSE_ECHO_MESSAGEVisible=true;
 public labelMESSAGE_FILETop=false;
 public labelMESSAGE_FILEVisible=true;
 public labelSELECT_MESSAGETop=false;
 public labelSELECT_MESSAGEVisible=true;
 public labelUSE_VARIABLE_AS_MESSAGE_FILETop=false;
 public labelUSE_VARIABLE_AS_MESSAGE_FILEVisible=true;
+public labelUSE_ECHO_MESSAGETop=false;
+public labelUSE_ECHO_MESSAGEVisible=true;
 public labelTIME_AND_DATE_FORMATTop=false;
 public labelTIME_AND_DATE_FORMATVisible=true;
 
@@ -173,10 +175,10 @@ public visibleFONT_ITALIC = true;
 public visibleFONT_UNDERLINE = true;
 public visibleALIGNMENT = true;
 public visibleWORD_WRAP = true;
-public visibleUSE_ECHO_MESSAGE = true;
 public visibleMESSAGE_FILE = true;
 public visibleSELECT_MESSAGE = true;
 public visibleUSE_VARIABLE_AS_MESSAGE_FILE = true;
+public visibleUSE_ECHO_MESSAGE = true;
 public visibleTIME_AND_DATE_FORMAT = true;
 
 public disableMESSAGE_GENERAL_ID = false;
@@ -199,10 +201,10 @@ public disableFONT_ITALIC = false;
 public disableFONT_UNDERLINE = false;
 public disableALIGNMENT = false;
 public disableWORD_WRAP = false;
-public disableUSE_ECHO_MESSAGE = false;
 public disableMESSAGE_FILE = false;
 public disableSELECT_MESSAGE = false;
 public disableUSE_VARIABLE_AS_MESSAGE_FILE = false;
+public disableUSE_ECHO_MESSAGE = false;
 public disableTIME_AND_DATE_FORMAT = false;
 
 public variableSELECT_MESSAGE;
@@ -214,8 +216,10 @@ public variableSELECT_MESSAGE;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -287,8 +291,30 @@ public variableSELECT_MESSAGE;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -532,6 +558,17 @@ public variableSELECT_MESSAGE;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -589,10 +626,12 @@ this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM
 			"lkpArrName":"lkpArrPATTERN_STYLE"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FONT_NAME\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrFONT_NAME"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FONT_SIZE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FONT_SIZE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG + 0",
 			"lkpArrName":"lkpArrFONT_SIZE"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALIGNMENT\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrALIGNMENT"}];
+			"lkpArrName":"lkpArrALIGNMENT"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"TIME_AND_DATE_FORMAT\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrTIME_AND_DATE_FORMAT"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
@@ -610,6 +649,8 @@ public lkpArrFONT_NAME = [];
 public lkpArrFONT_SIZE = [];
 
 public lkpArrALIGNMENT = [];
+
+public lkpArrTIME_AND_DATE_FORMAT = [];
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
@@ -646,14 +687,17 @@ var rec = this.lkpArrALIGNMENT.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
+public lkpArrGetTIME_AND_DATE_FORMAT(CODE: any): any {
+var rec = this.lkpArrTIME_AND_DATE_FORMAT.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
 onChanges(): void {
 this.form.get('MESSAGE_GENERAL_ID').valueChanges.subscribe(val => {
 });
 this.form.get('BORDER_WIDTH').valueChanges.subscribe(val => {
 });
 this.form.get('MESSAGE_FILE').valueChanges.subscribe(val => {
-});
-this.form.get('TIME_AND_DATE_FORMAT').valueChanges.subscribe(val => {
 });
 }
 
@@ -769,21 +813,29 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    if (ComponentConfig.masterSelector != null) {
+    console.log("this.generalMode:", ComponentConfig.masterSelector, ComponentConfig)
+if (ComponentConfig.masterSelector != null) {
     //alert(ComponentConfig.masterSelector )
+    console.log("this.generalMode:", ComponentConfig.masterSelector, ComponentConfig)
     let masterSelector = ComponentConfig.masterSelector;
-    if (masterSelector.includes("date")){
+    if (masterSelector.includes("date")) {
         this.generalMode = "DATE";
-         //alert(this.generalMode);
     }
-       
+    if (masterSelector.includes("local-message")) {
+        this.generalMode = "LOCAL";
+    }
+
+    console.log("this.generalMode:", this.generalMode)
     switch (this.generalMode) {
         case 'DATE':
-            
-            //alert(this.generalMode);
+            this.FormStepsArr[3].visible = false;
+            break;
+        case 'LOCAL':
+            this.FormStepsArr[4].visible = false;
+           // this.visibleUSE_ECHO_MESSAGE = false;
+            //this.visibleUSE_VARIABLE_AS_MESSAGE_FILE = false;
             break;
         default:
-            this.FormStepsArr[3].visible = false;
             break;
     }
 }
@@ -1253,26 +1305,6 @@ async WHEN_VALIDATE_ITEM_WORD_WRAP(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_USE_ECHO_MESSAGE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['USE_ECHO_MESSAGE'] != "undefined" ) 
-      this.form.controls['USE_ECHO_MESSAGE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['USE_ECHO_MESSAGE'] != "undefined" ) 
-     this.form.get('USE_ECHO_MESSAGE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_USE_ECHO_MESSAGE(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_MESSAGE_FILE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1330,6 +1362,26 @@ async WHEN_VALIDATE_ITEM_USE_VARIABLE_AS_MESSAGE_FILE(value) {
  }
 
  async ON_CLICK_USE_VARIABLE_AS_MESSAGE_FILE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_USE_ECHO_MESSAGE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['USE_ECHO_MESSAGE'] != "undefined" ) 
+      this.form.controls['USE_ECHO_MESSAGE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['USE_ECHO_MESSAGE'] != "undefined" ) 
+     this.form.get('USE_ECHO_MESSAGE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_USE_ECHO_MESSAGE(event){
 
 }
 
@@ -1491,15 +1543,6 @@ async WHEN_VALIDATE_ITEM_TIME_AND_DATE_FORMAT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_USE_ECHO_MESSAGE(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_USE_ECHO_MESSAGE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
  async onChange_MESSAGE_FILE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1524,15 +1567,21 @@ async WHEN_VALIDATE_ITEM_TIME_AND_DATE_FORMAT(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_TIME_AND_DATE_FORMAT(event:any) { 
+ async onChange_USE_ECHO_MESSAGE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TIME_AND_DATE_FORMAT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_USE_ECHO_MESSAGE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
- }
+ } 
+ async onValueChange_TIME_AND_DATE_FORMAT(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_TIME_AND_DATE_FORMAT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  }
 public generalMode = "";
 // For Adding new CODE
   public  grid_som_tabs_codes={};

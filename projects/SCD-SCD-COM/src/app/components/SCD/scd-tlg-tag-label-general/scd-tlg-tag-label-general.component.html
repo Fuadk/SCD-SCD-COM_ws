@@ -55,7 +55,7 @@
  kendoTextBox #TAG_LABEL_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isTAG_LABEL_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.TAG_LABEL_GENERAL_ID_Hint','Please enter Tag Label General Id.')"
 		(click)="ON_CLICK_TAG_LABEL_GENERAL_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_LABEL_GENERAL_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
@@ -66,7 +66,7 @@
 
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -85,12 +85,12 @@
 		<input   formControlName="TAG_NAME"
  kendoTextBox #TAG_NAME  [placeholder]="starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.TAG_NAME_Hint','Please enter Tag Name.')"
 		(click)="ON_CLICK_TAG_NAME($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
-		<button      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_TAG_SELECT($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.TAG_SELECT_Hint','Please enter Tag Select.')" 
- iconClass="fas fa-search"  *ngIf=visibleTAG_SELECT 		(click)="ON_CLICK_TAG_SELECT($event)"
+ iconClass="fas fa-tags"  *ngIf=visibleTAG_SELECT 		(click)="ON_CLICK_TAG_SELECT($event)"
  >{{starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.TAG_SELECT','...')}}</button>
 
 
@@ -102,7 +102,7 @@
 		<kendo-combobox  #TAG_PRIORITY class="form-field-combobox"  [formControlName]="'TAG_PRIORITY'"
 		[data]="lkpArrTAG_PRIORITY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.TAG_PRIORITY_Hint','Please enter Tag Priority.')"		(click)="ON_CLICK_TAG_PRIORITY($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_TAG_PRIORITY($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -124,7 +124,7 @@
 		<input   formControlName="FIELD_LENGTH"
  kendoTextBox #FIELD_LENGTH  [placeholder]="starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.FIELD_LENGTH_Hint','Please enter Field Length.')"
 		(click)="ON_CLICK_FIELD_LENGTH($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FIELD_LENGTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -137,13 +137,13 @@
 		<kendo-label *ngIf="(!labelJUSTIFICATIONTop && !isPhonePortrait) && labelJUSTIFICATIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.JUSTIFICATION','Justification')"></kendo-label>
 		<label *ngIf="(labelJUSTIFICATIONTop || isPhonePortrait) && labelJUSTIFICATIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TLG_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlgTagLabelGeneral.JUSTIFICATION','Justification')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_JUSTIFICATION($event)"
-
+ (change)="onChange_JUSTIFICATION($event)" 
 >
 			<li class="k-radio-item" *ngFor="let item of lkpArrJUSTIFICATION"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'JUSTIFICATION'"
 					#JUSTIFICATION ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="JUSTIFICATION " 
+				<kendo-label  [for]="JUSTIFICATION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>

@@ -1,5 +1,5 @@
 <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
-<legend class="k-form-legend" *ngIf="componentConfig.showTitle">{{
+<legend class="k-form-legend" *ngIf="componentConfig.showToolBar">{{
       componentConfig.title ? componentConfig.title :
        this.starServices.getNLS([],"SCD_SSL_SHAPE_STATES_LIST.scdshapeStateScdSslShapeStatesList.component_title","Shape States List") }}</legend>
 	
@@ -163,6 +163,15 @@
 		[valuePrimitive]="true" [formControl]="formGroup.get('INSERT_VARIABLE')">
 		</kendo-dropdownlist>
 		</ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SAME_AS_ACTIVE_APPEARANCE"
+ *ngIf=visibleSAME_AS_ACTIVE_APPEARANCE      [editable]=" !(disabledColumns.indexOf('SAME_AS_ACTIVE_APPEARANCE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SAME_AS_ACTIVE_APPEARANCE') > -1" 		 title="{{starServices.getNLS([],'SCD_SSL_SHAPE_STATES_LIST.scdshapeStateScdSslShapeStatesList.SAME_AS_ACTIVE_APPEARANCE','Same as active appearance')}}"  editor="boolean" [width]="50">
+		<ng-template kendoGridCellTemplate let-dataItem> <span     > 
+		 {{dataItem.SAME_AS_ACTIVE_APPEARANCE}} 
+ 		 </span>	</ng-template>
 	</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION"

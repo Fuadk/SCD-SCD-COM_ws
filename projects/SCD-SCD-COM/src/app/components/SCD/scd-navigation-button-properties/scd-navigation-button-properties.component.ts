@@ -1,5 +1,5 @@
 import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
-import {  scdshapeScdTpCommonScreen  ,scdbuttonPushGeneralScdPbgPushButtonGeneral  ,scdalarmScdShapeStatesProperties  ,scdarrowButtonTimingScdAbtArrowButtonTiming  ,scdshapeConnectionScdScShapeConnections  , componentConfigDef} from '@modeldir/model';
+import {  scdshapeScdTpCommonScreen  ,scdbuttonPushGeneralScdPbgPushButtonGeneral  ,scdshapeStateScdSsdShapeStateDefinition    , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
@@ -11,17 +11,17 @@ declare function getParamConfig():any;
 
 @Component({
 
-  selector: 'app-scd-arrow-button-timing',
-  templateUrl: './scd-arrow-button-timing.component.html',
-  styleUrls: ['./scd-arrow-button-timing.component.scss'],
+  selector: 'app-scd-navigation-button-properties',
+  templateUrl: './scd-navigation-button-properties.component.html',
+  styleUrls: ['./scd-navigation-button-properties.component.scss'],
   standalone: false
 })
-export class ScdArrowButtonTimingComponent implements OnInit {
+export class ScdNavigationButtonPropertiesComponent implements OnInit {
   @Output() saveTriggerOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
   constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
    this.router = router;
-  this.title =  this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.component_title","");
+  this.title =  this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.component_title","");
     this.componentConfig = new componentConfigDef();
     this.paramConfig = getParamConfig();
   }
@@ -31,7 +31,7 @@ export class ScdArrowButtonTimingComponent implements OnInit {
   public isPhonePortrait = false;
   public customerFacing = false;
   public isSearchScreen = false;
-  public routineName = "scd_arrow_button_timing";
+  public routineName = "scd_navigation_button_properties";
   public alignment: TabAlignment = 'start';
   public selectedTab = 2;
   public masterParams;
@@ -44,27 +44,24 @@ export class ScdArrowButtonTimingComponent implements OnInit {
 
   public form_0_SCD_SHAPE : scdshapeScdTpCommonScreen;
   public formdivs_1_SCD_BUTTON_PUSH_GENERAL : scdbuttonPushGeneralScdPbgPushButtonGeneral;
-  public formtabs_2_SCD_ALARM : scdalarmScdShapeStatesProperties;
-  public form_3_SCD_ARROW_BUTTON_TIMING : scdarrowButtonTimingScdAbtArrowButtonTiming;
-  public grid_4_SCD_SHAPE_CONNECTION : scdshapeConnectionScdScShapeConnections;
+  public formdivs_2_SCD_SHAPE_STATE : scdshapeStateScdSsdShapeStateDefinition;
+  public formdivs_3_SCD_SHAPE_STATE : scdshapeStateScdSsdShapeStateDefinition;
   public  SCD_SHAPEForm_0Config : componentConfigDef;
   public  hide_comp_1 = false
   public  SCD_BUTTON_PUSH_GENERALFormdivs_1Config : componentConfigDef;
   public  hide_comp_2 = false
-  public  SCD_ALARMFormtabs_2Config : componentConfigDef;
+  public  SCD_SHAPE_STATEFormdivs_2Config : componentConfigDef;
   public  hide_comp_3 = false
-  public  SCD_ARROW_BUTTON_TIMINGForm_3Config : componentConfigDef;
+  public  SCD_SHAPE_STATEFormdivs_3Config : componentConfigDef;
   public  hide_comp_4 = false
-  public  SCD_SHAPE_CONNECTIONGrid_4Config : componentConfigDef;
-  public  hide_comp_5 = false
   public PDFfileName = this.title + ".PDF";
-  public routineAuth = "ScdArrowButtonTiming";
+  public routineAuth = "ScdNavigationButtonProperties";
 
   public ngAfterViewInit() {
     this.starServices.setRTL();
   }
   private componentConfigChangeEvent!: Subscription;
-  public compSelector = 'app-scd-arrow-button-timing';
+  public compSelector = 'app-scd-navigation-button-properties';
   public masterKeyNameArr = ["SHAPE_ID","DISPLAY_ID"];
 
   public masterINSERT = 'INSERT_SCD_SHAPE';
@@ -96,7 +93,7 @@ export class ScdArrowButtonTimingComponent implements OnInit {
     await this.starServices.sleep(200);
     // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
    this.SCD_SHAPEForm_0Config = new componentConfigDef();
-   this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID1","Common");
+   this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID1","Common");
    this.SCD_SHAPEForm_0Config.isMaster = true;
    this.SCD_SHAPEForm_0Config.isSearchScreen = this.isSearchScreen;
 	if (this.visibleOK_BTNS) 
@@ -109,44 +106,34 @@ export class ScdArrowButtonTimingComponent implements OnInit {
      this.SCD_SHAPEForm_0Config.insertable = false;
    }
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
-   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID2","General");
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.isChild = true;
-   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = 'app-scd-arrow-button-timing';
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = 'app-scd-navigation-button-properties';
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.navigable = false;
      //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.insertable = true;
      //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.removeable = true;
    }
-   this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-   this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID3","States");
-   this.SCD_ALARMFormtabs_2Config.isChild = true;
-   this.SCD_ALARMFormtabs_2Config.masterSelector = 'app-scd-arrow-button-timing';
-   this.SCD_ALARMFormtabs_2Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef();
+   this.SCD_SHAPE_STATEFormdivs_2Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID3","Active Appearance");
+   this.SCD_SHAPE_STATEFormdivs_2Config.isChild = true;
+   this.SCD_SHAPE_STATEFormdivs_2Config.masterSelector = 'app-scd-navigation-button-properties';
+   this.SCD_SHAPE_STATEFormdivs_2Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ALARMFormtabs_2Config.navigable = false;
-     //this.SCD_ALARMFormtabs_2Config.insertable = true;
-     //this.SCD_ALARMFormtabs_2Config.removeable = true;
+     this.SCD_SHAPE_STATEFormdivs_2Config.navigable = false;
+     //this.SCD_SHAPE_STATEFormdivs_2Config.insertable = true;
+     //this.SCD_SHAPE_STATEFormdivs_2Config.removeable = true;
    }
-   this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID4","Timing");
-   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.isChild = true;
-   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterSelector = 'app-scd-arrow-button-timing';
-   this.SCD_ARROW_BUTTON_TIMINGForm_3Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef();
+   this.SCD_SHAPE_STATEFormdivs_3Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID4","Inactive Appearance");
+   this.SCD_SHAPE_STATEFormdivs_3Config.isChild = true;
+   this.SCD_SHAPE_STATEFormdivs_3Config.masterSelector = 'app-scd-navigation-button-properties';
+   this.SCD_SHAPE_STATEFormdivs_3Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ARROW_BUTTON_TIMINGForm_3Config.navigable = false;
-     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.insertable = true;
-     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.removeable = true;
-   }
-   this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
-   this.SCD_SHAPE_CONNECTIONGrid_4Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID5","Connections");
-   this.SCD_SHAPE_CONNECTIONGrid_4Config.isChild = true;
-   this.SCD_SHAPE_CONNECTIONGrid_4Config.masterSelector = 'app-scd-arrow-button-timing';
-   this.SCD_SHAPE_CONNECTIONGrid_4Config.showToolBar = !this.visibleOK_BTNS; 
-   if (typeof this['steps']  !== 'undefined') {
-     this.SCD_SHAPE_CONNECTIONGrid_4Config.navigable = false;
-     //this.SCD_SHAPE_CONNECTIONGrid_4Config.insertable = true;
-     //this.SCD_SHAPE_CONNECTIONGrid_4Config.removeable = true;
+     this.SCD_SHAPE_STATEFormdivs_3Config.navigable = false;
+     //this.SCD_SHAPE_STATEFormdivs_3Config.insertable = true;
+     //this.SCD_SHAPE_STATEFormdivs_3Config.removeable = true;
    }
   }
   public ngOnDestroy(): void {
@@ -160,12 +147,10 @@ export class ScdArrowButtonTimingComponent implements OnInit {
 	  {
     	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
     	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.formattedWhere  = form_SCD_SHAPE;
-    	this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-    	this.SCD_ALARMFormtabs_2Config.formattedWhere  = form_SCD_SHAPE;
-    	this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-    	this.SCD_ARROW_BUTTON_TIMINGForm_3Config.formattedWhere  = form_SCD_SHAPE;
-    	this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
-    	this.SCD_SHAPE_CONNECTIONGrid_4Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef();
+    	this.SCD_SHAPE_STATEFormdivs_2Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef();
+    	this.SCD_SHAPE_STATEFormdivs_3Config.formattedWhere  = form_SCD_SHAPE;
     	return;
 	  }
     //this.formdivs_1_SCD_BUTTON_PUSH_GENERAL = new scdbuttonPushGeneralScdPbgPushButtonGeneral();
@@ -181,55 +166,40 @@ export class ScdArrowButtonTimingComponent implements OnInit {
      //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.removeable = true;
      //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.updateable = true;
    }
-    //this.formtabs_2_SCD_ALARM = new scdalarmScdShapeStatesProperties();
+    //this.formdivs_2_SCD_SHAPE_STATE = new scdshapeStateScdSsdShapeStateDefinition();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.formtabs_2_SCD_ALARM[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.formdivs_2_SCD_SHAPE_STATE[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-    this.SCD_ALARMFormtabs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARMFormtabs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_ALARMFormtabs_2Config.masterReadCompleted = true;
+    this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef();
+    this.SCD_SHAPE_STATEFormdivs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_STATEFormdivs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_SHAPE_STATEFormdivs_2Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ALARMFormtabs_2Config.queryable = false;
-     //this.SCD_ALARMFormtabs_2Config.removeable = true;
-     //this.SCD_ALARMFormtabs_2Config.updateable = true;
+     this.SCD_SHAPE_STATEFormdivs_2Config.queryable = false;
+     //this.SCD_SHAPE_STATEFormdivs_2Config.removeable = true;
+     //this.SCD_SHAPE_STATEFormdivs_2Config.updateable = true;
    }
-    //this.form_3_SCD_ARROW_BUTTON_TIMING = new scdarrowButtonTimingScdAbtArrowButtonTiming();
+    //this.formdivs_3_SCD_SHAPE_STATE = new scdshapeStateScdSsdShapeStateDefinition();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.form_3_SCD_ARROW_BUTTON_TIMING[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.formdivs_3_SCD_SHAPE_STATE[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterReadCompleted = true;
+    this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef();
+    this.SCD_SHAPE_STATEFormdivs_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_STATEFormdivs_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_SHAPE_STATEFormdivs_3Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ARROW_BUTTON_TIMINGForm_3Config.queryable = false;
-     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.removeable = true;
-     //this.SCD_ARROW_BUTTON_TIMINGForm_3Config.updateable = true;
-   }
-    //this.grid_4_SCD_SHAPE_CONNECTION = new scdshapeConnectionScdScShapeConnections();
-    //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.grid_4_SCD_SHAPE_CONNECTION[masterKeyNameArr[i]] = masterKeyArr[i];
-    //}
-    this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
-    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterReadCompleted = true;
-   if (typeof this['steps'] !== 'undefined') {
-     this.SCD_SHAPE_CONNECTIONGrid_4Config.queryable = false;
-     //this.SCD_SHAPE_CONNECTIONGrid_4Config.removeable = true;
-     //this.SCD_SHAPE_CONNECTIONGrid_4Config.updateable = true;
+     this.SCD_SHAPE_STATEFormdivs_3Config.queryable = false;
+     //this.SCD_SHAPE_STATEFormdivs_3Config.removeable = true;
+     //this.SCD_SHAPE_STATEFormdivs_3Config.updateable = true;
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
      await this.starServices.sleep(200);
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
      await this.starServices.sleep(200);
-    this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
+    this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef();
      await this.starServices.sleep(200);
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-     await this.starServices.sleep(200);
-    this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+    this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
 
@@ -253,16 +223,12 @@ export class ScdArrowButtonTimingComponent implements OnInit {
   	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = componentConfig; 
    }
    if ( (pageNo + 1) == 3){
-  	this.SCD_ALARMFormtabs_2Config = new componentConfigDef(); 
-  	this.SCD_ALARMFormtabs_2Config = componentConfig; 
+  	this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef(); 
+  	this.SCD_SHAPE_STATEFormdivs_2Config = componentConfig; 
    }
    if ( (pageNo + 1) == 4){
-  	this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef(); 
-  	this.SCD_ARROW_BUTTON_TIMINGForm_3Config = componentConfig; 
-   }
-   if ( (pageNo + 1) == 5){
-  	this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef(); 
-  	this.SCD_SHAPE_CONNECTIONGrid_4Config = componentConfig; 
+  	this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef(); 
+  	this.SCD_SHAPE_STATEFormdivs_3Config = componentConfig; 
    }
  } 
   public saveCompletedHandler( form_SCD_SHAPE) {
@@ -273,20 +239,15 @@ export class ScdArrowButtonTimingComponent implements OnInit {
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
-    this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-    this.SCD_ALARMFormtabs_2Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_ALARMFormtabs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARMFormtabs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef();
+    this.SCD_SHAPE_STATEFormdivs_2Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_SHAPE_STATEFormdivs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_STATEFormdivs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-  
-    this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
-    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef();
+    this.SCD_SHAPE_STATEFormdivs_3Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_SHAPE_STATEFormdivs_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_STATEFormdivs_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
     this.saveTriggerOutput.emit(form_SCD_SHAPE);
   } 
@@ -347,50 +308,44 @@ export class ScdArrowButtonTimingComponent implements OnInit {
    	 }
     }
     public handleComponentConfig(ComponentConfig:any) {
-    if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdArrowButtonTimingComponent:",ComponentConfig);
+    if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdNavigationButtonPropertiesComponent:",ComponentConfig);
     if (typeof ComponentConfig !== "undefined"){
        this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig  );
        if (ComponentConfig.languageChanged != null) { 
            setTimeout(() => {
              this.SCD_SHAPEForm_0Config = new componentConfigDef();
              this.SCD_SHAPEForm_0Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID1","Common");
+             this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID1","Common");
              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
-             this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-             this.SCD_ALARMFormtabs_2Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID3","States");
-             this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-             this.SCD_ARROW_BUTTON_TIMINGForm_3Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ARROW_BUTTON_TIMINGForm_3Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID4","Timing");
-             this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
-             this.SCD_SHAPE_CONNECTIONGrid_4Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_SHAPE_CONNECTIONGrid_4Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID5","Connections");
+             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID2","General");
+             this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef();
+             this.SCD_SHAPE_STATEFormdivs_2Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_SHAPE_STATEFormdivs_2Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID3","Active Appearance");
+             this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef();
+             this.SCD_SHAPE_STATEFormdivs_3Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_SHAPE_STATEFormdivs_3Config.title = this.starServices.getNLS([],"scd_navigation_button_properties.scd_navigation_button_properties.compsTitleID4","Inactive Appearance");
            this.setSteps(this);
            }, 500);
        }
   
        this.SCD_SHAPEForm_0Config = new componentConfigDef();
        this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
-       this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-       this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-       this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
+       this.SCD_SHAPE_STATEFormdivs_2Config = new componentConfigDef();
+       this.SCD_SHAPE_STATEFormdivs_3Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
               this.SCD_SHAPEForm_0Config.masterParams = ComponentConfig.masterParams;
               this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ALARMFormtabs_2Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_SHAPE_CONNECTIONGrid_4Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_SHAPE_STATEFormdivs_2Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_SHAPE_STATEFormdivs_3Config.masterParams = ComponentConfig.masterParams;
    		
        }
        if (ComponentConfig.showToolBar != null) {
               this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ALARMFormtabs_2Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ARROW_BUTTON_TIMINGForm_3Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_SHAPE_CONNECTIONGrid_4Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_SHAPE_STATEFormdivs_2Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_SHAPE_STATEFormdivs_3Config.showToolBar = ComponentConfig.showToolBar;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {
@@ -400,17 +355,15 @@ export class ScdArrowButtonTimingComponent implements OnInit {
       {
        this.SCD_SHAPEForm_0Config.newRec = ComponentConfig.newRec;
        this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.newRec = ComponentConfig.newRec;
-       this.SCD_ALARMFormtabs_2Config.newRec = ComponentConfig.newRec;
-       this.SCD_ARROW_BUTTON_TIMINGForm_3Config.newRec = ComponentConfig.newRec;
-       this.SCD_SHAPE_CONNECTIONGrid_4Config.newRec = ComponentConfig.newRec;
+       this.SCD_SHAPE_STATEFormdivs_2Config.newRec = ComponentConfig.newRec;
+       this.SCD_SHAPE_STATEFormdivs_3Config.newRec = ComponentConfig.newRec;
       }
       if (ComponentConfig.clearScreen != null)
       {
        this.SCD_SHAPEForm_0Config.clearScreen = ComponentConfig.clearScreen;
        this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ALARMFormtabs_2Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ARROW_BUTTON_TIMINGForm_3Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_SHAPE_CONNECTIONGrid_4Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_SHAPE_STATEFormdivs_2Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_SHAPE_STATEFormdivs_3Config.clearScreen = ComponentConfig.clearScreen;
 	   }
       if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
       {
@@ -428,23 +381,17 @@ export class ScdArrowButtonTimingComponent implements OnInit {
          {
              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ALARMFormtabs_2Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ALARMFormtabs_2Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_SHAPE_STATEFormdivs_2Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_SHAPE_STATEFormdivs_2Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ALARMFormtabs_2Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_SHAPE_STATEFormdivs_2Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_SHAPE_STATEFormdivs_3Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_SHAPE_STATEFormdivs_3Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
-          }
-         this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_SHAPE_CONNECTIONGrid_4Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
-         if (ComponentConfig.masterReadCompleted != null) 
-         {
-             this.SCD_SHAPE_CONNECTIONGrid_4Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_SHAPE_STATEFormdivs_3Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
        }
       }
@@ -458,28 +405,20 @@ export class ScdArrowButtonTimingComponent implements OnInit {
     this.formdivs_1_SCD_BUTTON_PUSH_GENERALOpened = true;  
   }
   
-  public formtabs_2_SCD_ALARMOpened = false;
-  public  formtabs_2_SCD_ALARMClose() { 
-    this.formtabs_2_SCD_ALARMOpened = false;  
+  public formdivs_2_SCD_SHAPE_STATEOpened = false;
+  public  formdivs_2_SCD_SHAPE_STATEClose() { 
+    this.formdivs_2_SCD_SHAPE_STATEOpened = false;  
   }
-  public  formtabs_2_SCD_ALARMOpen() { 
-    this.formtabs_2_SCD_ALARMOpened = true;  
-  }
-  
-  public form_3_SCD_ARROW_BUTTON_TIMINGOpened = false;
-  public  form_3_SCD_ARROW_BUTTON_TIMINGClose() { 
-    this.form_3_SCD_ARROW_BUTTON_TIMINGOpened = false;  
-  }
-  public  form_3_SCD_ARROW_BUTTON_TIMINGOpen() { 
-    this.form_3_SCD_ARROW_BUTTON_TIMINGOpened = true;  
+  public  formdivs_2_SCD_SHAPE_STATEOpen() { 
+    this.formdivs_2_SCD_SHAPE_STATEOpened = true;  
   }
   
-  public grid_4_SCD_SHAPE_CONNECTIONOpened = false;
-  public  grid_4_SCD_SHAPE_CONNECTIONClose() { 
-    this.grid_4_SCD_SHAPE_CONNECTIONOpened = false;  
+  public formdivs_3_SCD_SHAPE_STATEOpened = false;
+  public  formdivs_3_SCD_SHAPE_STATEClose() { 
+    this.formdivs_3_SCD_SHAPE_STATEOpened = false;  
   }
-  public  grid_4_SCD_SHAPE_CONNECTIONOpen() { 
-    this.grid_4_SCD_SHAPE_CONNECTIONOpened = true;  
+  public  formdivs_3_SCD_SHAPE_STATEOpen() { 
+    this.formdivs_3_SCD_SHAPE_STATEOpened = true;  
   }
   
  
