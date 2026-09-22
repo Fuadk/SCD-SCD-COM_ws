@@ -20,6 +20,10 @@ import { StarNotifyService } from './services/starnotification.service';
 import {  KeycloakService } from 'keycloak-angular';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
+import { AlarmEventDataService } from './services/alarm-event-data.service';
+
+import { ExpressionEngineService } from './services/expression-engine.service';
+
 declare function getParamConfig():any;
 declare function setParamConfig(var1:any):any;
 
@@ -70,7 +74,16 @@ export class AppComponent  {
   public windowLoc;
   
   
-  constructor(/*private messages: MessageService, */private keycloakService:KeycloakService, public responsive: BreakpointObserver,private location: Location,private starNotify: StarNotifyService, router: Router, public starServices: starServices) {
+  constructor(/*private messages: MessageService, */private keycloakService:KeycloakService, 
+    public responsive: BreakpointObserver,private location: Location,private starNotify: StarNotifyService,
+     router: Router, public starServices: starServices,
+      engine: ExpressionEngineService, 
+      alarmData: AlarmEventDataService,
+      
+    ) {
+    engine.setAlarmEventDataSource(alarmData);
+    
+    
     this.windowLoc =  window.location
     this.router = router;
     this.paramConfig = getParamConfig();

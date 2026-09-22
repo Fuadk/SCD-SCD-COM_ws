@@ -2,7 +2,7 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
-import { SCADAService, ServerInfo, ServerConfig, WriteResult } from './scada.service';
+import { SCADAService, ServerInfo, ServerConfig, WriteResult, Alarm } from './scada.service';
 
 export interface ScadaDisplayConfig {
   local: {
@@ -36,9 +36,10 @@ export interface ScadaData {
 }
 
 export interface ScadaChangeEvent {
-  type: 'tag' | 'connection' | 'server';
+  type: 'tag' | 'connection' | 'server'| 'alarm';
   tagName?: string;
   serverName?: string;
+  alarmId?: string;
   oldValue?: any;
   newValue?: any;
   fullData?: any;
@@ -52,6 +53,8 @@ export class ScadaIntegrationService implements OnDestroy {
   // ============= NEW: Raw data subject =============
   private rawDataSubject = new BehaviorSubject<any>({});
   public rawData$ = this.rawDataSubject.asObservable();
+  private rawAlarmsSubject = new BehaviorSubject<Alarm[]>([]);
+  public rawAlarms$ = this.rawAlarmsSubject.asObservable();
   
   private previousValues = new WeakMap<any, any>();
   private serversSubject = new BehaviorSubject<ServerInfo[]>([]);
@@ -77,7 +80,7 @@ export class ScadaIntegrationService implements OnDestroy {
     
     // Subscribe to raw tag values and pass through (Push Style)
     this.scadaService.getTagValues().subscribe(values => {
-      console.log("opcua:rawTagValues", values);
+      //console.log("opcua:rawTagValues", values);
       this.rawDataSubject.next(values);
     });
     
@@ -91,6 +94,9 @@ export class ScadaIntegrationService implements OnDestroy {
       } else {
         this.handleEmptyServerList();
       }
+    });
+    this.scadaService.getAlarms().subscribe(alarms => {
+      this.rawAlarmsSubject.next(alarms);
     });
   }
 
@@ -138,6 +144,7 @@ export class ScadaIntegrationService implements OnDestroy {
     for (const [key, value] of Object.entries(rawData)) {
       if (key.startsWith(prefix)) {
         const tagName = key.substring(prefix.length);
+        console.log("tagName:",tagName)
         result[tagName] = value;
       }
     }
@@ -162,6 +169,25 @@ export class ScadaIntegrationService implements OnDestroy {
     return Array.from(serverNames);
   }
 
+  getAlarms(): Observable<Alarm[]> {
+  return this.rawAlarms$;
+  }
+
+  getCurrentAlarms(): Alarm[] {
+    return this.rawAlarmsSubject.getValue();
+  }
+
+  getActiveAlarms(): Alarm[] {
+    return this.rawAlarmsSubject.getValue().filter(a => a.active && !a.acknowledged);
+  }
+
+  getAlarmsForServer(serverName: string): Alarm[] {
+    return this.rawAlarmsSubject.getValue().filter(a => a.server_name === serverName);
+  }
+
+  async acknowledgeAlarm(alarmId: string, comment: string = ''): Promise<boolean> {
+    return this.scadaService.acknowledgeAlarm(alarmId, comment);
+  }
   // ============= Component Integration (Simplified) =============
   
   /**
@@ -208,7 +234,7 @@ export class ScadaIntegrationService implements OnDestroy {
       
       const prev = this.previousValues.get(component);
       const changes: ScadaChangeEvent[] = [];
-      console.log("opcua:rawValues", prev, rawValues);
+      //console.log("opcua:rawValues", prev, rawValues);
       if (prev) {
         
         const oldRaw = prev.rawTagValues || {};
@@ -216,12 +242,13 @@ export class ScadaIntegrationService implements OnDestroy {
         
         const allKeys = new Set([...Object.keys(oldRaw), ...Object.keys(newRaw)]);
         
+        
         for (const key of allKeys) {
           const oldValue = oldRaw[key];
           const newValue = newRaw[key];
           
           if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-            console.log("opcua:rawValues:allKeys:",(JSON.stringify(oldValue) !== JSON.stringify(newValue)),  allKeys);
+            //console.log("opcua:rawValues:allKeys:",(JSON.stringify(oldValue) !== JSON.stringify(newValue)),  allKeys);
             changes.push({
               type: 'tag',
               tagName: key,
@@ -267,6 +294,16 @@ export class ScadaIntegrationService implements OnDestroy {
         }]);
     }
 }
+    })
+  );
+  subscriptions.push(
+    this.rawAlarms$.subscribe(alarms => {
+      component.scadaData.alarms = alarms;
+      component.alarms = alarms;
+
+      if (callback) {
+        callback([{ type: 'alarm', fullData: alarms }]);
+      }
     })
   );
 
@@ -424,6 +461,7 @@ export class ScadaIntegrationService implements OnDestroy {
   }
 
   async addServer(name: string, endpoint: string): Promise<ServerInfo | null> {
+    console.log("addServer:name:",name)
     const currentServers = this.serversSubject.getValue();
     const existingServer = currentServers.find(
       s => s.endpoint.toLowerCase() === endpoint.toLowerCase()
@@ -628,7 +666,8 @@ export class ScadaIntegrationService implements OnDestroy {
       rawTagValues: {},
       connectionStatus: false,
       servers: [],
-      currentServer: 'Local'
+      currentServer: 'Local',
+      alarms: [] 
     };
   }
 

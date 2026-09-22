@@ -12,7 +12,15 @@ import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scdexpressionEditorScdEeExpressionEditor , componentConfigDef} from '@modeldir/model';
-
+import {
+  ExpressionEngineService,
+  LoadedRule,
+  RuntimeContext,
+  ValidationResult,
+  Value,
+  ExpressionVariables,
+  LIBRARY_FUNCTIONS,     
+} from '../../../services/expression-engine.service';
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'EXPRESSION_EDITOR_ID' : new FormControl(dataItem.EXPRESSION_EDITOR_ID  , ) ,
@@ -21,13 +29,14 @@ import { scdexpressionEditorScdEeExpressionEditor , componentConfigDef} from '@m
 'AI_RESPONSE' : new FormControl(dataItem.AI_RESPONSE  , ) ,
 'EXPRESSION' : new FormControl(dataItem.EXPRESSION  , ) ,
 'IF_KEY' : new FormControl(dataItem.IF_KEY  , ) ,
-'LOGICAL_KEY' : new FormControl(dataItem.LOGICAL_KEY  , ) ,
 'RELATIONAL_KEY' : new FormControl(dataItem.RELATIONAL_KEY  , ) ,
 'ARITHMETIC_KEY' : new FormControl(dataItem.ARITHMETIC_KEY  , ) ,
 'BITWISE_KEY' : new FormControl(dataItem.BITWISE_KEY  , ) ,
+'LOGICAL_KEY' : new FormControl(dataItem.LOGICAL_KEY  , ) ,
 'FUNCTIONS_KEY' : new FormControl(dataItem.FUNCTIONS_KEY  , ) ,
 'LINE' : new FormControl(dataItem.LINE  , ) ,
-'COLUMN' : new FormControl(dataItem.COLUMN  , ) 
+'COLUMN' : new FormControl(dataItem.COLUMN  , ) ,
+'SYNTAX_MSG' : new FormControl(dataItem.SYNTAX_MSG  , ) 
 });
 
 declare function getParamConfig():any;
@@ -107,14 +116,14 @@ public labelEXPRESSIONTop=false;
 public labelEXPRESSIONVisible=false;
 public labelIF_KEYTop=false;
 public labelIF_KEYVisible=false;
-public labelLOGICAL_KEYTop=false;
-public labelLOGICAL_KEYVisible=false;
 public labelRELATIONAL_KEYTop=false;
 public labelRELATIONAL_KEYVisible=false;
 public labelARITHMETIC_KEYTop=false;
 public labelARITHMETIC_KEYVisible=false;
 public labelBITWISE_KEYTop=false;
 public labelBITWISE_KEYVisible=false;
+public labelLOGICAL_KEYTop=false;
+public labelLOGICAL_KEYVisible=false;
 public labelFUNCTIONS_KEYTop=false;
 public labelFUNCTIONS_KEYVisible=false;
 public labelTAGS_KEYTop=false;
@@ -125,10 +134,12 @@ public labelLINETop=false;
 public labelLINEVisible=true;
 public labelCOLUMNTop=false;
 public labelCOLUMNVisible=true;
-public labelOPEN_AITop=false;
-public labelOPEN_AIVisible=true;
 public labelSYNTAX_CHECK_KEYTop=false;
 public labelSYNTAX_CHECK_KEYVisible=true;
+public labelSYNTAX_MSGTop=false;
+public labelSYNTAX_MSGVisible=false;
+public labelOPEN_AITop=false;
+public labelOPEN_AIVisible=true;
 
 public visibleEXPRESSION_EDITOR_ID = false;
 public visibleAPPLICATION_ID = false;
@@ -137,17 +148,18 @@ public visibleAI_RESPONSE = false;
 public visibleSUBMIT = false;
 public visibleEXPRESSION = true;
 public visibleIF_KEY = true;
-public visibleLOGICAL_KEY = true;
 public visibleRELATIONAL_KEY = true;
 public visibleARITHMETIC_KEY = true;
 public visibleBITWISE_KEY = true;
+public visibleLOGICAL_KEY = true;
 public visibleFUNCTIONS_KEY = true;
 public visibleTAGS_KEY = true;
 public visibleALARMS_KEY = true;
 public visibleLINE = false;
 public visibleCOLUMN = false;
-public visibleOPEN_AI = true;
 public visibleSYNTAX_CHECK_KEY = true;
+public visibleSYNTAX_MSG = true;
+public visibleOPEN_AI = true;
 
 public disableEXPRESSION_EDITOR_ID = false;
 public disableAPPLICATION_ID = false;
@@ -156,23 +168,24 @@ public disableAI_RESPONSE = false;
 public disableSUBMIT = false;
 public disableEXPRESSION = false;
 public disableIF_KEY = false;
-public disableLOGICAL_KEY = false;
 public disableRELATIONAL_KEY = false;
 public disableARITHMETIC_KEY = false;
 public disableBITWISE_KEY = false;
+public disableLOGICAL_KEY = false;
 public disableFUNCTIONS_KEY = false;
 public disableTAGS_KEY = false;
 public disableALARMS_KEY = false;
 public disableLINE = false;
 public disableCOLUMN = false;
-public disableOPEN_AI = false;
 public disableSYNTAX_CHECK_KEY = false;
+public disableSYNTAX_MSG = true;
+public disableOPEN_AI = false;
 
 public variableSUBMIT;
 public variableTAGS_KEY;
 public variableALARMS_KEY;
-public variableOPEN_AI;
 public variableSYNTAX_CHECK_KEY;
+public variableOPEN_AI;
 
   
   //@Input()  
@@ -184,7 +197,11 @@ public variableSYNTAX_CHECK_KEY;
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
+    public responsive: BreakpointObserver, 
+   private starNotify: StarNotifyService,  
+    public starServices: starServices,private expressionEngine: ExpressionEngineService
+   ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -585,14 +602,14 @@ this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME C
 			"lkpArrName":"lkpArrAPPLICATION_ID"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"IF_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrIF_KEY"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"LOGICAL_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrLOGICAL_KEY"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"RELATIONAL_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrRELATIONAL_KEY"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ARITHMETIC_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrARITHMETIC_KEY"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BITWISE_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrBITWISE_KEY"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"LOGICAL_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrLOGICAL_KEY"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FUNCTIONS_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrFUNCTIONS_KEY"}];
  if (this.lookupArrDef.length > 0)
@@ -603,13 +620,13 @@ public lkpArrAPPLICATION_ID = [];
 
 public lkpArrIF_KEY = [];
 
-public lkpArrLOGICAL_KEY = [];
-
 public lkpArrRELATIONAL_KEY = [];
 
 public lkpArrARITHMETIC_KEY = [];
 
 public lkpArrBITWISE_KEY = [];
+
+public lkpArrLOGICAL_KEY = [];
 
 public lkpArrFUNCTIONS_KEY = [];
 
@@ -620,11 +637,6 @@ return rec;
 
 public lkpArrGetIF_KEY(CODE: any): any {
 var rec = this.lkpArrIF_KEY.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetLOGICAL_KEY(CODE: any): any {
-var rec = this.lkpArrLOGICAL_KEY.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -643,6 +655,11 @@ var rec = this.lkpArrBITWISE_KEY.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
+public lkpArrGetLOGICAL_KEY(CODE: any): any {
+var rec = this.lkpArrLOGICAL_KEY.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
 public lkpArrGetFUNCTIONS_KEY(CODE: any): any {
 var rec = this.lkpArrFUNCTIONS_KEY.find((x:any) => x.CODE === CODE);
 return rec;
@@ -658,6 +675,8 @@ this.form.get('AI_RESPONSE').valueChanges.subscribe(val => {
 this.form.get('LINE').valueChanges.subscribe(val => {
 });
 this.form.get('COLUMN').valueChanges.subscribe(val => {
+});
+this.form.get('SYNTAX_MSG').valueChanges.subscribe(val => {
 });
 }
 
@@ -951,10 +970,10 @@ async WHEN_VALIDATE_ITEM_EXPRESSION(value) {
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['EXPRESSION'] != "undefined" ) 
       this.form.controls['EXPRESSION'].setErrors({invalid: true}); 
-    console.log("WHEN_VALIDATE_ITEM_EXPRESSION:value:",value)
  this.valueChange.emit(value);
  // Code goes here 
- 
+this.syntaxState = 'none';                        // ← ADD
+this.form.patchValue({ 'SYNTAX_MSG': "" }); 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -974,7 +993,8 @@ async WHEN_VALIDATE_ITEM_IF_KEY(value) {
  if (typeof this.form.controls['IF_KEY'] != "undefined" ) 
       this.form.controls['IF_KEY'].setErrors({invalid: true}); 
  // Code goes here 
- 
+this.append2Exp(value);
+this.form.patchValue({ 'IF_KEY': null }); 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -988,33 +1008,14 @@ async WHEN_VALIDATE_ITEM_IF_KEY(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_LOGICAL_KEY(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['LOGICAL_KEY'] != "undefined" ) 
-      this.form.controls['LOGICAL_KEY'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['LOGICAL_KEY'] != "undefined" ) 
-     this.form.get('LOGICAL_KEY').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_LOGICAL_KEY(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_RELATIONAL_KEY(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['RELATIONAL_KEY'] != "undefined" ) 
       this.form.controls['RELATIONAL_KEY'].setErrors({invalid: true}); 
  // Code goes here 
- 
+this.append2Exp(value);
+this.form.patchValue({ 'RELATIONAL_KEY': null }); 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -1034,7 +1035,8 @@ async WHEN_VALIDATE_ITEM_ARITHMETIC_KEY(value) {
  if (typeof this.form.controls['ARITHMETIC_KEY'] != "undefined" ) 
       this.form.controls['ARITHMETIC_KEY'].setErrors({invalid: true}); 
  // Code goes here 
- 
+this.append2Exp(value);
+this.form.patchValue({ 'ARITHMETIC_KEY': null }); 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -1054,7 +1056,8 @@ async WHEN_VALIDATE_ITEM_BITWISE_KEY(value) {
  if (typeof this.form.controls['BITWISE_KEY'] != "undefined" ) 
       this.form.controls['BITWISE_KEY'].setErrors({invalid: true}); 
  // Code goes here 
- 
+this.append2Exp(value);
+this.form.patchValue({ 'BITWISE_KEY': null }); 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -1068,12 +1071,35 @@ async WHEN_VALIDATE_ITEM_BITWISE_KEY(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_LOGICAL_KEY(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['LOGICAL_KEY'] != "undefined" ) 
+      this.form.controls['LOGICAL_KEY'].setErrors({invalid: true}); 
+ // Code goes here 
+this.append2Exp(value);
+this.form.patchValue({ 'LOGICAL_KEY': null }); 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['LOGICAL_KEY'] != "undefined" ) 
+     this.form.get('LOGICAL_KEY').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_LOGICAL_KEY(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_FUNCTIONS_KEY(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['FUNCTIONS_KEY'] != "undefined" ) 
       this.form.controls['FUNCTIONS_KEY'].setErrors({invalid: true}); 
  // Code goes here 
+this.append2Exp(value);
+this.form.patchValue({ 'FUNCTION_KEY': null });
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
@@ -1168,6 +1194,83 @@ async WHEN_VALIDATE_ITEM_COLUMN(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SYNTAX_CHECK_KEY'] != "undefined" ) 
+      this.form.controls['SYNTAX_CHECK_KEY'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SYNTAX_CHECK_KEY'] != "undefined" ) 
+     this.form.get('SYNTAX_CHECK_KEY').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SYNTAX_CHECK_KEY(event){
+const source = String(this.form.get('EXPRESSION')?.value ?? '');
+
+  const loaded = this.expressionEngine.loadWithVariables(source);
+  if ('error' in loaded) {
+    const errs = loaded.error.diagnostics.filter(d => d.severity === 'error');
+    this.syntaxState = 'error';
+    this.helpText = errs.map(e => `${e.code}: ${e.message}`).join('\n');
+    this.form.patchValue({ 'SYNTAX_MSG': this.helpText });
+    return;
+  }
+
+  const { rule, variables } = loaded;
+
+  const tags: Record<string, Value> = {};
+  let i = 0;
+  for (const name of variables.tags) tags[name] = i++;
+
+  const context: RuntimeContext = {
+    tags,
+    input: variables.usesPlaceholder ? 0 : undefined,
+    currentUserName: this.starServices.sessionParams?.['USERNAME'] ?? 'TESTUSER',
+    currentLanguage: this.userLang ?? 'en',
+    securityCodes: ['A', 'D'],
+    // No `functions` — engine resolves AE_* via AlarmEventDataService.
+  };
+
+  try {
+    const value = rule.execute(context);
+    console.log("value:", value)
+    this.syntaxState = 'ok';
+    this.helpText = `Syntax OK (result = ${value})`;
+    this.form.patchValue({ 'SYNTAX_MSG': this.helpText });
+  } catch (err) {
+    console.log("value:err:", (err as Error).message)
+    this.syntaxState = 'error';
+    this.helpText = (err as Error).message;
+    this.form.patchValue({ 'SYNTAX_MSG': this.helpText });
+  }
+}
+
+async WHEN_VALIDATE_ITEM_SYNTAX_MSG(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SYNTAX_MSG'] != "undefined" ) 
+      this.form.controls['SYNTAX_MSG'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SYNTAX_MSG'] != "undefined" ) 
+     this.form.get('SYNTAX_MSG').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SYNTAX_MSG(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_OPEN_AI(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1191,26 +1294,6 @@ async WHEN_VALIDATE_ITEM_OPEN_AI(value) {
 //     this.visibleAI_RESPONSE = false;
 
 this.toggleAIPanel()
-}
-
-async WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SYNTAX_CHECK_KEY'] != "undefined" ) 
-      this.form.controls['SYNTAX_CHECK_KEY'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['SYNTAX_CHECK_KEY'] != "undefined" ) 
-     this.form.get('SYNTAX_CHECK_KEY').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SYNTAX_CHECK_KEY(event){
-
 }
  
  async onChange_EXPRESSION_EDITOR_ID(event:any) { 
@@ -1258,12 +1341,6 @@ async WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_LOGICAL_KEY(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_LOGICAL_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_RELATIONAL_KEY(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_RELATIONAL_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
@@ -1279,6 +1356,12 @@ async WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value) {
  async onValueChange_BITWISE_KEY(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_BITWISE_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_LOGICAL_KEY(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_LOGICAL_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
@@ -1318,15 +1401,21 @@ async WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_OPEN_AI(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_OPEN_AI(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_SYNTAX_CHECK_KEY(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_SYNTAX_MSG(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_SYNTAX_MSG(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_OPEN_AI(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_OPEN_AI(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }
@@ -1339,6 +1428,8 @@ generatedRule: string = '';
 confidenceLevel: number | null = null;
 selectedExample: string = '';  // ← ADD THIS PROPERTY
 aiLogs: Array<{ icon: string; message: string; type: 'info' | 'success' | 'warning' | 'error'; timestamp?: string }> = [];
+public helpText = "";
+public syntaxState = "";
 
 // AI Examples for Chip List
 aiExamples: string[] = [
@@ -1407,27 +1498,36 @@ async generateRule(): Promise<void> {
   this.aiLogs = [];
   this.showAIExamples = false;
 
-  // Simulate AI processing steps
   this.addAILog('info', '🤔', 'Understanding your request...');
-  await this.delay(500);
-  
+  await this.delay(300);
   this.addAILog('info', '🔍', 'Detecting tags and patterns...');
-  await this.delay(700);
-  
-  this.addAILog('info', '🏗️', 'Building rule structure...');
-  await this.delay(600);
-  
-  this.addAILog('info', '✅', 'Validating syntax...');
-  await this.delay(400);
+  await this.delay(300);
 
-  // Simulate AI rule generation
-  const generatedRule = this.simulateAIGeneration(this.aiPrompt);
-  this.generatedRule = generatedRule;
-  this.confidenceLevel = Math.floor(Math.random() * 10) + 90; // 90-99%
-  
-  this.addAILog('success', '✅', 'Rule generated successfully!');
+  // 1) Ask your backend / AI for a rule-language expression.
+  //    For the moment we just pass the prompt through.
+  const candidate = this.aiPrompt.trim();
+
+  // 2) Validate it locally.
+  const result: ValidationResult = this.expressionEngine.validate(candidate, {
+    // tagTypes: { tag1: 'number', tag2: 'number' },  // optional
+  });
+
+  if (!result.valid) {
+    for (const d of result.diagnostics) {
+      this.addAILog(
+        d.severity === 'error' ? 'error' : 'warning',
+        d.severity === 'error' ? '❌' : '⚠️',
+        `${d.code} @ ${d.line}:${d.column} — ${d.message}`,
+      );
+    }
+    this.isGenerating = false;
+    return;
+  }
+
+  this.generatedRule = candidate;
+  this.confidenceLevel = Math.floor(Math.random() * 10) + 90;
+  this.addAILog('success', '✅', 'Rule validated successfully!');
   this.addAILog('success', '📊', `Confidence: ${this.confidenceLevel}%`);
-  
   this.isGenerating = false;
 }
 
@@ -1479,6 +1579,51 @@ async regenerateRule(): Promise<void> {
 delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+public evaluateCurrentExpression(): void {
+  const source = String(this.form.get('EXPRESSION')?.value ?? '');
+  if (!source) { return; }
+
+  const context: RuntimeContext = {
+    tags: {
+      tag1: 5,
+      tag2: 7,
+      tag3: 100,
+    },
+    // input: 10,                       // only for write expressions
+    // currentUserName: this.starServices.sessionParams?.['USERNAME'],
+    // currentLanguage: this.userLang,
+    // securityCodes: ['A', 'D'],
+  };
+
+  // 1) Validate for a nicer UX first.
+  const validation = this.expressionEngine.validate(source);
+  if (!validation.valid) {
+    // validation.diagnostics.forEach(d =>
+    //   this.starNotify.showError(`${d.code}: ${d.message} (line ${d.line}, col ${d.column})`)
+    // );
+    return;
+  }
+
+  // 2) Execute.
+  try {
+    const rule: LoadedRule = this.expressionEngine.load(source);
+    const value = rule.execute(context);
+    console.log('Rule result:', value);
+    //this.starNotify.showInfo(`Result: ${value}`);
+  } catch (err) {
+   // this.starNotify.showError(`Execution error: ${(err as Error).message}`);
+  }
+}
+
+
+append2Exp(value){
+    if (value == null)
+        return;
+  let expression = this.form.value['EXPRESSION'];
+ expression = expression + ' ' + value;
+ this.form.patchValue({ 'EXPRESSION': expression });
+}
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1500,6 +1645,7 @@ public uploadimage = false;
 public showIcon=true;
 public svg_arr = [];
 public svg_data = [];
+
 
 public update_svgicons(formGroup){
   this.showIcon = false;

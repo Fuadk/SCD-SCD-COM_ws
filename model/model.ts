@@ -1894,8 +1894,10 @@
 	public FUNCTIONS_KEY = '';
 	public LINE = '';
 	public COLUMN = '';
+	public SYNTAX_MSG = '';
 
 }
+
 
  export class tst1communicationSetupTst1AcsServers{
 	public COMMUNICATION_SETUP_ID = '';

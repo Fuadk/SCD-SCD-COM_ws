@@ -105,7 +105,6 @@
 		modelId="EXPRESSION" 
 		language="javascript" theme="vs-dark" 
 		(valueChange)="onValueChange_EXPRESSION($event)" 
-		formControlName="EXPRESSION"
 		width="900px" height="100px" >
  </app-code-editor> 
 	</kendo-formfield>
@@ -125,25 +124,6 @@
 		 <ng-template kendoDropDownListNoDataTemplate>
 		 <div> 
 		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'IF_KEY')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
-
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLOGICAL_KEYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLOGICAL_KEY >
-		<kendo-label *ngIf="(!labelLOGICAL_KEYTop && !isPhonePortrait) && labelLOGICAL_KEYVisible" class="form-label" [for]="LOGICAL_KEY" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LOGICAL_KEY','Logical')"></kendo-label>
-		<label *ngIf="(labelLOGICAL_KEYTop || isPhonePortrait) && labelLOGICAL_KEYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LOGICAL_KEY','Logical')}}</label>
-		<kendo-combobox  #LOGICAL_KEY class="form-field-combobox"  [formControlName]="'LOGICAL_KEY'"
-		[data]="lkpArrLOGICAL_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LOGICAL_KEY_Hint','Logical')"		(click)="ON_CLICK_LOGICAL_KEY($event)"
- (valueChange)="onValueChange_LOGICAL_KEY($event)"  style="width : 100px ;"    adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'LOGICAL_KEY')"> 
 		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
 		 	</button> 
 		 </div> 
@@ -208,6 +188,25 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLOGICAL_KEYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLOGICAL_KEY >
+		<kendo-label *ngIf="(!labelLOGICAL_KEYTop && !isPhonePortrait) && labelLOGICAL_KEYVisible" class="form-label" [for]="LOGICAL_KEY" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LOGICAL_KEY','Logical')"></kendo-label>
+		<label *ngIf="(labelLOGICAL_KEYTop || isPhonePortrait) && labelLOGICAL_KEYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LOGICAL_KEY','Logical')}}</label>
+		<kendo-combobox  #LOGICAL_KEY class="form-field-combobox"  [formControlName]="'LOGICAL_KEY'"
+		[data]="lkpArrLOGICAL_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LOGICAL_KEY_Hint','Logical')"		(click)="ON_CLICK_LOGICAL_KEY($event)"
+ (valueChange)="onValueChange_LOGICAL_KEY($event)"  style="width : 100px ;"    adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'LOGICAL_KEY')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFUNCTIONS_KEYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFUNCTIONS_KEY >
 		<kendo-label *ngIf="(!labelFUNCTIONS_KEYTop && !isPhonePortrait) && labelFUNCTIONS_KEYVisible" class="form-label" [for]="FUNCTIONS_KEY" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.FUNCTIONS_KEY','Functions Key')"></kendo-label>
 		<label *ngIf="(labelFUNCTIONS_KEYTop || isPhonePortrait) && labelFUNCTIONS_KEYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.FUNCTIONS_KEY','Functions Key')}}</label>
@@ -261,15 +260,24 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-		<button  (valueChange)="onValueChange_OPEN_AI($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.OPEN_AI_Hint','Please enter Open Ai.')" 
- iconClass="fas fa-robot"  *ngIf=visibleOPEN_AI 		(click)="ON_CLICK_OPEN_AI($event)"
- >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.OPEN_AI','AI')}}</button>
-
-		<button  (valueChange)="onValueChange_SYNTAX_CHECK_KEY($event)"  style="display: inline-flex; align-items: center; margin-left: auto;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_SYNTAX_CHECK_KEY($event)"  style="height : 25px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.SYNTAX_CHECK_KEY_Hint','Please enter Syntax Check Key.')" 
  iconClass="fas fa-check-circle"  *ngIf=visibleSYNTAX_CHECK_KEY 		(click)="ON_CLICK_SYNTAX_CHECK_KEY($event)"
  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.SYNTAX_CHECK_KEY','Syntax Check')}}</button>
+
+	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelSYNTAX_MSGTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSYNTAX_MSG >
+		<kendo-label *ngIf="(!labelSYNTAX_MSGTop && !isPhonePortrait) && labelSYNTAX_MSGVisible" class="form-label" [for]="SYNTAX_MSG" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.SYNTAX_MSG','Syntax Msg')"></kendo-label>
+		<label *ngIf="(labelSYNTAX_MSGTop || isPhonePortrait) && labelSYNTAX_MSGVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.SYNTAX_MSG','Syntax Msg')}}</label>
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="3" [cols]="100"  kendoTextBox  formControlName="SYNTAX_MSG"
+ #SYNTAX_MSG
+  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.SYNTAX_MSG_Hint','')"		(click)="ON_CLICK_SYNTAX_MSG($event)"
+ [readonly]="true"           [ngClass]="{         'syntax-ok':    syntaxState === 'ok',         'syntax-error': syntaxState === 'error'       }"  adaptiveMode="auto" ></kendo-textarea>
+	</kendo-formfield>
+
+		<button  (valueChange)="onValueChange_OPEN_AI($event)"  style="display: inline-flex; align-items: center; margin-left: auto; height : 25px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.OPEN_AI_Hint','Please enter Open Ai.')" 
+ iconClass="fas fa-robot"  *ngIf=visibleOPEN_AI 		(click)="ON_CLICK_OPEN_AI($event)"
+ >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.OPEN_AI','AI')}}</button>
 </div>
 
     </fieldset>

@@ -321,3 +321,46 @@
     border-top-color: #444;
   }
 }
+
+// ===== SYNTAX_MSG STATE COLORS =====
+kendo-textarea.syntax-ok {
+  .k-textarea,
+  textarea.k-textarea,
+  textarea {
+    background-color: #e6f7e6 !important;
+    border-color: #28a745 !important;
+    color: #1e7e34 !important;
+    font-weight: 500;
+  }
+}
+
+kendo-textarea.syntax-error {
+  .k-textarea,
+  textarea.k-textarea,
+  textarea {
+    background-color: #fdecea !important;
+    border-color: #dc3545 !important;
+    color: #b02a37 !important;
+    font-weight: 500;
+  }
+}
+
+// Dark theme variants
+.tab-host-dark {
+  kendo-textarea.syntax-ok {
+    .k-textarea,
+    textarea {
+      background-color: #1e3d24 !important;
+      border-color: #28a745 !important;
+      color: #b7f0c2 !important;
+    }
+  }
+  kendo-textarea.syntax-error {
+    .k-textarea,
+    textarea {
+      background-color: #3d1e22 !important;
+      border-color: #dc3545 !important;
+      color: #f5b7bd !important;
+    }
+  }
+}

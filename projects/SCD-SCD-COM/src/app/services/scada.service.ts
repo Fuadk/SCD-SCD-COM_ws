@@ -28,7 +28,7 @@ export interface ServerConfig {
 }
 
 export interface Alarm {
-  id: number;
+  id: string;              // was number — now the base64 EventId
   server_id?: number;
   server_name?: string;
   tag_name: string;
@@ -36,6 +36,8 @@ export interface Alarm {
   message: string;
   severity: string;
   acknowledged: boolean;
+  active?: boolean;
+  retain?: boolean;
   timestamp: string;
 }
 
@@ -88,7 +90,7 @@ export class SCADAService {
    */
   disablePolling(): void {
     if (this.isPollingEnabled) {
-      console.log('opcua:⏸️ Disabling SCADA polling');
+      //console.log('opcua:⏸️ Disabling SCADA polling');
       this.isPollingEnabled = false;
       if (this.pollingInterval) {
         clearInterval(this.pollingInterval);
@@ -125,26 +127,26 @@ export class SCADAService {
       console.log('opcua:Polling is disabled, not starting');
       return;
     }
-    console.log('opcua:startPolling - Tags only (servers on demand)');
+    //console.log('opcua:startPolling - Tags only (servers on demand)');
     this.pollingInterval = setInterval(async () => {
-      console.log('opcua:setInterval:', this.isPollingEnabled);
+      //console.log('opcua:setInterval:', this.isPollingEnabled);
       if (!this.isPollingEnabled) return; // Extra safety check
       
       try {
-        console.log('opcua:http.get:', `${this.OPCUA_SERVER_BASE}/tags`);
+        //console.log('opcua:http.get:', `${this.OPCUA_SERVER_BASE}/tags`);
         const tags = await this.http.get(`${this.OPCUA_SERVER_BASE}/tags`).toPromise();
-        console.log('opcua:tags:', tags);
+        //console.log('opcua:tags:', tags);
         if (tags) {
           this.ngZone.run(() => {
             this.tagValues.next(tags);
           });
         }
-         // const alarms = await this.http.get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms`).toPromise();
-        // if (alarms) {
-        //   this.ngZone.run(() => {
-        //     this.alarms.next(alarms);
-        //   });
-        // }
+         const alarms = await this.http.get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms`).toPromise();
+        if (alarms) {
+          this.ngZone.run(() => {
+            this.alarms.next(alarms);
+          });
+        }
         // ✅ REMOVED: Servers are NOT polled here anymore
         // Servers are loaded on demand only
         
@@ -165,6 +167,10 @@ export class SCADAService {
       const tags = await this.http.get(`${this.OPCUA_SERVER_BASE}/tags`).toPromise();
       if (tags) {
         this.tagValues.next(tags);
+      }
+      const alarms = await this.http.get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms`).toPromise();
+      if (alarms) {
+        this.alarms.next(alarms);
       }
       
       // ✅ Load servers ONCE on initialization
@@ -327,9 +333,9 @@ export class SCADAService {
     }
   }
 
-  async acknowledgeAlarm(alarmId: number): Promise<boolean> {
+  async acknowledgeAlarm(alarmId: string, comment: string = ''): Promise<boolean> {
     try {
-      await this.http.post(`${this.OPCUA_SERVER_BASE}/alarms/${alarmId}/acknowledge`, {}).toPromise();
+      await this.http.post(`${this.OPCUA_SERVER_BASE}/alarms/${alarmId}/acknowledge`, { comment }).toPromise();
       return true;
     } catch (error) {
       return false;

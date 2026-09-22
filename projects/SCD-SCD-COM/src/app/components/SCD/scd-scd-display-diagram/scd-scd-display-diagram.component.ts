@@ -20,6 +20,13 @@ import {
   DiagramComponent,
   Rect,
 } from "@progress/kendo-angular-diagrams";
+import { ExpressionEngineService,
+  LoadedRule,
+  RuntimeContext,
+  ValidationResult,
+  Value,
+  collectVariables,} from '../../../services/expression-engine.service';
+
 
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -260,6 +267,7 @@ public disableDISPLAY_DATA = false;
               public starlib1: Starlib1,
               public starServices: starServices,
               private dialogService: DialogService,
+              private expressionEngine: ExpressionEngineService,
               private cdr: ChangeDetectorRef) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
@@ -818,9 +826,9 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    if (!this.isChild) {
-  this.executeQuery(this.form.value);
-}
+    // if (!this.isChild) {
+//   this.executeQuery(this.form.value);
+// }
 
 console.log("WHEN_NEW_FORM_INSTANCE");
 var href = window.location.href;
@@ -958,6 +966,7 @@ if (array.length > 2) {
       console.log("shapeType:", shapeType)
       switch (shapeType) {
         case 'Numeric Display':
+        case 'numeric display':
           Id = 'Numeric_Display_Properties';
           break;
         case 'String Display':
@@ -1214,46 +1223,97 @@ if (type === "shapeBoundsChange") {
 
 }
   private ON_RECEIVED(changes: any): void {
+      this.latestTime = Date.now();
+    function formatChanges(changes){
+      let eventsArr ={};
+      for (let i =0;i< changes.length;i++){
+        let change = changes[i];
+        //console.log("change:change:",change.type)
+        if (change.type == "tag"){
+          let key = change.tagName;
+          let value = change.newValue.value;
+          if (typeof value == "undefined"){
+            value = change.oldValue.value;
+            if (typeof value == "undefined"){
+              value = 0;
+            }
+          }
+          change.value = value;
+          eventsArr[key] = change;
+        }
+
+      }
+      //console.log("change:eventsArr:",eventsArr)
+      return eventsArr;
+
+    }
     if (typeof this.diagram == "undefined") {
             return;
         }
-        console.log("opcua:on received data from scada :changes:", changes);
-        for (const change of changes) {
-            console.log("opcua:on received data from scada :change:", change.type, change);
-            switch (change.type) {
-                case 'tag':
-                    console.log("opcua:on received data from scada :displayName:", change.newValue.displayName, change);
-                    let serverID = change.newValue.serverId;
-                    let displayName = change.newValue.displayName;
-                    let tagKey = "[" + serverID + "]" + displayName;
-                    let shapeInfo = this.expData[tagKey]; 
-                    let shape_id ="";
-                    let expressions = "";
-                    console.log("opcua:on received data from scada :displayName:", shapeInfo, tagKey, this.expData);
-                    if (typeof shapeInfo != "undefined"){
-                      for (let i=0; i<shapeInfo.length;i++){
-                        shape_id = shapeInfo[i].shape_id;
-                        expressions = shapeInfo[i].expressions;
-                        
-                        const liveShape = this.diagram.getShapeById(shape_id);
-                        console.log("opcua:on received data from scada :pre shapeInfo:", shapeInfo[i], 
-                          "liveShape:",liveShape);
-                        //liveShape.dataItem.dataItem.text = change.newValue.value;
-                        //liveShape.dataItem.dataItem.text = "";
-                        
-                        // console.log("opcua:liveShape.dataItem:", liveShape.dataItem.content.blocks[0].children[0].text);
-                        // liveShape.dataItem.content.blocks[0].children[0].text = change.newValue.value.toString();
-                        
-                        liveShape.dataItem.dataItem.text = change.newValue.value.toString();
-                        console.log("opcua:on received data from scada :post shapeInfo:", shapeInfo[i], "liveShape:",liveShape);
-                        liveShape.redrawVisual();
-                      }
-                      
-                    }
-
-                    break;
+        if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :changes:", changes);
+        //console.log("opcua:on received data from scada :changes:", changes);
+        let eventsArr = formatChanges(changes);
+        // let Keys = Object.keys(this.expData);
+         //console.log("opcua:on received data from scada :eventsArr:",  eventsArr, this.expData);
+         if (Object.keys(eventsArr).length != 0){
+        for (let i = 0; i < this.expData.length; i++) {
+          //let key = Keys[i];
+          if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :this.expData:", this.expData);
+          let expData = this.expData[i];
+          let loaded = expData.loaded;
+          if (typeof loaded != "undefined"){
+            const { rule, variables } = loaded;
+            if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :expData:",  expData);
+            //let expData = this.expData[i];
+            let tagNames = expData.tagNames;
+            let tagNamesScada = expData.tagNamesScada;
+            
+            const tags: Record<string, Value> = {};
+            for (let j = 0; j< tagNames.length;j++){
+              let tagName = tagNames[j];
+              let tagNameScada = tagNamesScada[j];
+              let value = 0;
+              let event:any = eventsArr[tagName];
+              if (typeof event == "undefined"){
+                //console.log("undefined event for tagName:", tagName, event, eventsArr)
+              }
+              else
+                value = eventsArr[tagName].value;
+              tags[tagNameScada] = value; 
             }
+            if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :tags:",  tags);
+            const context: RuntimeContext = {
+            tags,
+            input: variables.usesPlaceholder ? 0 : undefined,
+            currentUserName: this.starServices.sessionParams?.['USERNAME'] ?? 'TESTUSER',
+            currentLanguage: this.userLang ?? 'en',
+            securityCodes: ['A', 'D'],   // ← substitute with real session data if available
+          };
+          try {
+            if(this.paramConfig.DEBUG_FLAG) console.log('opcua:Rule execute:', context);
+            const value = rule.execute(context);
+            if(this.paramConfig.DEBUG_FLAG) console.log('opcua:Rule executed successfully. Result:', value);
+            let shape_id = expData.SHAPE_TYPE + ":" + expData.SHAPE_ID;
+            if(this.paramConfig.DEBUG_FLAG) console.log('opcua:Rule shape_id:', shape_id);
+            const liveShape = this.diagram.getShapeById(shape_id);
+            if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :pre shape_id:", shape_id, 
+                            "liveShape:",liveShape);
+            liveShape.dataItem.dataItem.text = value.toString();
+                          if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :post shape_id:", shape_id, "liveShape:",liveShape);
+                          liveShape.redrawVisual();
+
+          } catch (err) {
+            if(this.paramConfig.DEBUG_FLAG) console.warn('opcua:Rule runtime error:', (err as Error).message);
+          }
+
+          
+          }
+          
         }
+      }
+      ;
+      if (Object.keys(eventsArr).length != 0)
+        this.showTime("ON_RECEIVED")
   }
 
   async  PRE_INSERT(formGroup){
@@ -1397,6 +1457,13 @@ async WHEN_VALIDATE_ITEM_DISPLAY_DATA(value) {
 public DIAGRAM_ID = null;
 public serversMapp = {};
 public serversMappReversed = {};
+
+public latestTime;
+private showTime(id) {
+	let curTime = Date.now();
+	console.log("step:", id, ":", (curTime - this.latestTime), curTime, this.latestTime);
+	this.latestTime = curTime;
+}
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1875,30 +1942,10 @@ public performMapperFrom(In) {
     return OutRec;
 }
 public isDiagramInitializing = true;
-public expData ={};
+public expData =[];
 ////
 async  prepareShapes(){
-  function formatData(input) {
-  const result = {};
-  
-  input.forEach(item => {
-    // Extract tag by removing .VAL and the outer curly braces
-    const tag = item.EXPRESSION_DATA
-      .replace('.VAL', '')      // Remove .VAL
-      .replace(/[{}]/g, '');   // Remove { and }
-    
-    if (!result[tag]) {
-      result[tag] = [];
-    }
-    
-    result[tag].push({
-      shape_id: `${item.SHAPE_TYPE}:${item.SHAPE_ID}`,
-      expression: item.EXPRESSION_DATA
-    });
-  });
-  
-  return result;
-}
+
   let shapesIDs = "";
   for (let i =0; i< this.shapes.length; i++){
     let shapeID = this.shapes[i].id;
@@ -2097,11 +2144,52 @@ async  prepareShapes(){
     if (typeof data[2].data != "undefined"){
       let expData = data[2].data;
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", JSON.stringify(expData));
-      this.expData = formatData(expData);
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", this.expData);
+      
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData.length, expData, JSON.stringify(expData));
+      const convert = (s: string): string => s.replace(/^\[(.+?)\](.+?)\.VAL$/, '$1:$2');
+
+
+      for (let i = 0; i < expData.length; i++){
+        const loaded = this.expressionEngine.loadWithVariables(expData[i]['EXPRESSION_DATA']);
+
+        if ('error' in loaded) {
+          // The rule failed to compile — handle the diagnostics.
+          const errs = loaded.error.diagnostics.filter(d => d.severity === 'error');
+          console.warn(
+            `Rule '${expData[i]['EXPRESSION_DATA']}' failed to compile:`,
+            errs.map(e => `${e.code}: ${e.message}`).join('; ')
+          );
+          continue; // or return / skip this rule, whichever fits your loop
+        }
+
+        // ✅ Narrowed: TypeScript now knows `loaded` has `rule` and `variables`
+        const { rule, variables } = loaded;
+
+        const tags: Record<string, Value> = {};
+        let j = 0;
+        let tagNames  = [];
+        let tagNamesScada  = [];
+        for (const name of variables.tags) {
+          console.log('opcua:tags[name]:', name, tags[name]);
+          
+          tagNames.push(convert(name));
+          tagNamesScada.push(name);
+          
+          tags[name] = j;
+          j++;
+        }
+        if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:loaded:", loaded);
+        expData[i]['loaded'] = loaded;
+        expData[i]['tagNames'] = tagNames;
+        expData[i]['tagNamesScada'] = tagNamesScada;
+      }
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData);
+      //this.expData = formatData(expData);
+      this.expData = expData;
+      
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:this.expData:", this.expData);
     } 
 }
-
 ////
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
