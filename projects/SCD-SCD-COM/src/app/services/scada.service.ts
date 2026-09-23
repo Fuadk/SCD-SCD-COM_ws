@@ -4,6 +4,20 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { io, Socket } from 'socket.io-client';
+
+
+export interface BrowseTag {
+    server_id: number;
+    server_name: string;
+    node_id: string;
+    browse_name: string;
+    namespace: number;
+    node_class: string;                // 'Object' | 'Variable' | 'Method' | ...
+    path: string;
+    is_variable: boolean;
+    display_name?: string;             // present for variables when browse read it
+}
 
 export interface ServerInfo {
   id: number;
@@ -51,6 +65,7 @@ export interface WriteResult {
 })
 
 export class SCADAService {
+  private socket: Socket;
   private OPCUA_SERVER_BASE = environment.OPCUA_SERVER_BASE;
   private tagValues = new BehaviorSubject<any>({});
   private alarms = new BehaviorSubject<Alarm[]>([]);
@@ -70,6 +85,26 @@ export class SCADAService {
     console.log('opcua:SCADAService constructor - using HTTP polling');
     this.loadInitialData();
     this.startPolling();
+    this.connectSocket();
+  }
+  private connectSocket(): void {
+    this.socket = io(this.OPCUA_SERVER_BASE.replace('/api', ''), {
+      transports: ['websocket', 'polling']
+    });
+
+    this.socket.on('connect', () => {
+      console.log('opcua:🔌 WebSocket connected');
+    });
+
+    this.socket.on('alarm-updates', (alarms: Alarm[]) => {
+      this.ngZone.run(() => {
+        this.alarms.next(alarms);
+      });
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('opcua:🔌 WebSocket disconnected');
+    });
   }
 
   // ============= Polling Control Methods =============
@@ -362,8 +397,65 @@ export class SCADAService {
       console.error('History fetch failed:', error);
       return [];
     }
+    
   }
+/**
+ * Browse the OPC UA address space for one or all servers.
+ * This is a live call to the backend, not a cache read.
+ *
+ * @param serverId optional — omit to browse every connected server
+ * @param nodeId   starting node; default is the Objects folder ("i=85")
+ * @param maxDepth recursion depth limit
+ */
+async browseTags(
+  serverId?: number,
+  nodeId: string = 'i=85',
+  maxDepth: number = 5
+): Promise<BrowseTag[]> {
+ 
+  try {
+    const params = new URLSearchParams();
+     console.log("getTagsAlarams:browseTags:", params)
+    if (serverId != null) params.set('serverId', String(serverId));
+    if (nodeId) params.set('nodeId', nodeId);
+    if (maxDepth != null) params.set('maxDepth', String(maxDepth));
 
+    const url = `${this.OPCUA_SERVER_BASE}/browse-tags?${params.toString()}`;
+    const result = await this.http.get<BrowseTag[]>(url).toPromise();
+    console.log("getTagsAlarams:result:", result)
+    return result ?? [];
+  } catch (error) {
+    console.error('Browse failed:', error);
+    return [];
+  }
+}
+
+/**
+ * Ask the OPC UA server to re-emit all currently active alarms.
+ * Triggers ConditionRefresh on the backend. After this returns,
+ * the next /alarms poll will contain the fresh list.
+ *
+ * @param serverId optional — omit to refresh every connected server
+ */
+async refreshAlarms(serverId?: number): Promise<{
+  success: boolean;
+  alarms?: Alarm[];
+  results?: any[];
+}> {
+  try {
+    const body = serverId != null ? { serverId } : {};
+    const result = await this.http
+      .post<{ success: boolean; alarms?: Alarm[]; results?: any[] }>(
+        `${this.OPCUA_SERVER_BASE}/alarms/refresh`,
+        body
+      )
+      .toPromise();
+    return result ?? { success: false };
+  } catch (error) {
+    console.error('Alarm refresh failed:', error);
+    return { success: false };
+  }
+}
   requestNotificationPermission(): void {
     if ('Notification' in window) {
       Notification.requestPermission();

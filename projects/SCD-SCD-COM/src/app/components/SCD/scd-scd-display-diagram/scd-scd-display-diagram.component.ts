@@ -1358,6 +1358,9 @@ if (typeof data[0].data != "undefined") {
             console.log("server added: ", this.serversMapp, this.serversMappReversed);
         }
     }
+    setTimeout(() => {
+          this.getTagsAlarams();
+        }, 100);
 
 }
 
@@ -1941,6 +1944,25 @@ public performMapperFrom(In) {
     }
     return OutRec;
 }
+async getTagsAlarams(){
+  console.log("getTagsAlarams:entering:", this.expData)
+  const tags = await this.scadaIntegration.browseTags();   // all servers
+  console.log("getTagsAlarams:tags:",tags.length,  tags)        
+  const tagsDefinition = tags.filter(item => item.namespace === 3 && item.node_class == "Variable");
+  console.log("getTagsAlarams:tagsDefinition:",tagsDefinition.length, JSON.stringify( tagsDefinition)        )
+
+  //const localTags = await this.scadaIntegration.browseTags(1);         // server id 1
+  //console.log("getTagsAlarams:localTags:",localTags)
+  
+  //const deepTags  = await this.scadaIntegration.browseTags(1, 'ns=3;i=1000', 8);
+  //console.log("getTagsAlarams:deepTags:",deepTags)
+  //"Browse server with ID 1, starting from node ns=3;i=1000, descending up to 8 levels deep."
+
+  const { success, alarms } = await this.scadaIntegration.refreshAlarms();
+  console.log("getTagsAlarams:success:",success)
+  console.log("getTagsAlarams:success:",alarms)
+
+}
 public isDiagramInitializing = true;
 public expData =[];
 ////
@@ -2189,7 +2211,7 @@ async  prepareShapes(){
       
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:this.expData:", this.expData);
     } 
-}
+} 
 ////
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
@@ -2222,6 +2244,7 @@ public mapSampleData() {
         });
     });
     this.prepareShapes();
+    
 }
 
 // Simulating your database results
