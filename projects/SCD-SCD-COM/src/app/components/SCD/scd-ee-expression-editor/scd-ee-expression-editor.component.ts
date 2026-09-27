@@ -126,10 +126,10 @@ public labelLOGICAL_KEYTop=false;
 public labelLOGICAL_KEYVisible=false;
 public labelFUNCTIONS_KEYTop=false;
 public labelFUNCTIONS_KEYVisible=false;
+public labelALARMS_KEYTop=false;
+public labelALARMS_KEYVisible=false;
 public labelTAGS_KEYTop=false;
 public labelTAGS_KEYVisible=false;
-public labelALARMS_KEYTop=false;
-public labelALARMS_KEYVisible=true;
 public labelLINETop=false;
 public labelLINEVisible=true;
 public labelCOLUMNTop=false;
@@ -153,8 +153,8 @@ public visibleARITHMETIC_KEY = true;
 public visibleBITWISE_KEY = true;
 public visibleLOGICAL_KEY = true;
 public visibleFUNCTIONS_KEY = true;
-public visibleTAGS_KEY = true;
 public visibleALARMS_KEY = true;
+public visibleTAGS_KEY = true;
 public visibleLINE = false;
 public visibleCOLUMN = false;
 public visibleSYNTAX_CHECK_KEY = true;
@@ -173,8 +173,8 @@ public disableARITHMETIC_KEY = false;
 public disableBITWISE_KEY = false;
 public disableLOGICAL_KEY = false;
 public disableFUNCTIONS_KEY = false;
-public disableTAGS_KEY = false;
 public disableALARMS_KEY = false;
+public disableTAGS_KEY = false;
 public disableLINE = false;
 public disableCOLUMN = false;
 public disableSYNTAX_CHECK_KEY = false;
@@ -182,8 +182,8 @@ public disableSYNTAX_MSG = true;
 public disableOPEN_AI = false;
 
 public variableSUBMIT;
-public variableTAGS_KEY;
 public variableALARMS_KEY;
+public variableTAGS_KEY;
 public variableSYNTAX_CHECK_KEY;
 public variableOPEN_AI;
 
@@ -429,6 +429,9 @@ public variableOPEN_AI;
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
+
+ this.lkpArrTAGS_KEY= this.starlib1.tagsDefinition;
+ this.lkpArrALARMS_KEY= this.starlib1.alarmsDefinition;
    }
 
   public onNew(e:any): void {
@@ -611,7 +614,11 @@ this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME C
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"LOGICAL_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrLOGICAL_KEY"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FUNCTIONS_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrFUNCTIONS_KEY"}];
+			"lkpArrName":"lkpArrFUNCTIONS_KEY"},
+	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='ALARMS_KEY' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrALARMS_KEY"},
+	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='TAGS_KEY' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrTAGS_KEY"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
@@ -629,6 +636,10 @@ public lkpArrBITWISE_KEY = [];
 public lkpArrLOGICAL_KEY = [];
 
 public lkpArrFUNCTIONS_KEY = [];
+
+public lkpArrALARMS_KEY = [];
+
+public lkpArrTAGS_KEY = [];
 
 public lkpArrGetAPPLICATION_ID(CODE: any): any {
 var rec = this.lkpArrAPPLICATION_ID.find((x:any) => x.CODE === CODE);
@@ -662,6 +673,16 @@ return rec;
 
 public lkpArrGetFUNCTIONS_KEY(CODE: any): any {
 var rec = this.lkpArrFUNCTIONS_KEY.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetALARMS_KEY(CODE: any): any {
+var rec = this.lkpArrALARMS_KEY.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetTAGS_KEY(CODE: any): any {
+var rec = this.lkpArrTAGS_KEY.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -1114,33 +1135,19 @@ this.form.patchValue({ 'FUNCTION_KEY': null });
 
 }
 
-async WHEN_VALIDATE_ITEM_TAGS_KEY(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TAGS_KEY'] != "undefined" ) 
-      this.form.controls['TAGS_KEY'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TAGS_KEY'] != "undefined" ) 
-     this.form.get('TAGS_KEY').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TAGS_KEY(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_ALARMS_KEY(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
  if (typeof this.form.controls['ALARMS_KEY'] != "undefined" ) 
       this.form.controls['ALARMS_KEY'].setErrors({invalid: true}); 
  // Code goes here 
- 
+
+console.log ("WHEN_VALIDATE_ITEM:value:",value)
+let arr = value.CODE.split(":");
+let val = "{[" + arr[0] + "]" + arr[1] + ".VAL} "
+this.append2Exp(val);
+
+this.form.patchValue({ 'ALARMS_KEY': null }); 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -1151,6 +1158,32 @@ async WHEN_VALIDATE_ITEM_ALARMS_KEY(value) {
  }
 
  async ON_CLICK_ALARMS_KEY(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_TAGS_KEY(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['TAGS_KEY'] != "undefined" ) 
+      this.form.controls['TAGS_KEY'].setErrors({invalid: true}); 
+ // Code goes here 
+
+console.log ("WHEN_VALIDATE_ITEM:value:",value)
+let arr = value.CODE.split(":");
+let val = "{[" + arr[0] + "]" + arr[1] + ".VAL} "
+this.append2Exp(val);
+
+this.form.patchValue({ 'TAGS_KEY': null }); 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['TAGS_KEY'] != "undefined" ) 
+     this.form.get('TAGS_KEY').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_TAGS_KEY(event){
 
 }
 
@@ -1371,15 +1404,15 @@ this.toggleAIPanel()
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_TAGS_KEY(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_TAGS_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_ALARMS_KEY(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_ALARMS_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_TAGS_KEY(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_TAGS_KEY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
@@ -1419,211 +1452,1093 @@ this.toggleAIPanel()
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }
-// ===== AI ASSISTANT PROPERTIES =====
-showAIPanel: boolean = false;
-showAIExamples: boolean = true;
-aiPrompt: string = '';
-isGenerating: boolean = false;
-generatedRule: string = '';
-confidenceLevel: number | null = null;
-selectedExample: string = '';  // ← ADD THIS PROPERTY
-aiLogs: Array<{ icon: string; message: string; type: 'info' | 'success' | 'warning' | 'error'; timestamp?: string }> = [];
-public helpText = "";
-public syntaxState = "";
+  // ===== AI ASSISTANT PROPERTIES =====
+  showAIPanel: boolean = false;
+  showAIExamples: boolean = true;
+  aiPrompt: string = '';
+  isGenerating: boolean = false;
+  generatedRule: string = '';
+  confidenceLevel: number | null = null;
+  selectedExample: string = '';  // ← ADD THIS PROPERTY
+  aiLogs: Array<{ icon: string; message: string; type: 'info' | 'success' | 'warning' | 'error'; timestamp?: string }> = [];
+  public helpText = "";
+  public syntaxState = "";
 
-// AI Examples for Chip List
-aiExamples: string[] = [
-  'If temperature exceeds 100 then Alarm',
-  'If customer age > 18 then Approve',
-  'If order > 1000 then Discount',
-  'If CurrentUserHasCode(ADMIN) then Allow'
-];
-onExampleSelected(event: any): void {
-  if (event && event.value) {
-    this.setExample(event.value);
-  }
-}
-/**
- * Handle Enter key press in the AI prompt textarea
- * Shift+Enter adds a new line, Enter alone triggers generation
- */
-onEnterKey(event: Event): void {
-  const keyboardEvent = event as KeyboardEvent;
-  if (keyboardEvent.shiftKey) {
-    // Shift+Enter - allow new line (do nothing special)
-    return;
-  } else {
-    // Enter alone - generate rule
-    event.preventDefault();
-    this.generateRule();
-  }
-}
-
-toggleAIPanel(): void {
-  this.showAIPanel = !this.showAIPanel;
-  if (this.showAIPanel) {
-    this.showAIExamples = true;
-    this.addAILog('info', '💡', 'AI Assistant ready. Describe your business rule below.');
-  }
-}
-
-addAILog(type: 'info' | 'success' | 'warning' | 'error', icon: string, message: string): void {
-  const timestamp = new Date().toLocaleTimeString();
-  this.aiLogs.push({ icon, message, type, timestamp });
-}
-
-clearAI(): void {
-  this.aiPrompt = '';
-  this.generatedRule = '';
-  this.confidenceLevel = null;
-  this.aiLogs = [];
-  this.showAIExamples = true;
-}
-
-setExample(example: string): void {
-  this.aiPrompt = example;
-  this.selectedExample = example;  // ← Set the selected example
-  this.showAIExamples = false;
-}
-
-async generateRule(): Promise<void> {
-  if (!this.aiPrompt || this.aiPrompt.trim() === '') {
-    this.addAILog('warning', '⚠️', 'Please describe your business rule first.');
-    return;
-  }
-
-  this.isGenerating = true;
-  this.generatedRule = '';
-  this.confidenceLevel = null;
-  this.aiLogs = [];
-  this.showAIExamples = false;
-
-  this.addAILog('info', '🤔', 'Understanding your request...');
-  await this.delay(300);
-  this.addAILog('info', '🔍', 'Detecting tags and patterns...');
-  await this.delay(300);
-
-  // 1) Ask your backend / AI for a rule-language expression.
-  //    For the moment we just pass the prompt through.
-  const candidate = this.aiPrompt.trim();
-
-  // 2) Validate it locally.
-  const result: ValidationResult = this.expressionEngine.validate(candidate, {
-    // tagTypes: { tag1: 'number', tag2: 'number' },  // optional
-  });
-
-  if (!result.valid) {
-    for (const d of result.diagnostics) {
-      this.addAILog(
-        d.severity === 'error' ? 'error' : 'warning',
-        d.severity === 'error' ? '❌' : '⚠️',
-        `${d.code} @ ${d.line}:${d.column} — ${d.message}`,
-      );
+  // AI Examples for Chip List
+  aiExamples: string[] = [
+    'If temperature exceeds 100 then 1',
+    'If counter greater than  18 then 0'
+  ];
+  onExampleSelected(event: any): void {
+    if (event && event.value) {
+      this.setExample(event.value);
     }
-    this.isGenerating = false;
-    return;
   }
-
-  this.generatedRule = candidate;
-  this.confidenceLevel = Math.floor(Math.random() * 10) + 90;
-  this.addAILog('success', '✅', 'Rule validated successfully!');
-  this.addAILog('success', '📊', `Confidence: ${this.confidenceLevel}%`);
-  this.isGenerating = false;
-}
-
-simulateAIGeneration(prompt: string): string {
-  // This is a simulation. Replace with actual AI API call.
-  const examples: { [key: string]: string } = {
-    'temperature exceeds 100': 'if Temp > 100 then Alarm',
-    'temperature exceeds 100 and pressure exceeds 20': 'if Temp > 100 and Pressure > 20 then Alarm',
-    'customer age > 18': 'if Age > 18 then Approve',
-    'order > 1000': 'if Order > 1000 then Discount',
-    'CurrentUserHasCode(ADMIN)': 'if CurrentUserHasCode(\'ADMIN\') then Allow',
-  };
-
-  // Try to match the prompt with known examples
-  for (const [key, value] of Object.entries(examples)) {
-    if (prompt.toLowerCase().includes(key.toLowerCase())) {
-      return value;
+  /**
+   * Handle Enter key press in the AI prompt textarea
+   * Shift+Enter adds a new line, Enter alone triggers generation
+   */
+  onEnterKey(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.shiftKey) {
+      // Shift+Enter - allow new line (do nothing special)
+      return;
+    } else {
+      // Enter alone - generate rule
+      event.preventDefault();
+      this.generateRule();
     }
   }
 
-  // Fallback: create a simple rule from the prompt
-  const words = prompt.split(' ');
-  const conditions = words.filter(w => !['if', 'then', 'and', 'or', 'the', 'a', 'an', 'to', 'for'].includes(w.toLowerCase()));
-  
-  if (conditions.length > 0) {
-    const condition = conditions[0];
-    const action = conditions.length > 1 ? conditions[1] : 'Action';
-    return `if ${condition} > 0 then ${action}`;
+  toggleAIPanel(): void {
+    this.showAIPanel = !this.showAIPanel;
+    if (this.showAIPanel) {
+      this.showAIExamples = true;
+      this.addAILog('info', '💡', 'AI Assistant ready. Describe your business rule below.');
+    }
   }
 
-  return 'if Condition then Action';
-}
+  addAILog(type: 'info' | 'success' | 'warning' | 'error', icon: string, message: string): void {
+    const timestamp = new Date().toLocaleTimeString();
+    this.aiLogs.push({ icon, message, type, timestamp });
+  }
 
-async acceptRule(): Promise<void> {
-  if (this.generatedRule) {
-    this.form.patchValue({ EXPRESSION: this.generatedRule });
-    this.addAILog('success', '✅', 'Rule accepted and applied to editor!');
+  clearAI(): void {
+    this.aiPrompt = '';
     this.generatedRule = '';
     this.confidenceLevel = null;
-  }
-}
-
-async regenerateRule(): Promise<void> {
-  if (this.aiPrompt) {
-    this.generateRule();
-  }
-}
-
-delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-public evaluateCurrentExpression(): void {
-  const source = String(this.form.get('EXPRESSION')?.value ?? '');
-  if (!source) { return; }
-
-  const context: RuntimeContext = {
-    tags: {
-      tag1: 5,
-      tag2: 7,
-      tag3: 100,
-    },
-    // input: 10,                       // only for write expressions
-    // currentUserName: this.starServices.sessionParams?.['USERNAME'],
-    // currentLanguage: this.userLang,
-    // securityCodes: ['A', 'D'],
-  };
-
-  // 1) Validate for a nicer UX first.
-  const validation = this.expressionEngine.validate(source);
-  if (!validation.valid) {
-    // validation.diagnostics.forEach(d =>
-    //   this.starNotify.showError(`${d.code}: ${d.message} (line ${d.line}, col ${d.column})`)
-    // );
-    return;
+    this.aiLogs = [];
+    this.showAIExamples = true;
   }
 
-  // 2) Execute.
-  try {
-    const rule: LoadedRule = this.expressionEngine.load(source);
-    const value = rule.execute(context);
-    console.log('Rule result:', value);
-    //this.starNotify.showInfo(`Result: ${value}`);
-  } catch (err) {
-   // this.starNotify.showError(`Execution error: ${(err as Error).message}`);
+  setExample(example: string): void {
+    this.aiPrompt = example;
+    this.selectedExample = example;  // ← Set the selected example
+    this.showAIExamples = false;
   }
-}
+
+  async generateRule(): Promise<void> {
+    if (!this.aiPrompt || this.aiPrompt.trim() === '') {
+      this.addAILog('warning', '⚠️', 'Please describe your business rule first.');
+      return;
+    }
+
+    this.isGenerating = true;
+    this.generatedRule = '';
+    this.confidenceLevel = null;
+    this.aiLogs = [];
+    this.showAIExamples = false;
 
 
-append2Exp(value){
+    // 1) Ask your backend / AI for a rule-language expression.
+    //    For the moment we just pass the prompt through.
+    let question = this.aiPrompt.trim();
+    let expression = await this.submit(question);
+
+    // 2) Validate it locally.
+    const result: ValidationResult = this.expressionEngine.validate(expression, {
+      // tagTypes: { tag1: 'number', MaxTemp: 'number' },  // optional
+    });
+
+    if (!result.valid) {
+      for (const d of result.diagnostics) {
+        this.addAILog(
+          d.severity === 'error' ? 'error' : 'warning',
+          d.severity === 'error' ? '❌' : '⚠️',
+          `${d.code} @ ${d.line}:${d.column} — ${d.message}`,
+        );
+      }
+      this.isGenerating = false;
+      return;
+    }
+
+    this.generatedRule = question;
+    this.confidenceLevel = Math.floor(Math.random() * 10) + 90;
+    this.addAILog('success', '✅', 'Rule validated successfully!');
+    this.addAILog('success', '📊', `Confidence: ${this.confidenceLevel}%`);
+    this.isGenerating = false;
+    this.form.patchValue({ EXPRESSION: expression });
+    this.valueChange.emit(expression);
+
+    
+  }
+
+  simulateAIGeneration(prompt: string): string {
+    // This is a simulation. Replace with actual AI API call.
+    const examples: { [key: string]: string } = {
+      'temperature exceeds 100': 'if Temp > 100 then Alarm',
+      'temperature exceeds 100 and pressure exceeds 20': 'if Temp > 100 and Pressure > 20 then Alarm',
+      'customer age > 18': 'if Age > 18 then Approve',
+      'order > 1000': 'if Order > 1000 then Discount',
+      'CurrentUserHasCode(ADMIN)': 'if CurrentUserHasCode(\'ADMIN\') then Allow',
+    };
+
+    // Try to match the prompt with known examples
+    for (const [key, value] of Object.entries(examples)) {
+      if (prompt.toLowerCase().includes(key.toLowerCase())) {
+        return value;
+      }
+    }
+
+    // Fallback: create a simple rule from the prompt
+    const words = prompt.split(' ');
+    const conditions = words.filter(w => !['if', 'then', 'and', 'or', 'the', 'a', 'an', 'to', 'for'].includes(w.toLowerCase()));
+
+    if (conditions.length > 0) {
+      const condition = conditions[0];
+      const action = conditions.length > 1 ? conditions[1] : 'Action';
+      return `if ${condition} > 0 then ${action}`;
+    }
+
+    return 'if Condition then Action';
+  }
+
+  async acceptRule(): Promise<void> {
+    if (this.generatedRule) {
+      this.form.patchValue({ EXPRESSION: this.generatedRule });
+      this.addAILog('success', '✅', 'Rule accepted and applied to editor!');
+      this.generatedRule = '';
+      this.confidenceLevel = null;
+    }
+  }
+
+  async regenerateRule(): Promise<void> {
+    if (this.aiPrompt) {
+      this.generateRule();
+    }
+  }
+
+  delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  public evaluateCurrentExpression(): void {
+    const source = String(this.form.get('EXPRESSION')?.value ?? '');
+    if (!source) { return; }
+
+    const context: RuntimeContext = {
+      tags: {
+        temperature: 5,
+        tag2: 7,
+        tag3: 100,
+      },
+      // input: 10,                       // only for write expressions
+      // currentUserName: this.starServices.sessionParams?.['USERNAME'],
+      // currentLanguage: this.userLang,
+      // securityCodes: ['A', 'D'],
+    };
+
+    // 1) Validate for a nicer UX first.
+    const validation = this.expressionEngine.validate(source);
+    if (!validation.valid) {
+      // validation.diagnostics.forEach(d =>
+      //   this.starNotify.showError(`${d.code}: ${d.message} (line ${d.line}, col ${d.column})`)
+      // );
+      return;
+    }
+
+    // 2) Execute.
+    try {
+      const rule: LoadedRule = this.expressionEngine.load(source);
+      const value = rule.execute(context);
+      console.log('Rule result:', value);
+      //this.starNotify.showInfo(`Result: ${value}`);
+    } catch (err) {
+      // this.starNotify.showError(`Execution error: ${(err as Error).message}`);
+    }
+  }
+
+
+  append2Exp(value) {
     if (value == null)
-        return;
-  let expression = this.form.value['EXPRESSION'];
- expression = expression + ' ' + value;
- this.form.patchValue({ 'EXPRESSION': expression });
-}
+      return;
+    let expression = this.form.value['EXPRESSION'];
+    expression = expression + ' ' + value;
+    this.form.patchValue({ 'EXPRESSION': expression });
+  }
+
+
+  buildScreenToDisplayQuestion2Loop(dwgDef, id) {
+
+    console.log("Question2:dwgDef:", dwgDef)
+
+
+    let Question2 = "I need you to generate a JSON configuration for a Kendo UI diagram for shape:" + id + " ONLY "
+      + `
+    ## CRITICAL: This is a DETAILED shape definition, NOT a placeholder!
+    Please generate the FULL visual representation  with ALL details.
+
+    ## Target JSON Structure:
+
+    interface KendoDiagramConfig {
+      shapeDefaults: {
+        visual: null;
+        fill: string;
+        stroke: { color: string; width: number };
+      };
+      connectionDefaults: {
+        stroke: { color: string; width: number; dashType?: string };
+      };
+      layout: {
+        type: "tree" | "layered" | "force" | "grid";
+        subtype?: "tipover" | "horizontal" | "vertical";
+      };
+    }
+
+    interface DiagramDefinition {
+      shapes: Array<{
+        id: string;
+        x: number;      // RELATIVE to container (0 = container left edge)
+        y: number;      // RELATIVE to container (0 = container top edge)
+        width: number;
+        height: number;
+        fill?: string;
+        stroke?: { color: string; width: number };
+        cornerRadius?: number;
+        opacity?: number;
+        shape?: "rectangle" | "circle";
+      }>;
+      textBlocks: Array<{
+        id: string;
+        x: number;      // RELATIVE to container
+        y: number;      // RELATIVE to container
+        text: string;
+        font?: string;
+        fill?: string;
+        textAnchor?: "start" | "middle" | "end";
+        opacity?: number;
+      }>;
+      lines: Array<{
+        id: string;
+        from?: { x: number; y: number };  // RELATIVE to container
+        to?: { x: number; y: number };    // RELATIVE to container
+        path?: string;
+        stroke?: { color: string; width: number; dashType?: string };
+        opacity?: number;
+      }>;
+      connections: Array<{
+        from: string;
+        to: string;
+        stroke?: { color: string; width: number; dashType?: string };
+      }>;
+    }
+
+    interface ShapeOption {
+      id: string;
+      x: number;        // Absolute position on canvas (container position)
+      y: number;        // Absolute position on canvas (container position)
+      width: number;    // Container width
+      height: number;   // Container height
+      dataItem: {
+        type: string;
+        definition: DiagramDefinition;  // ALL children use RELATIVE positioning
+        title?: string;
+        offsetX?: number;
+        offsetY?: number;
+        customColors?: any;
+      };
+    }
+
+    ## CRITICAL RULES FOR DETAILED DEFINITION:
+
+
+
+    3. Use RELATIVE positioning inside definition.shapes (x:0, y:0 is top-left of container)
+    4. Use ONLY solid hex colors: #a0a0a0, #6a6a6a, #4a4a4a, #b0b0b0, #808080, #3399ff, #ff6600
+    5. Include descriptive text labels for all major parts
+    6. All IDs must be unique and descriptive
+
+    ## Container Position:
+    - The container is at x:100, y:350 with width:200, height:200
+    - ALL shapes inside use RELATIVE positioning (0,0 = container top-left)
+    - The container position (100, 350) will be added by the system
+
+    ## Output Structure:
+    Return a single JSON object with:
+    {
+      "shapeDefaults": { ... },
+      "connectionDefaults": { ... },
+      "layout": { ... },
+      "shapeOptions": [
+        {
+          "id": "motor1",
+          "x": 100,
+          "y": 350,
+          "width": 200,
+          "height": 200,
+          "dataItem": {
+            "type": "motor",
+            "title": "Motor 1",
+            "definition": {
+              "shapes": [
+                // FULL DETAILED SHAPES HERE - NOT PLACEHOLDERS!
+                // Include body, top, fan, shaft, bolts, etc.
+              ],
+              "textBlocks": [
+                // FULL TEXT LABELS HERE
+                // Include "MOTOR", specs, labels for parts
+              ],
+              "lines": [
+                // FULL LINES HERE
+                // Include power lines, ground lines, etc.
+              ],
+              "connections": []
+            }
+          }
+        }
+      ],
+      "connections": []
+    }
+
+    ## IMPORTANT REMINDERS:
+    - DO NOT use placeholder: true - this is a REAL detailed definition
+    - ALL shapes inside definition.shapes use RELATIVE positioning
+    - The shape should look detailed and realistic
+    - Include at least 5-8 shapes, 3-4 textBlocks, and 2-3 lines
+    - Use proper colors for appearance.
+    - DO NOT add any label to a shape at all.
+    - Do NOT invent:
+        specifications
+        ratings
+        model numbers
+        dimensions
+        DN values
+        PN values
+        IN/OUT labels
+        engineering notes
+        flow labels
+        equipment tags
+        alarm indicators
+        status indicators
+        TextBlocks
+     - Only show titles
+     - ONLY SHOW textBlock for the title only
+
+
+    `
+    Question2 = Question2 + " as per earlier provided requirement. \n"
+    // const container = this.shapeOptions.find((s: any) => s.id === id);
+    // Question2 = Question2 + JSON.stringify(container, null, 2)
+
+    // Question2 = Question2 + ".  Based on the requirements provided earlier stated again to maintain the context  :"
+    // Question2 = Question2 + this.form.value['question']
+
+
+    console.log("Question2:", Question2)
+    return Question2;
+  }
+
+  public somBody = [];
+  public showLog = false;
+  public hideSubmit = false;
+  public answer = "";
+  public answer_dwg = "";
+  public answer_relations = "";
+  public compsArray = [];
+  public DSP_DYNAMIC_RW: any = [];
+  public ComponentsMapsArr: any = {};
+  public createdComponentsArr = [];
+  public simulate = false;
+  public logID = 113;
+  public isComplete = false;
+
+  public sameApp = true;
+  public answers = [];
+  public RULE_LANGUAGE_REFERENCE = `
+    RULE ENGINE SPECIFICATION (authoritative)
+
+    1. CANONICAL CONDITIONAL SYNTAX
+    - Generate conditionals ONLY in this form:
+      IF (condition) THEN when_true ELSE when_false
+    - The parentheses around the condition are recommended and are the canonical output form.
+    - The engine also accepts legacy input without condition parentheses:
+      IF condition THEN when_true ELSE when_false
+    - Functional/comma syntax IF(condition, when_true, when_false) is accepted only for backward compatibility. NEVER generate it from AI.
+
+
+    2. LITERALS
+    - Numbers: 0, 1, 12, 3.14
+    - Strings: double quoted, for example "READY"
+
+    3. COMPARISONS
+    - Preferred symbols: ==, <>, <, >, <=, >=
+    - Accepted word aliases: EQ, NE, LT, GT, LE, GE
+    - Comparison results are numeric/logical: 1 for true, 0 for false.
+
+    4. LOGICAL OPERATORS
+    - Preferred: AND, OR, NOT
+    - Accepted aliases: &&, ||
+    - There is no standalone ! operator in this engine.
+
+    5. ARITHMETIC AND BITWISE OPERATORS
+    - Arithmetic: +, -, *, /, %, MOD, **
+    - Bitwise: &, |, ^, ~, >>, <<
+    - MOD/% and bitwise operators require integer operands.
+
+    6. MATH FUNCTIONS (one numeric expression argument)
+    - SQRT(), LOG(), LOG10(), SIN(), COS(), TAN()
+    - ARCSIN(), ARCCOS(), ARCTAN()
+    - SIND(), COSD(), TAND(), ARCSIND(), ARCCOSD(), ARCTAND()
+
+    7. APPLICATION CONTEXT FUNCTIONS
+    - CURRENTUSERNAME()
+    - CURRENTLANGUAGE()
+    - CURRENTUSERHASCODE(CODE)
+
+    8. WRITE EXPRESSIONS
+    - ? represents the supplied runtime input value.
+    - ? is allowed only when writeExpression=true.
+    - A write expression must contain ? at least once.
+
+    9. PARSER PRECEDENCE (low to high)
+    - relational comparisons
+    - additive: +, -, OR, ||, |, ^
+    - multiplicative: *, /, MOD, %, **, AND, &&, &, >>, <<
+    - unary: NOT, ~, +, -
+    - primary values/tags/functions/parentheses
+
+    CANONICAL EXAMPLES
+    - Human: If local temperature is greater than square root of local MaxTemp , return 1 else 0
+      Expression: IF ( {[Local]temperature.VAL} > SQRT( {[Local]MaxTemp.VAL} )) THEN 1 ELSE 0
+
+    - Human: If temperature is greater than MaxTemp then square root of tag3 else temperature plus MaxTemp
+      Expression: IF ({[Local]temperature.VAL} > {[Local]MaxTemp.VAL}) THEN SQRT(tag3) ELSE {[Local]temperature.VAL} + {[Local]MaxTemp.VAL}
+
+    - Human: If temperature is at least 30, return 100 else 0
+      Expression: IF ({[Local]temperature.VAL} >= 30) THEN 100 ELSE 0
+
+    - Human: Return 1 if MaxTemp is less than 10 else 0
+      Expression: IF ({[Local]MaxTemp.VAL} < 10) THEN 1 ELSE 0
+
+    - Human: If current user has code A return 1 else 0
+      Expression: IF (CURRENTUSERHASCODE(A)) THEN 1 ELSE 0
+
+    - Human: If special tag 1-temperature is positive return its square root else 0
+      Expression: IF ({1-{[Local]temperature.VAL}} > 0) THEN SQRT({1-{[Local]temperature.VAL}}) ELSE 0
+
+    IMPORTANT OUTPUT CONTRACT
+    - The expression field contains ONLY this rule language, never JavaScript.
+    - The backend validates the expression and separately returns generated JavaScript and AST.
+    - Never invent functions, operators, tag syntax, or conditional syntax outside this specification.
+    `.trim();
+
+  public buildSystemPrompt(request): string {
+    const testCaseInstruction = request.generateTestCases
+      ? `Generate exactly ${request.testCaseCount} useful test cases in the SAME JSON response. Cover normal, boundary, true-branch, false-branch, and edge behavior when relevant.`
+      : "Do not generate test cases. Return testCases as an empty array.";
+
+    return [
+      "ROLE: You are a deterministic translator from natural-language business rules to THIS project's rule-expression language.",
+      "The specification below is copied from the engine contract and is authoritative. Do not use generic JavaScript syntax and do not invent a different rule language.",
+      "",
+      "OUTPUT FORMAT",
+      "Return exactly one JSON object. No markdown. No prose outside JSON.",
+      "Required JSON shape:",
+      '{"expression":"...","explanation":"...","assumptions":["..."],"testCases":[{"name":"...","context":{"tags":{"temperature":1}},"expected":1}]}',
+      "The expression field MUST contain the rule DSL only. It MUST NOT contain JavaScript. The backend compiles validated DSL to JavaScript itself.",
+      "",
+      "CONDITIONAL OUTPUT POLICY",
+      "Always generate IF rules using the canonical keyword form: IF (condition) THEN value ELSE value.",
+      "Never generate IF(condition, value, value), even though the parser accepts that old form for backward compatibility.",
+      "",
+      "TAG TYPO POLICY",
+      "Do not casually rename user-defined tags. However, correct an obvious numbered-tag typo such as tage2 -> MaxTemp when the intended tag is unambiguous, and mention the correction in assumptions.",
+      "",
+      testCaseInstruction,
+      "For every generated test, context.tags must contain concrete values for every tag used by the expression, and expected must be the expected rule-engine result.",
+      
+      request.writeExpression
+        ? "This is a write expression. The generated expression must use the ? placeholder at least once. Test contexts should include input when needed."
+        : "This is not a write expression. Never use the ? placeholder.",
+      "",
+      this.RULE_LANGUAGE_REFERENCE,
+      request.TagFormat
+    ].join("\n");
+  }
+
+  resetVars() {
+    this.helpText = "";
+    this.somBody = [];
+    this.compsArray = [];
+    //this.relationshipsArrWithMap = [];
+    this.DSP_DYNAMIC_RW = [];
+    this.ComponentsMapsArr = {};
+    this.answer = "";
+    this.answer_dwg = "";
+    this.answer_relations = "";
+  }
+  async insertAILogHead() {
+    if (this.simulate)
+      return;
+    let body = [
+      {
+        "_QUERY": "INSERT_ADM_AI_LOG_HEAD",
+        "USERNAME": this.starServices.MASTER_DB,
+        "APP_ID": this.masterParams.data.APP_ID,
+        "AI_ACTION_ID": this.masterParams.data.AI_ACTION_ID,
+        "AI_ENTITY_ID": this.masterParams.data.AI_ENTITY_ID,
+        "REQUESTED_ON": this.masterParams.data.REQUESTED_ON,
+        "DURATION": 0,
+        "LOGNAME": this.starServices.MASTER_DB,
+        "LOGDATE": new Date()
+      }
+    ]
+    if (this.paramConfig.DEBUG_FLAG) console.log("Checking:insertAILogHead:body:", body)
+    let data = await this.starServices.execSQLBody(this, body, "");
+  }
+  async insertAILogDetail(Question, Stage) {
+    if (this.simulate)
+      return;
+
+    let body = [
+      {
+        "_QUERY": "INSERT_ADM_AI_LOG_DETAIL",
+        "USERNAME": this.starServices.MASTER_DB,
+        "APP_ID": this.masterParams.data.APP_ID,
+        "AI_ACTION_ID": this.masterParams.data.AI_ACTION_ID,
+        "AI_ENTITY_ID": this.masterParams.data.AI_ENTITY_ID,
+        "REQUESTED_ON": this.masterParams.data.REQUESTED_ON,
+        "DURATION": 0,
+        "AI_SEQ": this.masterParams.data.AI_SEQ,
+        "STAGE": Stage,
+        "QUESTION": Question,
+        "ANSWER": "",
+        "LOGNAME": this.starServices.MASTER_DB,
+        "LOGDATE": new Date()
+      }
+    ]
+    if (this.paramConfig.DEBUG_FLAG) console.log("Checking:insertAILogDetail:body:", body)
+    let data = await this.starServices.execSQLBody(this, body, "");
+  }
+  async updateAILogDetail(Question, Answer, Stage) {
+    if (this.simulate)
+      return;
+
+    let body = [
+      {
+        "_QUERY": "UPDATE_ADM_AI_LOG_DETAIL",
+        "USERNAME": this.starServices.MASTER_DB,
+        "APP_ID": this.masterParams.data.APP_ID,
+        "AI_ACTION_ID": this.masterParams.data.AI_ACTION_ID,
+        "AI_ENTITY_ID": this.masterParams.data.AI_ENTITY_ID,
+        "REQUESTED_ON": this.masterParams.data.REQUESTED_ON,
+        "DURATION": this.masterParams.data.DURATION,
+        "AI_SEQ": this.masterParams.data.AI_SEQ,
+        "STAGE": Stage,
+        "QUESTION": Question,
+        "ANSWER": Answer,
+        "LOGNAME": this.starServices.MASTER_DB,
+        "LOGDATE": new Date()
+      }
+    ]
+    if (this.paramConfig.DEBUG_FLAG) console.log("Checking:updateAILogDetail:body:", body)
+    let data = await this.starServices.execSQLBody(this, body, "");
+  }
+  async getThisLog(logID) {
+
+    let whereClause = "  LOG_ID= '" + logID + "'";
+    let body = [
+      {
+        "_QUERY": "GET_ADM_AI_LOG_HEAD_QUERY",
+        "_WHERE": whereClause
+      }
+    ]
+    if (this.paramConfig.DEBUG_FLAG) console.log("getThisLog:body:", body)
+
+    let logHead = await this.starServices.execSQLBody(this, body, "");
+    if (logHead[0].data.length != 0) {
+      if (this.paramConfig.DEBUG_FLAG) console.log("getThisLog:logHead:", logHead[0].data[0])
+      let logHeadRec = logHead[0].data[0];
+      let requestedOn = logHeadRec.REQUESTED_ON;
+      // if (this.masterParams.data.APP_ID != logHeadRec.AI_ENTITY_ID) {
+      //   this.sameApp = false;
+      //   let msg = "Simulate not match Current App :." + this.masterParams.data.APP_ID + " while for " + logHeadRec.LOG_ID + " is : " + logHeadRec.AI_ENTITY_ID;
+      //   let dialogStruc = {
+      //     msg: msg,
+      //     title: "Error",
+      //     info: null,
+      //     object: this,
+      //     action: this.starServices.OkActions,
+      //     callback: null
+      //   };
+      //   this.starServices.showConfirmation(dialogStruc);
+      //   return;
+      // }
+      let whereClause = "  REQUESTED_ON = '" + requestedOn + "'";
+      let body = [
+        {
+          "_QUERY": "GET_ADM_AI_LOG_DETAIL_QUERY",
+          "_WHERE": whereClause
+        }
+      ];
+      let logDetail = await this.starServices.execSQLBody(this, body, "");
+      if (logDetail[0].data.length != 0) {
+        if (this.paramConfig.DEBUG_FLAG) console.log("getThisLog:logDetail:", logDetail[0].data)
+        for (let i = 0; i < logDetail[0].data.length; i++) {
+          this.answers[i] = logDetail[0].data[i].ANSWER;
+        }
+        if (this.paramConfig.DEBUG_FLAG) console.log("getThisLog:answers:", this.answers)
+
+      }
+
+    }
+  }
+  public showMsg(Msg, Title) {
+    var dialogStruc = {
+      msg: Msg,
+      title: Title,
+      info: null,
+      object: this,
+      action: this.starServices.OkActions,
+      callback: null
+    };
+    this.starServices.showConfirmation(dialogStruc);
+  }
+  public singleMultiMsg = "";
+  async callAI_API(qCode, Question, cursystemMsg, Stage) {
+    let answer;
+    this.isComplete = true;
+    this.sameApp = true;
+
+    this.masterParams.data.SENT_ON = new Date();
+    this.masterParams.data.AI_SEQ = qCode;
+    this.insertAILogDetail(Question, Stage);
+    if (this.simulate) {
+      if (qCode == 0) {
+        await this.getThisLog(this.logID);
+        if (!this.sameApp)
+          return;
+      }
+      console.log("this.answers.length:", this.answers.length, "qCode:", qCode, "this.singleMultiMsg:", this.singleMultiMsg)
+      answer = this.answers[qCode];
+      answer = answer.replace('[COMPLETE]', '');
+
+      if (this.answers.length >= 3) {
+        if (qCode == 0) {
+          answer = this.answers[qCode];
+          answer = answer.replace('[COMPLETE]', '');
+        }
+        else {
+          answer = this.answers[Stage];
+          answer = answer.replace('[COMPLETE]', '');
+        }
+
+
+
+      }
+      else {
+        answer = this.answers[qCode];
+        answer = answer.replace('[COMPLETE]', '');
+      }
+
+      //answer = this.answers_tasks[qCode];
+      //answer = this.answersWildLif[qCode];
+
+
+      if (this.paramConfig.DEBUG_FLAG) console.log("qCode answer:", qCode, answer);
+      let now: any = new Date();
+      if (this.paramConfig.DEBUG_FLAG) console.log("checking:", now, this.masterParams.data.SENT_ON)
+      this.masterParams.data.DURATION = (now.getTime() - this.masterParams.data.SENT_ON.getTime()) / (1000);
+      this.updateAILogDetail(Question, answer, Stage);
+
+
+
+      return answer;
+    }
+    else {
+      if (this.paramConfig.DEBUG_FLAG) console.log("Question:", Question)
+      let Body = [];
+      var page = "";
+      var url = this.starServices.SERVER_URL + '/api/appgen?action=callAI';
+      var newVal = {};
+      //if (this.paramConfig.DEBUG_FLAG) console.log("this.starServices.MASTER_DB:", this.starServices.MASTER_DB)
+      newVal["question"] = Question;
+      newVal["AI_PROVIDER"] = "DEEPSEEK";
+      //newVal["AI_PROVIDER"] = "OPENAI";
+      //newVal["AI_PROVIDER"] = "CLAUDE";
+      newVal["systemContent"] = cursystemMsg
+
+      if (this.paramConfig.DEBUG_FLAG) console.log("newVal:", newVal)
+      Body.push(newVal);
+      let respone;
+      this.helpText = this.helpText + "thinking... ";
+      this.form.patchValue({ 'helpText': this.helpText });
+
+      return new Promise(resolve => {
+        this.starServices.postCommand(page, url, Body).subscribe(result => {
+          this.helpText = this.helpText + " Done.\n";
+          this.form.patchValue({ 'helpText': this.helpText });
+          //if (this.paramConfig.DEBUG_FLAG) console.log("testx:execSQL:sqlStmt:result.data[0]:", Body, result.data[0])
+          //if (this.paramConfig.DEBUG_FLAG) console.log("testx:execSQL:sqlStmt:result.data[0]:", Body, result.data)
+          respone = result.data;
+          // if (result.data.length == 0)
+          //   object.NOTFOUND = true;
+          let answer = respone.content;
+          if (this.paramConfig.DEBUG_FLAG) console.log("answer:", respone.content)
+
+          let now: any = new Date();
+          if (this.paramConfig.DEBUG_FLAG) console.log("checking:", now, this.masterParams.data.SENT_ON)
+          this.masterParams.data.DURATION = (now.getTime() - this.masterParams.data.SENT_ON.getTime()) / (1000);
+          this.updateAILogDetail(Question, answer, Stage);
+
+          if (answer.includes('[COMPLETE]') || answer.endsWith("```") || answer.endsWith("}")) {
+            this.isComplete = true;
+            answer = answer.replace('[COMPLETE]', '');
+          }
+          else {
+            this.isComplete = false;
+            let msg = "Answer not complete. Try again."
+            let dialogStruc = {
+              msg: msg,
+              title: "Error",
+              info: null,
+              object: this,
+              action: this.starServices.OkActions,
+              callback: null
+            };
+            this.starServices.showConfirmation(dialogStruc);
+          }
+
+          return resolve(answer);
+        },
+          err => {
+
+            alert('error callAI_API:' + err.message);
+            let Msg = this.starServices.getNLS([], 'ERROR_callAI_API', 'Error callAI_API ');
+            this.showMsg(Msg, "Error");
+            return resolve(answer);
+          });
+      });
+
+
+    }
+
+  }
+  cleanAIResponse(rawResponse: string): string {
+    if (!rawResponse || rawResponse.trim() === '') {
+      return '';
+    }
+
+    let cleaned = rawResponse.trim();
+
+    // Step 1: Try to extract content between ```json and ``` if present
+    const jsonBlockRegex = /```json\s*([\s\S]*?)\s*```/;
+    const jsonBlockMatch = cleaned.match(jsonBlockRegex);
+
+    if (jsonBlockMatch && jsonBlockMatch[1]) {
+      // Found content between ```json and ```
+      return jsonBlockMatch[1].trim();
+    }
+
+    // Step 2: Try to extract content between ``` and ``` (without 'json')
+    const codeBlockRegex = /```\s*([\s\S]*?)\s*```/;
+    const codeBlockMatch = cleaned.match(codeBlockRegex);
+
+    if (codeBlockMatch && codeBlockMatch[1]) {
+      // Found content between ``` and ```
+      return codeBlockMatch[1].trim();
+    }
+
+    // Step 3: Try to extract JSON that starts with { and ends with }
+    // This handles cases where markers are missing or incomplete
+    const jsonRegex = /(\{[\s\S]*\})/;
+    const jsonMatch = cleaned.match(jsonRegex);
+
+    if (jsonMatch && jsonMatch[1]) {
+      // Found JSON-like structure
+      return jsonMatch[1].trim();
+    }
+
+    // Step 4: Try to find a valid JSON structure even with extra text
+    // Look for the first { and last }
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      return cleaned.substring(firstBrace, lastBrace + 1).trim();
+    }
+
+    // Step 5: If all else fails, try to parse the raw response
+    // Some responses might have partial markers
+    return cleaned;
+  }
+  fixAndParseJSON(rawResponse: string): any {
+    let cleaned = rawResponse.trim();
+
+    // Remove any text before the first {
+    const firstBrace = cleaned.indexOf('{');
+    if (firstBrace > 0) {
+      cleaned = cleaned.substring(firstBrace);
+    }
+
+    // Remove any text after the last }
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (lastBrace > 0 && lastBrace < cleaned.length - 1) {
+      cleaned = cleaned.substring(0, lastBrace + 1);
+    }
+
+    // Fix trailing commas (common AI issue)
+    cleaned = cleaned.replace(/,\s*}/g, '}');
+    cleaned = cleaned.replace(/,\s*]/g, ']');
+
+    // Fix missing quotes around property names
+    // Note: This is a simplified fix - for production, consider using a proper JSON5 parser
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      // If still failing, try JSON5 parser if available
+      // You can install: npm install json5
+      // import JSON5 from 'json5';
+      // return JSON5.parse(cleaned);
+      throw new Error('Unable to fix JSON');
+    }
+  }
+  parseAIResponse(rawResponse: string): any {
+    try {
+      const cleanJson = this.cleanAIResponse(rawResponse);
+
+      if (!cleanJson) {
+        throw new Error('No JSON content found in response');
+      }
+
+      // Validate JSON before parsing
+      JSON.parse(cleanJson); // This will throw if invalid
+      return JSON.parse(cleanJson);
+
+    } catch (error) {
+      console.error('Failed to parse AI response:', error);
+      console.log('Raw response:', rawResponse);
+      console.log('Cleaned response:', this.cleanAIResponse(rawResponse));
+
+      // Attempt to fix common JSON issues
+      try {
+        return this.fixAndParseJSON(rawResponse);
+      } catch (fixError) {
+        console.error('Failed to fix and parse JSON:', fixError);
+        return null;
+      }
+    }
+  }
+  async parseandProcessCreateDwg(answer) {
+    this.helpText = this.helpText + "Got Dwg Def: \n";
+    this.form.patchValue({ 'helpText': this.helpText });
+
+
+    let dwgDef = this.parseAIResponse(answer);
+
+
+
+
+    this.helpText = this.helpText + "Got shape " + ":\n";
+    this.form.patchValue({ 'helpText': this.helpText });
+
+    return dwgDef;
+
+  }
+
+  public buildUserPrompt(request): string {
+    interface TagCorrection { from: string; to: string }
+    function detectObviousTagCorrections(
+      prompt: string,
+      tagTypes?: ["tagTypes"]
+    ): TagCorrection[] {
+      const corrections = new Map<string, TagCorrection>();
+      for (const match of prompt.matchAll(/\btage(\d+)\b/gi)) {
+        const from = match[0]!;
+        const to = `tag${match[1]}`;
+
+        // If the caller explicitly registered the misspelled-looking name as a
+        // real tag, respect that catalogue and do not silently rename it.
+        if (tagTypes && Object.prototype.hasOwnProperty.call(tagTypes, from)) continue;
+
+        corrections.set(from.toLowerCase(), { from, to });
+      }
+      return [...corrections.values()];
+    }
+    const obviousTagCorrections = detectObviousTagCorrections(request.prompt, request.tagTypes);
+    return JSON.stringify({
+      requirement: request.prompt,
+      writeExpression: request.writeExpression,
+      tagTypes: request.tagTypes ?? {},
+      generateTestCases: request.generateTestCases,
+      testCaseCount: request.testCaseCount,
+      obviousTagCorrections,
+      examples: [
+        {
+          input: "If temperature is greater than square root of MaxTemp, return 1 else 0",
+          output: "IF (temperature > SQRT(MaxTemp)) THEN 1 ELSE 0"
+        },
+        {
+          input: "If temperature is greater than MaxTemp then square root of tag3 else temperature plus MaxTemp",
+          output: "IF (temperature > MaxTemp) THEN SQRT(tag3) ELSE temperature + MaxTemp"
+        },
+        {
+          input: "Return 1 if MaxTemp is less than 10 else 0",
+          output: "IF (MaxTemp < 10) THEN 1 ELSE 0"
+        },
+        {
+          input: "If current user has code A return 1 else 0",
+          output: "IF (CURRENTUSERHASCODE(A)) THEN 1 ELSE 0"
+        },
+        {
+          input: "If temperature is greater than square root of tage2, return 1 else 0",
+          output: "IF (temperature > SQRT(MaxTemp)) THEN 1 ELSE 0",
+          assumption: "Assumed 'tage2' is a typo for 'MaxTemp'."
+        }
+      ]
+    }, null, 2);
+  }
+  public request = {
+    prompt: 'If temperature is greater than square root of tage2 , return 1 else 0',
+    generateTestCases: false,
+    testCaseCount: 5,
+    writeExpression: false,
+    TagFormat:""
+  }
+  async submit(question) {
+    this.resetVars();
+    let Question = "";
+
+    console.log("submited:", question);
+
+    if (!this.simulate) {
+      // if (typeof this.myFiles['DIAGRAM_IMAGE'] != "undefined") {
+      //   let imageDataUrl = this.myFiles['DIAGRAM_IMAGE'].accountImg;
+      //   console.log(imageDataUrl);
+      // }
+    }
+
+
+
+    this.masterParams = {
+      data:
+      {
+        USERNAME: this.starServices.MASTER_DB,
+        "APP_ID": "SCD-SCD-COM",
+        "AI_ACTION_ID": "APP",
+        "AI_ENTITY_ID": "EXPRESSION",
+      }
+    }
+    this.request.prompt = question;
+
+    this.masterParams.data.REQUESTED_ON = new Date();
+    this.insertAILogHead();
+    if (this.paramConfig.DEBUG_FLAG) console.log("question:", this.form.value['question']);
+    if (!this.simulate && this.form.value['question'] == "") {
+      let Msg = this.starServices.getNLS([], 'ERROR_DESCRIBE_DIAGRAM', 'Please describe the diagram you would like to create or upload an image of it.');
+      this.showMsg(Msg, "Error");
+      return;
+    }
+    this.addAILog('info', '🤔', 'Understanding your request...');
+
+    let msg = " More for RULE ENGINE SPECIFICATION (authoritative) : 10. TAGS: A tag has the following format :{[ServerName]TagName.FIELD}, "
+      + "where ServerName like local or remote, TagName like Counter or Random, and FIELD like VAL. "
+    console.log("myServerConfigs:", this.starlib1.myServerConfigs,
+      "tagsDefinition:", this.starlib1.tagsDefinition,
+      "alarmsDefinition:", this.starlib1.alarmsDefinition);
+    // for (let i=0; i < this.starlib1.myServerConfigs.length;i++){
+    //   if ( i == 0){
+    //     msg = msg + " Here are the current ServerNames and their TagNames: "
+    //   }
+    // if (this.starlib1.myServerConfigs[i].status == "connected"){
+    //   let tagsDefinition = this.starlib1.myServerConfigs[i];
+    //   let name = tagsDefinition.name;
+    //   msg = msg + " ServerName : " + name;
+    for (let i = 0; i < this.starlib1.tagsDefinition.length; i++) {
+      let tagsDefinition = this.starlib1.tagsDefinition[i];
+      let name = tagsDefinition.CODETEXT_LANG;
+      var rec = this.starlib1.myServerConfigs.find((x: any) => x.name === name && x.status == "connected");
+      console.log("myServerConfigs:rec:",rec , "name:",name)
+      if (typeof rec != "undefined") {
+        msg = msg + " For ServerName : " + name;
+        console.log("myServerConfigs:tagsDefinition:", this.starlib1.tagsDefinition, tagsDefinition);
+        for (let j = 0; j < tagsDefinition.items.length; j++) {
+          let items = tagsDefinition.items[j];
+          console.log("myServerConfigs:items:", items);
+          if (j == 0) {
+            msg = msg + " here are their TagNames: "
+          }
+          let TagName = items.CODETEXT_LANG;
+          if ( j > 1 )
+            msg = msg + " , "
+          msg = msg + TagName ;
+        }
+        msg = msg + " . "
+      }
+
+
+    }
+    //  }
+    console.log("msg:1:", msg)
+    msg = msg + " If a user mention the server then use it. "
+    msg = msg + " If a user writes local.temperature as a tag, then replace with {[Local]temperature.VAL} if you find servername Local, and TagName is temperature. "
+    msg = msg + " But if user did not specify the server, use the first provided server if more than one exits. "
+
+    console.log("msg:2:", msg)
+
+    Question = this.buildUserPrompt(this.request);
+    console.log("Question:", Question)
+
+
+
+    this.showLog = true;
+    this.hideSubmit = true;
+
+    this.request.TagFormat = msg;
+    let systemMsgs = this.buildSystemPrompt(this.request);
+
+    console.log("systemMsgs:", systemMsgs)
+    
+    this.addAILog('info', '🔍', 'Detecting tags and patterns...');
+    let answer = await this.callAI_API(0, Question, systemMsgs, 0);  // Get Tables and mermaid
+    if (!this.isComplete) {
+      this.addAILog('error', '❌', 'Incpmplete message...');
+      return;
+    }
+    if (!this.sameApp) {
+      this.addAILog('error', '❌', 'Not same app...');
+      return;
+    }
+
+    if (this.paramConfig.DEBUG_FLAG) console.log("answer received post callAI_API:", answer);
+    if (typeof answer == "undefined") {
+      this.addAILog('error', '❌', 'No answer received...');
+      return;
+    }
+
+    //1
+    answer = JSON.parse(answer);
+    this.answer = answer;
+    console.log("structured answer :", answer);
+    let expression = answer.expression;
+    let explanation = answer.explanation;
+
+
+
+    if ((typeof expression == "undefined")) {
+      let userMSg = "No response  found in answer. Try again."
+      var dialogStruc = {
+        msg: userMSg,
+        title: "Info",
+        info: null,
+        object: this,
+        action: this.starServices.OkActions,
+        callback: null
+      };
+      this.starServices.showConfirmation(dialogStruc);
+      return;
+    }
+    this.addAILog('info', '🤔', explanation);
+
+
+
+    this.answer = expression;
+
+
+    return expression;
+
+
+  }
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1639,7 +2554,7 @@ public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
 public multiselect_arr = [];
-public multiselect_tree_arr = [];
+public multiselect_tree_arr = ["TAGS_KEY","ALARMS_KEY"];
 public AttDwnUrl = "";
 public uploadimage = false;
 public showIcon=true;

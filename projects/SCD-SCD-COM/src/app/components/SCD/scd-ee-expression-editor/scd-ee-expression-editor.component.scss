@@ -364,3 +364,39 @@ kendo-textarea.syntax-error {
     }
   }
 }
+
+.expandable-tree-popup .k-treeview,
+.expandable-tree-popup .k-list-scroller {
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+  .tags-dropdown {
+    flex-shrink: 0;
+    display: inline-flex;
+    width: 20px;
+    vertical-align: middle;
+    
+    .k-dropdowntree {
+      height: 28px;
+      font-size: 12px;
+      
+      .k-dropdown-wrap {
+        height: 28px;
+        padding: 0 4px;
+        border: 1px solid #d1d5db;
+        border-radius: 3px;
+        background: #ffffff;
+        
+        .k-input {
+          font-size: 12px;
+          padding: 0 4px;
+          height: 26px;
+        }
+        
+        .k-select {
+          width: 20px;
+        }
+      }
+    }
+  }

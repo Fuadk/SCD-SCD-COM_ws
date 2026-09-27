@@ -855,6 +855,14 @@ if (array.length > 2) {
   }
 }
 
+
+await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs);
+
+  this.scadaSubscriptions = this.scadaIntegration.initScadaForComponent(
+    this,
+    this.scadaConfig,
+    (changes) => this.ON_RECEIVED(changes)
+  );
     
   }
   async WHEN_CREATE_RECORD(){
@@ -1329,41 +1337,22 @@ if (type === "shapeBoundsChange") {
    
   }
   async  POST_QUERY(formGroup){
-    console.log("POST_QUERY:formGroup:", formGroup)
-let whereClause = "APPLICATION_ID =" + formGroup.APPLICATION_ID;
-let body = [
-    {
-        "_QUERY": "GET_SCD_OPCUA_SERVER_QUERY",
-        "_WHERE": whereClause
-    }
-];
+    // console.log("POST_QUERY:formGroup:", formGroup)
+//     let whereClause = "APPLICATION_ID =" + formGroup.APPLICATION_ID;
+//     let body = [
+//       {
+//         "_QUERY": "GET_SCD_OPCUA_SERVER_QUERY",
+//         "_WHERE": whereClause
+//       }
+//     ];
 
-let data = await this.starServices.execSQLBody(this, body, "");
-if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:data[0].data:", data[0].data);
-if (typeof data[0].data != "undefined") {
-    let opcuaServers = data[0].data;
-    for (let i = 0; i < opcuaServers.length; i++) {
-        if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:opcuaServers:", opcuaServers);
-        let result: any = await this.addNewServer(opcuaServers[i].SERVER_NAME, opcuaServers[i].ENDPOINT_URL)
-        console.log("server added: ", opcuaServers[i].OPCUA_SERVER_ID, result)
-        if (typeof result != "undefined") {
-            this.serversMapp[opcuaServers[i].OPCUA_SERVER_ID] = result.id;
-        }
+//     let data = await this.starServices.execSQLBody(this, body, "");
+//     if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:data[0].data:", data[0].data);
+//     if (typeof data[0].data != "undefined") {
+//       let opcuaServers = data[0].data;
+//       await this.starlib1.performAddServers( opcuaServers)
 
-        this.serversMappReversed = {};
-        for (const key in this.serversMapp) {
-            if (this.serversMapp.hasOwnProperty(key)) {
-                this.serversMappReversed[this.serversMapp[key]] = Number(key);
-            }
-            console.log("server added: ", this.serversMapp, this.serversMappReversed);
-        }
-    }
-    setTimeout(() => {
-          this.getTagsAlarams();
-        }, 100);
-
-}
-
+//     }
     
   }
   async  PRE_DELETE(formGroup:any){
@@ -1944,25 +1933,7 @@ public performMapperFrom(In) {
     }
     return OutRec;
 }
-async getTagsAlarams(){
-  console.log("getTagsAlarams:entering:", this.expData)
-  const tags = await this.scadaIntegration.browseTags();   // all servers
-  console.log("getTagsAlarams:tags:",tags.length,  tags)        
-  const tagsDefinition = tags.filter(item => item.namespace === 3 && item.node_class == "Variable");
-  console.log("getTagsAlarams:tagsDefinition:",tagsDefinition.length, JSON.stringify( tagsDefinition)        )
 
-  //const localTags = await this.scadaIntegration.browseTags(1);         // server id 1
-  //console.log("getTagsAlarams:localTags:",localTags)
-  
-  //const deepTags  = await this.scadaIntegration.browseTags(1, 'ns=3;i=1000', 8);
-  //console.log("getTagsAlarams:deepTags:",deepTags)
-  //"Browse server with ID 1, starting from node ns=3;i=1000, descending up to 8 levels deep."
-
-  const { success, alarms } = await this.scadaIntegration.refreshAlarms();
-  console.log("getTagsAlarams:success:",success)
-  console.log("getTagsAlarams:success:",alarms)
-
-}
 public isDiagramInitializing = true;
 public expData =[];
 ////

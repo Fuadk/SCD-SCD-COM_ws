@@ -12,7 +12,15 @@ import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scdapplicationScdScdApplicationForm , componentConfigDef} from '@modeldir/model';
-
+import {
+  ExpressionEngineService,
+  LoadedRule,
+  RuntimeContext,
+  ValidationResult,
+  Value,
+  ExpressionVariables,
+  LIBRARY_FUNCTIONS,     
+} from '../../../services/expression-engine.service';
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'APPLICATION_NAME' : new FormControl(dataItem.APPLICATION_NAME  , ) ,
@@ -90,6 +98,10 @@ public labelHIDE_BUTTop=true;
 public labelHIDE_BUTVisible=false;
 public labelAPPLICATION_IDTop=true;
 public labelAPPLICATION_IDVisible=false;
+public labelSTATUS_OKTop=true;
+public labelSTATUS_OKVisible=false;
+public labelSTATUS_NOT_OKTop=true;
+public labelSTATUS_NOT_OKVisible=false;
 public labelDESCRIPTIONTop=true;
 public labelDESCRIPTIONVisible=true;
 public labelAPP_LANGUAGETop=true;
@@ -98,16 +110,22 @@ public labelAPP_LANGUAGEVisible=true;
 public visibleAPPLICATION_NAME = false;
 public visibleHIDE_BUT = true;
 public visibleAPPLICATION_ID = true;
+public visibleSTATUS_OK = true;
+public visibleSTATUS_NOT_OK = true;
 public visibleDESCRIPTION = false;
 public visibleAPP_LANGUAGE = false;
 
 public disableAPPLICATION_NAME = false;
 public disableHIDE_BUT = false;
 public disableAPPLICATION_ID = false;
+public disableSTATUS_OK = true;
+public disableSTATUS_NOT_OK = true;
 public disableDESCRIPTION = false;
 public disableAPP_LANGUAGE = false;
 
 public variableHIDE_BUT;
+public variableSTATUS_OK;
+public variableSTATUS_NOT_OK;
 
   
   //@Input()  
@@ -119,7 +137,11 @@ public variableHIDE_BUT;
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
+    public responsive: BreakpointObserver, 
+   private starNotify: StarNotifyService,  
+    public starServices: starServices,private expressionEngine: ExpressionEngineService
+   ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -766,8 +788,57 @@ async WHEN_VALIDATE_ITEM_APPLICATION_ID(value) {
  if (typeof this.form.controls['APPLICATION_ID'] != "undefined" ) 
       this.form.controls['APPLICATION_ID'].setErrors({invalid: true}); 
  // Code goes here 
+this.readCompletedOutput.emit(this.form.getRawValue());
+    console.log("WHEN_VALIDATE_ITEM_APPLICATION_ID:value:", value)
+    let whereClause = "APPLICATION_ID =" + value;
+    let body = [
+      {
+        "_QUERY": "GET_SCD_OPCUA_SERVER_QUERY",
+        "_WHERE": whereClause
+      }
+    ];
+    let msgok = "";
+    let msgoNotk = "";
+    this.variableSTATUS_OK = msgok;
+    this.variableSTATUS_NOT_OK = msgoNotk;
+    let data = await this.starServices.execSQLBody(this, body, "");
+    if (this.paramConfig.DEBUG_FLAG) console.log("POST_QUERY:data[0].data:", data[0].data);
+    if (typeof data[0].data != "undefined") {
+      let opcuaServers = data[0].data;
+      await this.starlib1.performAddServers(opcuaServers);
+      if (typeof this.starlib1.serverStatus != "undefined") {
+        
+        for (let i = 0; i < this.starlib1.serverStatus.length; i++) {
+          let serverStatus = this.starlib1.serverStatus[i];
+          console.log("serverStatus:", serverStatus)
+          if (serverStatus.connected == true){
+            msgok =  msgok + serverStatus.name  + " : "
+            + this.starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.tags_count','Tags') + " : "
+            + serverStatus.tagCount  + " "
+            + this.starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.alarms_count','Alarms') + " : "
+            + serverStatus.alarmCount + "  "
+            console.log("serverStatus:", serverStatus)
 
-this.readCompletedOutput.emit(this.form.getRawValue()); 
+          }
+          if (serverStatus.connected == false){
+            if (msgoNotk != "")
+              msgoNotk = msgoNotk + " , "
+            msgoNotk = msgoNotk + serverStatus.name  
+            
+          }
+        }
+        if (msgoNotk != ""){
+          msgoNotk = this.starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.not_connected','Not Connected') + " : "
+          + msgoNotk
+        }
+        
+      }
+
+    }
+    console.log("serverStatus:msgok:", msgok)
+    console.log("serverStatus:msgoNotk:", msgoNotk)
+    this.variableSTATUS_OK = msgok;
+    this.variableSTATUS_NOT_OK = msgoNotk; 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -778,6 +849,46 @@ this.readCompletedOutput.emit(this.form.getRawValue());
  }
 
  async ON_CLICK_APPLICATION_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_STATUS_OK(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['STATUS_OK'] != "undefined" ) 
+      this.form.controls['STATUS_OK'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['STATUS_OK'] != "undefined" ) 
+     this.form.get('STATUS_OK').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_STATUS_OK(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_STATUS_NOT_OK(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['STATUS_NOT_OK'] != "undefined" ) 
+      this.form.controls['STATUS_NOT_OK'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['STATUS_NOT_OK'] != "undefined" ) 
+     this.form.get('STATUS_NOT_OK').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_STATUS_NOT_OK(event){
 
 }
 
@@ -842,6 +953,24 @@ async WHEN_VALIDATE_ITEM_APP_LANGUAGE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onChange_STATUS_OK(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_STATUS_OK(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_STATUS_NOT_OK(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_STATUS_NOT_OK(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onChange_DESCRIPTION(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -882,6 +1011,7 @@ public uploadimage = false;
 public showIcon=true;
 public svg_arr = [];
 public svg_data = [];
+
 
 public update_svgicons(formGroup){
   this.showIcon = false;

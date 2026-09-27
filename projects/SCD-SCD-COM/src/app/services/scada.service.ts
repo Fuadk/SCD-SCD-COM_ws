@@ -69,6 +69,7 @@ export class SCADAService {
   private OPCUA_SERVER_BASE = environment.OPCUA_SERVER_BASE;
   private tagValues = new BehaviorSubject<any>({});
   private alarms = new BehaviorSubject<Alarm[]>([]);
+  private alarmHistory = new BehaviorSubject<Alarm[]>([]);
   private servers = new BehaviorSubject<ServerInfo[]>([]);
   private currentServer = new BehaviorSubject<string>('Local');
   private connectionStatus = new BehaviorSubject<boolean>(false);
@@ -99,6 +100,11 @@ export class SCADAService {
     this.socket.on('alarm-updates', (alarms: Alarm[]) => {
       this.ngZone.run(() => {
         this.alarms.next(alarms);
+      });
+    });
+    this.socket.on('alarm-history', (history: Alarm[]) => {
+      this.ngZone.run(() => {
+        this.alarmHistory.next(history);
       });
     });
 
@@ -207,6 +213,11 @@ export class SCADAService {
       if (alarms) {
         this.alarms.next(alarms);
       }
+         // ✅ Load alarm history ONCE on initialization, same as alarms above
+        const alarmHistory = await this.http.get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms/history`).toPromise();
+        if (alarmHistory) {
+            this.alarmHistory.next(alarmHistory);
+        }
       
       // ✅ Load servers ONCE on initialization
       await this.loadServers();
@@ -296,10 +307,29 @@ export class SCADAService {
   getAlarms(): Observable<Alarm[]> {
     return this.alarms.asObservable();
   }
+  getAlarmHistory(): Observable<Alarm[]> {
+    return this.alarmHistory.asObservable();
+  }
+  async fetchAlarmHistory(serverId?: number): Promise<Alarm[]> {
+    try {
+      const params = serverId != null ? `?serverId=${serverId}` : '';
+      const result = await this.http
+        .get<Alarm[]>(`${this.OPCUA_SERVER_BASE}/alarms/history${params}`)
+        .toPromise();
+      if (result) {
+        this.alarmHistory.next(result);
+      }
+      return result ?? [];
+    } catch (error) {
+      console.error('Alarm history fetch failed:', error);
+      return [];
+    }
+  }
 
   getConnectionStatus(): Observable<boolean> {
     return this.connectionStatus.asObservable();
   }
+  
 
   // ============= Server Management APIs =============
   
@@ -399,6 +429,7 @@ export class SCADAService {
     }
     
   }
+  
 /**
  * Browse the OPC UA address space for one or all servers.
  * This is a live call to the backend, not a cache read.

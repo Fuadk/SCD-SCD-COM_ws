@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPPLICATION_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPPLICATION_NAME >
-		<kendo-label *ngIf="(!labelAPPLICATION_NAMETop && !isPhonePortrait) && labelAPPLICATION_NAMEVisible" class="form-label" [for]="APPLICATION_NAME" [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME','Application Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelAPPLICATION_NAMETop && !isPhonePortrait) && labelAPPLICATION_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME','Application Name')"></kendo-label>
 		<label *ngIf="(labelAPPLICATION_NAMETop || isPhonePortrait) && labelAPPLICATION_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME','Application Name')}}</label>
 		<input   formControlName="APPLICATION_NAME"
- kendoTextBox #APPLICATION_NAME  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME_Hint','Please enter Application Name.')"
+ kendoTextBox  #APPLICATION_NAME  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APPLICATION_NAME_Hint','Please enter Application Name.')"
 		(click)="ON_CLICK_APPLICATION_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_APPLICATION_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -70,23 +70,41 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATUS_OKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATUS_OK >
+		<kendo-label *ngIf="(!labelSTATUS_OKTop && !isPhonePortrait) && labelSTATUS_OKVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.STATUS_OK','Status Ok')"></kendo-label>
+		<label *ngIf="(labelSTATUS_OKTop || isPhonePortrait) && labelSTATUS_OKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.STATUS_OK','Status Ok')}}</label>
+		<input  
+ kendoTextBox  [value]=" variableSTATUS_OK"   [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.STATUS_OK_Hint','')"
+		(click)="ON_CLICK_STATUS_OK($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " [readonly]="true"   (change)="onChange_STATUS_OK($event)"  style="width : 395px ;"    adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATUS_NOT_OKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATUS_NOT_OK >
+		<kendo-label *ngIf="(!labelSTATUS_NOT_OKTop && !isPhonePortrait) && labelSTATUS_NOT_OKVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.STATUS_NOT_OK','Status Not Ok')"></kendo-label>
+		<label *ngIf="(labelSTATUS_NOT_OKTop || isPhonePortrait) && labelSTATUS_NOT_OKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.STATUS_NOT_OK','Status Not Ok')}}</label>
+		<input  
+ kendoTextBox  [value]=" variableSTATUS_NOT_OK"   [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.STATUS_NOT_OK_Hint','')"
+		(click)="ON_CLICK_STATUS_NOT_OK($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " [readonly]="true"   (change)="onChange_STATUS_NOT_OK($event)"  style="width : 395px ;"    adaptiveMode="auto"  />
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDESCRIPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDESCRIPTION >
-		<kendo-label *ngIf="(!labelDESCRIPTIONTop && !isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label" [for]="DESCRIPTION" [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.DESCRIPTION','Description')"></kendo-label>
+		<kendo-label *ngIf="(!labelDESCRIPTIONTop && !isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.DESCRIPTION','Description')"></kendo-label>
 		<label *ngIf="(labelDESCRIPTIONTop || isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.DESCRIPTION','Description')}}</label>
 		<input   formControlName="DESCRIPTION"
- kendoTextBox #DESCRIPTION  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.DESCRIPTION_Hint','Please enter Description.')"
+ kendoTextBox  #DESCRIPTION  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.DESCRIPTION_Hint','Please enter Description.')"
 		(click)="ON_CLICK_DESCRIPTION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DESCRIPTION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPP_LANGUAGETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPP_LANGUAGE >
-		<kendo-label *ngIf="(!labelAPP_LANGUAGETop && !isPhonePortrait) && labelAPP_LANGUAGEVisible" class="form-label" [for]="APP_LANGUAGE" [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APP_LANGUAGE','App Language')"></kendo-label>
+		<kendo-label *ngIf="(!labelAPP_LANGUAGETop && !isPhonePortrait) && labelAPP_LANGUAGEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APP_LANGUAGE','App Language')"></kendo-label>
 		<label *ngIf="(labelAPP_LANGUAGETop || isPhonePortrait) && labelAPP_LANGUAGEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APP_LANGUAGE','App Language')}}</label>
 		<input   formControlName="APP_LANGUAGE"
- kendoTextBox #APP_LANGUAGE  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APP_LANGUAGE_Hint','Please enter App Language.')"
+ kendoTextBox  #APP_LANGUAGE  [placeholder]="starServices.getNLS([],'SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.APP_LANGUAGE_Hint','Please enter App Language.')"
 		(click)="ON_CLICK_APP_LANGUAGE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_APP_LANGUAGE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

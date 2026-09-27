@@ -2107,7 +2107,15 @@ Return JSON only.
       }
     }
 
-
+    this.masterParams={
+      data:
+      {
+        USERNAME: this.starServices.MASTER_DB,
+        "APP_ID": "SCD-SCD-COM",
+        "AI_ACTION_ID": "APP",
+        "AI_ENTITY_ID": "DWG",
+      }
+    }
 
 
 

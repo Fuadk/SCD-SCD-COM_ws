@@ -3,6 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { starServices } from 'starlib';
+import { ScadaIntegrationService, ScadaChangeEvent } from '../services/scada-integration.service';
 import { formatDate } from '@angular/common';
 import { getDate } from '@progress/kendo-date-math';
 import {  componentConfigDef } from '@modeldir/model';
@@ -13,7 +14,7 @@ declare function getParamConfig(): any;
 })
 export class Starlib1 {
 
-  constructor(public starServices: starServices) {
+  constructor(public starServices: starServices,private scadaIntegration: ScadaIntegrationService,) {
 
   }
   public FORM_TRIGGER_FAILURE;
@@ -650,5 +651,197 @@ gridUserSelectionChange(object, selectedData) {
 
         return ShapeDefaults;
   }
+  async addNewServer(name, endpoint): Promise<void> {
+        let  result;
+        if (name && endpoint) {
+            console.log("opcua:addNewServer:name", name, endpoint)
+             result = await this.scadaIntegration.addServer(name, endpoint);
+            if (result) {
+                console.log('opcua:Server added:', result);
+            } else {
+                alert('opcua:Failed to add server');
+            }
+        }
+        return result;
+    }
+  public serversMapp = {};
+  public serversMappReversed = {};
+  public myServerConfigs=[];
+  public tagsDefinition=[];
+  public alarmsDefinition=[];
+  public serverStatus: {
+  id: number;
+  name: string;
+  connected: boolean;
+  tagCount: number;
+  alarmCount: number;
+}[] = [];
+  async performAddServers(opcuaServers) {
+  const addedServerIds: number[] = [];
+  this.myServerConfigs = [];
+  for (let i = 0; i < opcuaServers.length; i++) {
+    console.log("POST_QUERY:opcuaServers:", opcuaServers);
 
+    let result: any = await this.addNewServer(opcuaServers[i].SERVER_NAME, opcuaServers[i].ENDPOINT_URL);
+    console.log("server added: ", opcuaServers[i].OPCUA_SERVER_ID, result);
+    this.myServerConfigs.push(result);
+
+    if (typeof result != "undefined") {
+      this.serversMapp[opcuaServers[i].OPCUA_SERVER_ID] = result.id;
+      addedServerIds.push(result.id);
+    }
+
+    this.serversMappReversed = {};
+    for (const key in this.serversMapp) {
+      if (this.serversMapp.hasOwnProperty(key)) {
+        this.serversMappReversed[this.serversMapp[key]] = Number(key);
+      }
+    }
+    console.log("server added: ", this.serversMapp, this.serversMappReversed);
+  }
+
+  const readiness = await this.scadaIntegration.waitForServersReady(addedServerIds, {
+    timeoutMs: 15000,
+    pollIntervalMs: 500
+  });
+
+  for (const [id, server] of readiness) {
+    if (!server) {
+      console.warn(`⚠️ Server ${id} did not connect in time — tags may be incomplete`);
+    }
+  }
+
+  await this.getTagsAlarams();
+
+  // Build the combined status view for the UI, now that tags/alarms
+  // have been fetched and grouped per server.
+  this.buildServerStatus(readiness);
+}
+
+private buildServerStatus(readiness: Map<number, any>): void {
+  this.serverStatus = [];
+  const tagCounts = new Map<number, number>();
+  for (const s of this.tagsDefinition) tagCounts.set(s.CODE, s.items.length);
+
+  const alarmCounts = new Map<number, number>();
+  for (const s of this.alarmsDefinition) alarmCounts.set(s.CODE, s.items.length);
+
+  this.serverStatus = this.myServerConfigs
+    .filter(s => !!s) // drop entries where addNewServer failed and pushed undefined
+    .map(s => {
+      const readyInfo = readiness.get(s.id);
+      return {
+        id: s.id,
+        name: s.name,
+        connected: !!readyInfo && !!readyInfo.connected,
+        tagCount: tagCounts.get(s.id) ?? 0,
+        alarmCount: alarmCounts.get(s.id) ?? 0,
+      };
+    });
+
+  console.log("performAddServers:serverStatus:", this.serverStatus);
+}
+  async getTagsAlarams(){
+    
+
+    function toTree(flat) {
+      const grouped = new Map();
+
+      for (const item of flat) {
+        // Only group Variable nodes (items). Skip folders/objects.
+        if (!item.is_variable) continue;
+
+        if (!grouped.has(item.server_id)) {
+          grouped.set(item.server_id, {
+            CODETEXT_LANG: item.server_name,
+            CODE: item.server_id,
+            items: [],
+          });
+        }
+
+        grouped.get(item.server_id).items.push({
+          CODETEXT_LANG: item.display_name,   // or item.browse_name — same in your data
+          CODE: item.tag_name,         // "Local:Counter" — matches the poll key
+          dataItem: item,            // keep the whole original node for reference
+        });
+      }
+
+      return Array.from(grouped.values());
+    }
+  function toAlarmCatalog(flat) {
+const byServer = new Map();
+
+for (const a of flat) {
+  // Defensive filter — the backend now excludes these before they're
+  // ever stored, but this guards against stale cached responses or a
+  // backend that hasn't picked up the fix yet.
+  if (a.tag_name?.endsWith(':Server')) continue;
+  if (a.message === 'Refresh Start' || a.message === 'Refresh End') continue;
+
+  if (!byServer.has(a.server_id)) {
+    byServer.set(a.server_id, {
+      CODETEXT_LANG: a.server_name,
+      CODE: a.server_id,
+      items: new Map(),
+    });
+  }
+
+  const server = byServer.get(a.server_id);
+  const existing = server.items.get(a.tag_name);
+
+  // Backend already sends one entry per alarm source, so this should
+  // rarely trigger — but if a duplicate does arrive, keep whichever is
+  // more recent rather than whichever happened to come first.
+  if (existing && new Date(existing.dataItem.timestamp) >= new Date(a.timestamp)) {
+    continue;
+  }
+
+  const name    = a.display_name ?? a.browse_name ?? a.tag_name;
+  const message = a.message ? ` — ${a.message}` : '';
+  const sev     = a.severity ? ` [${a.severity}]` : '';
+
+  server.items.set(a.tag_name, {
+    CODETEXT_LANG: `${name}${message}${sev}`,   // "MyLevel — Level exceeded [high]"
+    CODE: a.tag_name,
+    sampleMessage: a.message,
+    severity: a.severity,
+    active: a.active,
+    acknowledged: a.acknowledged,
+    dataItem: a,
+  });
+}
+
+return Array.from(byServer.values())
+  .sort((s1, s2) => s1.CODETEXT_LANG.localeCompare(s2.CODETEXT_LANG))
+  .map(s => ({
+    ...s,
+    items: Array.from(s.items.values())
+      .sort((i1:any, i2:any) => i1.CODETEXT_LANG.localeCompare(i2.CODETEXT_LANG)),
+  }));
+}
+    
+    const tags = await this.scadaIntegration.browseTags();   // all servers
+    console.log("getTagsAlarams:tags:",tags.length,  tags)   
+    const tagsDefinition = tags.filter(
+    item => item.namespace === 3 && item.is_variable
+  );     
+  console.log("getTagsAlarams:tagsDefinition:",tagsDefinition.length, JSON.stringify(tagsDefinition))   
+  this.tagsDefinition = toTree(tagsDefinition);
+  console.log("getTagsAlarams:tagsDefinition:this.",tagsDefinition.length, tagsDefinition, "this.tagsDefinition:",JSON.stringify(this.tagsDefinition))   
+
+    //const localTags = await this.scadaIntegration.browseTags(1);         // server id 1
+    //console.log("getTagsAlarams:localTags:",localTags)
+    
+    //const deepTags  = await this.scadaIntegration.browseTags(1, 'ns=3;i=1000', 8);
+    //console.log("getTagsAlarams:deepTags:",deepTags)
+    //"Browse server with ID 1, starting from node ns=3;i=1000, descending up to 8 levels deep."
+
+    const { success, alarms } = await this.scadaIntegration.refreshAlarms();
+    console.log("getTagsAlarams:success:",success)
+    console.log("getTagsAlarams:success:1:",JSON.stringify( alarms))
+    this.alarmsDefinition = toAlarmCatalog(alarms);
+    console.log("getTagsAlarams:this.alarmsDefinition:",JSON.stringify(this.alarmsDefinition))
+
+  }
+  
 }

@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_EDITOR_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_EDITOR_ID >
-		<kendo-label *ngIf="(!labelEXPRESSION_EDITOR_IDTop && !isPhonePortrait) && labelEXPRESSION_EDITOR_IDVisible" class="form-label" [for]="EXPRESSION_EDITOR_ID" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.EXPRESSION_EDITOR_ID','Expression Editor Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelEXPRESSION_EDITOR_IDTop && !isPhonePortrait) && labelEXPRESSION_EDITOR_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.EXPRESSION_EDITOR_ID','Expression Editor Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelEXPRESSION_EDITOR_IDTop || isPhonePortrait) && labelEXPRESSION_EDITOR_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.EXPRESSION_EDITOR_ID','Expression Editor Id') + ' *'}}</label>
 		<input   formControlName="EXPRESSION_EDITOR_ID"
- kendoTextBox #EXPRESSION_EDITOR_ID 
+ kendoTextBox  #EXPRESSION_EDITOR_ID 
 		[readonly]="primarKeyReadOnlyArr.isEXPRESSION_EDITOR_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.EXPRESSION_EDITOR_ID_Hint','Please enter Expression Editor Id.')"
 		(click)="ON_CLICK_EXPRESSION_EDITOR_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_EXPRESSION_EDITOR_ID($event)"      adaptiveMode="auto"  />
@@ -118,7 +118,7 @@
 		<kendo-combobox  #IF_KEY class="form-field-combobox"  [formControlName]="'IF_KEY'"
 		[data]="lkpArrIF_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.IF_KEY_Hint','If')"		(click)="ON_CLICK_IF_KEY($event)"
- (valueChange)="onValueChange_IF_KEY($event)"  style="width : 80px ;"    adaptiveMode="auto" 
+ (valueChange)="onValueChange_IF_KEY($event)"  style="width : 60px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -175,7 +175,7 @@
 		<kendo-combobox  #BITWISE_KEY class="form-field-combobox"  [formControlName]="'BITWISE_KEY'"
 		[data]="lkpArrBITWISE_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.BITWISE_KEY_Hint','Bitwise')"		(click)="ON_CLICK_BITWISE_KEY($event)"
- (valueChange)="onValueChange_BITWISE_KEY($event)"  style="width : 120px ;"    adaptiveMode="auto" 
+ (valueChange)="onValueChange_BITWISE_KEY($event)"  style="width : 100px ;"    adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -226,33 +226,63 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
-		<button  (valueChange)="onValueChange_TAGS_KEY($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.TAGS_KEY_Hint','Tags')" 
- iconClass="fas fa-tags"  *ngIf=visibleTAGS_KEY 		(click)="ON_CLICK_TAGS_KEY($event)"
- >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.TAGS_KEY','Tags')}}</button>
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelALARMS_KEYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleALARMS_KEY >
+		<kendo-label *ngIf="(!labelALARMS_KEYTop && !isPhonePortrait) && labelALARMS_KEYVisible" class="form-label" [for]="ALARMS_KEY" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.ALARMS_KEY','Alarms')"></kendo-label>
+		<label *ngIf="(labelALARMS_KEYTop || isPhonePortrait) && labelALARMS_KEYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.ALARMS_KEY','Alarms')}}</label>
+		<kendo-dropdowntree kendoDropDownTreeExpandable  #ALARMS_KEY class="form-field-combobox" 
+		[kendoDropDownTreeHierarchyBinding]="lkpArrALARMS_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+		childrenField="items"
+[filterable]="true" 
+  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.ALARMS_KEY_Hint','Alarms')"		(click)="ON_CLICK_ALARMS_KEY($event)"
+ (valueChange)="onValueChange_ALARMS_KEY($event)"  style="display: inline-flex; width: 100px; vertical-align: middle; margin-left : 9px ;"  [popupSettings]="{ width: 320, popupClass: 'expandable-tree-popup' }" class="tags-dropdown"  adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" >
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'ALARMS_KEY')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-dropdowntree>
+	</kendo-formfield>
 
-		<button  (valueChange)="onValueChange_ALARMS_KEY($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.ALARMS_KEY_Hint','Alarms')" 
- iconClass="fas fa-bell"  *ngIf=visibleALARMS_KEY 		(click)="ON_CLICK_ALARMS_KEY($event)"
- >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.ALARMS_KEY','Alarms')}}</button>
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAGS_KEYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAGS_KEY >
+		<kendo-label *ngIf="(!labelTAGS_KEYTop && !isPhonePortrait) && labelTAGS_KEYVisible" class="form-label" [for]="TAGS_KEY" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.TAGS_KEY','Tags')"></kendo-label>
+		<label *ngIf="(labelTAGS_KEYTop || isPhonePortrait) && labelTAGS_KEYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.TAGS_KEY','Tags')}}</label>
+		<kendo-dropdowntree kendoDropDownTreeExpandable  #TAGS_KEY class="form-field-combobox" 
+		[kendoDropDownTreeHierarchyBinding]="lkpArrTAGS_KEY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+		childrenField="items"
+[filterable]="true" 
+  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.TAGS_KEY_Hint','Tags')"		(click)="ON_CLICK_TAGS_KEY($event)"
+ (valueChange)="onValueChange_TAGS_KEY($event)"  style="display: inline-flex; width: 80px; vertical-align: middle;"  [popupSettings]="{ width: 200, popupClass: 'expandable-tree-popup' }" class="tags-dropdown"  adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" >
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'TAGS_KEY')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-dropdowntree>
+	</kendo-formfield>
 
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLINETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLINE >
-		<kendo-label *ngIf="(!labelLINETop && !isPhonePortrait) && labelLINEVisible" class="form-label" [for]="LINE" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LINE','Line')"></kendo-label>
+		<kendo-label *ngIf="(!labelLINETop && !isPhonePortrait) && labelLINEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LINE','Line')"></kendo-label>
 		<label *ngIf="(labelLINETop || isPhonePortrait) && labelLINEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LINE','Line')}}</label>
 		<input   formControlName="LINE"
- kendoTextBox #LINE  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LINE_Hint','Please enter Line.')"
+ kendoTextBox  #LINE  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.LINE_Hint','Please enter Line.')"
 		(click)="ON_CLICK_LINE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LINE($event)"  style="width : 50px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCOLUMNTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCOLUMN >
-		<kendo-label *ngIf="(!labelCOLUMNTop && !isPhonePortrait) && labelCOLUMNVisible" class="form-label" [for]="COLUMN" [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.COLUMN','Column')"></kendo-label>
+		<kendo-label *ngIf="(!labelCOLUMNTop && !isPhonePortrait) && labelCOLUMNVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.COLUMN','Column')"></kendo-label>
 		<label *ngIf="(labelCOLUMNTop || isPhonePortrait) && labelCOLUMNVisible" class="form-label"  >{{starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.COLUMN','Column')}}</label>
 		<input   formControlName="COLUMN"
- kendoTextBox #COLUMN  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.COLUMN_Hint','Please enter Column.')"
+ kendoTextBox  #COLUMN  [placeholder]="starServices.getNLS([],'SCD_EE_EXPRESSION_EDITOR.scdexpressionEditorScdEeExpressionEditor.COLUMN_Hint','Please enter Column.')"
 		(click)="ON_CLICK_COLUMN($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_COLUMN($event)"  style="width : 50px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -341,7 +371,7 @@
     <kendo-textarea 
       [(ngModel)]="aiPrompt" 
       [ngModelOptions]="{standalone: true}"
-      placeholder="e.g., If temperature exceeds 100 and pressure exceeds 20 then Alarm"
+      placeholder="e.g., If temperature exceeds 100 and pressure exceeds 20 then 1"
       [rows]="3"
       (keydown.enter)="onEnterKey($event)"
       class="ai-input-textarea">
@@ -385,7 +415,7 @@
   </div>
 
   <!-- Generated Rule Preview - Using Kendo Card -->
-  <div class="ai-preview" *ngIf="generatedRule">
+  <!--div class="ai-preview" *ngIf="generatedRule">
     <kendo-card>
       <kendo-card-header>
         <div class="preview-header">
@@ -414,7 +444,7 @@
         </button>
       </kendo-card-actions>
     </kendo-card>
-  </div>
+  </div-->
 </div>
 
 

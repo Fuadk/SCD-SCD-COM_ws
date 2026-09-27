@@ -37,7 +37,7 @@ export interface ScadaData {
 }
 
 export interface ScadaChangeEvent {
-  type: 'tag' | 'connection' | 'server' | 'alarm';
+  type: 'tag' | 'connection' | 'server' | 'alarm' | 'alarmHistory';
   tagName?: string;
   serverName?: string;
   alarmId?: string;
@@ -56,6 +56,9 @@ export class ScadaIntegrationService {
 
   private rawAlarmsSubject = new BehaviorSubject<Alarm[]>([]);
   public rawAlarms$ = this.rawAlarmsSubject.asObservable();
+
+  private rawAlarmHistorySubject = new BehaviorSubject<Alarm[]>([]);
+  public rawAlarmHistory$ = this.rawAlarmHistorySubject.asObservable();
 
   private previousValues = new WeakMap<any, any>();
   private serversSubject = new BehaviorSubject<ServerInfo[]>([]);
@@ -82,6 +85,9 @@ export class ScadaIntegrationService {
     // Alarm list — push-through from SCADAService
     this.scadaService.getAlarms().subscribe(alarms => {
       this.rawAlarmsSubject.next(alarms ?? []);
+    });
+    this.scadaService.getAlarmHistory().subscribe(history => {
+      this.rawAlarmHistorySubject.next(history ?? []);
     });
   }
 
@@ -152,6 +158,13 @@ export class ScadaIntegrationService {
 
   getActiveAlarms(): Alarm[] {
     return this.rawAlarmsSubject.getValue().filter(a => a.active && !a.acknowledged);
+  }
+  getAlarmHistory(): Observable<Alarm[]> {
+  return this.rawAlarmHistory$;
+  }
+
+  getCurrentAlarmHistory(): Alarm[] {
+    return this.rawAlarmHistorySubject.getValue();
   }
 
   getAlarmsForServer(serverName: string): Alarm[] {
@@ -274,6 +287,17 @@ export class ScadaIntegrationService {
         }
       })
     );
+    // Subscribe to alarm history (diagram-facing, separate from the catalog)
+    subscriptions.push(
+      this.rawAlarmHistory$.subscribe(history => {
+        component.scadaData.alarmHistory = history;
+        component.alarmHistory = history;
+
+        if (callback) {
+          callback([{ type: 'alarmHistory', fullData: history }]);
+        }
+      })
+    );
 
     return subscriptions;
   }
@@ -303,32 +327,37 @@ export class ScadaIntegrationService {
   }
 
   async addServer(name: string, endpoint: string): Promise<ServerInfo | null> {
-    const currentServers = this.serversSubject.getValue();
-    const existingServer = currentServers.find(
-      s => s.endpoint.toLowerCase() === endpoint.toLowerCase()
-    );
+  // The backend may have restarted since our last check — always resync
+  // before trusting the local cache, otherwise a stale in-browser server
+  // list blocks re-adding servers the backend has actually forgotten.
+  await this.forceSync();
 
-    if (existingServer) {
-      console.warn(`⚠️ Server with endpoint "${endpoint}" already exists (ID: ${existingServer.id})`);
-      return existingServer;
-    }
+  const currentServers = this.serversSubject.getValue();
+  const existingServer = currentServers.find(
+    s => s.endpoint.toLowerCase() === endpoint.toLowerCase()
+  );
 
-    try {
-      const result = await this.scadaService.addServer(name, endpoint);
-      if (!result) {
-        console.warn(`⚠️ Failed to add server "${name}" to backend`);
-        return null;
-      }
+  if (existingServer) {
+    console.warn(`⚠️ Server with endpoint "${endpoint}" already exists (ID: ${existingServer.id})`);
+    return existingServer;
+  }
 
-      const servers = await this.scadaService.refreshServers();
-      this.serversSubject.next(servers ?? []);
-      console.log(`✅ Server "${name}" added successfully`);
-      return result;
-    } catch (error) {
-      console.error(`❌ Error adding server "${name}":`, error);
+  try {
+    const result = await this.scadaService.addServer(name, endpoint);
+    if (!result) {
+      console.warn(`⚠️ Failed to add server "${name}" to backend`);
       return null;
     }
+
+    const servers = await this.scadaService.refreshServers();
+    this.serversSubject.next(servers ?? []);
+    console.log(`✅ Server "${name}" added successfully`);
+    return result;
+  } catch (error) {
+    console.error(`❌ Error adding server "${name}":`, error);
+    return null;
   }
+}
 
   async removeServer(serverId: number): Promise<boolean> {
     try {
@@ -382,19 +411,49 @@ export class ScadaIntegrationService {
     console.log("getTagsAlarams:result:", result)
     return result ;
   }
- async refreshAlarms(serverId?: number): Promise<{ success: boolean; alarms: Alarm[]; error?: string }> {
+/**
+ * Waits for rawAlarms$ to stop emitting for `quietMs`, meaning a burst of
+ * alarm events (e.g. from a ConditionRefresh) has finished arriving.
+ * Falls back to whatever is cached if nothing arrives within maxWaitMs.
+ */
+private waitForAlarmsSettled(quietMs = 500, maxWaitMs = 5000): Promise<Alarm[]> {
+  return new Promise((resolve) => {
+    let settled = false;
+    let debounceTimer: any = null;
+
+    const finish = (alarms: Alarm[]) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(debounceTimer);
+      clearTimeout(maxTimer);
+      sub.unsubscribe();
+      resolve(alarms);
+    };
+
+    const sub = this.rawAlarms$.subscribe(alarms => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => finish(alarms), quietMs);
+    });
+
+    const maxTimer = setTimeout(() => finish(this.getCurrentAlarms()), maxWaitMs);
+  });
+}
+
+async refreshAlarms(serverId?: number): Promise<{ success: boolean; alarms: Alarm[]; error?: string }> {
   try {
     const result = await this.scadaService.refreshAlarms(serverId);
 
-    // If the backend returned a fresh list, use it directly.
-    if (result?.success && result.alarms) {
-      this.rawAlarmsSubject.next(result.alarms);
-      return { success: true, alarms: result.alarms };
+    if (!result?.success) {
+      const error = result?.results?.find(r => !r.success)?.error;
+      return { success: false, alarms: this.getCurrentAlarms(), error };
     }
 
-    // Otherwise fall back to the cache.
-    const error = result?.results?.find(r => !r.success)?.error;
-    return { success: false, alarms: this.getCurrentAlarms(), error };
+    // The POST resolving only means the server accepted the refresh
+    // request — the actual alarm events arrive asynchronously over the
+    // socket afterward. Wait for that burst to finish instead of trusting
+    // the POST response's timing.
+    const alarms = await this.waitForAlarmsSettled();
+    return { success: true, alarms };
   } catch (error) {
     console.error('Alarm refresh failed:', error);
     return { success: false, alarms: this.getCurrentAlarms(), error: (error as Error).message };
@@ -432,7 +491,113 @@ export class ScadaIntegrationService {
       connectionStatus: false,
       servers: [],
       currentServer: 'Local',
-      alarms: []
+      alarms: [],
+      alarmHistory: []
     };
   }
+  /**
+ * Poll the backend until the given server reaches 'connected' status,
+ * or until timeoutMs elapses. Returns the ServerInfo if it connected,
+ * or null if it timed out / errored out.
+ *
+ * Use this instead of a fixed delay after addServer() — connection time
+ * varies a lot between local and remote/high-latency servers.
+ */
+async waitForServerReady(
+  serverId: number,
+  options: { timeoutMs?: number; pollIntervalMs?: number } = {}
+): Promise<ServerInfo | null> {
+  const timeoutMs = options.timeoutMs ?? 15000;
+  const pollIntervalMs = options.pollIntervalMs ?? 500;
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    const servers = await this.scadaService.refreshServers();
+    this.serversSubject.next(servers ?? []);
+
+    const server = (servers ?? []).find(s => s.id === serverId);
+    if (server) {
+      if (server.status === 'connected') {
+        return server;
+      }
+      if (server.status === 'error') {
+        // Connection failed outright — no point polling further; the
+        // backend's own reconnect scheduler will retry on its own timeline.
+        console.warn(`⚠️ Server ${serverId} entered error state while waiting`);
+        return null;
+      }
+    }
+
+    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
+  }
+
+  console.warn(`⚠️ Timed out waiting for server ${serverId} to connect`);
+  return null;
+}
+
+/**
+ * Wait for multiple servers in parallel, each with its own timeout,
+ * so one slow/unreachable remote server doesn't block the others.
+ */
+async waitForServersReady(
+  serverIds: number[],
+  options: { timeoutMs?: number; pollIntervalMs?: number } = {}
+): Promise<Map<number, ServerInfo | null>> {
+  const results = await Promise.all(
+    serverIds.map(id => this.waitForServerReady(id, options))
+  );
+  const map = new Map<number, ServerInfo | null>();
+  serverIds.forEach((id, i) => map.set(id, results[i]));
+  return map;
+}
+private initializationPromise: Promise<void> | null = null;
+private lastHealthCheck = 0;
+private readonly HEALTH_CHECK_STALE_MS = 30000; // don't re-verify more than every 30s
+
+/**
+ * Call this from every diagram's ngOnInit. Fast (no network call) in the
+ * common case where servers are already known-healthy and recently
+ * checked. Falls back to the full addServer + waitForServersReady flow
+ * only when servers are missing/disconnected or we haven't checked
+ * recently — e.g. right after a backend restart.
+ *
+ * Safe to call from multiple diagram tabs opening concurrently: they
+ * share the same in-flight initialization instead of racing each other.
+ */
+async ensureServersConnected(
+  serverConfigs: { name: string; endpoint: string }[]
+): Promise<void> {
+  const cached = this.serversSubject.getValue();
+  const allHealthy = cached.length > 0 && cached.every(s => s.connected);
+  const recentlyChecked = (Date.now() - this.lastHealthCheck) < this.HEALTH_CHECK_STALE_MS;
+
+  if (allHealthy && recentlyChecked) {
+    return; // instant — no network call at all
+  }
+
+  if (this.initializationPromise) {
+    return this.initializationPromise; // piggyback on the in-flight check
+  }
+
+  this.initializationPromise = this.doEnsureServersConnected(serverConfigs)
+    .finally(() => {
+      this.initializationPromise = null;
+      this.lastHealthCheck = Date.now();
+    });
+
+  return this.initializationPromise;
+}
+
+private async doEnsureServersConnected(
+  serverConfigs: { name: string; endpoint: string }[]
+): Promise<void> {
+  console.log("doEnsureServersConnected:serverConfigs:",serverConfigs)
+  const addedIds: number[] = [];
+  for (const cfg of serverConfigs) {
+    const result = await this.addServer(cfg.name, cfg.endpoint);
+    console.log("doEnsureServersConnected:result:",result)
+    if (result) addedIds.push(result.id);
+  }
+  await this.waitForServersReady(addedIds, { timeoutMs: 15000, pollIntervalMs: 500 });
+}
 }
