@@ -118,27 +118,39 @@ export class SCADAService {
   /**
    * Enable real-time polling (default state)
    */
-  enablePolling(): void {
-    if (!this.isPollingEnabled) {
-      console.log('opcua:✅ Enabling SCADA polling');
-      this.isPollingEnabled = true;
-      this.startPolling();
+enablePolling(): void {
+  if (!this.isPollingEnabled) {
+    console.log('opcua:✅ Enabling SCADA polling');
+    this.isPollingEnabled = true;
+    this.startPolling();
+
+    // ✅ Reconnect socket
+    if (this.socket && !this.socket.connected) {
+      this.socket.connect();
+      console.log('opcua:🔌 WebSocket reconnected (polling enabled)');
     }
   }
+}
 
   /**
    * Disable real-time polling (use when entering edit mode)
    */
   disablePolling(): void {
-    if (this.isPollingEnabled) {
-      //console.log('opcua:⏸️ Disabling SCADA polling');
-      this.isPollingEnabled = false;
-      if (this.pollingInterval) {
-        clearInterval(this.pollingInterval);
-        this.pollingInterval = null;
-      }
+  if (this.isPollingEnabled) {
+    this.isPollingEnabled = false;
+
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+
+    // ✅ Disconnect socket so no push events arrive
+    if (this.socket?.connected) {
+      this.socket.disconnect();
+      console.log('opcua:⏸️ WebSocket disconnected (polling disabled)');
     }
   }
+}
 
   /**
    * Get current polling state

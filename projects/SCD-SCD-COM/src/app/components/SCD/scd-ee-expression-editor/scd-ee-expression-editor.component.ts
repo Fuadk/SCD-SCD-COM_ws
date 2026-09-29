@@ -12,15 +12,7 @@ import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scdexpressionEditorScdEeExpressionEditor , componentConfigDef} from '@modeldir/model';
-import {
-  ExpressionEngineService,
-  LoadedRule,
-  RuntimeContext,
-  ValidationResult,
-  Value,
-  ExpressionVariables,
-  LIBRARY_FUNCTIONS,     
-} from '../../../services/expression-engine.service';
+
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'EXPRESSION_EDITOR_ID' : new FormControl(dataItem.EXPRESSION_EDITOR_ID  , ) ,
@@ -200,7 +192,7 @@ public variableOPEN_AI;
    constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
     public responsive: BreakpointObserver, 
    private starNotify: StarNotifyService,  
-    public starServices: starServices,private expressionEngine: ExpressionEngineService
+    public starServices: starServices
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
@@ -1246,7 +1238,7 @@ async WHEN_VALIDATE_ITEM_SYNTAX_CHECK_KEY(value) {
  async ON_CLICK_SYNTAX_CHECK_KEY(event){
 const source = String(this.form.get('EXPRESSION')?.value ?? '');
 
-  const loaded = this.expressionEngine.loadWithVariables(source);
+  const loaded = this.starlib1.loadWithVariables(source);
   if ('error' in loaded) {
     const errs = loaded.error.diagnostics.filter(d => d.severity === 'error');
     this.syntaxState = 'error';
@@ -1257,29 +1249,18 @@ const source = String(this.form.get('EXPRESSION')?.value ?? '');
 
   const { rule, variables } = loaded;
 
-  const tags: Record<string, Value> = {};
-  let i = 0;
-  for (const name of variables.tags) tags[name] = i++;
-
-  const context: RuntimeContext = {
-    tags,
-    input: variables.usesPlaceholder ? 0 : undefined,
-    currentUserName: this.starServices.sessionParams?.['USERNAME'] ?? 'TESTUSER',
-    currentLanguage: this.userLang ?? 'en',
-    securityCodes: ['A', 'D'],
-    // No `functions` — engine resolves AE_* via AlarmEventDataService.
-  };
-
-  try {
-    const value = rule.execute(context);
-    console.log("value:", value)
+  let retVal:any = this.starlib1.executeRule(rule, variables, this.userLang);
+  if (retVal.err == null)
+   {
+    console.log("value:", retVal.value)
     this.syntaxState = 'ok';
-    this.helpText = `Syntax OK (result = ${value})`;
+    this.helpText = `Syntax OK (result = ${retVal.value})`;
     this.form.patchValue({ 'SYNTAX_MSG': this.helpText });
-  } catch (err) {
-    console.log("value:err:", (err as Error).message)
+  } else {
+    retVal.err = retVal.err;
+    console.log("value:err:", (retVal.err as Error).message)
     this.syntaxState = 'error';
-    this.helpText = (err as Error).message;
+    this.helpText = (retVal.err as Error).message;
     this.form.patchValue({ 'SYNTAX_MSG': this.helpText });
   }
 }
@@ -1536,7 +1517,7 @@ this.toggleAIPanel()
     let expression = await this.submit(question);
 
     // 2) Validate it locally.
-    const result: ValidationResult = this.expressionEngine.validate(expression, {
+    const result = this.starlib1.exp_validate(expression, {
       // tagTypes: { tag1: 'number', MaxTemp: 'number' },  // optional
     });
 
@@ -1593,60 +1574,14 @@ this.toggleAIPanel()
     return 'if Condition then Action';
   }
 
-  async acceptRule(): Promise<void> {
-    if (this.generatedRule) {
-      this.form.patchValue({ EXPRESSION: this.generatedRule });
-      this.addAILog('success', '✅', 'Rule accepted and applied to editor!');
-      this.generatedRule = '';
-      this.confidenceLevel = null;
-    }
-  }
 
-  async regenerateRule(): Promise<void> {
-    if (this.aiPrompt) {
-      this.generateRule();
-    }
-  }
+
 
   delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  public evaluateCurrentExpression(): void {
-    const source = String(this.form.get('EXPRESSION')?.value ?? '');
-    if (!source) { return; }
 
-    const context: RuntimeContext = {
-      tags: {
-        temperature: 5,
-        tag2: 7,
-        tag3: 100,
-      },
-      // input: 10,                       // only for write expressions
-      // currentUserName: this.starServices.sessionParams?.['USERNAME'],
-      // currentLanguage: this.userLang,
-      // securityCodes: ['A', 'D'],
-    };
-
-    // 1) Validate for a nicer UX first.
-    const validation = this.expressionEngine.validate(source);
-    if (!validation.valid) {
-      // validation.diagnostics.forEach(d =>
-      //   this.starNotify.showError(`${d.code}: ${d.message} (line ${d.line}, col ${d.column})`)
-      // );
-      return;
-    }
-
-    // 2) Execute.
-    try {
-      const rule: LoadedRule = this.expressionEngine.load(source);
-      const value = rule.execute(context);
-      console.log('Rule result:', value);
-      //this.starNotify.showInfo(`Result: ${value}`);
-    } catch (err) {
-      // this.starNotify.showError(`Execution error: ${(err as Error).message}`);
-    }
-  }
 
 
   append2Exp(value) {

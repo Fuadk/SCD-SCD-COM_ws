@@ -4,6 +4,15 @@
 import { Injectable } from '@angular/core';
 import { starServices } from 'starlib';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../services/scada-integration.service';
+import {
+  ExpressionEngineService,
+  LoadedRule,
+  RuntimeContext,
+  ValidationResult,
+  Value,
+  ExpressionVariables,
+  LIBRARY_FUNCTIONS,     
+} from '../services/expression-engine.service';
 import { formatDate } from '@angular/common';
 import { getDate } from '@progress/kendo-date-math';
 import {  componentConfigDef } from '@modeldir/model';
@@ -14,7 +23,8 @@ declare function getParamConfig(): any;
 })
 export class Starlib1 {
 
-  constructor(public starServices: starServices,private scadaIntegration: ScadaIntegrationService,) {
+  constructor(public starServices: starServices,
+    private scadaIntegration: ScadaIntegrationService,private expressionEngine: ExpressionEngineService) {
 
   }
   public FORM_TRIGGER_FAILURE;
@@ -843,5 +853,43 @@ return Array.from(byServer.values())
     console.log("getTagsAlarams:this.alarmsDefinition:",JSON.stringify(this.alarmsDefinition))
 
   }
-  
+  public loadWithVariables(source){
+    const loaded = this.expressionEngine.loadWithVariables(source)
+    return loaded;
+  }
+  public exp_validate(source , options) {
+    const result = this.expressionEngine.validate(source , options)
+    return result;
+
+  }
+  public loadRule(source: string, options){
+    const rule: LoadedRule = this.expressionEngine.load(source);
+    return rule;
+
+  }
+  public executeRule(rule, variables, userLang){
+    const tags: Record<string, Value> = {};
+    let i = 0;
+    for (const name of variables.tags) tags[name] = i++;
+
+    const context: RuntimeContext = {
+      tags,
+      input: variables.usesPlaceholder ? 0 : undefined,
+      currentUserName: this.starServices.sessionParams?.['USERNAME'] ?? 'TESTUSER',
+      currentLanguage: userLang ?? 'en',
+      securityCodes: ['A', 'D'],
+      // No `functions` — engine resolves AE_* via AlarmEventDataService.
+    };
+    let retVal ={
+      value : "",
+      err : null
+    }
+    try {
+      const value = rule.execute(context);
+      retVal.value = value;
+    } catch (err) {
+      retVal.err = err;
+    }
+    return retVal;
+  }
 }
