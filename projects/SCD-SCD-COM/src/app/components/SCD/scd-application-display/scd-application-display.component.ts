@@ -13,7 +13,6 @@ declare function getParamConfig():any;
 })
 export class ScdApplicationDisplayComponent implements OnInit {
   public componentConfig: componentConfigDef;
-  public componentConfig_output: componentConfigDef;
   public paramConfig;  
   public title = '';
   public isPhonePortrait = false;
@@ -115,7 +114,7 @@ public ngAfterViewInit() {
   }
  
 	public ON_CLICK_OK(event){
-    console.log('ON_CLICK_OK: Called1');
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 

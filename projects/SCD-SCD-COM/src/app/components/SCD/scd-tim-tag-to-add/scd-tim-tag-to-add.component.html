@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_IN_MODEL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_IN_MODEL_ID >
-		<kendo-label *ngIf="(!labelTAG_IN_MODEL_IDTop && !isPhonePortrait) && labelTAG_IN_MODEL_IDVisible" class="form-label" [for]="TAG_IN_MODEL_ID" [text]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_IN_MODEL_ID','Tag In Model Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_IN_MODEL_IDTop && !isPhonePortrait) && labelTAG_IN_MODEL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_IN_MODEL_ID','Tag In Model Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelTAG_IN_MODEL_IDTop || isPhonePortrait) && labelTAG_IN_MODEL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_IN_MODEL_ID','Tag In Model Id') + ' *'}}</label>
 		<input   formControlName="TAG_IN_MODEL_ID"
- kendoTextBox #TAG_IN_MODEL_ID 
+ kendoTextBox  #TAG_IN_MODEL_ID 
 		[readonly]="primarKeyReadOnlyArr.isTAG_IN_MODEL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_IN_MODEL_ID_Hint','Please enter Tag In Model Id.')"
 		(click)="ON_CLICK_TAG_IN_MODEL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_IN_MODEL_ID($event)"      adaptiveMode="auto"  />
@@ -92,10 +92,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_NAME >
-		<kendo-label *ngIf="(!labelTAG_NAMETop && !isPhonePortrait) && labelTAG_NAMEVisible" class="form-label" [for]="TAG_NAME" [text]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_NAME','Tag Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_NAMETop && !isPhonePortrait) && labelTAG_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_NAME','Tag Name')"></kendo-label>
 		<label *ngIf="(labelTAG_NAMETop || isPhonePortrait) && labelTAG_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_NAME','Tag Name')}}</label>
 		<input   formControlName="TAG_NAME"
- kendoTextBox #TAG_NAME  [placeholder]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_NAME_Hint','Please enter Tag Name.')"
+ kendoTextBox  #TAG_NAME  [placeholder]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_NAME_Hint','Please enter Tag Name.')"
 		(click)="ON_CLICK_TAG_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -104,10 +104,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_TYPE >
-		<kendo-label *ngIf="(!labelTAG_TYPETop && !isPhonePortrait) && labelTAG_TYPEVisible" class="form-label" [for]="TAG_TYPE" [text]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_TYPE','Tag Type')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_TYPETop && !isPhonePortrait) && labelTAG_TYPEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_TYPE','Tag Type')"></kendo-label>
 		<label *ngIf="(labelTAG_TYPETop || isPhonePortrait) && labelTAG_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_TYPE','Tag Type')}}</label>
 		<input   formControlName="TAG_TYPE"
- kendoTextBox #TAG_TYPE  [placeholder]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_TYPE_Hint','Please enter Tag Type.')"
+ kendoTextBox  #TAG_TYPE  [placeholder]="starServices.getNLS([],'SCD_TIM_TAG_TO_ADD.scdtagInModelScdTimTagToAdd.TAG_TYPE_Hint','Please enter Tag Type.')"
 		(click)="ON_CLICK_TAG_TYPE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_TYPE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

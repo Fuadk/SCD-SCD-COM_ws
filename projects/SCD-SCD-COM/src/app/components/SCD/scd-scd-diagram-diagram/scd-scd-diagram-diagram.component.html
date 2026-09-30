@@ -17,6 +17,7 @@
     <div *ngIf="isEditMode" class="diagram-toolbar">
       <kendo-dropdowntree kendoDropDownTreeExpandable [kendoDropDownTreeHierarchyBinding]="ShapeMenu" textField="text"
         valueField="id" childrenField="items" placeholder="Shapes"
+        [filterable]="true"
         (valueChange)="ON_CLICK_CONTEXT_MENU('DROPDOWN', $event)" [(value)]="selectedShape"
         [popupSettings]="{ width: 300, popupClass: 'expandable-tree-popup' }" class="shape-dropdown"
         style="display: inline-flex; width: 120px; vertical-align: middle;">

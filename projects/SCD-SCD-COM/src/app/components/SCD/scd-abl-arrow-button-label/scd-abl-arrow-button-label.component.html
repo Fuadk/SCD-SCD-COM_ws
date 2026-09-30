@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelARROW_BUTTON_LABEL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleARROW_BUTTON_LABEL_ID >
-		<kendo-label *ngIf="(!labelARROW_BUTTON_LABEL_IDTop && !isPhonePortrait) && labelARROW_BUTTON_LABEL_IDVisible" class="form-label" [for]="ARROW_BUTTON_LABEL_ID" [text]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.ARROW_BUTTON_LABEL_ID','Arrow Button Label Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelARROW_BUTTON_LABEL_IDTop && !isPhonePortrait) && labelARROW_BUTTON_LABEL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.ARROW_BUTTON_LABEL_ID','Arrow Button Label Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelARROW_BUTTON_LABEL_IDTop || isPhonePortrait) && labelARROW_BUTTON_LABEL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.ARROW_BUTTON_LABEL_ID','Arrow Button Label Id') + ' *'}}</label>
 		<input   formControlName="ARROW_BUTTON_LABEL_ID"
- kendoTextBox #ARROW_BUTTON_LABEL_ID 
+ kendoTextBox  #ARROW_BUTTON_LABEL_ID 
 		[readonly]="primarKeyReadOnlyArr.isARROW_BUTTON_LABEL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.ARROW_BUTTON_LABEL_ID_Hint','Please enter Arrow Button Label Id.')"
 		(click)="ON_CLICK_ARROW_BUTTON_LABEL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ARROW_BUTTON_LABEL_ID($event)"      adaptiveMode="auto"  />
@@ -191,7 +191,6 @@
 	 name="CAPTION_BLINK"  ToggleValue  [true]= "'Y'" [false]= "''" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.CAPTION_BLINK_Hint','Please enter Caption Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -220,7 +219,6 @@
 	 name="CAPTION_WORD_WRAP"  ToggleValue  [true]= "'Y'" [false]= "''" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.CAPTION_WORD_WRAP_Hint','Please enter Caption Word Wrap.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -350,7 +348,6 @@
 	 name="IMAGE_BLINK"  ToggleValue  [true]= "'Y'" [false]= "''" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.IMAGE_BLINK_Hint','Please enter Image Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -379,7 +376,6 @@
 	 name="SCALE_IMAGE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.SCALE_IMAGE_Hint','Please enter Scale Image.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 

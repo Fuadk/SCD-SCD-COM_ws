@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_LABEL_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_LABEL_GENERAL_ID >
-		<kendo-label *ngIf="(!labelTAG_LABEL_GENERAL_IDTop && !isPhonePortrait) && labelTAG_LABEL_GENERAL_IDVisible" class="form-label" [for]="TAG_LABEL_GENERAL_ID" [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_LABEL_GENERAL_ID','Tag Label General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_LABEL_GENERAL_IDTop && !isPhonePortrait) && labelTAG_LABEL_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_LABEL_GENERAL_ID','Tag Label General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelTAG_LABEL_GENERAL_IDTop || isPhonePortrait) && labelTAG_LABEL_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_LABEL_GENERAL_ID','Tag Label General Id') + ' *'}}</label>
 		<input   formControlName="TAG_LABEL_GENERAL_ID"
- kendoTextBox #TAG_LABEL_GENERAL_ID 
+ kendoTextBox  #TAG_LABEL_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isTAG_LABEL_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_LABEL_GENERAL_ID_Hint','Please enter Tag Label General Id.')"
 		(click)="ON_CLICK_TAG_LABEL_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_LABEL_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -71,19 +71,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_NAME >
-		<kendo-label *ngIf="(!labelTAG_NAMETop && !isPhonePortrait) && labelTAG_NAMEVisible" class="form-label" [for]="TAG_NAME" [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_NAME','Tag Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_NAMETop && !isPhonePortrait) && labelTAG_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_NAME','Tag Name')"></kendo-label>
 		<label *ngIf="(labelTAG_NAMETop || isPhonePortrait) && labelTAG_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_NAME','Tag Name')}}</label>
 		<input   formControlName="TAG_NAME"
- kendoTextBox #TAG_NAME  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_NAME_Hint','Please enter Tag Name.')"
+ kendoTextBox  #TAG_NAME  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_NAME_Hint','Please enter Tag Name.')"
 		(click)="ON_CLICK_TAG_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_PRIORITYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_PRIORITY >
-		<kendo-label *ngIf="(!labelTAG_PRIORITYTop && !isPhonePortrait) && labelTAG_PRIORITYVisible" class="form-label" [for]="TAG_PRIORITY" [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_PRIORITY','Tag Priority')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_PRIORITYTop && !isPhonePortrait) && labelTAG_PRIORITYVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_PRIORITY','Tag Priority')"></kendo-label>
 		<label *ngIf="(labelTAG_PRIORITYTop || isPhonePortrait) && labelTAG_PRIORITYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_PRIORITY','Tag Priority')}}</label>
 		<input   formControlName="TAG_PRIORITY"
- kendoTextBox #TAG_PRIORITY  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_PRIORITY_Hint','Please enter Tag Priority.')"
+ kendoTextBox  #TAG_PRIORITY  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.TAG_PRIORITY_Hint','Please enter Tag Priority.')"
 		(click)="ON_CLICK_TAG_PRIORITY($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_PRIORITY($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -92,19 +92,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFIELD_LENGTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFIELD_LENGTH >
-		<kendo-label *ngIf="(!labelFIELD_LENGTHTop && !isPhonePortrait) && labelFIELD_LENGTHVisible" class="form-label" [for]="FIELD_LENGTH" [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.FIELD_LENGTH','Field Length')"></kendo-label>
+		<kendo-label *ngIf="(!labelFIELD_LENGTHTop && !isPhonePortrait) && labelFIELD_LENGTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.FIELD_LENGTH','Field Length')"></kendo-label>
 		<label *ngIf="(labelFIELD_LENGTHTop || isPhonePortrait) && labelFIELD_LENGTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.FIELD_LENGTH','Field Length')}}</label>
 		<input   formControlName="FIELD_LENGTH"
- kendoTextBox #FIELD_LENGTH  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.FIELD_LENGTH_Hint','Please enter Field Length.')"
+ kendoTextBox  #FIELD_LENGTH  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.FIELD_LENGTH_Hint','Please enter Field Length.')"
 		(click)="ON_CLICK_FIELD_LENGTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FIELD_LENGTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelJUSTIFICATIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleJUSTIFICATION >
-		<kendo-label *ngIf="(!labelJUSTIFICATIONTop && !isPhonePortrait) && labelJUSTIFICATIONVisible" class="form-label" [for]="JUSTIFICATION" [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.JUSTIFICATION','Justification')"></kendo-label>
+		<kendo-label *ngIf="(!labelJUSTIFICATIONTop && !isPhonePortrait) && labelJUSTIFICATIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.JUSTIFICATION','Justification')"></kendo-label>
 		<label *ngIf="(labelJUSTIFICATIONTop || isPhonePortrait) && labelJUSTIFICATIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.JUSTIFICATION','Justification')}}</label>
 		<input   formControlName="JUSTIFICATION"
- kendoTextBox #JUSTIFICATION  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.JUSTIFICATION_Hint','Please enter Justification.')"
+ kendoTextBox  #JUSTIFICATION  [placeholder]="starServices.getNLS([],'SCD_TLP_TAG_LABEL_GENERAL.scdtagLabelGeneralScdTlpTagLabelGeneral.JUSTIFICATION_Hint','Please enter Justification.')"
 		(click)="ON_CLICK_JUSTIFICATION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_JUSTIFICATION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

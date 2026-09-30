@@ -53,10 +53,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_SETTING_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_SETTING_ID >
-		<kendo-label *ngIf="(!labelDISPLAY_SETTING_IDTop && !isPhonePortrait) && labelDISPLAY_SETTING_IDVisible" class="form-label" [for]="DISPLAY_SETTING_ID" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_SETTING_ID','Display Setting Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelDISPLAY_SETTING_IDTop && !isPhonePortrait) && labelDISPLAY_SETTING_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_SETTING_ID','Display Setting Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelDISPLAY_SETTING_IDTop || isPhonePortrait) && labelDISPLAY_SETTING_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_SETTING_ID','Display Setting Id') + ' *'}}</label>
 		<input   formControlName="DISPLAY_SETTING_ID"
- kendoTextBox #DISPLAY_SETTING_ID 
+ kendoTextBox  #DISPLAY_SETTING_ID 
 		[readonly]="primarKeyReadOnlyArr.isDISPLAY_SETTING_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_SETTING_ID_Hint','Please enter Display Setting Id.')"
 		(click)="ON_CLICK_DISPLAY_SETTING_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DISPLAY_SETTING_ID($event)"      adaptiveMode="auto"  />
@@ -87,13 +87,13 @@
 		<kendo-label *ngIf="(!labelDISPLAY_TYPETop && !isPhonePortrait) && labelDISPLAY_TYPEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_TYPE','Display Type')"></kendo-label>
 		<label *ngIf="(labelDISPLAY_TYPETop || isPhonePortrait) && labelDISPLAY_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_TYPE','Display Type')}}</label>
 		<ul class="k-radio-list" 		(click)="ON_CLICK_DISPLAY_TYPE($event)"
- (change)="onChange_DISPLAY_TYPE($event)"      adaptiveMode="auto" 
+ (change)="onChange_DISPLAY_TYPE($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrDISPLAY_TYPE">
+			<li class="k-radio-item" *ngFor="let item of lkpArrDISPLAY_TYPE"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'DISPLAY_TYPE'"
 					#DISPLAY_TYPE ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="DISPLAY_TYPE " 
+				<kendo-label  [for]="DISPLAY_TYPE " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
@@ -105,6 +105,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="KEEP_AT_BACK"
   #KEEP_AT_BACK kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.KEEP_AT_BACK_Hint','Please enter Keep At Back.')"		(click)="ON_CLICK_KEEP_AT_BACK($event)"
  (change)="onChange_KEEP_AT_BACK($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.KEEP_AT_BACK_Hint','Please enter Keep At Back.')" 
  />
 	</kendo-formfield>
 
@@ -114,6 +116,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="CANNOT_BE_REPLACED"
   #CANNOT_BE_REPLACED kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.CANNOT_BE_REPLACED_Hint','Please enter Cannot Be Replaced.')"		(click)="ON_CLICK_CANNOT_BE_REPLACED($event)"
  (change)="onChange_CANNOT_BE_REPLACED($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.CANNOT_BE_REPLACED_Hint','Please enter Cannot Be Replaced.')" 
  />
 	</kendo-formfield>
 
@@ -124,32 +128,32 @@
 		<kendo-label *ngIf="(!labelDISPLAY_SIZETop && !isPhonePortrait) && labelDISPLAY_SIZEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_SIZE','Display Size')"></kendo-label>
 		<label *ngIf="(labelDISPLAY_SIZETop || isPhonePortrait) && labelDISPLAY_SIZEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_SIZE','Display Size')}}</label>
 		<ul class="k-radio-list" 		(click)="ON_CLICK_DISPLAY_SIZE($event)"
- (change)="onChange_DISPLAY_SIZE($event)"      adaptiveMode="auto" 
+ (change)="onChange_DISPLAY_SIZE($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrDISPLAY_SIZE">
+			<li class="k-radio-item" *ngFor="let item of lkpArrDISPLAY_SIZE"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'DISPLAY_SIZE'"
 					#DISPLAY_SIZE ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="DISPLAY_SIZE " 
+				<kendo-label  [for]="DISPLAY_SIZE " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
 	</div>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelWIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleWIDTH >
-		<kendo-label *ngIf="(!labelWIDTHTop && !isPhonePortrait) && labelWIDTHVisible" class="form-label" [for]="WIDTH" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.WIDTH','Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelWIDTHTop && !isPhonePortrait) && labelWIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.WIDTH','Width')"></kendo-label>
 		<label *ngIf="(labelWIDTHTop || isPhonePortrait) && labelWIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.WIDTH','Width')}}</label>
 		<input   formControlName="WIDTH"
- kendoTextBox #WIDTH  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.WIDTH_Hint','Please enter Width.')"
+ kendoTextBox  #WIDTH  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.WIDTH_Hint','Please enter Width.')"
 		(click)="ON_CLICK_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_WIDTH($event)"  style="width : 70px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelHEIGHTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleHEIGHT >
-		<kendo-label *ngIf="(!labelHEIGHTTop && !isPhonePortrait) && labelHEIGHTVisible" class="form-label" [for]="HEIGHT" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HEIGHT','Height')"></kendo-label>
+		<kendo-label *ngIf="(!labelHEIGHTTop && !isPhonePortrait) && labelHEIGHTVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HEIGHT','Height')"></kendo-label>
 		<label *ngIf="(labelHEIGHTTop || isPhonePortrait) && labelHEIGHTVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HEIGHT','Height')}}</label>
 		<input   formControlName="HEIGHT"
- kendoTextBox #HEIGHT  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HEIGHT_Hint','Please enter Height.')"
+ kendoTextBox  #HEIGHT  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HEIGHT_Hint','Please enter Height.')"
 		(click)="ON_CLICK_HEIGHT($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_HEIGHT($event)"  style="width : 70px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -163,7 +167,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="ALLOW_MULTIPLE_RUNNING_COPIES"
   #ALLOW_MULTIPLE_RUNNING_COPIES kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_MULTIPLE_RUNNING_COPIES_Hint','Please enter Allow Multiple Running Copies.')"		(click)="ON_CLICK_ALLOW_MULTIPLE_RUNNING_COPIES($event)"
  (change)="onChange_ALLOW_MULTIPLE_RUNNING_COPIES($event)"      adaptiveMode="auto" 
-	 name="ALLOW_MULTIPLE_RUNNING_COPIES"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="ALLOW_MULTIPLE_RUNNING_COPIES"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_MULTIPLE_RUNNING_COPIES_Hint','Please enter Allow Multiple Running Copies.')" 
  />
 	</kendo-formfield>
 
@@ -171,13 +177,13 @@
 		<kendo-label *ngIf="(!labelWHEN_RESIZEDTop && !isPhonePortrait) && labelWHEN_RESIZEDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.WHEN_RESIZED','When Resized')"></kendo-label>
 		<label *ngIf="(labelWHEN_RESIZEDTop || isPhonePortrait) && labelWHEN_RESIZEDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.WHEN_RESIZED','When Resized')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_WHEN_RESIZED($event)"
- (change)="onChange_WHEN_RESIZED($event)"      adaptiveMode="auto" 
+ (change)="onChange_WHEN_RESIZED($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrWHEN_RESIZED">
+			<li class="k-radio-item" *ngFor="let item of lkpArrWHEN_RESIZED"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'WHEN_RESIZED'"
 					#WHEN_RESIZED ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="WHEN_RESIZED " 
+				<kendo-label  [for]="WHEN_RESIZED " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
@@ -192,7 +198,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="ALLOW_DISPLAY_TO_BE_RESIZED"
   #ALLOW_DISPLAY_TO_BE_RESIZED kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_DISPLAY_TO_BE_RESIZED_Hint','Please enter Allow Display To Be Resized.')"		(click)="ON_CLICK_ALLOW_DISPLAY_TO_BE_RESIZED($event)"
  (change)="onChange_ALLOW_DISPLAY_TO_BE_RESIZED($event)"      adaptiveMode="auto" 
-	 name="ALLOW_DISPLAY_TO_BE_RESIZED"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="ALLOW_DISPLAY_TO_BE_RESIZED"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_DISPLAY_TO_BE_RESIZED_Hint','Please enter Allow Display To Be Resized.')" 
  />
 	</kendo-formfield>
 
@@ -200,13 +208,13 @@
 		<kendo-label *ngIf="(!labelCACHE_AFTER_DISPLAYINGTop && !isPhonePortrait) && labelCACHE_AFTER_DISPLAYINGVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.CACHE_AFTER_DISPLAYING','Cache After Displaying')"></kendo-label>
 		<label *ngIf="(labelCACHE_AFTER_DISPLAYINGTop || isPhonePortrait) && labelCACHE_AFTER_DISPLAYINGVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.CACHE_AFTER_DISPLAYING','Cache After Displaying')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_CACHE_AFTER_DISPLAYING($event)"
- (change)="onChange_CACHE_AFTER_DISPLAYING($event)"      adaptiveMode="auto" 
+ (change)="onChange_CACHE_AFTER_DISPLAYING($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrCACHE_AFTER_DISPLAYING">
+			<li class="k-radio-item" *ngFor="let item of lkpArrCACHE_AFTER_DISPLAYING"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'CACHE_AFTER_DISPLAYING'"
 					#CACHE_AFTER_DISPLAYING ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="CACHE_AFTER_DISPLAYING " 
+				<kendo-label  [for]="CACHE_AFTER_DISPLAYING " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
@@ -218,6 +226,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="ALWAYS_UPDATING"
   #ALWAYS_UPDATING kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALWAYS_UPDATING_Hint','Please enter Always Updating.')"		(click)="ON_CLICK_ALWAYS_UPDATING($event)"
  (change)="onChange_ALWAYS_UPDATING($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALWAYS_UPDATING_Hint','Please enter Always Updating.')" 
  />
 	</kendo-formfield>
 
@@ -225,10 +235,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDIAGRAM_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDIAGRAM_DATA >
-		<kendo-label *ngIf="(!labelDIAGRAM_DATATop && !isPhonePortrait) && labelDIAGRAM_DATAVisible" class="form-label" [for]="DIAGRAM_DATA" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DIAGRAM_DATA','Diagram Data')"></kendo-label>
+		<kendo-label *ngIf="(!labelDIAGRAM_DATATop && !isPhonePortrait) && labelDIAGRAM_DATAVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DIAGRAM_DATA','Diagram Data')"></kendo-label>
 		<label *ngIf="(labelDIAGRAM_DATATop || isPhonePortrait) && labelDIAGRAM_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DIAGRAM_DATA','Diagram Data')}}</label>
 		<input   formControlName="DIAGRAM_DATA"
- kendoTextBox #DIAGRAM_DATA  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DIAGRAM_DATA_Hint','Please enter Diagram Data.')"
+ kendoTextBox  #DIAGRAM_DATA  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DIAGRAM_DATA_Hint','Please enter Diagram Data.')"
 		(click)="ON_CLICK_DIAGRAM_DATA($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DIAGRAM_DATA($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -257,10 +267,10 @@
 	<ng-template kendoTabContent>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTARTUPTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTARTUP >
-		<kendo-label *ngIf="(!labelSTARTUPTop && !isPhonePortrait) && labelSTARTUPVisible" class="form-label" [for]="STARTUP" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP','Startup')"></kendo-label>
+		<kendo-label *ngIf="(!labelSTARTUPTop && !isPhonePortrait) && labelSTARTUPVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP','Startup')"></kendo-label>
 		<label *ngIf="(labelSTARTUPTop || isPhonePortrait) && labelSTARTUPVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP','Startup')}}</label>
 		<input   formControlName="STARTUP"
- kendoTextBox #STARTUP  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP_Hint','Please enter Startup.')"
+ kendoTextBox  #STARTUP  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP_Hint','Please enter Startup.')"
 		(click)="ON_CLICK_STARTUP($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STARTUP($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -276,6 +286,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="BEEP_ON_PRESS"
   #BEEP_ON_PRESS kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.BEEP_ON_PRESS_Hint','Please enter Beep On Press.')"		(click)="ON_CLICK_BEEP_ON_PRESS($event)"
  (change)="onChange_BEEP_ON_PRESS($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.BEEP_ON_PRESS_Hint','Please enter Beep On Press.')" 
  />
 	</kendo-formfield>
 
@@ -283,10 +295,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHUTDOWNTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHUTDOWN >
-		<kendo-label *ngIf="(!labelSHUTDOWNTop && !isPhonePortrait) && labelSHUTDOWNVisible" class="form-label" [for]="SHUTDOWN" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN','Shutdown')"></kendo-label>
+		<kendo-label *ngIf="(!labelSHUTDOWNTop && !isPhonePortrait) && labelSHUTDOWNVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN','Shutdown')"></kendo-label>
 		<label *ngIf="(labelSHUTDOWNTop || isPhonePortrait) && labelSHUTDOWNVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN','Shutdown')}}</label>
 		<input   formControlName="SHUTDOWN"
- kendoTextBox #SHUTDOWN  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN_Hint','Please enter Shutdown.')"
+ kendoTextBox  #SHUTDOWN  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN_Hint','Please enter Shutdown.')"
 		(click)="ON_CLICK_SHUTDOWN($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHUTDOWN($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -302,6 +314,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT"
   #HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT_Hint','Please enter Highlight When Cursor Passes Over It.')"		(click)="ON_CLICK_HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT($event)"
  (change)="onChange_HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT_Hint','Please enter Highlight When Cursor Passes Over It.')" 
  />
 	</kendo-formfield>
 
@@ -356,6 +370,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="DISABLE_HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS"
   #DISABLE_HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISABLE_HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS_Hint','Please enter Disable Highlight When Object Has Focus.')"		(click)="ON_CLICK_DISABLE_HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS($event)"
  (change)="onChange_DISABLE_HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISABLE_HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS_Hint','Please enter Disable Highlight When Object Has Focus.')" 
  />
 	</kendo-formfield>
 
@@ -436,6 +452,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="DISPLAY_ON_SCREEN_KEYBOARD_WHOLE_DISPLAY"
   #DISPLAY_ON_SCREEN_KEYBOARD_WHOLE_DISPLAY kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_ON_SCREEN_KEYBOARD_WHOLE_DISPLAY_Hint','Please enter Display On Screen Keyboard Whole Display.')"		(click)="ON_CLICK_DISPLAY_ON_SCREEN_KEYBOARD_WHOLE_DISPLAY($event)"
  (change)="onChange_DISPLAY_ON_SCREEN_KEYBOARD_WHOLE_DISPLAY($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.DISPLAY_ON_SCREEN_KEYBOARD_WHOLE_DISPLAY_Hint','Please enter Display On Screen Keyboard Whole Display.')" 
  />
 	</kendo-formfield>
 
@@ -474,6 +492,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="ALLOW_BUTTON_ACTION_ON_ERROR"
   #ALLOW_BUTTON_ACTION_ON_ERROR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_BUTTON_ACTION_ON_ERROR_Hint','Please enter Allow Button Action On Error.')"		(click)="ON_CLICK_ALLOW_BUTTON_ACTION_ON_ERROR($event)"
  (change)="onChange_ALLOW_BUTTON_ACTION_ON_ERROR($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_BUTTON_ACTION_ON_ERROR_Hint','Please enter Allow Button Action On Error.')" 
  />
 	</kendo-formfield>
 
@@ -491,32 +511,32 @@
 		<kendo-label *ngIf="(!labelPOSITIONTop && !isPhonePortrait) && labelPOSITIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.POSITION','Position')"></kendo-label>
 		<label *ngIf="(labelPOSITIONTop || isPhonePortrait) && labelPOSITIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.POSITION','Position')}}</label>
 		<ul class="k-radio-list" 		(click)="ON_CLICK_POSITION($event)"
- (change)="onChange_POSITION($event)"      adaptiveMode="auto" 
+ (change)="onChange_POSITION($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrPOSITION">
+			<li class="k-radio-item" *ngFor="let item of lkpArrPOSITION"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'POSITION'"
 					#POSITION ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="POSITION " 
+				<kendo-label  [for]="POSITION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
 	</div>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelX_POSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleX_POS >
-		<kendo-label *ngIf="(!labelX_POSTop && !isPhonePortrait) && labelX_POSVisible" class="form-label" [for]="X_POS" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.X_POS','X Pos')"></kendo-label>
+		<kendo-label *ngIf="(!labelX_POSTop && !isPhonePortrait) && labelX_POSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.X_POS','X Pos')"></kendo-label>
 		<label *ngIf="(labelX_POSTop || isPhonePortrait) && labelX_POSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.X_POS','X Pos')}}</label>
 		<input   formControlName="X_POS"
- kendoTextBox #X_POS  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.X_POS_Hint','Please enter X Pos.')"
+ kendoTextBox  #X_POS  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.X_POS_Hint','Please enter X Pos.')"
 		(click)="ON_CLICK_X_POS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_X_POS($event)"  style="width : 70px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelY_POSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleY_POS >
-		<kendo-label *ngIf="(!labelY_POSTop && !isPhonePortrait) && labelY_POSVisible" class="form-label" [for]="Y_POS" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.Y_POS','Y Pos')"></kendo-label>
+		<kendo-label *ngIf="(!labelY_POSTop && !isPhonePortrait) && labelY_POSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.Y_POS','Y Pos')"></kendo-label>
 		<label *ngIf="(labelY_POSTop || isPhonePortrait) && labelY_POSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.Y_POS','Y Pos')}}</label>
 		<input   formControlName="Y_POS"
- kendoTextBox #Y_POS  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.Y_POS_Hint','Please enter Y Pos.')"
+ kendoTextBox  #Y_POS  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.Y_POS_Hint','Please enter Y Pos.')"
 		(click)="ON_CLICK_Y_POS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_Y_POS($event)"  style="width : 70px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -530,15 +550,17 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="ALLOW_TITLE_BAR"
   #ALLOW_TITLE_BAR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_TITLE_BAR_Hint','Please enter Allow Title Bar.')"		(click)="ON_CLICK_ALLOW_TITLE_BAR($event)"
  (change)="onChange_ALLOW_TITLE_BAR($event)"      adaptiveMode="auto" 
-	 name="ALLOW_TITLE_BAR"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="ALLOW_TITLE_BAR"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.ALLOW_TITLE_BAR_Hint','Please enter Allow Title Bar.')" 
  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTITLE_BARTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTITLE_BAR >
-		<kendo-label *ngIf="(!labelTITLE_BARTop && !isPhonePortrait) && labelTITLE_BARVisible" class="form-label" [for]="TITLE_BAR" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.TITLE_BAR','Title Bar')"></kendo-label>
+		<kendo-label *ngIf="(!labelTITLE_BARTop && !isPhonePortrait) && labelTITLE_BARVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.TITLE_BAR','Title Bar')"></kendo-label>
 		<label *ngIf="(labelTITLE_BARTop || isPhonePortrait) && labelTITLE_BARVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.TITLE_BAR','Title Bar')}}</label>
 		<input   formControlName="TITLE_BAR"
- kendoTextBox #TITLE_BAR  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.TITLE_BAR_Hint','Please enter Title Bar.')"
+ kendoTextBox  #TITLE_BAR  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.TITLE_BAR_Hint','Please enter Title Bar.')"
 		(click)="ON_CLICK_TITLE_BAR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TITLE_BAR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -549,7 +571,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SYSTEM_MENU"
   #SYSTEM_MENU kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SYSTEM_MENU_Hint','Please enter System Menu.')"		(click)="ON_CLICK_SYSTEM_MENU($event)"
  (change)="onChange_SYSTEM_MENU($event)"      adaptiveMode="auto" 
-	 name="SYSTEM_MENU"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="SYSTEM_MENU"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SYSTEM_MENU_Hint','Please enter System Menu.')" 
  />
 	</kendo-formfield>
 
@@ -562,7 +586,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="MINIMIZE_BUTTON"
   #MINIMIZE_BUTTON kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.MINIMIZE_BUTTON_Hint','Please enter Minimize Button.')"		(click)="ON_CLICK_MINIMIZE_BUTTON($event)"
  (change)="onChange_MINIMIZE_BUTTON($event)"      adaptiveMode="auto" 
-	 name="MINIMIZE_BUTTON"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="MINIMIZE_BUTTON"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.MINIMIZE_BUTTON_Hint','Please enter Minimize Button.')" 
  />
 	</kendo-formfield>
 
@@ -607,7 +633,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="MAXIMIZE_BUTTON"
   #MAXIMIZE_BUTTON kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.MAXIMIZE_BUTTON_Hint','Please enter Maximize Button.')"		(click)="ON_CLICK_MAXIMIZE_BUTTON($event)"
  (change)="onChange_MAXIMIZE_BUTTON($event)"      adaptiveMode="auto" 
-	 name="MAXIMIZE_BUTTON"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="MAXIMIZE_BUTTON"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.MAXIMIZE_BUTTON_Hint','Please enter Maximize Button.')" 
  />
 	</kendo-formfield>
 
@@ -617,7 +645,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="PIN_BUTTON"
   #PIN_BUTTON kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.PIN_BUTTON_Hint','Please enter Pin Button.')"		(click)="ON_CLICK_PIN_BUTTON($event)"
  (change)="onChange_PIN_BUTTON($event)"      adaptiveMode="auto" 
-	 name="PIN_BUTTON"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="PIN_BUTTON"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.PIN_BUTTON_Hint','Please enter Pin Button.')" 
  />
 	</kendo-formfield>
 
@@ -627,7 +657,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SIZE_TO_MAIN_WINDOW_AT_RUNTIME"
   #SIZE_TO_MAIN_WINDOW_AT_RUNTIME kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SIZE_TO_MAIN_WINDOW_AT_RUNTIME_Hint','Please enter Size To Main Window at Runtime.')"		(click)="ON_CLICK_SIZE_TO_MAIN_WINDOW_AT_RUNTIME($event)"
  (change)="onChange_SIZE_TO_MAIN_WINDOW_AT_RUNTIME($event)"      adaptiveMode="auto" 
-	 name="SIZE_TO_MAIN_WINDOW_AT_RUNTIME"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="SIZE_TO_MAIN_WINDOW_AT_RUNTIME"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SIZE_TO_MAIN_WINDOW_AT_RUNTIME_Hint','Please enter Size To Main Window at Runtime.')" 
  />
 	</kendo-formfield>
 
@@ -640,6 +672,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="USE_GRADIENT_STYLE"
   #USE_GRADIENT_STYLE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.USE_GRADIENT_STYLE_Hint','Please enter Use Gradient Style.')"		(click)="ON_CLICK_USE_GRADIENT_STYLE($event)"
  (change)="onChange_USE_GRADIENT_STYLE($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.USE_GRADIENT_STYLE_Hint','Please enter Use Gradient Style.')" 
  />
 	</kendo-formfield>
 
@@ -652,7 +686,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SHOW_LAST_ACQUIRED_VALUE"
   #SHOW_LAST_ACQUIRED_VALUE kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHOW_LAST_ACQUIRED_VALUE_Hint','Please enter Show Last Acquired Value.')"		(click)="ON_CLICK_SHOW_LAST_ACQUIRED_VALUE($event)"
  (change)="onChange_SHOW_LAST_ACQUIRED_VALUE($event)"      adaptiveMode="auto" 
-	 name="SHOW_LAST_ACQUIRED_VALUE"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="SHOW_LAST_ACQUIRED_VALUE"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHOW_LAST_ACQUIRED_VALUE_Hint','Please enter Show Last Acquired Value.')" 
  />
 	</kendo-formfield>
 
@@ -681,7 +717,9 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="TRACK_SCREEN_FOR_NAVIGATION"
   #TRACK_SCREEN_FOR_NAVIGATION kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.TRACK_SCREEN_FOR_NAVIGATION_Hint','Please enter Track Screen For Navigation.')"		(click)="ON_CLICK_TRACK_SCREEN_FOR_NAVIGATION($event)"
  (change)="onChange_TRACK_SCREEN_FOR_NAVIGATION($event)"      adaptiveMode="auto" 
-	 name="TRACK_SCREEN_FOR_NAVIGATION"  ToggleValue  [true]= "1" [false]= "0" 
+	 name="TRACK_SCREEN_FOR_NAVIGATION"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.TRACK_SCREEN_FOR_NAVIGATION_Hint','Please enter Track Screen For Navigation.')" 
  />
 	</kendo-formfield>
 
@@ -689,10 +727,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNAVIGATION_HISTORY_SCREEN_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNAVIGATION_HISTORY_SCREEN_NAME >
-		<kendo-label *ngIf="(!labelNAVIGATION_HISTORY_SCREEN_NAMETop && !isPhonePortrait) && labelNAVIGATION_HISTORY_SCREEN_NAMEVisible" class="form-label" [for]="NAVIGATION_HISTORY_SCREEN_NAME" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.NAVIGATION_HISTORY_SCREEN_NAME','Navigation History Screen Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelNAVIGATION_HISTORY_SCREEN_NAMETop && !isPhonePortrait) && labelNAVIGATION_HISTORY_SCREEN_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.NAVIGATION_HISTORY_SCREEN_NAME','Navigation History Screen Name')"></kendo-label>
 		<label *ngIf="(labelNAVIGATION_HISTORY_SCREEN_NAMETop || isPhonePortrait) && labelNAVIGATION_HISTORY_SCREEN_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.NAVIGATION_HISTORY_SCREEN_NAME','Navigation History Screen Name')}}</label>
 		<input   formControlName="NAVIGATION_HISTORY_SCREEN_NAME"
- kendoTextBox #NAVIGATION_HISTORY_SCREEN_NAME  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.NAVIGATION_HISTORY_SCREEN_NAME_Hint','Please enter Navigation History Screen Name.')"
+ kendoTextBox  #NAVIGATION_HISTORY_SCREEN_NAME  [placeholder]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.NAVIGATION_HISTORY_SCREEN_NAME_Hint','Please enter Navigation History Screen Name.')"
 		(click)="ON_CLICK_NAVIGATION_HISTORY_SCREEN_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NAVIGATION_HISTORY_SCREEN_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

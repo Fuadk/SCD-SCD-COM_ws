@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEVENT_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEVENT_ID >
-		<kendo-label *ngIf="(!labelEVENT_IDTop && !isPhonePortrait) && labelEVENT_IDVisible" class="form-label" [for]="EVENT_ID" [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.EVENT_ID','Event Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelEVENT_IDTop && !isPhonePortrait) && labelEVENT_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.EVENT_ID','Event Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelEVENT_IDTop || isPhonePortrait) && labelEVENT_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.EVENT_ID','Event Id') + ' *'}}</label>
 		<input   formControlName="EVENT_ID"
- kendoTextBox #EVENT_ID 
+ kendoTextBox  #EVENT_ID 
 		[readonly]="primarKeyReadOnlyArr.isEVENT_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.EVENT_ID_Hint','Please enter Event Id.')"
 		(click)="ON_CLICK_EVENT_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_EVENT_ID($event)"      adaptiveMode="auto"  />
@@ -68,10 +68,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelACTION_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleACTION_NAME >
-		<kendo-label *ngIf="(!labelACTION_NAMETop && !isPhonePortrait) && labelACTION_NAMEVisible" class="form-label" [for]="ACTION_NAME" [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.ACTION_NAME','Action')"></kendo-label>
+		<kendo-label *ngIf="(!labelACTION_NAMETop && !isPhonePortrait) && labelACTION_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.ACTION_NAME','Action')"></kendo-label>
 		<label *ngIf="(labelACTION_NAMETop || isPhonePortrait) && labelACTION_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.ACTION_NAME','Action')}}</label>
 		<input   formControlName="ACTION_NAME"
- kendoTextBox #ACTION_NAME  [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.ACTION_NAME_Hint','Please enter Action Name.')"
+ kendoTextBox  #ACTION_NAME  [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.ACTION_NAME_Hint','Please enter Action Name.')"
 		(click)="ON_CLICK_ACTION_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ACTION_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -87,6 +87,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="ENABLED"
   #ENABLED kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.ENABLED_Hint','Please enter Enabled.')"		(click)="ON_CLICK_ENABLED($event)"
  (change)="onChange_ENABLED($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.ENABLED_Hint','Please enter Enabled.')" 
  />
 	</kendo-formfield>
 
@@ -94,10 +96,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDESCRIPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDESCRIPTION >
-		<kendo-label *ngIf="(!labelDESCRIPTIONTop && !isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label" [for]="DESCRIPTION" [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.DESCRIPTION','Description')"></kendo-label>
+		<kendo-label *ngIf="(!labelDESCRIPTIONTop && !isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.DESCRIPTION','Description')"></kendo-label>
 		<label *ngIf="(labelDESCRIPTIONTop || isPhonePortrait) && labelDESCRIPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.DESCRIPTION','Description')}}</label>
 		<input   formControlName="DESCRIPTION"
- kendoTextBox #DESCRIPTION  [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.DESCRIPTION_Hint','Please enter Description.')"
+ kendoTextBox  #DESCRIPTION  [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.DESCRIPTION_Hint','Please enter Description.')"
 		(click)="ON_CLICK_DESCRIPTION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DESCRIPTION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -106,10 +108,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAI_EXPRESSIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAI_EXPRESSION >
-		<kendo-label *ngIf="(!labelAI_EXPRESSIONTop && !isPhonePortrait) && labelAI_EXPRESSIONVisible" class="form-label" [for]="AI_EXPRESSION" [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.AI_EXPRESSION','Ai Expression')"></kendo-label>
+		<kendo-label *ngIf="(!labelAI_EXPRESSIONTop && !isPhonePortrait) && labelAI_EXPRESSIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.AI_EXPRESSION','Ai Expression')"></kendo-label>
 		<label *ngIf="(labelAI_EXPRESSIONTop || isPhonePortrait) && labelAI_EXPRESSIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.AI_EXPRESSION','Ai Expression')}}</label>
 		<input   formControlName="AI_EXPRESSION"
- kendoTextBox #AI_EXPRESSION  [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.AI_EXPRESSION_Hint','Please enter Ai Expression.')"
+ kendoTextBox  #AI_EXPRESSION  [placeholder]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.AI_EXPRESSION_Hint','Please enter Ai Expression.')"
 		(click)="ON_CLICK_AI_EXPRESSION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_AI_EXPRESSION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -117,9 +119,16 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_EDITORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_EDITOR >
+		<kendo-label *ngIf="(!labelEXPRESSION_EDITORTop && !isPhonePortrait) && labelEXPRESSION_EDITORVisible" class="form-label" [for]="EXPRESSION_EDITOR" [text]="starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.EXPRESSION_EDITOR','Expression Editor')"></kendo-label>
+		<label *ngIf="(labelEXPRESSION_EDITORTop || isPhonePortrait) && labelEXPRESSION_EDITORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AE_EVENT.scdeventScdAeEvent.EXPRESSION_EDITOR','Expression Editor')}}</label>
 		  <app-scd-ee-expression-editor [detail_Input]="formRec" 
- 			 [setComponentConfig_Input]="Comp_Config" >
+ 			 #EXPRESSION_EDITOR
+ 			 [setComponentConfig_Input]="Comp_Config" 
+			(valueChange)="onValueChange_EXPRESSION_EDITOR($event)" 
+ 			 >
 		 </app-scd-ee-expression-editor>
+	</kendo-formfield>
 
 
 </div>

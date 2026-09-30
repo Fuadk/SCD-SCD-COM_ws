@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelACTION_GROUP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleACTION_GROUP_ID >
-		<kendo-label *ngIf="(!labelACTION_GROUP_IDTop && !isPhonePortrait) && labelACTION_GROUP_IDVisible" class="form-label" [for]="ACTION_GROUP_ID" [text]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.ACTION_GROUP_ID','Action Group Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelACTION_GROUP_IDTop && !isPhonePortrait) && labelACTION_GROUP_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.ACTION_GROUP_ID','Action Group Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelACTION_GROUP_IDTop || isPhonePortrait) && labelACTION_GROUP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.ACTION_GROUP_ID','Action Group Id') + ' *'}}</label>
 		<input   formControlName="ACTION_GROUP_ID"
- kendoTextBox #ACTION_GROUP_ID 
+ kendoTextBox  #ACTION_GROUP_ID 
 		[readonly]="primarKeyReadOnlyArr.isACTION_GROUP_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.ACTION_GROUP_ID_Hint','Please enter Action Group Id.')"
 		(click)="ON_CLICK_ACTION_GROUP_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ACTION_GROUP_ID($event)"      adaptiveMode="auto"  />
@@ -71,19 +71,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelGROUP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleGROUP_ID >
-		<kendo-label *ngIf="(!labelGROUP_IDTop && !isPhonePortrait) && labelGROUP_IDVisible" class="form-label" [for]="GROUP_ID" [text]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_ID','Group Id')"></kendo-label>
+		<kendo-label *ngIf="(!labelGROUP_IDTop && !isPhonePortrait) && labelGROUP_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_ID','Group Id')"></kendo-label>
 		<label *ngIf="(labelGROUP_IDTop || isPhonePortrait) && labelGROUP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_ID','Group Id')}}</label>
 		<input   formControlName="GROUP_ID"
- kendoTextBox #GROUP_ID  [placeholder]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_ID_Hint','Please enter Group Id.')"
+ kendoTextBox  #GROUP_ID  [placeholder]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_ID_Hint','Please enter Group Id.')"
 		(click)="ON_CLICK_GROUP_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_GROUP_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelGROUP_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleGROUP_NAME >
-		<kendo-label *ngIf="(!labelGROUP_NAMETop && !isPhonePortrait) && labelGROUP_NAMEVisible" class="form-label" [for]="GROUP_NAME" [text]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_NAME','Group Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelGROUP_NAMETop && !isPhonePortrait) && labelGROUP_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_NAME','Group Name')"></kendo-label>
 		<label *ngIf="(labelGROUP_NAMETop || isPhonePortrait) && labelGROUP_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_NAME','Group Name')}}</label>
 		<input   formControlName="GROUP_NAME"
- kendoTextBox #GROUP_NAME  [placeholder]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_NAME_Hint','Please enter Group Name.')"
+ kendoTextBox  #GROUP_NAME  [placeholder]="starServices.getNLS([],'SCD_AAG_ACTION_GROUP.scdactionGroupScdAagActionGroup.GROUP_NAME_Hint','Please enter Group Name.')"
 		(click)="ON_CLICK_GROUP_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_GROUP_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

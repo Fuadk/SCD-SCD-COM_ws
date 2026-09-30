@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_GENERAL_ID >
-		<kendo-label *ngIf="(!labelSHAPE_GENERAL_IDTop && !isPhonePortrait) && labelSHAPE_GENERAL_IDVisible" class="form-label" [for]="SHAPE_GENERAL_ID" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.SHAPE_GENERAL_ID','Shape General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelSHAPE_GENERAL_IDTop && !isPhonePortrait) && labelSHAPE_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.SHAPE_GENERAL_ID','Shape General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelSHAPE_GENERAL_IDTop || isPhonePortrait) && labelSHAPE_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.SHAPE_GENERAL_ID','Shape General Id') + ' *'}}</label>
 		<input   formControlName="SHAPE_GENERAL_ID"
- kendoTextBox #SHAPE_GENERAL_ID 
+ kendoTextBox  #SHAPE_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.SHAPE_GENERAL_ID_Hint','Please enter Shape General Id.')"
 		(click)="ON_CLICK_SHAPE_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHAPE_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -103,10 +103,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLINE_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLINE_WIDTH >
-		<kendo-label *ngIf="(!labelLINE_WIDTHTop && !isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label" [for]="LINE_WIDTH" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH','Line Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelLINE_WIDTHTop && !isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH','Line Width')"></kendo-label>
 		<label *ngIf="(labelLINE_WIDTHTop || isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH','Line Width')}}</label>
 		<input   formControlName="LINE_WIDTH"
- kendoTextBox #LINE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH_Hint','Please enter Line Width.')"
+ kendoTextBox  #LINE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.LINE_WIDTH_Hint','Please enter Line Width.')"
 		(click)="ON_CLICK_LINE_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LINE_WIDTH($event)"  style="width : 65px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -134,10 +134,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_WIDTH >
-		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label" [for]="BORDER_WIDTH" [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
 		<label *ngIf="(labelBORDER_WIDTHTop || isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_WIDTH','Border Width')}}</label>
 		<input   formControlName="BORDER_WIDTH"
- kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
+ kendoTextBox  #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -154,7 +154,6 @@
 	 name="BORDER_USES_BACK_COLOR"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -253,7 +252,6 @@
 	 name="BLINK"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_SG_SHAPE_GENERAL.scdshapeGeneralScdSgShapeGeneral.BLINK_Hint','Please enter Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 </div>

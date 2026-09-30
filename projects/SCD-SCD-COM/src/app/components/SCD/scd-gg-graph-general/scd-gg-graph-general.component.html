@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelGRAPH_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleGRAPH_GENERAL_ID >
-		<kendo-label *ngIf="(!labelGRAPH_GENERAL_IDTop && !isPhonePortrait) && labelGRAPH_GENERAL_IDVisible" class="form-label" [for]="GRAPH_GENERAL_ID" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.GRAPH_GENERAL_ID','Graph General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelGRAPH_GENERAL_IDTop && !isPhonePortrait) && labelGRAPH_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.GRAPH_GENERAL_ID','Graph General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelGRAPH_GENERAL_IDTop || isPhonePortrait) && labelGRAPH_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.GRAPH_GENERAL_ID','Graph General Id') + ' *'}}</label>
 		<input   formControlName="GRAPH_GENERAL_ID"
- kendoTextBox #GRAPH_GENERAL_ID 
+ kendoTextBox  #GRAPH_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isGRAPH_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.GRAPH_GENERAL_ID_Hint','Please enter Graph General Id.')"
 		(click)="ON_CLICK_GRAPH_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_GRAPH_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -123,15 +123,14 @@
 	 name="BORDER_USES_BACK_COLOR"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_WIDTH >
-		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label" [for]="BORDER_WIDTH" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
 		<label *ngIf="(labelBORDER_WIDTHTop || isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BORDER_WIDTH','Border Width')}}</label>
 		<input   formControlName="BORDER_WIDTH"
- kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
+ kendoTextBox  #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -228,7 +227,6 @@
 	 name="BLINK"  ToggleValue  [true]= "'Y'" [false]= "''" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BLINK_Hint','Please enter Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -271,10 +269,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLINE_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLINE_WIDTH >
-		<kendo-label *ngIf="(!labelLINE_WIDTHTop && !isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label" [for]="LINE_WIDTH" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.LINE_WIDTH','Line Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelLINE_WIDTHTop && !isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.LINE_WIDTH','Line Width')"></kendo-label>
 		<label *ngIf="(labelLINE_WIDTHTop || isPhonePortrait) && labelLINE_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.LINE_WIDTH','Line Width')}}</label>
 		<input   formControlName="LINE_WIDTH"
- kendoTextBox #LINE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.LINE_WIDTH_Hint','Please enter Line Width.')"
+ kendoTextBox  #LINE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.LINE_WIDTH_Hint','Please enter Line Width.')"
 		(click)="ON_CLICK_LINE_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LINE_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -302,10 +300,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNEEDLE_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNEEDLE_WIDTH >
-		<kendo-label *ngIf="(!labelNEEDLE_WIDTHTop && !isPhonePortrait) && labelNEEDLE_WIDTHVisible" class="form-label" [for]="NEEDLE_WIDTH" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.NEEDLE_WIDTH','Needle Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelNEEDLE_WIDTHTop && !isPhonePortrait) && labelNEEDLE_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.NEEDLE_WIDTH','Needle Width')"></kendo-label>
 		<label *ngIf="(labelNEEDLE_WIDTHTop || isPhonePortrait) && labelNEEDLE_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.NEEDLE_WIDTH','Needle Width')}}</label>
 		<input   formControlName="NEEDLE_WIDTH"
- kendoTextBox #NEEDLE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.NEEDLE_WIDTH_Hint','Please enter Needle Width.')"
+ kendoTextBox  #NEEDLE_WIDTH  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.NEEDLE_WIDTH_Hint','Please enter Needle Width.')"
 		(click)="ON_CLICK_NEEDLE_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NEEDLE_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -414,19 +412,19 @@
 		<div *ngIf="FormStepsArr[2].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMINIMUMTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMINIMUM >
-		<kendo-label *ngIf="(!labelMINIMUMTop && !isPhonePortrait) && labelMINIMUMVisible" class="form-label" [for]="MINIMUM" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MINIMUM','Minimum')"></kendo-label>
+		<kendo-label *ngIf="(!labelMINIMUMTop && !isPhonePortrait) && labelMINIMUMVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MINIMUM','Minimum')"></kendo-label>
 		<label *ngIf="(labelMINIMUMTop || isPhonePortrait) && labelMINIMUMVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MINIMUM','Minimum')}}</label>
 		<input   formControlName="MINIMUM"
- kendoTextBox #MINIMUM  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MINIMUM_Hint','Please enter Minimum.')"
+ kendoTextBox  #MINIMUM  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MINIMUM_Hint','Please enter Minimum.')"
 		(click)="ON_CLICK_MINIMUM($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MINIMUM($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAXIMUM_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAXIMUM_VALUE >
-		<kendo-label *ngIf="(!labelMAXIMUM_VALUETop && !isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label" [for]="MAXIMUM_VALUE" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MAXIMUM_VALUE','Maximum Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelMAXIMUM_VALUETop && !isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MAXIMUM_VALUE','Maximum Value')"></kendo-label>
 		<label *ngIf="(labelMAXIMUM_VALUETop || isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MAXIMUM_VALUE','Maximum Value')}}</label>
 		<input   formControlName="MAXIMUM_VALUE"
- kendoTextBox #MAXIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MAXIMUM_VALUE_Hint','Please enter Maximum Value.')"
+ kendoTextBox  #MAXIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.MAXIMUM_VALUE_Hint','Please enter Maximum Value.')"
 		(click)="ON_CLICK_MAXIMUM_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAXIMUM_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -523,10 +521,10 @@
 		<div *ngIf="FormStepsArr[5].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHRESHOLD_1_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHRESHOLD_1_VALUE >
-		<kendo-label *ngIf="(!labelTHRESHOLD_1_VALUETop && !isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label" [for]="THRESHOLD_1_VALUE" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_1_VALUE','Threshold 1 Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelTHRESHOLD_1_VALUETop && !isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_1_VALUE','Threshold 1 Value')"></kendo-label>
 		<label *ngIf="(labelTHRESHOLD_1_VALUETop || isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_1_VALUE','Threshold 1 Value')}}</label>
 		<input   formControlName="THRESHOLD_1_VALUE"
- kendoTextBox #THRESHOLD_1_VALUE  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_1_VALUE_Hint','Please enter Threshold 1 Value.')"
+ kendoTextBox  #THRESHOLD_1_VALUE  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_1_VALUE_Hint','Please enter Threshold 1 Value.')"
 		(click)="ON_CLICK_THRESHOLD_1_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_THRESHOLD_1_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -553,7 +551,6 @@
 	 name="BLINK_1"  ToggleValue  [true]= "'Y'" [false]= "''" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BLINK_1_Hint','Please enter Blink 1.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -564,10 +561,10 @@
 		<div *ngIf="FormStepsArr[6].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHRESHOLD_2_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHRESHOLD_2_VALUE >
-		<kendo-label *ngIf="(!labelTHRESHOLD_2_VALUETop && !isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label" [for]="THRESHOLD_2_VALUE" [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_2_VALUE','Threshold 2 Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelTHRESHOLD_2_VALUETop && !isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_2_VALUE','Threshold 2 Value')"></kendo-label>
 		<label *ngIf="(labelTHRESHOLD_2_VALUETop || isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_2_VALUE','Threshold 2 Value')}}</label>
 		<input   formControlName="THRESHOLD_2_VALUE"
- kendoTextBox #THRESHOLD_2_VALUE  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_2_VALUE_Hint','Please enter Threshold 2 Value.')"
+ kendoTextBox  #THRESHOLD_2_VALUE  [placeholder]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.THRESHOLD_2_VALUE_Hint','Please enter Threshold 2 Value.')"
 		(click)="ON_CLICK_THRESHOLD_2_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_THRESHOLD_2_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -594,7 +591,6 @@
 	 name="BLINK_2"  ToggleValue  [true]= "'Y'" [false]= "''" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_GG_GRAPH_GENERAL.scdgraphGeneralScdGgGraphGeneral.BLINK_2_Hint','Please enter Blink 2.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 </div>

@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCOMMUNICATION_SETUP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCOMMUNICATION_SETUP_ID >
-		<kendo-label *ngIf="(!labelCOMMUNICATION_SETUP_IDTop && !isPhonePortrait) && labelCOMMUNICATION_SETUP_IDVisible" class="form-label" [for]="COMMUNICATION_SETUP_ID" [text]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.COMMUNICATION_SETUP_ID','Communication Setup Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelCOMMUNICATION_SETUP_IDTop && !isPhonePortrait) && labelCOMMUNICATION_SETUP_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.COMMUNICATION_SETUP_ID','Communication Setup Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelCOMMUNICATION_SETUP_IDTop || isPhonePortrait) && labelCOMMUNICATION_SETUP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.COMMUNICATION_SETUP_ID','Communication Setup Id') + ' *'}}</label>
 		<input   formControlName="COMMUNICATION_SETUP_ID"
- kendoTextBox #COMMUNICATION_SETUP_ID 
+ kendoTextBox  #COMMUNICATION_SETUP_ID 
 		[readonly]="primarKeyReadOnlyArr.isCOMMUNICATION_SETUP_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.COMMUNICATION_SETUP_ID_Hint','Please enter Communication Setup Id.')"
 		(click)="ON_CLICK_COMMUNICATION_SETUP_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_COMMUNICATION_SETUP_ID($event)"      adaptiveMode="auto"  />
@@ -92,10 +92,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSERVER_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSERVER_NAME >
-		<kendo-label *ngIf="(!labelSERVER_NAMETop && !isPhonePortrait) && labelSERVER_NAMEVisible" class="form-label" [for]="SERVER_NAME" [text]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.SERVER_NAME','Server Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelSERVER_NAMETop && !isPhonePortrait) && labelSERVER_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.SERVER_NAME','Server Name')"></kendo-label>
 		<label *ngIf="(labelSERVER_NAMETop || isPhonePortrait) && labelSERVER_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.SERVER_NAME','Server Name')}}</label>
 		<input   formControlName="SERVER_NAME"
- kendoTextBox #SERVER_NAME  [placeholder]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.SERVER_NAME_Hint','Please enter Server Name.')"
+ kendoTextBox  #SERVER_NAME  [placeholder]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.SERVER_NAME_Hint','Please enter Server Name.')"
 		(click)="ON_CLICK_SERVER_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SERVER_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -109,6 +109,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="UPLOAD_ALL_EXTENDED_TAG_PROPERTIES"
   #UPLOAD_ALL_EXTENDED_TAG_PROPERTIES kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.UPLOAD_ALL_EXTENDED_TAG_PROPERTIES_Hint','Please enter Upload All Extended Tag Properties.')"		(click)="ON_CLICK_UPLOAD_ALL_EXTENDED_TAG_PROPERTIES($event)"
  (change)="onChange_UPLOAD_ALL_EXTENDED_TAG_PROPERTIES($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.UPLOAD_ALL_EXTENDED_TAG_PROPERTIES_Hint','Please enter Upload All Extended Tag Properties.')" 
  />
 	</kendo-formfield>
 
@@ -118,6 +120,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="PROVIDE_PASS_THROUGH_DESCRIPTION_FOR_TAGS"
   #PROVIDE_PASS_THROUGH_DESCRIPTION_FOR_TAGS kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.PROVIDE_PASS_THROUGH_DESCRIPTION_FOR_TAGS_Hint','Please enter Provide Pass Through Description For Tags.')"		(click)="ON_CLICK_PROVIDE_PASS_THROUGH_DESCRIPTION_FOR_TAGS($event)"
  (change)="onChange_PROVIDE_PASS_THROUGH_DESCRIPTION_FOR_TAGS($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_ACS_COMMUNICATION_SETUP_DETAILS.scdcommunicationSetupScdAcsCommunicationSetupDetails.PROVIDE_PASS_THROUGH_DESCRIPTION_FOR_TAGS_Hint','Please enter Provide Pass Through Description For Tags.')" 
  />
 	</kendo-formfield>
 

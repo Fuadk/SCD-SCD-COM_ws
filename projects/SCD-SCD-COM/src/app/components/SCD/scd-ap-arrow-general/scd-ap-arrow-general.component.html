@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelARROW_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleARROW_GENERAL_ID >
-		<kendo-label *ngIf="(!labelARROW_GENERAL_IDTop && !isPhonePortrait) && labelARROW_GENERAL_IDVisible" class="form-label" [for]="ARROW_GENERAL_ID" [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.ARROW_GENERAL_ID','Arrow General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelARROW_GENERAL_IDTop && !isPhonePortrait) && labelARROW_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.ARROW_GENERAL_ID','Arrow General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelARROW_GENERAL_IDTop || isPhonePortrait) && labelARROW_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.ARROW_GENERAL_ID','Arrow General Id') + ' *'}}</label>
 		<input   formControlName="ARROW_GENERAL_ID"
- kendoTextBox #ARROW_GENERAL_ID 
+ kendoTextBox  #ARROW_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isARROW_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.ARROW_GENERAL_ID_Hint','Please enter Arrow General Id.')"
 		(click)="ON_CLICK_ARROW_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ARROW_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -71,19 +71,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_DATA >
-		<kendo-label *ngIf="(!labelEXPRESSION_DATATop && !isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label" [for]="EXPRESSION_DATA" [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.EXPRESSION_DATA','Expression Data')"></kendo-label>
+		<kendo-label *ngIf="(!labelEXPRESSION_DATATop && !isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.EXPRESSION_DATA','Expression Data')"></kendo-label>
 		<label *ngIf="(labelEXPRESSION_DATATop || isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.EXPRESSION_DATA','Expression Data')}}</label>
 		<input   formControlName="EXPRESSION_DATA"
- kendoTextBox #EXPRESSION_DATA  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.EXPRESSION_DATA_Hint','Please enter Expression Data.')"
+ kendoTextBox  #EXPRESSION_DATA  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.EXPRESSION_DATA_Hint','Please enter Expression Data.')"
 		(click)="ON_CLICK_EXPRESSION_DATA($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_EXPRESSION_DATA($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSPECIFYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSPECIFY >
-		<kendo-label *ngIf="(!labelSPECIFYTop && !isPhonePortrait) && labelSPECIFYVisible" class="form-label" [for]="SPECIFY" [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.SPECIFY','Specify')"></kendo-label>
+		<kendo-label *ngIf="(!labelSPECIFYTop && !isPhonePortrait) && labelSPECIFYVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.SPECIFY','Specify')"></kendo-label>
 		<label *ngIf="(labelSPECIFYTop || isPhonePortrait) && labelSPECIFYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.SPECIFY','Specify')}}</label>
 		<input   formControlName="SPECIFY"
- kendoTextBox #SPECIFY  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.SPECIFY_Hint','Please enter Specify.')"
+ kendoTextBox  #SPECIFY  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.SPECIFY_Hint','Please enter Specify.')"
 		(click)="ON_CLICK_SPECIFY($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SPECIFY($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -92,19 +92,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMINTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMIN >
-		<kendo-label *ngIf="(!labelMINTop && !isPhonePortrait) && labelMINVisible" class="form-label" [for]="MIN" [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MIN','Min')"></kendo-label>
+		<kendo-label *ngIf="(!labelMINTop && !isPhonePortrait) && labelMINVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MIN','Min')"></kendo-label>
 		<label *ngIf="(labelMINTop || isPhonePortrait) && labelMINVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MIN','Min')}}</label>
 		<input   formControlName="MIN"
- kendoTextBox #MIN  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MIN_Hint','Please enter Min.')"
+ kendoTextBox  #MIN  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MIN_Hint','Please enter Min.')"
 		(click)="ON_CLICK_MIN($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MIN($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAX >
-		<kendo-label *ngIf="(!labelMAXTop && !isPhonePortrait) && labelMAXVisible" class="form-label" [for]="MAX" [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MAX','Max')"></kendo-label>
+		<kendo-label *ngIf="(!labelMAXTop && !isPhonePortrait) && labelMAXVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MAX','Max')"></kendo-label>
 		<label *ngIf="(labelMAXTop || isPhonePortrait) && labelMAXVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MAX','Max')}}</label>
 		<input   formControlName="MAX"
- kendoTextBox #MAX  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MAX_Hint','Please enter Max.')"
+ kendoTextBox  #MAX  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.MAX_Hint','Please enter Max.')"
 		(click)="ON_CLICK_MAX($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAX($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -113,10 +113,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDIRECTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDIRECTION >
-		<kendo-label *ngIf="(!labelDIRECTIONTop && !isPhonePortrait) && labelDIRECTIONVisible" class="form-label" [for]="DIRECTION" [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.DIRECTION','Direction')"></kendo-label>
+		<kendo-label *ngIf="(!labelDIRECTIONTop && !isPhonePortrait) && labelDIRECTIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.DIRECTION','Direction')"></kendo-label>
 		<label *ngIf="(labelDIRECTIONTop || isPhonePortrait) && labelDIRECTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.DIRECTION','Direction')}}</label>
 		<input   formControlName="DIRECTION"
- kendoTextBox #DIRECTION  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.DIRECTION_Hint','Please enter Direction.')"
+ kendoTextBox  #DIRECTION  [placeholder]="starServices.getNLS([],'SCD_AP_ARROW_GENERAL.scdarrowGeneralScdApArrowGeneral.DIRECTION_Hint','Please enter Direction.')"
 		(click)="ON_CLICK_DIRECTION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DIRECTION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

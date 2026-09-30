@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBUTTON_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBUTTON_GENERAL_ID >
-		<kendo-label *ngIf="(!labelBUTTON_GENERAL_IDTop && !isPhonePortrait) && labelBUTTON_GENERAL_IDVisible" class="form-label" [for]="BUTTON_GENERAL_ID" [text]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.BUTTON_GENERAL_ID','Button General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelBUTTON_GENERAL_IDTop && !isPhonePortrait) && labelBUTTON_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.BUTTON_GENERAL_ID','Button General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelBUTTON_GENERAL_IDTop || isPhonePortrait) && labelBUTTON_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.BUTTON_GENERAL_ID','Button General Id') + ' *'}}</label>
 		<input   formControlName="BUTTON_GENERAL_ID"
- kendoTextBox #BUTTON_GENERAL_ID 
+ kendoTextBox  #BUTTON_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isBUTTON_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.BUTTON_GENERAL_ID_Hint','Please enter Button General Id.')"
 		(click)="ON_CLICK_BUTTON_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BUTTON_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -92,18 +92,17 @@
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'BUTTON_STYLE'"
 					#BUTTON_STYLE ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="BUTTON_STYLE " 
+				<kendo-label  [for]="BUTTON_STYLE " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>
 	</div>
-	
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelWIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleWIDTH >
-		<kendo-label *ngIf="(!labelWIDTHTop && !isPhonePortrait) && labelWIDTHVisible" class="form-label" [for]="WIDTH" [text]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.WIDTH','Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelWIDTHTop && !isPhonePortrait) && labelWIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.WIDTH','Width')"></kendo-label>
 		<label *ngIf="(labelWIDTHTop || isPhonePortrait) && labelWIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.WIDTH','Width')}}</label>
 		<input   formControlName="WIDTH"
- kendoTextBox #WIDTH  [placeholder]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.WIDTH_Hint','Please enter Width.')"
+ kendoTextBox  #WIDTH  [placeholder]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.WIDTH_Hint','Please enter Width.')"
 		(click)="ON_CLICK_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -123,7 +122,6 @@
 	 name="CAPTURE_CURSOR"  ToggleValue  [true]= "'1'" [false]= "'0'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.CAPTURE_CURSOR_Hint','Please enter Capture Cursor.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -139,7 +137,6 @@
 	 name="HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS_Hint','Please enter Highlight When Object Has Focus.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -147,10 +144,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAB_INDEXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAB_INDEX >
-		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label" [for]="TAB_INDEX" [text]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.TAB_INDEX','Tab Index')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.TAB_INDEX','Tab Index')"></kendo-label>
 		<label *ngIf="(labelTAB_INDEXTop || isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.TAB_INDEX','Tab Index')}}</label>
 		<input   formControlName="TAB_INDEX"
- kendoTextBox #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
+ kendoTextBox  #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_BG_BUTTON_GENERAL.scdbuttonGeneralScdBgButtonGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
 		(click)="ON_CLICK_TAB_INDEX($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAB_INDEX($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

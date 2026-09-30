@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -67,6 +68,7 @@ export class ScdOpcuaServerDiagnosticScdOsrtdOpcuaServerDiagnosticsFormtabsCompo
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -102,7 +104,7 @@ export class ScdOpcuaServerDiagnosticScdOsrtdOpcuaServerDiagnosticsFormtabsCompo
   public compSelector = 'app-scd-osrtd-opcua-server-diagnostics';
   public PK_AUTO = 'OPCUA_SERVER_DIAGNOSTIC_ID';
   public customerFacing = false;
-  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":""},{"CODE":"1","CODETEXT_LANG":"OPC Subscriptions"},{"CODE":"2","CODETEXT_LANG":"Live Data"},{"CODE":"3","CODETEXT_LANG":"OPC Write Operations"},{"CODE":"4","CODETEXT_LANG":"OPC Server"},{"CODE":"5","CODETEXT_LANG":"Connector Service"}] ;
+  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"OPC Subscriptions","visible":true},{"CODE":"2","CODETEXT_LANG":"Live Data","visible":true},{"CODE":"3","CODETEXT_LANG":"OPC Write Operations","visible":true},{"CODE":"4","CODETEXT_LANG":"OPC Server","visible":true},{"CODE":"5","CODETEXT_LANG":"Connector Service","visible":true}] ;
 public labelOPCUA_SERVER_DIAGNOSTIC_IDTop=false;
 public labelOPCUA_SERVER_DIAGNOSTIC_IDVisible=true;
 public labelOPCUA_SERVER_IDTop=false;
@@ -214,8 +216,14 @@ public disableFAILED_ENDPOINTS = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
+    public responsive: BreakpointObserver, 
+   private starNotify: StarNotifyService,  
+    public starServices: starServices
+   ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -287,8 +295,30 @@ public disableFAILED_ENDPOINTS = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -532,6 +562,17 @@ public disableFAILED_ENDPOINTS = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -1561,6 +1602,7 @@ public uploadimage = false;
 public showIcon=true;
 public svg_arr = [];
 public svg_data = [];
+
 
 public update_svgicons(formGroup){
   this.showIcon = false;

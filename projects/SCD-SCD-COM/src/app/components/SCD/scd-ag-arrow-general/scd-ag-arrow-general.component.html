@@ -49,13 +49,13 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelARROW_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleARROW_GENERAL_ID >
-		<kendo-label *ngIf="(!labelARROW_GENERAL_IDTop && !isPhonePortrait) && labelARROW_GENERAL_IDVisible" class="form-label" [for]="ARROW_GENERAL_ID" [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.ARROW_GENERAL_ID','Arrow General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelARROW_GENERAL_IDTop && !isPhonePortrait) && labelARROW_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.ARROW_GENERAL_ID','Arrow General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelARROW_GENERAL_IDTop || isPhonePortrait) && labelARROW_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.ARROW_GENERAL_ID','Arrow General Id') + ' *'}}</label>
 		<input   formControlName="ARROW_GENERAL_ID"
- kendoTextBox #ARROW_GENERAL_ID 
+ kendoTextBox  #ARROW_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isARROW_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.ARROW_GENERAL_ID_Hint','Please enter Arrow General Id.')"
 		(click)="ON_CLICK_ARROW_GENERAL_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ARROW_GENERAL_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
@@ -66,7 +66,7 @@
 
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -82,9 +82,16 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_DATA >
+		<kendo-label *ngIf="(!labelEXPRESSION_DATATop && !isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label" [for]="EXPRESSION_DATA" [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.EXPRESSION_DATA','Expression Data')"></kendo-label>
+		<label *ngIf="(labelEXPRESSION_DATATop || isPhonePortrait) && labelEXPRESSION_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.EXPRESSION_DATA','Expression Data')}}</label>
 		  <app-scd-ee-expression-editor [detail_Input]="formRec" 
- 			 [setComponentConfig_Input]="Comp_Config" >
+ 			 #EXPRESSION_DATA
+ 			 [setComponentConfig_Input]="Comp_Config" 
+			(valueChange)="onValueChange_EXPRESSION_DATA($event)" 
+ 			 >
 		 </app-scd-ee-expression-editor>
+	</kendo-formfield>
 
 
 </div>
@@ -97,26 +104,28 @@
 		<label *ngIf="(labelSPECIFYTop || isPhonePortrait) && labelSPECIFYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.SPECIFY','Specify')}}</label>
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SPECIFY"
   #SPECIFY kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.SPECIFY_Hint','Please enter Specify.')"		(click)="ON_CLICK_SPECIFY($event)"
-     adaptiveMode="auto" 
+ (change)="onChange_SPECIFY($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.SPECIFY_Hint','Please enter Specify.')" 
  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMINTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMIN >
-		<kendo-label *ngIf="(!labelMINTop && !isPhonePortrait) && labelMINVisible" class="form-label" [for]="MIN" [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MIN','Min')"></kendo-label>
+		<kendo-label *ngIf="(!labelMINTop && !isPhonePortrait) && labelMINVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MIN','Min')"></kendo-label>
 		<label *ngIf="(labelMINTop || isPhonePortrait) && labelMINVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MIN','Min')}}</label>
 		<input   formControlName="MIN"
- kendoTextBox #MIN  [placeholder]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MIN_Hint','Please enter Min.')"
+ kendoTextBox  #MIN  [placeholder]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MIN_Hint','Please enter Min.')"
 		(click)="ON_CLICK_MIN($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MIN($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAX >
-		<kendo-label *ngIf="(!labelMAXTop && !isPhonePortrait) && labelMAXVisible" class="form-label" [for]="MAX" [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MAX','Max')"></kendo-label>
+		<kendo-label *ngIf="(!labelMAXTop && !isPhonePortrait) && labelMAXVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MAX','Max')"></kendo-label>
 		<label *ngIf="(labelMAXTop || isPhonePortrait) && labelMAXVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MAX','Max')}}</label>
 		<input   formControlName="MAX"
- kendoTextBox #MAX  [placeholder]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MAX_Hint','Please enter Max.')"
+ kendoTextBox  #MAX  [placeholder]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.MAX_Hint','Please enter Max.')"
 		(click)="ON_CLICK_MAX($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAX($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -129,13 +138,13 @@
 		<kendo-label *ngIf="(!labelDIRECTIONTop && !isPhonePortrait) && labelDIRECTIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.DIRECTION','Direction')"></kendo-label>
 		<label *ngIf="(labelDIRECTIONTop || isPhonePortrait) && labelDIRECTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AG_ARROW_GENERAL.scdarrowGeneralScdAgArrowGeneral.DIRECTION','Direction')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_DIRECTION($event)"
-
+ (change)="onChange_DIRECTION($event)" 
 >
 			<li class="k-radio-item" *ngFor="let item of lkpArrDIRECTION"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'DIRECTION'"
 					#DIRECTION ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="DIRECTION " 
+				<kendo-label  [for]="DIRECTION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>

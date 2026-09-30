@@ -1,15 +1,10 @@
-ul.k-radio-list-horizontal {
+.k-radio-list-horizontal {
   display: inline-grid !important;
   grid-template-columns: repeat(3, max-content);
   column-gap: 4px;
   row-gap: 2px;
   justify-content: start;
-
-  > li.k-radio-item {
-    // hide the text label but keep the radio input
-    > kendo-label,
-    > .kendo-label {
+}
+.k-radio-label {
       display: none !important;
     }
-  }
-}

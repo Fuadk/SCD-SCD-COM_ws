@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMULTISTATE_INDICATOR_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMULTISTATE_INDICATOR_GENERAL_ID >
-		<kendo-label *ngIf="(!labelMULTISTATE_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelMULTISTATE_INDICATOR_GENERAL_IDVisible" class="form-label" [for]="MULTISTATE_INDICATOR_GENERAL_ID" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.MULTISTATE_INDICATOR_GENERAL_ID','Multistate Indicator General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelMULTISTATE_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelMULTISTATE_INDICATOR_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.MULTISTATE_INDICATOR_GENERAL_ID','Multistate Indicator General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelMULTISTATE_INDICATOR_GENERAL_IDTop || isPhonePortrait) && labelMULTISTATE_INDICATOR_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.MULTISTATE_INDICATOR_GENERAL_ID','Multistate Indicator General Id') + ' *'}}</label>
 		<input   formControlName="MULTISTATE_INDICATOR_GENERAL_ID"
- kendoTextBox #MULTISTATE_INDICATOR_GENERAL_ID 
+ kendoTextBox  #MULTISTATE_INDICATOR_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isMULTISTATE_INDICATOR_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.MULTISTATE_INDICATOR_GENERAL_ID_Hint','Please enter Multistate Indicator General Id.')"
 		(click)="ON_CLICK_MULTISTATE_INDICATOR_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MULTISTATE_INDICATOR_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -71,19 +71,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_STYLE >
-		<kendo-label *ngIf="(!labelBORDER_STYLETop && !isPhonePortrait) && labelBORDER_STYLEVisible" class="form-label" [for]="BORDER_STYLE" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_STYLE','Border Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_STYLETop && !isPhonePortrait) && labelBORDER_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_STYLE','Border Style')"></kendo-label>
 		<label *ngIf="(labelBORDER_STYLETop || isPhonePortrait) && labelBORDER_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_STYLE','Border Style')}}</label>
 		<input   formControlName="BORDER_STYLE"
- kendoTextBox #BORDER_STYLE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_STYLE_Hint','Please enter Border Style.')"
+ kendoTextBox  #BORDER_STYLE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_STYLE_Hint','Please enter Border Style.')"
 		(click)="ON_CLICK_BORDER_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_WIDTH >
-		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label" [for]="BORDER_WIDTH" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_WIDTH','Border Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_WIDTH','Border Width')"></kendo-label>
 		<label *ngIf="(labelBORDER_WIDTHTop || isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_WIDTH','Border Width')}}</label>
 		<input   formControlName="BORDER_WIDTH"
- kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_WIDTH_Hint','Please enter Border Width.')"
+ kendoTextBox  #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -92,19 +92,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_USES_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_USES_BACK_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_USES_BACK_COLORTop && !isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label" [for]="BORDER_USES_BACK_COLOR" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_USES_BACK_COLOR','Border Uses Back Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_USES_BACK_COLORTop && !isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_USES_BACK_COLOR','Border Uses Back Color')"></kendo-label>
 		<label *ngIf="(labelBORDER_USES_BACK_COLORTop || isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_USES_BACK_COLOR','Border Uses Back Color')}}</label>
 		<input   formControlName="BORDER_USES_BACK_COLOR"
- kendoTextBox #BORDER_USES_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"
+ kendoTextBox  #BORDER_USES_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"
 		(click)="ON_CLICK_BORDER_USES_BACK_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_USES_BACK_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_STYLE >
-		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label" [for]="BACK_STYLE" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BACK_STYLE','Back Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BACK_STYLE','Back Style')"></kendo-label>
 		<label *ngIf="(labelBACK_STYLETop || isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BACK_STYLE','Back Style')}}</label>
 		<input   formControlName="BACK_STYLE"
- kendoTextBox #BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BACK_STYLE_Hint','Please enter Back Style.')"
+ kendoTextBox  #BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.BACK_STYLE_Hint','Please enter Back Style.')"
 		(click)="ON_CLICK_BACK_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BACK_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -113,19 +113,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_TYPE >
-		<kendo-label *ngIf="(!labelSHAPE_TYPETop && !isPhonePortrait) && labelSHAPE_TYPEVisible" class="form-label" [for]="SHAPE_TYPE" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.SHAPE_TYPE','Shape Type')"></kendo-label>
+		<kendo-label *ngIf="(!labelSHAPE_TYPETop && !isPhonePortrait) && labelSHAPE_TYPEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.SHAPE_TYPE','Shape Type')"></kendo-label>
 		<label *ngIf="(labelSHAPE_TYPETop || isPhonePortrait) && labelSHAPE_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.SHAPE_TYPE','Shape Type')}}</label>
 		<input   formControlName="SHAPE_TYPE"
- kendoTextBox #SHAPE_TYPE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.SHAPE_TYPE_Hint','Please enter Shape Type.')"
+ kendoTextBox  #SHAPE_TYPE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.SHAPE_TYPE_Hint','Please enter Shape Type.')"
 		(click)="ON_CLICK_SHAPE_TYPE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHAPE_TYPE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNUMBER_OF_STATESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNUMBER_OF_STATES >
-		<kendo-label *ngIf="(!labelNUMBER_OF_STATESTop && !isPhonePortrait) && labelNUMBER_OF_STATESVisible" class="form-label" [for]="NUMBER_OF_STATES" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.NUMBER_OF_STATES','Number Of States')"></kendo-label>
+		<kendo-label *ngIf="(!labelNUMBER_OF_STATESTop && !isPhonePortrait) && labelNUMBER_OF_STATESVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.NUMBER_OF_STATES','Number Of States')"></kendo-label>
 		<label *ngIf="(labelNUMBER_OF_STATESTop || isPhonePortrait) && labelNUMBER_OF_STATESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.NUMBER_OF_STATES','Number Of States')}}</label>
 		<input   formControlName="NUMBER_OF_STATES"
- kendoTextBox #NUMBER_OF_STATES  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.NUMBER_OF_STATES_Hint','Please enter Number Of States.')"
+ kendoTextBox  #NUMBER_OF_STATES  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.NUMBER_OF_STATES_Hint','Please enter Number Of States.')"
 		(click)="ON_CLICK_NUMBER_OF_STATES($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NUMBER_OF_STATES($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -134,10 +134,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTRIGGER_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTRIGGER_TYPE >
-		<kendo-label *ngIf="(!labelTRIGGER_TYPETop && !isPhonePortrait) && labelTRIGGER_TYPEVisible" class="form-label" [for]="TRIGGER_TYPE" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.TRIGGER_TYPE','Trigger Type')"></kendo-label>
+		<kendo-label *ngIf="(!labelTRIGGER_TYPETop && !isPhonePortrait) && labelTRIGGER_TYPEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.TRIGGER_TYPE','Trigger Type')"></kendo-label>
 		<label *ngIf="(labelTRIGGER_TYPETop || isPhonePortrait) && labelTRIGGER_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.TRIGGER_TYPE','Trigger Type')}}</label>
 		<input   formControlName="TRIGGER_TYPE"
- kendoTextBox #TRIGGER_TYPE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.TRIGGER_TYPE_Hint','Please enter Trigger Type.')"
+ kendoTextBox  #TRIGGER_TYPE  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL_1.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral1.TRIGGER_TYPE_Hint','Please enter Trigger Type.')"
 		(click)="ON_CLICK_TRIGGER_TYPE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TRIGGER_TYPE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

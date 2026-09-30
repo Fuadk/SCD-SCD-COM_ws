@@ -93,7 +93,8 @@ export class ScdAppMainComponent implements OnInit {
    this.SCD_APPLICATIONForm_0Config.title = this.starServices.getNLS([],"scd_app_main.scd_app_main.compsTitleID1","App");
    this.SCD_APPLICATIONForm_0Config.isMaster = true;
    this.SCD_APPLICATIONForm_0Config.isSearchScreen = this.isSearchScreen;
-   this.SCD_APPLICATIONForm_0Config.showToolBar = !this.visibleOK_BTNS; 
+	if (this.visibleOK_BTNS) 
+   	this.SCD_APPLICATIONForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_APPLICATIONForm_0Config.queryable = false;
      this.SCD_APPLICATIONForm_0Config.removeable = false;

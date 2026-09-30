@@ -12,15 +12,7 @@ import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scdapplicationScdScdApplicationForm , componentConfigDef} from '@modeldir/model';
-import {
-  ExpressionEngineService,
-  LoadedRule,
-  RuntimeContext,
-  ValidationResult,
-  Value,
-  ExpressionVariables,
-  LIBRARY_FUNCTIONS,     
-} from '../../../services/expression-engine.service';
+
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'APPLICATION_NAME' : new FormControl(dataItem.APPLICATION_NAME  , ) ,
@@ -140,7 +132,7 @@ public variableSTATUS_NOT_OK;
    constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
     public responsive: BreakpointObserver, 
    private starNotify: StarNotifyService,  
-    public starServices: starServices,private expressionEngine: ExpressionEngineService
+    public starServices: starServices
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
@@ -821,8 +813,6 @@ this.readCompletedOutput.emit(this.form.getRawValue());
 
           }
           if (serverStatus.connected == false){
-            if (msgoNotk != "")
-              msgoNotk = msgoNotk + " , "
             msgoNotk = msgoNotk + serverStatus.name  
             
           }

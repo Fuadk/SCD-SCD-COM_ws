@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelARROW_BUTTON_TIMING_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleARROW_BUTTON_TIMING_ID >
-		<kendo-label *ngIf="(!labelARROW_BUTTON_TIMING_IDTop && !isPhonePortrait) && labelARROW_BUTTON_TIMING_IDVisible" class="form-label" [for]="ARROW_BUTTON_TIMING_ID" [text]="starServices.getNLS([],'SCD_ABT_ARROW_BUTTON_TIMING.scdarrowButtonTimingScdAbtArrowButtonTiming.ARROW_BUTTON_TIMING_ID','Arrow Button Timing Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelARROW_BUTTON_TIMING_IDTop && !isPhonePortrait) && labelARROW_BUTTON_TIMING_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ABT_ARROW_BUTTON_TIMING.scdarrowButtonTimingScdAbtArrowButtonTiming.ARROW_BUTTON_TIMING_ID','Arrow Button Timing Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelARROW_BUTTON_TIMING_IDTop || isPhonePortrait) && labelARROW_BUTTON_TIMING_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ABT_ARROW_BUTTON_TIMING.scdarrowButtonTimingScdAbtArrowButtonTiming.ARROW_BUTTON_TIMING_ID','Arrow Button Timing Id') + ' *'}}</label>
 		<input   formControlName="ARROW_BUTTON_TIMING_ID"
- kendoTextBox #ARROW_BUTTON_TIMING_ID 
+ kendoTextBox  #ARROW_BUTTON_TIMING_ID 
 		[readonly]="primarKeyReadOnlyArr.isARROW_BUTTON_TIMING_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ABT_ARROW_BUTTON_TIMING.scdarrowButtonTimingScdAbtArrowButtonTiming.ARROW_BUTTON_TIMING_ID_Hint','Please enter Arrow Button Timing Id.')"
 		(click)="ON_CLICK_ARROW_BUTTON_TIMING_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ARROW_BUTTON_TIMING_ID($event)"      adaptiveMode="auto"  />

@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLIST_INDICATOR_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLIST_INDICATOR_GENERAL_ID >
-		<kendo-label *ngIf="(!labelLIST_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelLIST_INDICATOR_GENERAL_IDVisible" class="form-label" [for]="LIST_INDICATOR_GENERAL_ID" [text]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID','List Indicator General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelLIST_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelLIST_INDICATOR_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID','List Indicator General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelLIST_INDICATOR_GENERAL_IDTop || isPhonePortrait) && labelLIST_INDICATOR_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID','List Indicator General Id') + ' *'}}</label>
 		<input   formControlName="LIST_INDICATOR_GENERAL_ID"
- kendoTextBox #LIST_INDICATOR_GENERAL_ID 
+ kendoTextBox  #LIST_INDICATOR_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isLIST_INDICATOR_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID_Hint','Please enter List Indicator General Id.')"
 		(click)="ON_CLICK_LIST_INDICATOR_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LIST_INDICATOR_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -102,10 +102,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_WIDTH >
-		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label" [for]="BORDER_WIDTH" [text]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
 		<label *ngIf="(labelBORDER_WIDTHTop || isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.BORDER_WIDTH','Border Width')}}</label>
 		<input   formControlName="BORDER_WIDTH"
- kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
+ kendoTextBox  #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -162,7 +162,6 @@
  (change)="onChange_BORDER_USES_BACK_COLOR($event)"      adaptiveMode="auto" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -248,7 +247,6 @@
  (change)="onChange_BLINK($event)"      adaptiveMode="auto" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.BLINK_Hint','Please enter Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -385,15 +383,14 @@
  (change)="onChange_WRITE_ON_ENTER($event)"      adaptiveMode="auto" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.WRITE_ON_ENTER_Hint','Please enter Write On Enter.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAB_INDEXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAB_INDEX >
-		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label" [for]="TAB_INDEX" [text]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.TAB_INDEX','Tab Index')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.TAB_INDEX','Tab Index')"></kendo-label>
 		<label *ngIf="(labelTAB_INDEXTop || isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.TAB_INDEX','Tab Index')}}</label>
 		<input   formControlName="TAB_INDEX"
- kendoTextBox #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
+ kendoTextBox  #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
 		(click)="ON_CLICK_TAB_INDEX($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAB_INDEX($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -409,7 +406,6 @@
  (change)="onChange_KEY_NAVIGATION($event)"      adaptiveMode="auto" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.KEY_NAVIGATION_Hint','Please enter Key Navigation.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -424,7 +420,6 @@
  (change)="onChange_WRAP_AROUND($event)"      adaptiveMode="auto" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_LIG_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLigListIndicatorGeneral.WRAP_AROUND_Hint','Please enter Wrap Around.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 </div>

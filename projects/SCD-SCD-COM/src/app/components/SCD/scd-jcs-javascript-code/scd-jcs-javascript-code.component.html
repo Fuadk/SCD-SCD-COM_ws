@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelJAVASCRIPT_CODE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleJAVASCRIPT_CODE_ID >
-		<kendo-label *ngIf="(!labelJAVASCRIPT_CODE_IDTop && !isPhonePortrait) && labelJAVASCRIPT_CODE_IDVisible" class="form-label" [for]="JAVASCRIPT_CODE_ID" [text]="starServices.getNLS([],'SCD_JCS_JAVASCRIPT_CODE.scdjavascriptCodeScdJcsJavascriptCode.JAVASCRIPT_CODE_ID','Javascript Code Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelJAVASCRIPT_CODE_IDTop && !isPhonePortrait) && labelJAVASCRIPT_CODE_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_JCS_JAVASCRIPT_CODE.scdjavascriptCodeScdJcsJavascriptCode.JAVASCRIPT_CODE_ID','Javascript Code Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelJAVASCRIPT_CODE_IDTop || isPhonePortrait) && labelJAVASCRIPT_CODE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_JCS_JAVASCRIPT_CODE.scdjavascriptCodeScdJcsJavascriptCode.JAVASCRIPT_CODE_ID','Javascript Code Id') + ' *'}}</label>
 		<input   formControlName="JAVASCRIPT_CODE_ID"
- kendoTextBox #JAVASCRIPT_CODE_ID 
+ kendoTextBox  #JAVASCRIPT_CODE_ID 
 		[readonly]="primarKeyReadOnlyArr.isJAVASCRIPT_CODE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_JCS_JAVASCRIPT_CODE.scdjavascriptCodeScdJcsJavascriptCode.JAVASCRIPT_CODE_ID_Hint','Please enter Javascript Code Id.')"
 		(click)="ON_CLICK_JAVASCRIPT_CODE_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_JAVASCRIPT_CODE_ID($event)"      adaptiveMode="auto"  />
@@ -96,6 +96,7 @@
 		#SUBROUTINE_CODE
 		modelId="SUBROUTINE_CODE" 
 		language="javascript" theme="vs-dark" 
+		(valueChange)="onValueChange_SUBROUTINE_CODE($event)" 
 		width="100px" height="100px" >
  </app-code-editor> 
 	</kendo-formfield>

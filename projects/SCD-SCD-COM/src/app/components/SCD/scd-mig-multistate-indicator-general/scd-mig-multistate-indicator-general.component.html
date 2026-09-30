@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMULTISTATE_INDICATOR_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMULTISTATE_INDICATOR_GENERAL_ID >
-		<kendo-label *ngIf="(!labelMULTISTATE_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelMULTISTATE_INDICATOR_GENERAL_IDVisible" class="form-label" [for]="MULTISTATE_INDICATOR_GENERAL_ID" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.MULTISTATE_INDICATOR_GENERAL_ID','Multistate Indicator General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelMULTISTATE_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelMULTISTATE_INDICATOR_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.MULTISTATE_INDICATOR_GENERAL_ID','Multistate Indicator General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelMULTISTATE_INDICATOR_GENERAL_IDTop || isPhonePortrait) && labelMULTISTATE_INDICATOR_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.MULTISTATE_INDICATOR_GENERAL_ID','Multistate Indicator General Id') + ' *'}}</label>
 		<input   formControlName="MULTISTATE_INDICATOR_GENERAL_ID"
- kendoTextBox #MULTISTATE_INDICATOR_GENERAL_ID 
+ kendoTextBox  #MULTISTATE_INDICATOR_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isMULTISTATE_INDICATOR_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.MULTISTATE_INDICATOR_GENERAL_ID_Hint','Please enter Multistate Indicator General Id.')"
 		(click)="ON_CLICK_MULTISTATE_INDICATOR_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MULTISTATE_INDICATOR_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -90,10 +90,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_WIDTH >
-		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label" [for]="BORDER_WIDTH" [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
 		<label *ngIf="(labelBORDER_WIDTHTop || isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_WIDTH','Border Width')}}</label>
 		<input   formControlName="BORDER_WIDTH"
- kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
+ kendoTextBox  #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -110,7 +110,6 @@
 	 name="BORDER_USES_BACK_COLOR"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_MIG_MULTISTATE_INDICATOR_GENERAL.scdmultistateIndicatorGeneralScdMigMultistateIndicatorGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 

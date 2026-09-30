@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMACRO_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMACRO_ID >
-		<kendo-label *ngIf="(!labelMACRO_IDTop && !isPhonePortrait) && labelMACRO_IDVisible" class="form-label" [for]="MACRO_ID" [text]="starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_ID','Macro Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelMACRO_IDTop && !isPhonePortrait) && labelMACRO_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_ID','Macro Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelMACRO_IDTop || isPhonePortrait) && labelMACRO_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_ID','Macro Id') + ' *'}}</label>
 		<input   formControlName="MACRO_ID"
- kendoTextBox #MACRO_ID 
+ kendoTextBox  #MACRO_ID 
 		[readonly]="primarKeyReadOnlyArr.isMACRO_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_ID_Hint','Please enter Macro Id.')"
 		(click)="ON_CLICK_MACRO_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MACRO_ID($event)"      adaptiveMode="auto"  />
@@ -68,10 +68,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMACRO_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMACRO_NAME >
-		<kendo-label *ngIf="(!labelMACRO_NAMETop && !isPhonePortrait) && labelMACRO_NAMEVisible" class="form-label" [for]="MACRO_NAME" [text]="starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_NAME','Macro Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelMACRO_NAMETop && !isPhonePortrait) && labelMACRO_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_NAME','Macro Name')"></kendo-label>
 		<label *ngIf="(labelMACRO_NAMETop || isPhonePortrait) && labelMACRO_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_NAME','Macro Name')}}</label>
 		<input   formControlName="MACRO_NAME"
- kendoTextBox #MACRO_NAME  [placeholder]="starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_NAME_Hint','Please enter Macro Name.')"
+ kendoTextBox  #MACRO_NAME  [placeholder]="starServices.getNLS([],'SCD_AM_MACRO_DETAILS.scdmacroScdAmMacroDetails.MACRO_NAME_Hint','Please enter Macro Name.')"
 		(click)="ON_CLICK_MACRO_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MACRO_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -86,6 +86,7 @@
 		#MACRO_TEXT
 		modelId="MACRO_TEXT" 
 		language="javascript" theme="vs-dark" 
+		(valueChange)="onValueChange_MACRO_TEXT($event)" 
 		width="100px" height="100px" >
  </app-code-editor> 
 	</kendo-formfield>

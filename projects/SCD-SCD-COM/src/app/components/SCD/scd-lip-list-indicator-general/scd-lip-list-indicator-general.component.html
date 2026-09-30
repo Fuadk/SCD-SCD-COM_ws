@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLIST_INDICATOR_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLIST_INDICATOR_GENERAL_ID >
-		<kendo-label *ngIf="(!labelLIST_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelLIST_INDICATOR_GENERAL_IDVisible" class="form-label" [for]="LIST_INDICATOR_GENERAL_ID" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID','List Indicator General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelLIST_INDICATOR_GENERAL_IDTop && !isPhonePortrait) && labelLIST_INDICATOR_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID','List Indicator General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelLIST_INDICATOR_GENERAL_IDTop || isPhonePortrait) && labelLIST_INDICATOR_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID','List Indicator General Id') + ' *'}}</label>
 		<input   formControlName="LIST_INDICATOR_GENERAL_ID"
- kendoTextBox #LIST_INDICATOR_GENERAL_ID 
+ kendoTextBox  #LIST_INDICATOR_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isLIST_INDICATOR_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.LIST_INDICATOR_GENERAL_ID_Hint','Please enter List Indicator General Id.')"
 		(click)="ON_CLICK_LIST_INDICATOR_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LIST_INDICATOR_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -71,19 +71,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_STYLE >
-		<kendo-label *ngIf="(!labelBORDER_STYLETop && !isPhonePortrait) && labelBORDER_STYLEVisible" class="form-label" [for]="BORDER_STYLE" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_STYLE','Border Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_STYLETop && !isPhonePortrait) && labelBORDER_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_STYLE','Border Style')"></kendo-label>
 		<label *ngIf="(labelBORDER_STYLETop || isPhonePortrait) && labelBORDER_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_STYLE','Border Style')}}</label>
 		<input   formControlName="BORDER_STYLE"
- kendoTextBox #BORDER_STYLE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_STYLE_Hint','Please enter Border Style.')"
+ kendoTextBox  #BORDER_STYLE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_STYLE_Hint','Please enter Border Style.')"
 		(click)="ON_CLICK_BORDER_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_WIDTH >
-		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label" [for]="BORDER_WIDTH" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
 		<label *ngIf="(labelBORDER_WIDTHTop || isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_WIDTH','Border Width')}}</label>
 		<input   formControlName="BORDER_WIDTH"
- kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
+ kendoTextBox  #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -92,19 +92,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_STYLE >
-		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label" [for]="BACK_STYLE" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_STYLE','Back Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_STYLE','Back Style')"></kendo-label>
 		<label *ngIf="(labelBACK_STYLETop || isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_STYLE','Back Style')}}</label>
 		<input   formControlName="BACK_STYLE"
- kendoTextBox #BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_STYLE_Hint','Please enter Back Style.')"
+ kendoTextBox  #BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_STYLE_Hint','Please enter Back Style.')"
 		(click)="ON_CLICK_BACK_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BACK_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_STYLE >
-		<kendo-label *ngIf="(!labelPATTERN_STYLETop && !isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label" [for]="PATTERN_STYLE" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_STYLE','Pattern Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelPATTERN_STYLETop && !isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_STYLE','Pattern Style')"></kendo-label>
 		<label *ngIf="(labelPATTERN_STYLETop || isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_STYLE','Pattern Style')}}</label>
 		<input   formControlName="PATTERN_STYLE"
- kendoTextBox #PATTERN_STYLE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_STYLE_Hint','Please enter Pattern Style.')"
+ kendoTextBox  #PATTERN_STYLE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_STYLE_Hint','Please enter Pattern Style.')"
 		(click)="ON_CLICK_PATTERN_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PATTERN_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -113,19 +113,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_USES_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_USES_BACK_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_USES_BACK_COLORTop && !isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label" [for]="BORDER_USES_BACK_COLOR" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_USES_BACK_COLORTop && !isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')"></kendo-label>
 		<label *ngIf="(labelBORDER_USES_BACK_COLORTop || isPhonePortrait) && labelBORDER_USES_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_USES_BACK_COLOR','Border Uses Back Color')}}</label>
 		<input   formControlName="BORDER_USES_BACK_COLOR"
- kendoTextBox #BORDER_USES_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"
+ kendoTextBox  #BORDER_USES_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_USES_BACK_COLOR_Hint','Please enter Border Uses Back Color.')"
 		(click)="ON_CLICK_BORDER_USES_BACK_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_USES_BACK_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_COLOR >
-		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label" [for]="BACK_COLOR" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_COLOR','Back Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_COLOR','Back Color')"></kendo-label>
 		<label *ngIf="(labelBACK_COLORTop || isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_COLOR','Back Color')}}</label>
 		<input   formControlName="BACK_COLOR"
- kendoTextBox #BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_COLOR_Hint','Please enter Back Color.')"
+ kendoTextBox  #BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BACK_COLOR_Hint','Please enter Back Color.')"
 		(click)="ON_CLICK_BACK_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BACK_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -134,19 +134,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label" [for]="BORDER_COLOR" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_COLOR','Border Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_COLOR','Border Color')"></kendo-label>
 		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_COLOR','Border Color')}}</label>
 		<input   formControlName="BORDER_COLOR"
- kendoTextBox #BORDER_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_COLOR_Hint','Please enter Border Color.')"
+ kendoTextBox  #BORDER_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BORDER_COLOR_Hint','Please enter Border Color.')"
 		(click)="ON_CLICK_BORDER_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_COLOR >
-		<kendo-label *ngIf="(!labelPATTERN_COLORTop && !isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label" [for]="PATTERN_COLOR" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_COLOR','Pattern Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelPATTERN_COLORTop && !isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_COLOR','Pattern Color')"></kendo-label>
 		<label *ngIf="(labelPATTERN_COLORTop || isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_COLOR','Pattern Color')}}</label>
 		<input   formControlName="PATTERN_COLOR"
- kendoTextBox #PATTERN_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_COLOR_Hint','Please enter Pattern Color.')"
+ kendoTextBox  #PATTERN_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.PATTERN_COLOR_Hint','Please enter Pattern Color.')"
 		(click)="ON_CLICK_PATTERN_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PATTERN_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -155,19 +155,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSELECTION_FORE_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSELECTION_FORE_COLOR >
-		<kendo-label *ngIf="(!labelSELECTION_FORE_COLORTop && !isPhonePortrait) && labelSELECTION_FORE_COLORVisible" class="form-label" [for]="SELECTION_FORE_COLOR" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_FORE_COLOR','Selection Fore Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelSELECTION_FORE_COLORTop && !isPhonePortrait) && labelSELECTION_FORE_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_FORE_COLOR','Selection Fore Color')"></kendo-label>
 		<label *ngIf="(labelSELECTION_FORE_COLORTop || isPhonePortrait) && labelSELECTION_FORE_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_FORE_COLOR','Selection Fore Color')}}</label>
 		<input   formControlName="SELECTION_FORE_COLOR"
- kendoTextBox #SELECTION_FORE_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_FORE_COLOR_Hint','Please enter Selection Fore Color.')"
+ kendoTextBox  #SELECTION_FORE_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_FORE_COLOR_Hint','Please enter Selection Fore Color.')"
 		(click)="ON_CLICK_SELECTION_FORE_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SELECTION_FORE_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSELECTION_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSELECTION_BACK_COLOR >
-		<kendo-label *ngIf="(!labelSELECTION_BACK_COLORTop && !isPhonePortrait) && labelSELECTION_BACK_COLORVisible" class="form-label" [for]="SELECTION_BACK_COLOR" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_BACK_COLOR','Selection Back Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelSELECTION_BACK_COLORTop && !isPhonePortrait) && labelSELECTION_BACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_BACK_COLOR','Selection Back Color')"></kendo-label>
 		<label *ngIf="(labelSELECTION_BACK_COLORTop || isPhonePortrait) && labelSELECTION_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_BACK_COLOR','Selection Back Color')}}</label>
 		<input   formControlName="SELECTION_BACK_COLOR"
- kendoTextBox #SELECTION_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_BACK_COLOR_Hint','Please enter Selection Back Color.')"
+ kendoTextBox  #SELECTION_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.SELECTION_BACK_COLOR_Hint','Please enter Selection Back Color.')"
 		(click)="ON_CLICK_SELECTION_BACK_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SELECTION_BACK_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -176,19 +176,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK >
-		<kendo-label *ngIf="(!labelBLINKTop && !isPhonePortrait) && labelBLINKVisible" class="form-label" [for]="BLINK" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BLINK','Blink')"></kendo-label>
+		<kendo-label *ngIf="(!labelBLINKTop && !isPhonePortrait) && labelBLINKVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BLINK','Blink')"></kendo-label>
 		<label *ngIf="(labelBLINKTop || isPhonePortrait) && labelBLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BLINK','Blink')}}</label>
 		<input   formControlName="BLINK"
- kendoTextBox #BLINK  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BLINK_Hint','Please enter Blink.')"
+ kendoTextBox  #BLINK  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.BLINK_Hint','Please enter Blink.')"
 		(click)="ON_CLICK_BLINK($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BLINK($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_NAME >
-		<kendo-label *ngIf="(!labelFONT_NAMETop && !isPhonePortrait) && labelFONT_NAMEVisible" class="form-label" [for]="FONT_NAME" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_NAME','Font Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_NAMETop && !isPhonePortrait) && labelFONT_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_NAME','Font Name')"></kendo-label>
 		<label *ngIf="(labelFONT_NAMETop || isPhonePortrait) && labelFONT_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_NAME','Font Name')}}</label>
 		<input   formControlName="FONT_NAME"
- kendoTextBox #FONT_NAME  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_NAME_Hint','Please enter Font Name.')"
+ kendoTextBox  #FONT_NAME  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_NAME_Hint','Please enter Font Name.')"
 		(click)="ON_CLICK_FONT_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -197,19 +197,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_SIZETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_SIZE >
-		<kendo-label *ngIf="(!labelFONT_SIZETop && !isPhonePortrait) && labelFONT_SIZEVisible" class="form-label" [for]="FONT_SIZE" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_SIZE','Font Size')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_SIZETop && !isPhonePortrait) && labelFONT_SIZEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_SIZE','Font Size')"></kendo-label>
 		<label *ngIf="(labelFONT_SIZETop || isPhonePortrait) && labelFONT_SIZEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_SIZE','Font Size')}}</label>
 		<input   formControlName="FONT_SIZE"
- kendoTextBox #FONT_SIZE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_SIZE_Hint','Please enter Font Size.')"
+ kendoTextBox  #FONT_SIZE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_SIZE_Hint','Please enter Font Size.')"
 		(click)="ON_CLICK_FONT_SIZE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_SIZE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_BOLDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_BOLD >
-		<kendo-label *ngIf="(!labelFONT_BOLDTop && !isPhonePortrait) && labelFONT_BOLDVisible" class="form-label" [for]="FONT_BOLD" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_BOLD','Font Bold')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_BOLDTop && !isPhonePortrait) && labelFONT_BOLDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_BOLD','Font Bold')"></kendo-label>
 		<label *ngIf="(labelFONT_BOLDTop || isPhonePortrait) && labelFONT_BOLDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_BOLD','Font Bold')}}</label>
 		<input   formControlName="FONT_BOLD"
- kendoTextBox #FONT_BOLD  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_BOLD_Hint','Please enter Font Bold.')"
+ kendoTextBox  #FONT_BOLD  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_BOLD_Hint','Please enter Font Bold.')"
 		(click)="ON_CLICK_FONT_BOLD($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_BOLD($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -218,19 +218,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_ITALICTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_ITALIC >
-		<kendo-label *ngIf="(!labelFONT_ITALICTop && !isPhonePortrait) && labelFONT_ITALICVisible" class="form-label" [for]="FONT_ITALIC" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_ITALIC','Font Italic')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_ITALICTop && !isPhonePortrait) && labelFONT_ITALICVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_ITALIC','Font Italic')"></kendo-label>
 		<label *ngIf="(labelFONT_ITALICTop || isPhonePortrait) && labelFONT_ITALICVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_ITALIC','Font Italic')}}</label>
 		<input   formControlName="FONT_ITALIC"
- kendoTextBox #FONT_ITALIC  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_ITALIC_Hint','Please enter Font Italic.')"
+ kendoTextBox  #FONT_ITALIC  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_ITALIC_Hint','Please enter Font Italic.')"
 		(click)="ON_CLICK_FONT_ITALIC($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_ITALIC($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_UNDERLINETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_UNDERLINE >
-		<kendo-label *ngIf="(!labelFONT_UNDERLINETop && !isPhonePortrait) && labelFONT_UNDERLINEVisible" class="form-label" [for]="FONT_UNDERLINE" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_UNDERLINE','Font Underline')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_UNDERLINETop && !isPhonePortrait) && labelFONT_UNDERLINEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_UNDERLINE','Font Underline')"></kendo-label>
 		<label *ngIf="(labelFONT_UNDERLINETop || isPhonePortrait) && labelFONT_UNDERLINEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_UNDERLINE','Font Underline')}}</label>
 		<input   formControlName="FONT_UNDERLINE"
- kendoTextBox #FONT_UNDERLINE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_UNDERLINE_Hint','Please enter Font Underline.')"
+ kendoTextBox  #FONT_UNDERLINE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.FONT_UNDERLINE_Hint','Please enter Font Underline.')"
 		(click)="ON_CLICK_FONT_UNDERLINE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_UNDERLINE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -239,19 +239,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_TRUNCATETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_TRUNCATE >
-		<kendo-label *ngIf="(!labelCAPTION_TRUNCATETop && !isPhonePortrait) && labelCAPTION_TRUNCATEVisible" class="form-label" [for]="CAPTION_TRUNCATE" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.CAPTION_TRUNCATE','Caption Truncate')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTION_TRUNCATETop && !isPhonePortrait) && labelCAPTION_TRUNCATEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.CAPTION_TRUNCATE','Caption Truncate')"></kendo-label>
 		<label *ngIf="(labelCAPTION_TRUNCATETop || isPhonePortrait) && labelCAPTION_TRUNCATEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.CAPTION_TRUNCATE','Caption Truncate')}}</label>
 		<input   formControlName="CAPTION_TRUNCATE"
- kendoTextBox #CAPTION_TRUNCATE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.CAPTION_TRUNCATE_Hint','Please enter Caption Truncate.')"
+ kendoTextBox  #CAPTION_TRUNCATE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.CAPTION_TRUNCATE_Hint','Please enter Caption Truncate.')"
 		(click)="ON_CLICK_CAPTION_TRUNCATE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION_TRUNCATE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNUMBER_OF_STATESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNUMBER_OF_STATES >
-		<kendo-label *ngIf="(!labelNUMBER_OF_STATESTop && !isPhonePortrait) && labelNUMBER_OF_STATESVisible" class="form-label" [for]="NUMBER_OF_STATES" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.NUMBER_OF_STATES','Number Of States')"></kendo-label>
+		<kendo-label *ngIf="(!labelNUMBER_OF_STATESTop && !isPhonePortrait) && labelNUMBER_OF_STATESVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.NUMBER_OF_STATES','Number Of States')"></kendo-label>
 		<label *ngIf="(labelNUMBER_OF_STATESTop || isPhonePortrait) && labelNUMBER_OF_STATESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.NUMBER_OF_STATES','Number Of States')}}</label>
 		<input   formControlName="NUMBER_OF_STATES"
- kendoTextBox #NUMBER_OF_STATES  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.NUMBER_OF_STATES_Hint','Please enter Number Of States.')"
+ kendoTextBox  #NUMBER_OF_STATES  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.NUMBER_OF_STATES_Hint','Please enter Number Of States.')"
 		(click)="ON_CLICK_NUMBER_OF_STATES($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NUMBER_OF_STATES($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -260,19 +260,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTRIGGER_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTRIGGER_TYPE >
-		<kendo-label *ngIf="(!labelTRIGGER_TYPETop && !isPhonePortrait) && labelTRIGGER_TYPEVisible" class="form-label" [for]="TRIGGER_TYPE" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TRIGGER_TYPE','Trigger Type')"></kendo-label>
+		<kendo-label *ngIf="(!labelTRIGGER_TYPETop && !isPhonePortrait) && labelTRIGGER_TYPEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TRIGGER_TYPE','Trigger Type')"></kendo-label>
 		<label *ngIf="(labelTRIGGER_TYPETop || isPhonePortrait) && labelTRIGGER_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TRIGGER_TYPE','Trigger Type')}}</label>
 		<input   formControlName="TRIGGER_TYPE"
- kendoTextBox #TRIGGER_TYPE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TRIGGER_TYPE_Hint','Please enter Trigger Type.')"
+ kendoTextBox  #TRIGGER_TYPE  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TRIGGER_TYPE_Hint','Please enter Trigger Type.')"
 		(click)="ON_CLICK_TRIGGER_TYPE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TRIGGER_TYPE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelWRITE_ON_ENTERTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleWRITE_ON_ENTER >
-		<kendo-label *ngIf="(!labelWRITE_ON_ENTERTop && !isPhonePortrait) && labelWRITE_ON_ENTERVisible" class="form-label" [for]="WRITE_ON_ENTER" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRITE_ON_ENTER','Write On Enter')"></kendo-label>
+		<kendo-label *ngIf="(!labelWRITE_ON_ENTERTop && !isPhonePortrait) && labelWRITE_ON_ENTERVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRITE_ON_ENTER','Write On Enter')"></kendo-label>
 		<label *ngIf="(labelWRITE_ON_ENTERTop || isPhonePortrait) && labelWRITE_ON_ENTERVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRITE_ON_ENTER','Write On Enter')}}</label>
 		<input   formControlName="WRITE_ON_ENTER"
- kendoTextBox #WRITE_ON_ENTER  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRITE_ON_ENTER_Hint','Please enter Write On Enter.')"
+ kendoTextBox  #WRITE_ON_ENTER  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRITE_ON_ENTER_Hint','Please enter Write On Enter.')"
 		(click)="ON_CLICK_WRITE_ON_ENTER($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_WRITE_ON_ENTER($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -281,19 +281,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelKEY_NAVIGATIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleKEY_NAVIGATION >
-		<kendo-label *ngIf="(!labelKEY_NAVIGATIONTop && !isPhonePortrait) && labelKEY_NAVIGATIONVisible" class="form-label" [for]="KEY_NAVIGATION" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.KEY_NAVIGATION','Key Navigation')"></kendo-label>
+		<kendo-label *ngIf="(!labelKEY_NAVIGATIONTop && !isPhonePortrait) && labelKEY_NAVIGATIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.KEY_NAVIGATION','Key Navigation')"></kendo-label>
 		<label *ngIf="(labelKEY_NAVIGATIONTop || isPhonePortrait) && labelKEY_NAVIGATIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.KEY_NAVIGATION','Key Navigation')}}</label>
 		<input   formControlName="KEY_NAVIGATION"
- kendoTextBox #KEY_NAVIGATION  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.KEY_NAVIGATION_Hint','Please enter Key Navigation.')"
+ kendoTextBox  #KEY_NAVIGATION  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.KEY_NAVIGATION_Hint','Please enter Key Navigation.')"
 		(click)="ON_CLICK_KEY_NAVIGATION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_KEY_NAVIGATION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelWRAP_AROUNDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleWRAP_AROUND >
-		<kendo-label *ngIf="(!labelWRAP_AROUNDTop && !isPhonePortrait) && labelWRAP_AROUNDVisible" class="form-label" [for]="WRAP_AROUND" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRAP_AROUND','Wrap Around')"></kendo-label>
+		<kendo-label *ngIf="(!labelWRAP_AROUNDTop && !isPhonePortrait) && labelWRAP_AROUNDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRAP_AROUND','Wrap Around')"></kendo-label>
 		<label *ngIf="(labelWRAP_AROUNDTop || isPhonePortrait) && labelWRAP_AROUNDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRAP_AROUND','Wrap Around')}}</label>
 		<input   formControlName="WRAP_AROUND"
- kendoTextBox #WRAP_AROUND  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRAP_AROUND_Hint','Please enter Wrap Around.')"
+ kendoTextBox  #WRAP_AROUND  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.WRAP_AROUND_Hint','Please enter Wrap Around.')"
 		(click)="ON_CLICK_WRAP_AROUND($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_WRAP_AROUND($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -302,10 +302,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAB_INDEXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAB_INDEX >
-		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label" [for]="TAB_INDEX" [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TAB_INDEX','Tab Index')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TAB_INDEX','Tab Index')"></kendo-label>
 		<label *ngIf="(labelTAB_INDEXTop || isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TAB_INDEX','Tab Index')}}</label>
 		<input   formControlName="TAB_INDEX"
- kendoTextBox #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
+ kendoTextBox  #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_LIP_LIST_INDICATOR_GENERAL.scdlistIndicatorGeneralScdLipListIndicatorGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
 		(click)="ON_CLICK_TAB_INDEX($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAB_INDEX($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

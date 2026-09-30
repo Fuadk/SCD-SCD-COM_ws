@@ -1,5 +1,5 @@
     <div>   
-        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_app_main.scd_app_main.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_app_main.scd_app_main.component_title","") }}</legend> 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
         <app-scd-scd-application-form  [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"

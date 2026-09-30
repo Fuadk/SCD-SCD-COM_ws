@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
+import { Starlib1 } from '../../Starlib1';
 import { StarNotifyService } from '../../../services/starnotification.service';
 
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -16,6 +17,7 @@ import { scdtextGeneralScdTgTextGeneral1 , componentConfigDef} from '@modeldir/m
  const createFormGroup = (dataItem:any) => new FormGroup({
 'TEXT_GENERAL_ID' : new FormControl(dataItem.TEXT_GENERAL_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) ,
 'TEXT_FIELD' : new FormControl(dataItem.TEXT_FIELD  , ) ,
 'FONT_NAME' : new FormControl(dataItem.FONT_NAME  , ) ,
 'FONT_SIZE' : new FormControl(dataItem.FONT_SIZE  , ) ,
@@ -56,6 +58,7 @@ export class ScdTextGeneralScdTgTextGeneral1FormComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -96,6 +99,8 @@ public labelTEXT_GENERAL_IDTop=false;
 public labelTEXT_GENERAL_IDVisible=true;
 public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
+public labelINSERT_VARIABLETop=false;
+public labelINSERT_VARIABLEVisible=true;
 public labelTEXT_FIELDTop=false;
 public labelTEXT_FIELDVisible=true;
 public labelFONT_NAMETop=false;
@@ -123,6 +128,7 @@ public labelBACK_STYLEVisible=true;
 
 public visibleTEXT_GENERAL_ID = false;
 public visibleSHAPE_ID = false;
+public visibleINSERT_VARIABLE = true;
 public visibleTEXT_FIELD = true;
 public visibleFONT_NAME = true;
 public visibleFONT_SIZE = true;
@@ -138,6 +144,7 @@ public visibleBACK_STYLE = false;
 
 public disableTEXT_GENERAL_ID = false;
 public disableSHAPE_ID = false;
+public disableINSERT_VARIABLE = false;
 public disableTEXT_FIELD = false;
 public disableFONT_NAME = false;
 public disableFONT_SIZE = false;
@@ -159,8 +166,14 @@ public disableBACK_STYLE = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
+  @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
+    public responsive: BreakpointObserver, 
+   private starNotify: StarNotifyService,  
+    public starServices: starServices
+   ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -232,8 +245,30 @@ public disableBACK_STYLE = false;
     setTimeout(() => {
       this.formValidationChangedOutput.emit(this.form.valid)
     }, 100)
+  // Watch form changes to update isDirty in componentConfig
+  this.form.valueChanges.subscribe(() => {
+    if (this.componentConfig) {
+      const wasDirty = this.componentConfig.isDirty;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.form.dirty;
+      
+      // Only emit if state changed
+      if (wasDirty !== this.componentConfig.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
+        this.emitComponentConfig();
+      }
+    }
+  });
+
   }
-  
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -477,6 +512,17 @@ public disableBACK_STYLE = false;
       //this.starServices.beginTrans();
 
       if (this.isNew == true) {
+        //Add Key Fields
+         for (let i=0;i< this.masterKeyArr.length;i++){
+          console.log("NoValidData:check:", typeof form.value[this.masterKeyNameArr[i]]);
+          if (typeof form.value[this.masterKeyNameArr[i]] != "undefined" 
+            && (form.value[this.masterKeyNameArr[i]] == ""
+            || form.value[this.masterKeyNameArr[i]] == null)){
+            let object= {}
+            object[this.masterKeyNameArr[i]] = this.masterKeyArr[i];
+            form.patchValue(object);
+            }
+         }
          this.disableEmitSave = true;
           await this.PRE_INSERT(form.value);
          if (this.FORM_TRIGGER_FAILURE){
@@ -525,15 +571,24 @@ public userLang = "EN" ;
 public lookupArrDef:any =[];
 public setlookupArrDef(){
 this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+			"lkpArrName":"lkpArrSHAPE_ID"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"INSERT_VARIABLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrINSERT_VARIABLE"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
 public lkpArrSHAPE_ID = [];
 
+public lkpArrINSERT_VARIABLE = [];
+
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetINSERT_VARIABLE(CODE: any): any {
+var rec = this.lkpArrINSERT_VARIABLE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -782,6 +837,26 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  }
 
  async ON_CLICK_SHAPE_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
+      this.form.controls['INSERT_VARIABLE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
+     this.form.get('INSERT_VARIABLE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_INSERT_VARIABLE(event){
 
 }
 
@@ -1040,6 +1115,12 @@ async WHEN_VALIDATE_ITEM_BACK_STYLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_INSERT_VARIABLE(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_TEXT_FIELD(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1170,6 +1251,7 @@ public uploadimage = false;
 public showIcon=true;
 public svg_arr = [];
 public svg_data = [];
+
 
 public update_svgicons(formGroup){
   this.showIcon = false;

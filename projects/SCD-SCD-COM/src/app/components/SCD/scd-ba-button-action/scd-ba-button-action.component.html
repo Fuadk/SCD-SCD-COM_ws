@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBUTTON_ACTION_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBUTTON_ACTION_ID >
-		<kendo-label *ngIf="(!labelBUTTON_ACTION_IDTop && !isPhonePortrait) && labelBUTTON_ACTION_IDVisible" class="form-label" [for]="BUTTON_ACTION_ID" [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.BUTTON_ACTION_ID','Button Action Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelBUTTON_ACTION_IDTop && !isPhonePortrait) && labelBUTTON_ACTION_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.BUTTON_ACTION_ID','Button Action Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelBUTTON_ACTION_IDTop || isPhonePortrait) && labelBUTTON_ACTION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.BUTTON_ACTION_ID','Button Action Id') + ' *'}}</label>
 		<input   formControlName="BUTTON_ACTION_ID"
- kendoTextBox #BUTTON_ACTION_ID 
+ kendoTextBox  #BUTTON_ACTION_ID 
 		[readonly]="primarKeyReadOnlyArr.isBUTTON_ACTION_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.BUTTON_ACTION_ID_Hint','Please enter Button Action Id.')"
 		(click)="ON_CLICK_BUTTON_ACTION_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BUTTON_ACTION_ID($event)"      adaptiveMode="auto"  />
@@ -102,10 +102,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAGTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG >
-		<kendo-label *ngIf="(!labelTAGTop && !isPhonePortrait) && labelTAGVisible" class="form-label" [for]="TAG" [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.TAG','Tag')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAGTop && !isPhonePortrait) && labelTAGVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.TAG','Tag')"></kendo-label>
 		<label *ngIf="(labelTAGTop || isPhonePortrait) && labelTAGVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.TAG','Tag')}}</label>
 		<input   formControlName="TAG"
- kendoTextBox #TAG  [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.TAG_Hint','Please enter Tag.')"
+ kendoTextBox  #TAG  [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.TAG_Hint','Please enter Tag.')"
 		(click)="ON_CLICK_TAG($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -156,10 +156,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelREPEAT_RATETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleREPEAT_RATE >
-		<kendo-label *ngIf="(!labelREPEAT_RATETop && !isPhonePortrait) && labelREPEAT_RATEVisible" class="form-label" [for]="REPEAT_RATE" [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_RATE','Repeat Rate(secs)')"></kendo-label>
+		<kendo-label *ngIf="(!labelREPEAT_RATETop && !isPhonePortrait) && labelREPEAT_RATEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_RATE','Repeat Rate(secs)')"></kendo-label>
 		<label *ngIf="(labelREPEAT_RATETop || isPhonePortrait) && labelREPEAT_RATEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_RATE','Repeat Rate(secs)')}}</label>
 		<input   formControlName="REPEAT_RATE"
- kendoTextBox #REPEAT_RATE  [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_RATE_Hint','Please enter Repeat Rate.')"
+ kendoTextBox  #REPEAT_RATE  [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_RATE_Hint','Please enter Repeat Rate.')"
 		(click)="ON_CLICK_REPEAT_RATE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_REPEAT_RATE($event)"  style="width : 300px ;"    adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -197,7 +197,7 @@
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'E_SIGNATURE_SETTINGS'"
 					#E_SIGNATURE_SETTINGS ></kendo-radiobutton> 
-				<kendo-label class="k-radio-label" [for]="E_SIGNATURE_SETTINGS " 
+				<kendo-label  [for]="E_SIGNATURE_SETTINGS " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
 			</li>
 		</ul>

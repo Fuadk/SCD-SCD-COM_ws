@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelGAUGE_DISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleGAUGE_DISPLAY_ID >
-		<kendo-label *ngIf="(!labelGAUGE_DISPLAY_IDTop && !isPhonePortrait) && labelGAUGE_DISPLAY_IDVisible" class="form-label" [for]="GAUGE_DISPLAY_ID" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.GAUGE_DISPLAY_ID','Gauge Display Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelGAUGE_DISPLAY_IDTop && !isPhonePortrait) && labelGAUGE_DISPLAY_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.GAUGE_DISPLAY_ID','Gauge Display Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelGAUGE_DISPLAY_IDTop || isPhonePortrait) && labelGAUGE_DISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.GAUGE_DISPLAY_ID','Gauge Display Id') + ' *'}}</label>
 		<input   formControlName="GAUGE_DISPLAY_ID"
- kendoTextBox #GAUGE_DISPLAY_ID 
+ kendoTextBox  #GAUGE_DISPLAY_ID 
 		[readonly]="primarKeyReadOnlyArr.isGAUGE_DISPLAY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.GAUGE_DISPLAY_ID_Hint','Please enter Gauge Display Id.')"
 		(click)="ON_CLICK_GAUGE_DISPLAY_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_GAUGE_DISPLAY_ID($event)"      adaptiveMode="auto"  />
@@ -83,19 +83,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMINIMUM_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMINIMUM_VALUE >
-		<kendo-label *ngIf="(!labelMINIMUM_VALUETop && !isPhonePortrait) && labelMINIMUM_VALUEVisible" class="form-label" [for]="MINIMUM_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE','Minimum Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelMINIMUM_VALUETop && !isPhonePortrait) && labelMINIMUM_VALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE','Minimum Value')"></kendo-label>
 		<label *ngIf="(labelMINIMUM_VALUETop || isPhonePortrait) && labelMINIMUM_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE','Minimum Value')}}</label>
 		<input   formControlName="MINIMUM_VALUE"
- kendoTextBox #MINIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE_Hint','Please enter Minimum Value.')"
+ kendoTextBox  #MINIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MINIMUM_VALUE_Hint','Please enter Minimum Value.')"
 		(click)="ON_CLICK_MINIMUM_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MINIMUM_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMAXIMUM_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMAXIMUM_VALUE >
-		<kendo-label *ngIf="(!labelMAXIMUM_VALUETop && !isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label" [for]="MAXIMUM_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE','Maximum Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelMAXIMUM_VALUETop && !isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE','Maximum Value')"></kendo-label>
 		<label *ngIf="(labelMAXIMUM_VALUETop || isPhonePortrait) && labelMAXIMUM_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE','Maximum Value')}}</label>
 		<input   formControlName="MAXIMUM_VALUE"
- kendoTextBox #MAXIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE_Hint','Please enter Maximum Value.')"
+ kendoTextBox  #MAXIMUM_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.MAXIMUM_VALUE_Hint','Please enter Maximum Value.')"
 		(click)="ON_CLICK_MAXIMUM_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MAXIMUM_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -115,7 +115,6 @@
 	 name="SHOW_LEGEND"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.SHOW_LEGEND_Hint','Please enter Show Legend.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -205,10 +204,10 @@
 		<div *ngIf="FormStepsArr[4].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHRESHOLD_1_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHRESHOLD_1_VALUE >
-		<kendo-label *ngIf="(!labelTHRESHOLD_1_VALUETop && !isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label" [for]="THRESHOLD_1_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE','Threshold 1 Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelTHRESHOLD_1_VALUETop && !isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE','Threshold 1 Value')"></kendo-label>
 		<label *ngIf="(labelTHRESHOLD_1_VALUETop || isPhonePortrait) && labelTHRESHOLD_1_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE','Threshold 1 Value')}}</label>
 		<input   formControlName="THRESHOLD_1_VALUE"
- kendoTextBox #THRESHOLD_1_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE_Hint','Please enter Threshold 1 Value.')"
+ kendoTextBox  #THRESHOLD_1_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_1_VALUE_Hint','Please enter Threshold 1 Value.')"
 		(click)="ON_CLICK_THRESHOLD_1_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_THRESHOLD_1_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -235,7 +234,6 @@
 	 name="BLINK_1"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_1_Hint','Please enter Blink 1.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -246,10 +244,10 @@
 		<div *ngIf="FormStepsArr[5].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHRESHOLD_2_VALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHRESHOLD_2_VALUE >
-		<kendo-label *ngIf="(!labelTHRESHOLD_2_VALUETop && !isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label" [for]="THRESHOLD_2_VALUE" [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE','Threshold 2 Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelTHRESHOLD_2_VALUETop && !isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE','Threshold 2 Value')"></kendo-label>
 		<label *ngIf="(labelTHRESHOLD_2_VALUETop || isPhonePortrait) && labelTHRESHOLD_2_VALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE','Threshold 2 Value')}}</label>
 		<input   formControlName="THRESHOLD_2_VALUE"
- kendoTextBox #THRESHOLD_2_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE_Hint','Please enter Threshold 2 Value.')"
+ kendoTextBox  #THRESHOLD_2_VALUE  [placeholder]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.THRESHOLD_2_VALUE_Hint','Please enter Threshold 2 Value.')"
 		(click)="ON_CLICK_THRESHOLD_2_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_THRESHOLD_2_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -276,7 +274,6 @@
 	 name="BLINK_2"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_GD_GAUGE_DISPLAY.scdgaugeDisplayScdGdGaugeDisplay.BLINK_2_Hint','Please enter Blink 2.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 </div>

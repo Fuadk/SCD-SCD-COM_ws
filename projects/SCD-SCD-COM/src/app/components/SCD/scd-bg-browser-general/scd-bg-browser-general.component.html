@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBROWSER_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBROWSER_GENERAL_ID >
-		<kendo-label *ngIf="(!labelBROWSER_GENERAL_IDTop && !isPhonePortrait) && labelBROWSER_GENERAL_IDVisible" class="form-label" [for]="BROWSER_GENERAL_ID" [text]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.BROWSER_GENERAL_ID','Browser General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelBROWSER_GENERAL_IDTop && !isPhonePortrait) && labelBROWSER_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.BROWSER_GENERAL_ID','Browser General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelBROWSER_GENERAL_IDTop || isPhonePortrait) && labelBROWSER_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.BROWSER_GENERAL_ID','Browser General Id') + ' *'}}</label>
 		<input   formControlName="BROWSER_GENERAL_ID"
- kendoTextBox #BROWSER_GENERAL_ID 
+ kendoTextBox  #BROWSER_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isBROWSER_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.BROWSER_GENERAL_ID_Hint','Please enter Browser General Id.')"
 		(click)="ON_CLICK_BROWSER_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BROWSER_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -73,6 +73,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SHOW_ADDRESS_BAR"
   #SHOW_ADDRESS_BAR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.SHOW_ADDRESS_BAR_Hint','Please enter Show Address Bar.')"		(click)="ON_CLICK_SHOW_ADDRESS_BAR($event)"
  (change)="onChange_SHOW_ADDRESS_BAR($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.SHOW_ADDRESS_BAR_Hint','Please enter Show Address Bar.')" 
  />
 	</kendo-formfield>
 
@@ -80,10 +82,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelINITIAL_URLTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleINITIAL_URL >
-		<kendo-label *ngIf="(!labelINITIAL_URLTop && !isPhonePortrait) && labelINITIAL_URLVisible" class="form-label" [for]="INITIAL_URL" [text]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.INITIAL_URL','Initial Url')"></kendo-label>
+		<kendo-label *ngIf="(!labelINITIAL_URLTop && !isPhonePortrait) && labelINITIAL_URLVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.INITIAL_URL','Initial Url')"></kendo-label>
 		<label *ngIf="(labelINITIAL_URLTop || isPhonePortrait) && labelINITIAL_URLVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.INITIAL_URL','Initial Url')}}</label>
 		<input   formControlName="INITIAL_URL"
- kendoTextBox #INITIAL_URL  [placeholder]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.INITIAL_URL_Hint','Please enter Initial Url.')"
+ kendoTextBox  #INITIAL_URL  [placeholder]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.INITIAL_URL_Hint','Please enter Initial Url.')"
 		(click)="ON_CLICK_INITIAL_URL($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_INITIAL_URL($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -97,6 +99,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="USE_PARAMETER_PLACEHOLDER"
   #USE_PARAMETER_PLACEHOLDER kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.USE_PARAMETER_PLACEHOLDER_Hint','Please enter Use Parameter Placeholder.')"		(click)="ON_CLICK_USE_PARAMETER_PLACEHOLDER($event)"
  (change)="onChange_USE_PARAMETER_PLACEHOLDER($event)"      adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_BG_BROWSER_GENERAL.scdbrowserGeneralScdBgBrowserGeneral.USE_PARAMETER_PLACEHOLDER_Hint','Please enter Use Parameter Placeholder.')" 
  />
 	</kendo-formfield>
 </div>

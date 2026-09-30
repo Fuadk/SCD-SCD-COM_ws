@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelALARM_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleALARM_ID >
-		<kendo-label *ngIf="(!labelALARM_IDTop && !isPhonePortrait) && labelALARM_IDVisible" class="form-label" [for]="ALARM_ID" [text]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.ALARM_ID','Alarm Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelALARM_IDTop && !isPhonePortrait) && labelALARM_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.ALARM_ID','Alarm Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelALARM_IDTop || isPhonePortrait) && labelALARM_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.ALARM_ID','Alarm Id') + ' *'}}</label>
 		<input   formControlName="ALARM_ID"
- kendoTextBox #ALARM_ID 
+ kendoTextBox  #ALARM_ID 
 		[readonly]="primarKeyReadOnlyArr.isALARM_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.ALARM_ID_Hint','Please enter Alarm Id.')"
 		(click)="ON_CLICK_ALARM_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ALARM_ID($event)"      adaptiveMode="auto"  />
@@ -71,10 +71,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNAME >
-		<kendo-label *ngIf="(!labelNAMETop && !isPhonePortrait) && labelNAMEVisible" class="form-label" [for]="NAME" [text]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.NAME','Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelNAMETop && !isPhonePortrait) && labelNAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.NAME','Name')"></kendo-label>
 		<label *ngIf="(labelNAMETop || isPhonePortrait) && labelNAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.NAME','Name')}}</label>
 		<input   formControlName="NAME"
- kendoTextBox #NAME  [placeholder]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.NAME_Hint','Please enter Name.')"
+ kendoTextBox  #NAME  [placeholder]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.NAME_Hint','Please enter Name.')"
 		(click)="ON_CLICK_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -99,10 +99,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelINPUT_TAGTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleINPUT_TAG >
-		<kendo-label *ngIf="(!labelINPUT_TAGTop && !isPhonePortrait) && labelINPUT_TAGVisible" class="form-label" [for]="INPUT_TAG" [text]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.INPUT_TAG','Input Tag')"></kendo-label>
+		<kendo-label *ngIf="(!labelINPUT_TAGTop && !isPhonePortrait) && labelINPUT_TAGVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.INPUT_TAG','Input Tag')"></kendo-label>
 		<label *ngIf="(labelINPUT_TAGTop || isPhonePortrait) && labelINPUT_TAGVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.INPUT_TAG','Input Tag')}}</label>
 		<input   formControlName="INPUT_TAG"
- kendoTextBox #INPUT_TAG  [placeholder]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.INPUT_TAG_Hint','Please enter Input Tag.')"
+ kendoTextBox  #INPUT_TAG  [placeholder]="starServices.getNLS([],'SCD_AA_ALARM_FILTER.scdalarmScdAaAlarmFilter.INPUT_TAG_Hint','Please enter Input Tag.')"
 		(click)="ON_CLICK_INPUT_TAG($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_INPUT_TAG($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

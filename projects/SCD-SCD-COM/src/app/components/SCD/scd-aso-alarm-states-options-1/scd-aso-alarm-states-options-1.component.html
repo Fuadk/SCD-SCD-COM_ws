@@ -1,0 +1,169 @@
+<div>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.component_title","Alarm States Options") }}</legend>
+<div class="form-toolbar"> </div>
+
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+
+ 
+    <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
+    <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
+
+    <kendo-toolbar-buttongroup selection="single" *ngIf="starServices.dataExits(this) && (componentConfig.queryable || componentConfig.navigable)">
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-right' : 'arrow-double-60-left'" title="{{starServices.getNLS([],'FIRST_RECORD','First Record')}}" (click)="goRecord( 'first');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-right' : 'arrow-60-left'"  title="{{starServices.getNLS([],'PREVIOUS_RECORD','Previous Record')}}"  (click)="goRecord(  'prev');" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-60-left' : 'arrow-60-right'" title="{{starServices.getNLS([],'NEXT_RECORD','Next Record')}}"  (click)="goRecord('next')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button >
+        <kendo-toolbar-button  [icon]="userLang === 'AR' ? 'arrow-double-60-left' : 'arrow-double-60-right'" title="{{starServices.getNLS([],'LAST_RECORD','Last Record')}}" (click)="goRecord('last')" *ngIf="componentConfig.navigable && !isSearch"></kendo-toolbar-button>
+    </kendo-toolbar-buttongroup>
+
+    <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
+
+    <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
+</kendo-toolbar>
+
+
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+ <div class="form-borders" > 
+    <form class="form-layout" [ngClass]="isPhonePortrait ? 'k-form k-form-horizontal-star' : 'k-form k-form-horizontal' "
+     [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled && !isSearch"-->
+    <fieldset class="form-fieldset"  class="k-form-fieldset" >
+
+
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_OPTION_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_OPTION_ID >
+		<kendo-label *ngIf="(!labelSTATE_OPTION_IDTop && !isPhonePortrait) && labelSTATE_OPTION_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.STATE_OPTION_ID','State Option Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSTATE_OPTION_IDTop || isPhonePortrait) && labelSTATE_OPTION_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.STATE_OPTION_ID','State Option Id') + ' *'}}</label>
+		<input   formControlName="STATE_OPTION_ID"
+ kendoTextBox  #STATE_OPTION_ID 
+		[readonly]="primarKeyReadOnlyArr.isSTATE_OPTION_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.STATE_OPTION_ID_Hint','Please enter State Option Id.')"
+		(click)="ON_CLICK_STATE_OPTION_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_OPTION_ID($event)"    class="HIGH"  adaptiveMode="auto"  />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPP_ID >
+		<kendo-label *ngIf="(!labelAPP_IDTop && !isPhonePortrait) && labelAPP_IDVisible" class="form-label" [for]="APP_ID" [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.APP_ID','App Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelAPP_IDTop || isPhonePortrait) && labelAPP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.APP_ID','App Id') + ' *'}}</label>
+		<kendo-combobox  #APP_ID class="form-field-combobox"  [formControlName]="'APP_ID'"
+		[data]="lkpArrAPP_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.APP_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isAPP_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.APP_ID_Hint','Please enter App Id.')"		(click)="ON_CLICK_APP_ID($event)"
+ (valueChange)="onValueChange_APP_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APP_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+		<button  (valueChange)="onValueChange_TEST_RATES($event)"    class="MEDIUM"  adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		 title="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.TEST_RATES_Hint','Please enter Test Rates.')" 
+ iconClass="fas fa-"  *ngIf=visibleTEST_RATES 		(click)="ON_CLICK_TEST_RATES($event)"
+ >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.TEST_RATES','Test Rates')}}</button>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ID >
+		<kendo-label *ngIf="(!labelDISPLAY_IDTop && !isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label" [for]="DISPLAY_ID" [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.DISPLAY_ID','Display Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelDISPLAY_IDTop || isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.DISPLAY_ID','Display Id') + ' *'}}</label>
+		<kendo-combobox  #DISPLAY_ID class="form-field-combobox"  [formControlName]="'DISPLAY_ID'"
+		[data]="lkpArrDISPLAY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.DISPLAY_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isDISPLAY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.DISPLAY_ID_Hint','Please enter Display Id.')"		(click)="ON_CLICK_DISPLAY_ID($event)"
+ (valueChange)="onValueChange_DISPLAY_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DISPLAY_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINK_RATETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK_RATE >
+		<kendo-label *ngIf="(!labelBLINK_RATETop && !isPhonePortrait) && labelBLINK_RATEVisible" class="form-label" [for]="BLINK_RATE" [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.BLINK_RATE','Blink Rate')"></kendo-label>
+		<label *ngIf="(labelBLINK_RATETop || isPhonePortrait) && labelBLINK_RATEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.BLINK_RATE','Blink Rate')}}</label>
+		<kendo-combobox  #BLINK_RATE class="form-field-combobox"  [formControlName]="'BLINK_RATE'"
+		[data]="lkpArrBLINK_RATE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.BLINK_RATE_Hint','Please enter Blink Rate.')"		(click)="ON_CLICK_BLINK_RATE($event)"
+ (valueChange)="onValueChange_BLINK_RATE($event)"    class="MEDIUM"  adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'BLINK_RATE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
+		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.SHAPE_ID','Shape Id') + ' *'}}</label>
+		<kendo-combobox  #SHAPE_ID class="form-field-combobox"  [formControlName]="'SHAPE_ID'"
+		[data]="lkpArrSHAPE_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SHAPE_ID')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+</div>
+
+    </fieldset>
+    </form>
+    </div>
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+
+      <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+</kendo-pdf-export>
+</div>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+  
+
+
+
+

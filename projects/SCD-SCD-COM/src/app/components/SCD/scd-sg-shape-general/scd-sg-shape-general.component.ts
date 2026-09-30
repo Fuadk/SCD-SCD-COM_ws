@@ -164,7 +164,11 @@ public disableBLINK = false;
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
+    public responsive: BreakpointObserver, 
+   private starNotify: StarNotifyService,  
+    public starServices: starServices
+   ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -748,7 +752,6 @@ public printScreen(){
         case 'rectangle':
         case 'rounded rectangle':
         case 'wedge':
-        case 'arrow':
           this.visibleBORDER_STYLE = false;
           this.visibleBORDER_WIDTH = false;
           this.visibleBORDER_USES_BACK_COLOR = false;
@@ -767,7 +770,6 @@ public printScreen(){
         || ComponentConfig.masterParams.data.SHAPE_TYPE === "rectangle"
         || ComponentConfig.masterParams.data.SHAPE_TYPE === "rounded rectangle"
         || ComponentConfig.masterParams.data.SHAPE_TYPE === "wedge"
-        || ComponentConfig.masterParams.data.SHAPE_TYPE === "arrow"
         ) {
         this.visibleLINE_WIDTH = true;
       }
@@ -1245,6 +1247,7 @@ public uploadimage = false;
 public showIcon=true;
 public svg_arr = [];
 public svg_data = [];
+
 
 public update_svgicons(formGroup){
   this.showIcon = false;

@@ -49,13 +49,13 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSYMBOL_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSYMBOL_GENERAL_ID >
-		<kendo-label *ngIf="(!labelSYMBOL_GENERAL_IDTop && !isPhonePortrait) && labelSYMBOL_GENERAL_IDVisible" class="form-label" [for]="SYMBOL_GENERAL_ID" [text]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.SYMBOL_GENERAL_ID','Symbol General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelSYMBOL_GENERAL_IDTop && !isPhonePortrait) && labelSYMBOL_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.SYMBOL_GENERAL_ID','Symbol General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelSYMBOL_GENERAL_IDTop || isPhonePortrait) && labelSYMBOL_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.SYMBOL_GENERAL_ID','Symbol General Id') + ' *'}}</label>
 		<input   formControlName="SYMBOL_GENERAL_ID"
- kendoTextBox #SYMBOL_GENERAL_ID 
+ kendoTextBox  #SYMBOL_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isSYMBOL_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.SYMBOL_GENERAL_ID_Hint','Please enter Symbol General Id.')"
 		(click)="ON_CLICK_SYMBOL_GENERAL_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SYMBOL_GENERAL_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
@@ -66,7 +66,7 @@
 
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -88,7 +88,7 @@
 		<kendo-combobox  #BORDER_STYLE class="form-field-combobox"  [formControlName]="'BORDER_STYLE'"
 		[data]="lkpArrBORDER_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.BORDER_STYLE_Hint','Please enter Border Style.')"		(click)="ON_CLICK_BORDER_STYLE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_BORDER_STYLE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -102,12 +102,12 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_WIDTHTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_WIDTH >
-		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label" [for]="BORDER_WIDTH" [text]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_WIDTHTop && !isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.BORDER_WIDTH','Border Width')"></kendo-label>
 		<label *ngIf="(labelBORDER_WIDTHTop || isPhonePortrait) && labelBORDER_WIDTHVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.BORDER_WIDTH','Border Width')}}</label>
 		<input   formControlName="BORDER_WIDTH"
- kendoTextBox #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
+ kendoTextBox  #BORDER_WIDTH  [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.BORDER_WIDTH_Hint','Please enter Border Width.')"
 		(click)="ON_CLICK_BORDER_WIDTH($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' "     adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -119,7 +119,7 @@
 		<kendo-combobox  #SHAPE_TYPE class="form-field-combobox"  [formControlName]="'SHAPE_TYPE'"
 		[data]="lkpArrSHAPE_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.SHAPE_TYPE_Hint','Please enter Shape Type.')"		(click)="ON_CLICK_SHAPE_TYPE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_SHAPE_TYPE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -144,7 +144,7 @@
 		<kendo-combobox  #NUMBER_OF_STATES class="form-field-combobox"  [formControlName]="'NUMBER_OF_STATES'"
 		[data]="lkpArrNUMBER_OF_STATES" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.NUMBER_OF_STATES_Hint','Please enter Number Of States.')"		(click)="ON_CLICK_NUMBER_OF_STATES($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_NUMBER_OF_STATES($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -163,7 +163,7 @@
 		<kendo-combobox  #TRIGGER_TYPE class="form-field-combobox"  [formControlName]="'TRIGGER_TYPE'"
 		[data]="lkpArrTRIGGER_TYPE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
   [placeholder]="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.TRIGGER_TYPE_Hint','Please enter Trigger Type.')"		(click)="ON_CLICK_TRIGGER_TYPE($event)"
-     adaptiveMode="auto" 
+ (valueChange)="onValueChange_TRIGGER_TYPE($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -196,7 +196,7 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-		<button  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
+		<button  (valueChange)="onValueChange_IMAGE_SELECT_SYMBOL($event)"  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.IMAGE_SELECT_SYMBOL_Hint','Please enter Image Select Symbol.')" 
  iconClass="fas fa-image"  *ngIf=visibleIMAGE_SELECT_SYMBOL 		(click)="ON_CLICK_IMAGE_SELECT_SYMBOL($event)"
  >{{starServices.getNLS([],'SCD_SG_SYMBOL_GENERAL.scdsymbolGeneralScdSgSymbolGeneral.IMAGE_SELECT_SYMBOL','...')}}</button>

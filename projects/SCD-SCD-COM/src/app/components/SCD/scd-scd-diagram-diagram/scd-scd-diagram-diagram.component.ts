@@ -20,6 +20,13 @@ import {
   DiagramComponent,
   Rect,
 } from "@progress/kendo-angular-diagrams";
+import { ExpressionEngineService,
+  LoadedRule,
+  RuntimeContext,
+  ValidationResult,
+  Value,
+  collectVariables,} from '../../../services/expression-engine.service';
+
 
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -252,6 +259,7 @@ public disableNAME = false;
               public starlib1: Starlib1,
               public starServices: starServices,
               private dialogService: DialogService,
+              private expressionEngine: ExpressionEngineService,
               private cdr: ChangeDetectorRef) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
@@ -1804,31 +1812,12 @@ public performMapperFrom(In) {
     }
     return OutRec;
 }
+
 public isDiagramInitializing = true;
-public expData ={};
+public expData =[];
 ////
 async  prepareShapes(){
-  function formatData(input) {
-  const result = {};
-  
-  input.forEach(item => {
-    // Extract tag by removing .VAL and the outer curly braces
-    const tag = item.EXPRESSION_DATA
-      .replace('.VAL', '')      // Remove .VAL
-      .replace(/[{}]/g, '');   // Remove { and }
-    
-    if (!result[tag]) {
-      result[tag] = [];
-    }
-    
-    result[tag].push({
-      shape_id: `${item.SHAPE_TYPE}:${item.SHAPE_ID}`,
-      expression: item.EXPRESSION_DATA
-    });
-  });
-  
-  return result;
-}
+
   let shapesIDs = "";
   for (let i =0; i< this.shapes.length; i++){
     let shapeID = this.shapes[i].id;
@@ -1883,7 +1872,28 @@ async  prepareShapes(){
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
   let statement_SCD_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                        
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_GRAPH_GENERAL = "DELETE from SCD_GRAPH_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
+  let statement_SCD_MULTISTATE_INDICATOR_GENERAL = "DELETE from SCD_MULTISTATE_INDICATOR_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
+  let statement_SCD_LIST_INDICATOR_GENERAL = "DELETE from SCD_LIST_INDICATOR_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
+  let statement_SCD_LIST_INDICATOR_STATE = "DELETE from SCD_LIST_INDICATOR_STATE where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
+  let statement_SCD_ARROW_BUTTON_GENERAL = "DELETE from SCD_ARROW_BUTTON_GENERAL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_ARROW_BUTTON_LABEL = "DELETE from SCD_ARROW_BUTTON_LABEL where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+  let statement_SCD_ARROW_BUTTON_TIMINGE = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
+                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
+                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                                    
                 
   let body_defs = [
      {
@@ -1941,6 +1951,34 @@ async  prepareShapes(){
            {
         "_QUERY": "EXECSQL",
         "_STMT": statement_SCD_TEXT_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_GRAPH_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_MULTISTATE_INDICATOR_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_LIST_INDICATOR_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_LIST_INDICATOR_STATE
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_GENERAL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_LABEL
+      },
+           {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ARROW_BUTTON_TIMINGE
       }
 
     ];
@@ -1978,11 +2016,52 @@ async  prepareShapes(){
     if (typeof data[2].data != "undefined"){
       let expData = data[2].data;
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", JSON.stringify(expData));
-      this.expData = formatData(expData);
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", this.expData);
-    } 
-}
+      
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData.length, expData, JSON.stringify(expData));
+      const convert = (s: string): string => s.replace(/^\[(.+?)\](.+?)\.VAL$/, '$1:$2');
 
+
+      for (let i = 0; i < expData.length; i++){
+        const loaded = this.expressionEngine.loadWithVariables(expData[i]['EXPRESSION_DATA']);
+
+        if ('error' in loaded) {
+          // The rule failed to compile — handle the diagnostics.
+          const errs = loaded.error.diagnostics.filter(d => d.severity === 'error');
+          console.warn(
+            `Rule '${expData[i]['EXPRESSION_DATA']}' failed to compile:`,
+            errs.map(e => `${e.code}: ${e.message}`).join('; ')
+          );
+          continue; // or return / skip this rule, whichever fits your loop
+        }
+
+        // ✅ Narrowed: TypeScript now knows `loaded` has `rule` and `variables`
+        const { rule, variables } = loaded;
+
+        const tags: Record<string, Value> = {};
+        let j = 0;
+        let tagNames  = [];
+        let tagNamesScada  = [];
+        for (const name of variables.tags) {
+          console.log('opcua:tags[name]:', name, tags[name]);
+          
+          tagNames.push(convert(name));
+          tagNamesScada.push(name);
+          
+          tags[name] = j;
+          j++;
+        }
+        if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:loaded:", loaded);
+        expData[i]['loaded'] = loaded;
+        expData[i]['tagNames'] = tagNames;
+        expData[i]['tagNamesScada'] = tagNamesScada;
+      }
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData);
+      //this.expData = formatData(expData);
+      this.expData = expData;
+      
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:this.expData:", this.expData);
+    } 
+} 
 ////
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
@@ -2015,6 +2094,7 @@ public mapSampleData() {
         });
     });
     this.prepareShapes();
+    
 }
 
 // Simulating your database results
@@ -2186,6 +2266,11 @@ public lastClickY: number = 0;
         || (shapeType == "Latched") || (shapeType == "Multistate") || (shapeType == "Interlocked")
         || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") || (shapeType == "Time and Date Display")
         || (shapeType == "Tag Label") || (shapeType == "Local Message")|| (shapeType == "Text")
+        || (shapeType == "Bar") || (shapeType == "Gauge")|| (shapeType == "Scale")
+        || (shapeType == "Multiple") || (shapeType == "List") 
+        || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
+        || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
+        || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
          )
           options = {
             width: 180,
@@ -2199,7 +2284,11 @@ public lastClickY: number = 0;
           || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
           || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
           || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
-          || (shapeType == "Text") 
+          || (shapeType == "Text") || (shapeType == "Text")  || (shapeType == "Bar") || (shapeType == "Gauge") 
+          || (shapeType == "Scale") || (shapeType == "Multiple") || (shapeType == "List") 
+          || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
+          || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
+          || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
         ) {
           options.fillColor = "#D3D3D3"
         }
@@ -3163,6 +3252,7 @@ public getShapeInfo(){
 
   return shapeInfo;
 }
+
    async insertSCDShapeTables(shapeID, shapeType) {
     function groupByFieldName<T extends { FIELD_NAME: string; FIELD_VALUE: any }>(
       data: T[]
@@ -3224,6 +3314,50 @@ public getShapeInfo(){
         tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
         tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
         break;
+      case 'Bar':
+        tables.push('INSERT_SCD_GRAPH_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'Scale':
+        tables.push('INSERT_SCD_GRAPH_GENERAL');
+        break;
+      case 'Gauge':
+        tables.push('INSERT_SCD_GRAPH_GENERAL');
+        tables.push('INSERT_SCD_GAUGE_DISPLAY');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break; 
+      case 'Multiple':
+        tables.push('INSERT_SCD_MULTISTATE_INDICATOR_GENERAL');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_STATE');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break; 
+      case 'List':
+        tables.push('INSERT_SCD_LIST_INDICATOR_GENERAL');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
+        tables.push('INSERT_SCD_SHAPE_CONNECTION');
+        break;
+      case 'Backspace':
+      case 'End':
+      case 'Enter':
+        tables.push('INSERT_SCD_ARROW_BUTTON_GENERAL');
+        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
+        break; 
+      case 'Move Left':
+      case 'Move Right':
+      case 'Move Down':
+      case 'Move Up':
+      case 'Page Up':
+      case 'Page Down':
+        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
+        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
+        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
+        break; 
       case 'Momentry':
       case 'Maintained':
       case 'Latched':
@@ -3321,7 +3455,9 @@ public getShapeInfo(){
                 butApp++;
               }
               else if ( (shapeType == "Maintained") || (shapeType == "Momentry") || (shapeType == "Latched") 
-                || (shapeType == "Multistate") || (shapeType == "Interlocked") ) {
+                || (shapeType == "Multistate") || (shapeType == "Interlocked") || (shapeType == "Multiple") 
+                || (shapeType == "List") 
+                ) {
                 if (butApp == 0){
                   object['STATE_NAME'] = "State0";
                   object['STATE_ID'] = "0";
@@ -3334,8 +3470,15 @@ public getShapeInfo(){
                 }
                 else if (butApp == 2){
                   object['STATE_NAME'] = "Error";
+                  if (shapeType == "Multiple") 
+                    object['STATE_NAME'] = "State2";
                   object['STATE_ID'] = "2";
                   object['VALUE'] = "2";
+                }
+                else if (butApp == 3){
+                  object['STATE_NAME'] = "Error";
+                  object['STATE_ID'] = "3";
+                  object['VALUE'] = "3";
                 }
 
                 console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
@@ -3348,6 +3491,37 @@ public getShapeInfo(){
                 butApp++;
               }
             }
+            if (tables[i] == "INSERT_SCD_LIST_INDICATOR_STATE") {
+                if (butApp == 0){
+                  object['STATE_NAME'] = "State0";
+                  object['STATE_ID'] = "0";
+                  object['VALUE'] = "0";
+                }
+                else if (butApp == 1){
+                  object['STATE_NAME'] = "State1";
+                  object['STATE_ID'] = "1";
+                  object['VALUE'] = "1";
+                }
+                else if (butApp == 2){
+                  object['STATE_NAME'] = "State2";
+                  object['STATE_ID'] = "2";
+                  object['VALUE'] = "2";
+                }
+                else if (butApp == 3){
+                  object['STATE_NAME'] = "State3";
+                  object['STATE_ID'] = "3";
+                  object['VALUE'] = "3";
+                }
+                else if (butApp == 4){
+                  object['STATE_NAME'] = "State4";
+                  object['STATE_ID'] = "4";
+                  object['VALUE'] = "4";
+                }
+
+                console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
+                butApp++;
+              
+            }
             if (tables[i] == "INSERT_SCD_BUTTON_APPEARANCE") {
                   if (butApp == 0)
                   object['BUTTON_APPEARANCE'] = "UP";
@@ -3356,6 +3530,15 @@ public getShapeInfo(){
                 else if (butApp == 2)
                   object['BUTTON_APPEARANCE'] = "DISABLED";
                 butApp++;
+            }
+            if (tables[i] == "INSERT_SCD_GRAPH_GENERAL") {
+              if (shapeType == "Gauge"){
+                object['BACK_COLOR'] = " #D3D3D3";
+                object['FILL_COLOR'] = "#AAFF00";
+              }
+              else if (shapeType == "Scale"){
+                object['BACK_COLOR'] = " #000000";
+              }
             }
             let body = [];
             body.push(object);
@@ -3367,6 +3550,8 @@ public getShapeInfo(){
       }
     }
   }
+
+
 public menuType;
 public event;
 public insertShapeFlag = false;
@@ -3891,6 +4076,11 @@ public onFreehandPointerUp(event: PointerEvent): void {
      || (kind === "buttonLatched") || (kind === "buttonMultistate") || (kind === "buttonInterlocked")
      || (kind === "rampButton") || (kind === "navButton") || (kind === "timeDateDisplay") || (kind === "tagLabel")
      || (kind === "localMessage") || (kind === "text") || (kind === "stringInput") || (kind === "stringDisplay")
+     || (kind === "bar") || (kind === "gauge") || (kind === "scale")  || (kind === "multiple")
+     || (kind === "list")
+     || (kind == "backspace")  || (kind == "end")  || (kind == "enter") 
+     || (kind == "moveleft")  || (kind == "moveright")  || (kind == "movedown") 
+     || (kind == "moveup")  || (kind == "pageup")  || (kind == "pagedown") 
      ) {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
@@ -5539,9 +5729,26 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     numeric:
       `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">#</text>`,
     scale:
-      `<rect x="3" y="12" width="18" height="4" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="12" x2="7" y2="16" stroke="#e94560"/><line x1="12" y1="12" x2="12" y2="16" stroke="#e94560"/><line x1="17" y1="12" x2="17" y2="16" stroke="#e94560"/>`,
+      `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      // Y axis (vertical) and X axis (horizontal) forming an L at the lower-left
+      `<path d="M7 16 L7 9" stroke="#e94560" stroke-width="1.6" stroke-linecap="round"/>` +
+      `<path d="M7 16 L17 16" stroke="#e94560" stroke-width="1.6" stroke-linecap="round"/>` +
+      // small arrowheads on the axes
+      `<path d="M6.4 9.6 L7 9 L7.6 9.6" fill="none" stroke="#e94560" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>` +
+      `<path d="M16.4 15.4 L17 16 L16.4 16.6" fill="none" stroke="#e94560" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>` +
+      // plotted line (zigzag showing a rising trend)
+      `<path d="M7.5 14.5 L10 12 L12.5 13.2 L15 9.5" fill="none" stroke="#e94560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>` +
+      // data point at the end of the line
+      `<circle cx="15" cy="9.5" r="1" fill="#e94560"/>`,
+
     gauge:
-      `<path d="M4 18 A8 8 0 0 1 20 18" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="18" x2="16" y2="12" stroke="#e94560" stroke-width="2"/>`,
+      `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
+      `<path d="M7 16 A5 5 0 0 1 17 16" fill="none" stroke="#e94560" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<path d="M8 13.5 L8.7 14" stroke="#e94560" stroke-width="1.1" stroke-linecap="round"/>` +
+      `<path d="M12 11 L12 12" stroke="#e94560" stroke-width="1.1" stroke-linecap="round"/>` +
+      `<path d="M16 13.5 L15.3 14" stroke="#e94560" stroke-width="1.1" stroke-linecap="round"/>` +
+      `<path d="M12 16 L15 12.5" stroke="#e94560" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<circle cx="12" cy="16" r="1.1" fill="#e94560"/>`,
     bar:
       `<rect x="4" y="12" width="4" height="8" fill="#e94560"/><rect x="10" y="8" width="4" height="12" fill="#e94560"/><rect x="16" y="4" width="4" height="16" fill="#e94560"/>`,
     graph:
@@ -5550,18 +5757,46 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       `<line x1="4" y1="7" x2="20" y2="7" stroke="#e94560" stroke-width="2"/><line x1="4" y1="13" x2="20" y2="13" stroke="#e94560" stroke-width="2"/><line x1="4" y1="19" x2="20" y2="19" stroke="#e94560" stroke-width="2"/>`,
 
     // ── Indicators ──
+    multiple:
+          `<line x1="4"  y1="5"  x2="16" y2="5"  stroke="#e94560" stroke-width="2"/>
+          <line x1="4"  y1="11" x2="16" y2="11" stroke="#e94560" stroke-width="2"/>
+          <line x1="4"  y1="17" x2="16" y2="17" stroke="#e94560" stroke-width="2"/>
+          <line x1="8"  y1="9"  x2="20" y2="9"  stroke="#e94560" stroke-width="2" opacity="0.6"/>
+          <line x1="8"  y1="15" x2="20" y2="15" stroke="#e94560" stroke-width="2" opacity="0.6"/>
+          <line x1="8"  y1="21" x2="20" y2="21" stroke="#e94560" stroke-width="2" opacity="0.6"/>`,
     indicator:
       `<circle cx="12" cy="13" r="6" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="12" cy="13" r="2" fill="#e94560"/>`,
     piloted:
       `<circle cx="12" cy="13" r="7" fill="none" stroke="#e94560" stroke-width="2"/><line x1="12" y1="6" x2="12" y2="9" stroke="#e94560" stroke-width="2"/>`,
 
     // ── Navigation / keys ──
+    end:
+      `<line x1="18" y1="6" x2="18" y2="20" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <path d="M4 13 L15 13" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>`,
+    moveleft:
+      `<path d="M20 13 L6 13 M11 8 L5 13 L11 18"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
+    moveright:
+      `<path d="M4 13 L16 13 M12 8 L18 13 L12 18"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
+    movedown:
+      `<path d="M12 4 L12 18 M7 13 L12 19 L17 13"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
+    moveup:
+      `<path d="M12 20 L12 6 M7 11 L12 5 L17 11"
+      fill="none" stroke="#e94560" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"/>`,
     arrow:
       `<path d="M4 13 L16 13 M12 8 L18 13 L12 18" fill="none" stroke="#e94560" stroke-width="2"/>`,
-    pageUp:
-      `<path d="M7 15 L12 9 L17 15" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="19" x2="17" y2="19" stroke="#e94560" stroke-width="2"/>`,
-    pageDown:
-      `<path d="M7 11 L12 17 L17 11" fill="none" stroke="#e94560" stroke-width="2"/><line x1="7" y1="7" x2="17" y2="7" stroke="#e94560" stroke-width="2"/>`,
+    pageup:
+      `<path d="M7 18 L12 12 L17 18 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M7 12 L12 6  L17 12 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>`,
+    pagedown:
+      `<path d="M7 6 L12 12 L17 6 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M7 12 L12 18 L17 12 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>`,
     enter:
       `<path d="M18 6 L18 13 L7 13 M10 10 L7 13 L10 16" fill="none" stroke="#e94560" stroke-width="2"/>`,
     backspace:
@@ -5625,19 +5860,19 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Bar': 'bar',
     'Graph': 'graph',
     'List': 'list',
-    'Multiple': 'list',
+    'Multiple': 'multiple',
     'Indicator': 'indicator',
-    'Page  Up': 'pageUp',
-    'Page  Down': 'pageDown',
-    'Move Up': 'arrow',
-    'Move Down': 'arrow',
-    'Move Right': 'arrow',
-    'Move Left': 'arrow',
+    'Page Up': 'pageup',
+    'Page Down': 'pagedown',
+    'Move Up': 'moveup',
+    'Move Down': 'movedown',
+    'Move Right': 'moveright',
+    'Move Left': 'moveleft',
     'Enter': 'enter',
-    'End': 'arrow',
+    'End': 'end',
     'Backspace': 'backspace',
-    'Navigation': 'navButton',
-    'Arrow': 'arrow',
+    //'Navigation': 'navButton',
+    //'Arrow': 'arrow',
     'Display': 'display',
     'Piloted': 'piloted',
     'Control': 'button',

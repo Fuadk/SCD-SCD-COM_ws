@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTEXT_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTEXT_GENERAL_ID >
-		<kendo-label *ngIf="(!labelTEXT_GENERAL_IDTop && !isPhonePortrait) && labelTEXT_GENERAL_IDVisible" class="form-label" [for]="TEXT_GENERAL_ID" [text]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.TEXT_GENERAL_ID','Text General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelTEXT_GENERAL_IDTop && !isPhonePortrait) && labelTEXT_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.TEXT_GENERAL_ID','Text General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelTEXT_GENERAL_IDTop || isPhonePortrait) && labelTEXT_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.TEXT_GENERAL_ID','Text General Id') + ' *'}}</label>
 		<input   formControlName="TEXT_GENERAL_ID"
- kendoTextBox #TEXT_GENERAL_ID 
+ kendoTextBox  #TEXT_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isTEXT_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.TEXT_GENERAL_ID_Hint','Please enter Text General Id.')"
 		(click)="ON_CLICK_TEXT_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TEXT_GENERAL_ID($event)"      adaptiveMode="auto"  />
@@ -217,7 +217,6 @@
 	 name="SIZE_TO_FIT"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.SIZE_TO_FIT_Hint','Please enter Size To Fit.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -233,7 +232,6 @@
 	 name="WORD_WRAP"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_TG_TEXT_GENERAL.scdtextGeneralScdTgTextGeneral.WORD_WRAP_Hint','Please enter Word Wrap.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 

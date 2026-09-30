@@ -49,20 +49,20 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_INPUT_GENERAL_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_INPUT_GENERAL_ID >
-		<kendo-label *ngIf="(!labelSHAPE_INPUT_GENERAL_IDTop && !isPhonePortrait) && labelSHAPE_INPUT_GENERAL_IDVisible" class="form-label" [for]="SHAPE_INPUT_GENERAL_ID" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.SHAPE_INPUT_GENERAL_ID','Shape Input General Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelSHAPE_INPUT_GENERAL_IDTop && !isPhonePortrait) && labelSHAPE_INPUT_GENERAL_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.SHAPE_INPUT_GENERAL_ID','Shape Input General Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelSHAPE_INPUT_GENERAL_IDTop || isPhonePortrait) && labelSHAPE_INPUT_GENERAL_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.SHAPE_INPUT_GENERAL_ID','Shape Input General Id') + ' *'}}</label>
 		<input   formControlName="SHAPE_INPUT_GENERAL_ID"
- kendoTextBox #SHAPE_INPUT_GENERAL_ID 
+ kendoTextBox  #SHAPE_INPUT_GENERAL_ID 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_INPUT_GENERAL_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.SHAPE_INPUT_GENERAL_ID_Hint','Please enter Shape Input General Id.')"
 		(click)="ON_CLICK_SHAPE_INPUT_GENERAL_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHAPE_INPUT_GENERAL_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAGTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG >
-		<kendo-label *ngIf="(!labelTAGTop && !isPhonePortrait) && labelTAGVisible" class="form-label" [for]="TAG" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAG','Tag')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAGTop && !isPhonePortrait) && labelTAGVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAG','Tag')"></kendo-label>
 		<label *ngIf="(labelTAGTop || isPhonePortrait) && labelTAGVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAG','Tag')}}</label>
 		<input   formControlName="TAG"
- kendoTextBox #TAG  [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAG_Hint','Please enter Tag.')"
+ kendoTextBox  #TAG  [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAG_Hint','Please enter Tag.')"
 		(click)="ON_CLICK_TAG($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -97,19 +97,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDEFAULT_DATATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDEFAULT_DATA >
-		<kendo-label *ngIf="(!labelDEFAULT_DATATop && !isPhonePortrait) && labelDEFAULT_DATAVisible" class="form-label" [for]="DEFAULT_DATA" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DEFAULT_DATA','Default Data')"></kendo-label>
+		<kendo-label *ngIf="(!labelDEFAULT_DATATop && !isPhonePortrait) && labelDEFAULT_DATAVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DEFAULT_DATA','Default Data')"></kendo-label>
 		<label *ngIf="(labelDEFAULT_DATATop || isPhonePortrait) && labelDEFAULT_DATAVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DEFAULT_DATA','Default Data')}}</label>
 		<input   formControlName="DEFAULT_DATA"
- kendoTextBox #DEFAULT_DATA  [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DEFAULT_DATA_Hint','Please enter Default Data.')"
+ kendoTextBox  #DEFAULT_DATA  [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DEFAULT_DATA_Hint','Please enter Default Data.')"
 		(click)="ON_CLICK_DEFAULT_DATA($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DEFAULT_DATA($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAB_INDEXTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAB_INDEX >
-		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label" [for]="TAB_INDEX" [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX','Tab Index')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAB_INDEXTop && !isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX','Tab Index')"></kendo-label>
 		<label *ngIf="(labelTAB_INDEXTop || isPhonePortrait) && labelTAB_INDEXVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX','Tab Index')}}</label>
 		<input   formControlName="TAB_INDEX"
- kendoTextBox #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
+ kendoTextBox  #TAB_INDEX  [placeholder]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.TAB_INDEX_Hint','Please enter Tab Index.')"
 		(click)="ON_CLICK_TAB_INDEX($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAB_INDEX($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -126,7 +126,6 @@
 	 name="DISPLAY_ON_SCREEN_KEYBOARD"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISPLAY_ON_SCREEN_KEYBOARD_Hint','Please enter Display On Screen Keyboard.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -195,7 +194,6 @@
 	 name="CONTINUOUSLY_UPDATE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.CONTINUOUSLY_UPDATE_Hint','Please enter Continuously Update.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -208,7 +206,6 @@
 	 name="DISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOST"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_SIG_SHAPE_INPUT_GENERAL.scdshapeInputGeneralScdSigShapeInputGeneral.DISCARD_INPUT_AND_RESUME_UPDATING_WHEN_FOCUS_IS_LOST_Hint','Discard Input And Resume Updating When Focus Is Lost.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 

@@ -37,20 +37,20 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_KEY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_KEY_ID >
-		<kendo-label *ngIf="(!labelDISPLAY_KEY_IDTop && !isPhonePortrait) && labelDISPLAY_KEY_IDVisible" class="form-label" [for]="DISPLAY_KEY_ID" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_KEY_ID','Display Key Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelDISPLAY_KEY_IDTop && !isPhonePortrait) && labelDISPLAY_KEY_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_KEY_ID','Display Key Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelDISPLAY_KEY_IDTop || isPhonePortrait) && labelDISPLAY_KEY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_KEY_ID','Display Key Id') + ' *'}}</label>
 		<input   formControlName="DISPLAY_KEY_ID"
- kendoTextBox #DISPLAY_KEY_ID 
+ kendoTextBox  #DISPLAY_KEY_ID 
 		[readonly]="primarKeyReadOnlyArr.isDISPLAY_KEY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.DISPLAY_KEY_ID_Hint','Please enter Display Key Id.')"
 		(click)="ON_CLICK_DISPLAY_KEY_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_DISPLAY_KEY_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelKEY_LABELTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleKEY_LABEL >
-		<kendo-label *ngIf="(!labelKEY_LABELTop && !isPhonePortrait) && labelKEY_LABELVisible" class="form-label" [for]="KEY_LABEL" [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL','Key Label')"></kendo-label>
+		<kendo-label *ngIf="(!labelKEY_LABELTop && !isPhonePortrait) && labelKEY_LABELVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL','Key Label')"></kendo-label>
 		<label *ngIf="(labelKEY_LABELTop || isPhonePortrait) && labelKEY_LABELVisible" class="form-label"  >{{starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL','Key Label')}}</label>
 		<input   formControlName="KEY_LABEL"
- kendoTextBox #KEY_LABEL  [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL_Hint','Please enter Key Label.')"
+ kendoTextBox  #KEY_LABEL  [placeholder]="starServices.getNLS([],'SCD_DKS_KEY_DETAIL.scddisplayKeyScdDksKeyDetail.KEY_LABEL_Hint','Please enter Key Label.')"
 		(click)="ON_CLICK_KEY_LABEL($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_KEY_LABEL($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

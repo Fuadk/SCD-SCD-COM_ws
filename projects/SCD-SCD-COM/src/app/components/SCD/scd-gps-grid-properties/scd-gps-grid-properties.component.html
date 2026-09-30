@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelGRID_PROP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleGRID_PROP_ID >
-		<kendo-label *ngIf="(!labelGRID_PROP_IDTop && !isPhonePortrait) && labelGRID_PROP_IDVisible" class="form-label" [for]="GRID_PROP_ID" [text]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.GRID_PROP_ID','Grid Prop Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelGRID_PROP_IDTop && !isPhonePortrait) && labelGRID_PROP_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.GRID_PROP_ID','Grid Prop Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelGRID_PROP_IDTop || isPhonePortrait) && labelGRID_PROP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.GRID_PROP_ID','Grid Prop Id') + ' *'}}</label>
 		<input   formControlName="GRID_PROP_ID"
- kendoTextBox #GRID_PROP_ID 
+ kendoTextBox  #GRID_PROP_ID 
 		[readonly]="primarKeyReadOnlyArr.isGRID_PROP_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.GRID_PROP_ID_Hint','Please enter Grid Prop Id.')"
 		(click)="ON_CLICK_GRID_PROP_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_GRID_PROP_ID($event)"    class="LOW"  adaptiveMode="auto"  />
@@ -64,6 +64,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SHOW_GRID"
   #SHOW_GRID kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.SHOW_GRID_Hint','Please enter Show Grid.')"		(click)="ON_CLICK_SHOW_GRID($event)"
  (change)="onChange_SHOW_GRID($event)"    class="MEDIUM"  adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.SHOW_GRID_Hint','Please enter Show Grid.')" 
  />
 	</kendo-formfield>
 
@@ -73,6 +75,8 @@
 		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="SNAP_TO_GRID"
   #SNAP_TO_GRID kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.SNAP_TO_GRID_Hint','Please enter Snap To Grid.')"		(click)="ON_CLICK_SNAP_TO_GRID($event)"
  (change)="onChange_SNAP_TO_GRID($event)"    class="MEDIUM"  adaptiveMode="auto" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.SNAP_TO_GRID_Hint','Please enter Snap To Grid.')" 
  />
 	</kendo-formfield>
 
@@ -96,19 +100,19 @@
 		<div *ngIf="FormStepsArr[2].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelHORIZONTAL_XTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleHORIZONTAL_X >
-		<kendo-label *ngIf="(!labelHORIZONTAL_XTop && !isPhonePortrait) && labelHORIZONTAL_XVisible" class="form-label" [for]="HORIZONTAL_X" [text]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.HORIZONTAL_X','Horizontal (X)')"></kendo-label>
+		<kendo-label *ngIf="(!labelHORIZONTAL_XTop && !isPhonePortrait) && labelHORIZONTAL_XVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.HORIZONTAL_X','Horizontal (X)')"></kendo-label>
 		<label *ngIf="(labelHORIZONTAL_XTop || isPhonePortrait) && labelHORIZONTAL_XVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.HORIZONTAL_X','Horizontal (X)')}}</label>
 		<input   formControlName="HORIZONTAL_X"
- kendoTextBox #HORIZONTAL_X  [placeholder]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.HORIZONTAL_X_Hint','Please enter Horizontal X.')"
+ kendoTextBox  #HORIZONTAL_X  [placeholder]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.HORIZONTAL_X_Hint','Please enter Horizontal X.')"
 		(click)="ON_CLICK_HORIZONTAL_X($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_HORIZONTAL_X($event)"    class="MEDIUM"  adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelVERTICAL_XTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleVERTICAL_X >
-		<kendo-label *ngIf="(!labelVERTICAL_XTop && !isPhonePortrait) && labelVERTICAL_XVisible" class="form-label" [for]="VERTICAL_X" [text]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.VERTICAL_X','Vertical (Y)')"></kendo-label>
+		<kendo-label *ngIf="(!labelVERTICAL_XTop && !isPhonePortrait) && labelVERTICAL_XVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.VERTICAL_X','Vertical (Y)')"></kendo-label>
 		<label *ngIf="(labelVERTICAL_XTop || isPhonePortrait) && labelVERTICAL_XVisible" class="form-label"  >{{starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.VERTICAL_X','Vertical (Y)')}}</label>
 		<input   formControlName="VERTICAL_X"
- kendoTextBox #VERTICAL_X  [placeholder]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.VERTICAL_X_Hint','Please enter Vertical Y.')"
+ kendoTextBox  #VERTICAL_X  [placeholder]="starServices.getNLS([],'SCD_GPS_GRID_PROPERTIES.scdgridPropertiesScdGpsGridProperties.VERTICAL_X_Hint','Please enter Vertical Y.')"
 		(click)="ON_CLICK_VERTICAL_X($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_VERTICAL_X($event)"    class="MEDIUM"  adaptiveMode="auto"  />
 	</kendo-formfield>

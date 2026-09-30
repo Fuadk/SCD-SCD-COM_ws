@@ -37,20 +37,20 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelidTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleid >
-		<kendo-label *ngIf="(!labelidTop && !isPhonePortrait) && labelidVisible" class="form-label" [for]="id" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.id','Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelidTop && !isPhonePortrait) && labelidVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.id','Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelidTop || isPhonePortrait) && labelidVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.id','Id') + ' *'}}</label>
 		<input   formControlName="id"
- kendoTextBox #id 
+ kendoTextBox  #id 
 		[readonly]="primarKeyReadOnlyArr.isidreadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.id_Hint','Please enter Id.')"
 		(click)="ON_CLICK_id($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_id($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelcategoryTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblecategory >
-		<kendo-label *ngIf="(!labelcategoryTop && !isPhonePortrait) && labelcategoryVisible" class="form-label" [for]="category" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.category','Category') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelcategoryTop && !isPhonePortrait) && labelcategoryVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.category','Category') + ' *'"></kendo-label>
 		<label *ngIf="(labelcategoryTop || isPhonePortrait) && labelcategoryVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.category','Category') + ' *'}}</label>
 		<input   formControlName="category"
- kendoTextBox #category
+ kendoTextBox  #category
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.category.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.iscategoryreadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.category_Hint','Please enter Category.')"
 		(click)="ON_CLICK_category($event)"
@@ -61,10 +61,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelsvg_nameTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblesvg_name >
-		<kendo-label *ngIf="(!labelsvg_nameTop && !isPhonePortrait) && labelsvg_nameVisible" class="form-label" [for]="svg_name" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name','Name') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelsvg_nameTop && !isPhonePortrait) && labelsvg_nameVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name','Name') + ' *'"></kendo-label>
 		<label *ngIf="(labelsvg_nameTop || isPhonePortrait) && labelsvg_nameVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name','Name') + ' *'}}</label>
 		<input   formControlName="svg_name"
- kendoTextBox #svg_name
+ kendoTextBox  #svg_name
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.svg_name.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.issvg_namereadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name_Hint','Please enter Svg Name.')"
 		(click)="ON_CLICK_svg_name($event)"
@@ -72,10 +72,10 @@
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelicon_typeTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleicon_type >
-		<kendo-label *ngIf="(!labelicon_typeTop && !isPhonePortrait) && labelicon_typeVisible" class="form-label" [for]="icon_type" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.icon_type','Icon Type')"></kendo-label>
+		<kendo-label *ngIf="(!labelicon_typeTop && !isPhonePortrait) && labelicon_typeVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.icon_type','Icon Type')"></kendo-label>
 		<label *ngIf="(labelicon_typeTop || isPhonePortrait) && labelicon_typeVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.icon_type','Icon Type')}}</label>
 		<input   formControlName="icon_type"
- kendoTextBox #icon_type  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.icon_type_Hint','Please enter Icon Type.')"
+ kendoTextBox  #icon_type  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.icon_type_Hint','Please enter Icon Type.')"
 		(click)="ON_CLICK_icon_type($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_icon_type($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -84,19 +84,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelsvg_name_animatedTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblesvg_name_animated >
-		<kendo-label *ngIf="(!labelsvg_name_animatedTop && !isPhonePortrait) && labelsvg_name_animatedVisible" class="form-label" [for]="svg_name_animated" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name_animated','Svg Name Animated')"></kendo-label>
+		<kendo-label *ngIf="(!labelsvg_name_animatedTop && !isPhonePortrait) && labelsvg_name_animatedVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name_animated','Svg Name Animated')"></kendo-label>
 		<label *ngIf="(labelsvg_name_animatedTop || isPhonePortrait) && labelsvg_name_animatedVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name_animated','Svg Name Animated')}}</label>
 		<input   formControlName="svg_name_animated"
- kendoTextBox #svg_name_animated  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name_animated_Hint','Please enter Svg Name Animated.')"
+ kendoTextBox  #svg_name_animated  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_name_animated_Hint','Please enter Svg Name Animated.')"
 		(click)="ON_CLICK_svg_name_animated($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_svg_name_animated($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labeldefault_checkTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibledefault_check >
-		<kendo-label *ngIf="(!labeldefault_checkTop && !isPhonePortrait) && labeldefault_checkVisible" class="form-label" [for]="default_check" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.default_check','Default Check')"></kendo-label>
+		<kendo-label *ngIf="(!labeldefault_checkTop && !isPhonePortrait) && labeldefault_checkVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.default_check','Default Check')"></kendo-label>
 		<label *ngIf="(labeldefault_checkTop || isPhonePortrait) && labeldefault_checkVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.default_check','Default Check')}}</label>
 		<input   formControlName="default_check"
- kendoTextBox #default_check  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.default_check_Hint','Please enter Default Check.')"
+ kendoTextBox  #default_check  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.default_check_Hint','Please enter Default Check.')"
 		(click)="ON_CLICK_default_check($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_default_check($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -110,19 +110,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelsvg_contentTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblesvg_content >
-		<kendo-label *ngIf="(!labelsvg_contentTop && !isPhonePortrait) && labelsvg_contentVisible" class="form-label" [for]="svg_content" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_content','Svg Content')"></kendo-label>
+		<kendo-label *ngIf="(!labelsvg_contentTop && !isPhonePortrait) && labelsvg_contentVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_content','Svg Content')"></kendo-label>
 		<label *ngIf="(labelsvg_contentTop || isPhonePortrait) && labelsvg_contentVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_content','Svg Content')}}</label>
 		<input   formControlName="svg_content"
- kendoTextBox #svg_content  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_content_Hint','Please enter Svg Content.')"
+ kendoTextBox  #svg_content  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.svg_content_Hint','Please enter Svg Content.')"
 		(click)="ON_CLICK_svg_content($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_svg_content($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelkendoui_contentTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblekendoui_content >
-		<kendo-label *ngIf="(!labelkendoui_contentTop && !isPhonePortrait) && labelkendoui_contentVisible" class="form-label" [for]="kendoui_content" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.kendoui_content','Kendoui Content')"></kendo-label>
+		<kendo-label *ngIf="(!labelkendoui_contentTop && !isPhonePortrait) && labelkendoui_contentVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.kendoui_content','Kendoui Content')"></kendo-label>
 		<label *ngIf="(labelkendoui_contentTop || isPhonePortrait) && labelkendoui_contentVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.kendoui_content','Kendoui Content')}}</label>
 		<input   formControlName="kendoui_content"
- kendoTextBox #kendoui_content  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.kendoui_content_Hint','Please enter Kendoui Content.')"
+ kendoTextBox  #kendoui_content  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM_QUERY.scdiconsScdScdIconsFormQuery.kendoui_content_Hint','Please enter Kendoui Content.')"
 		(click)="ON_CLICK_kendoui_content($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_kendoui_content($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

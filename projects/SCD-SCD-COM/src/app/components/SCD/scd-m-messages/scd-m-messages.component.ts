@@ -90,7 +90,8 @@ public  isAPPLICATION_IDEnable : boolean = true;
   public title =  this.starServices.getNLS([],"SCD_M_MESSAGES.scdmessageScdMMessages.component_title","Messages");
   public PDFfileName = this.title + ".PDF";
   public ExcelfileName = this.title + ".xlsx";
-  public componentConfig
+  public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public compTitleMsg =  "SCD_M_MESSAGES.scdmessageScdMMessages";
   public editableMode = false;
   
@@ -121,6 +122,7 @@ public compSelector = 'app-scd-m-messages';
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
 
     constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices, private renderer: Renderer2) {
       this.router = router;
@@ -168,9 +170,59 @@ public compSelector = 'app-scd-m-messages';
     //this.PRE_BLOCK();
     this.AttDwnUrl = this.starServices.SERVER_URL + "/api/att?action=download&username=" + this.starServices.sessionParams['USERNAME'].toLowerCase() + "&name=";
     
-  }
- 
   
+  
+
+  }
+  public gridData: any[] = [];
+  public originalGridData: any[] = [];
+  private gridDataCopy: any[] = [];
+    public isDirty: boolean = false;
+
+   onCellClose(event: any): void {
+    // Watch form changes to update isDirty in componentConfig
+    const hasChanges = this.hasDataChanged();
+    
+    if (this.isDirty !== hasChanges) {
+      this.isDirty = hasChanges;
+      this.componentConfig = new componentConfigDef();
+      this.componentConfig.isDirty = this.isDirty;
+      
+      console.log('Grid dirty state changed:', this.isDirty);
+      this.emitComponentConfig();
+    }
+  }
+  private hasDataChanged(): boolean {
+    if (!this.gridData || !this.originalGridData) {
+      return false;
+    }
+
+    // Compare current data with original
+    if (this.gridData.length !== this.originalGridData.length) {
+      return true; // Rows added or deleted
+    }
+
+    // Deep compare each row
+    for (let i = 0; i < this.gridData.length; i++) {
+      const currentRow = JSON.stringify(this.gridData[i]);
+      const originalRow = JSON.stringify(this.originalGridData[i]);
+      
+      if (currentRow !== originalRow) {
+        return true; // Row changed
+      }
+    }
+
+    return false; // No changes
+  }
+
+  private emitComponentConfig(): void {
+  if (this.componentConfig) {
+    this.componentConfig.eventFrom = this.compSelector;
+    //this.componentConfig.eventTo = ['any'];
+    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
+    this.setComponentConfig_Output.emit(this.componentConfig);
+  }
+}
     public ngOnDestroy(): void {
         this.docClickSubscription();
    // Unsubscribe the event once not needed.

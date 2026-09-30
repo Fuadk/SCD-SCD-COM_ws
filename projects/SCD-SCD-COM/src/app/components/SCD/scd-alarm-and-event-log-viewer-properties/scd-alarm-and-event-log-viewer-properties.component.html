@@ -1,0 +1,74 @@
+    <div>   
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.component_title","") }}</legend> 
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-agd-alarm-general-1  [hidden]="hide_comp_1" 
+                      (readCompletedOutput)="readCompletedHandler($event)"
+                      (clearCompletedOutput)="clearCompletedHandler($event)"
+                      (saveCompletedOutput)="saveCompletedHandler($event)"
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ALARM_GENERALFormdivs_0Config">
+        </app-scd-agd-alarm-general-1 >
+
+
+        <app-scd-acl-alarm-columns-2  [hidden]="hide_comp_2" [detail_Input]="grid_1_SCD_ALARM_COLUMNS"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,2)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ALARM_COLUMNSGrid_1Config">
+        </app-scd-acl-alarm-columns-2 >
+
+
+
+        <app-scd-adfl-alarm-display-filters-3  [hidden]="hide_comp_3" [detail_Input]="grid_2_SCD_ALARM_DISPLAY_FILTERS"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,3)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ALARM_DISPLAY_FILTERSGrid_2Config">
+        </app-scd-adfl-alarm-display-filters-3 >
+
+
+
+        <app-scd-asl-alarm-states-4  [hidden]="hide_comp_4" [detail_Input]="grid_3_SCD_ALARM_STATES"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,4)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ALARM_STATESGrid_3Config">
+        </app-scd-asl-alarm-states-4 >
+
+
+
+        <app-scd-aaesp-alarm-sort  [hidden]="hide_comp_5" [detail_Input]="form_4_SCD_ALARM_SORT"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event,5)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ALARM_SORTForm_4Config">
+        </app-scd-aaesp-alarm-sort >
+
+</div>
+
+    </div>   
+<div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
+			iconClass="fas fa-save" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_OK($event)">{{starServices.getNLS([],'OK','Ok')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'CANCEL','Cancel')"
+			iconClass="fas fa-ban" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_CANCEL($event)">{{starServices.getNLS([],'CANCEL','Cancel')}}</button>
+
+		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'HELP','Help')"
+			iconClass="fas fa-question" *ngIf=visibleOK_BTNS
+			(click)="ON_CLICK_HELP($event)">{{starServices.getNLS([],'HELP','Help')}}</button>
+	</div>
+	
+	<kendo-window [hidden]="!helpOpened" class="form-borders" [themeColor]="'primary'" [top]="0" [left]="0" title=""
+		state="maximized" (close)="helpOpened=false">
+		<app-dsp-upload [setComponentConfig_Input]="help_1Config">
+		</app-dsp-upload>
+		<button kendoButton [icon]="'close'" (click)="helpOpened=!helpOpened">
+			{{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+	</kendo-window>
+
+	
+	

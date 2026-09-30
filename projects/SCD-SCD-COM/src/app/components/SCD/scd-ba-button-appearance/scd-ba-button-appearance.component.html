@@ -49,10 +49,10 @@
     
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBUTTON_APPEARANCE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBUTTON_APPEARANCE_ID >
-		<kendo-label *ngIf="(!labelBUTTON_APPEARANCE_IDTop && !isPhonePortrait) && labelBUTTON_APPEARANCE_IDVisible" class="form-label" [for]="BUTTON_APPEARANCE_ID" [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE_ID','Button Appearance Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelBUTTON_APPEARANCE_IDTop && !isPhonePortrait) && labelBUTTON_APPEARANCE_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE_ID','Button Appearance Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelBUTTON_APPEARANCE_IDTop || isPhonePortrait) && labelBUTTON_APPEARANCE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE_ID','Button Appearance Id') + ' *'}}</label>
 		<input   formControlName="BUTTON_APPEARANCE_ID"
- kendoTextBox #BUTTON_APPEARANCE_ID 
+ kendoTextBox  #BUTTON_APPEARANCE_ID 
 		[readonly]="primarKeyReadOnlyArr.isBUTTON_APPEARANCE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE_ID_Hint','Please enter Button Appearance Id.')"
 		(click)="ON_CLICK_BUTTON_APPEARANCE_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BUTTON_APPEARANCE_ID($event)"      adaptiveMode="auto"  />
@@ -88,7 +88,6 @@
 	 name="SAME_AS_UP_APPEARANCE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SAME_AS_UP_APPEARANCE_Hint','Please enter Same As Up Appearance.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -100,15 +99,14 @@
  (change)="onChange_SHOW_DISABLED_STATE($event)"      adaptiveMode="auto" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SHOW_DISABLED_STATE_Hint','Please enter Show Disabled State.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBUTTON_APPEARANCETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBUTTON_APPEARANCE >
-		<kendo-label *ngIf="(!labelBUTTON_APPEARANCETop && !isPhonePortrait) && labelBUTTON_APPEARANCEVisible" class="form-label" [for]="BUTTON_APPEARANCE" [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE','Button Appearance')"></kendo-label>
+		<kendo-label *ngIf="(!labelBUTTON_APPEARANCETop && !isPhonePortrait) && labelBUTTON_APPEARANCEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE','Button Appearance')"></kendo-label>
 		<label *ngIf="(labelBUTTON_APPEARANCETop || isPhonePortrait) && labelBUTTON_APPEARANCEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE','Button Appearance')}}</label>
 		<input   formControlName="BUTTON_APPEARANCE"
- kendoTextBox #BUTTON_APPEARANCE
+ kendoTextBox  #BUTTON_APPEARANCE
 		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.BUTTON_APPEARANCE.errors }"  required 
 		[readonly]="primarKeyReadOnlyArr.isBUTTON_APPEARANCEreadOnly" [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BUTTON_APPEARANCE_Hint','Please enter Button Appearance.')"
 		(click)="ON_CLICK_BUTTON_APPEARANCE($event)"
@@ -226,7 +224,6 @@
 	 name="BLINK"  ToggleValue  [true]= "'1'" [false]= "'0'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.BLINK_Hint','Please enter Blink.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -373,7 +370,6 @@
 	 name="SCALE_IMAGE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE_Hint','Please enter Scale Image.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -454,7 +450,6 @@
 	 name="SCALE_IMAGE2"  ToggleValue  [true]= "'1'" [false]= "'0'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.SCALE_IMAGE2_Hint','Please enter Scale Image2.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 

@@ -214,7 +214,11 @@ public variableIMAGE_SELECT_ABL;
   @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Output() valueChange = new EventEmitter<string>();
 
-   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
+   constructor(public starlib1: Starlib1,public router: Router,public intl: IntlService, 
+    public responsive: BreakpointObserver, 
+   private starNotify: StarNotifyService,  
+    public starServices: starServices
+   ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
@@ -1549,6 +1553,7 @@ public uploadimage = false;
 public showIcon=true;
 public svg_arr = [];
 public svg_data = [];
+
 
 public update_svgicons(formGroup){
   this.showIcon = false;

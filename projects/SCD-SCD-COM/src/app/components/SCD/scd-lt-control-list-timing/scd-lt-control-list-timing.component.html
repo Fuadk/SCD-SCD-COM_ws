@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCONTROL_LIST_TIMING_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCONTROL_LIST_TIMING_ID >
-		<kendo-label *ngIf="(!labelCONTROL_LIST_TIMING_IDTop && !isPhonePortrait) && labelCONTROL_LIST_TIMING_IDVisible" class="form-label" [for]="CONTROL_LIST_TIMING_ID" [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.CONTROL_LIST_TIMING_ID','Control List Timing Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelCONTROL_LIST_TIMING_IDTop && !isPhonePortrait) && labelCONTROL_LIST_TIMING_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.CONTROL_LIST_TIMING_ID','Control List Timing Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelCONTROL_LIST_TIMING_IDTop || isPhonePortrait) && labelCONTROL_LIST_TIMING_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.CONTROL_LIST_TIMING_ID','Control List Timing Id') + ' *'}}</label>
 		<input   formControlName="CONTROL_LIST_TIMING_ID"
- kendoTextBox #CONTROL_LIST_TIMING_ID 
+ kendoTextBox  #CONTROL_LIST_TIMING_ID 
 		[readonly]="primarKeyReadOnlyArr.isCONTROL_LIST_TIMING_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_LT_CONTROL_LIST_TIMING.scdcontrolListTimingScdLtControlListTiming.CONTROL_LIST_TIMING_ID_Hint','Please enter Control List Timing Id.')"
 		(click)="ON_CLICK_CONTROL_LIST_TIMING_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CONTROL_LIST_TIMING_ID($event)"      adaptiveMode="auto"  />

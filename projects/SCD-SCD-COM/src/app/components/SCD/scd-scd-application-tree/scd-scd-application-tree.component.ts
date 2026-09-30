@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener,ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 
 import { starServices } from 'starlib';
@@ -11,6 +11,8 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
+import { ContextMenuComponent } from '@progress/kendo-angular-menu';
+
 import { scdapplicationScdScdApplicationTree , componentConfigDef} from '@modeldir/model';
 
 
@@ -33,6 +35,7 @@ declare function getParamConfig():any;
 
 
 export class ScdApplicationScdScdApplicationTreeTreeComponent {
+  @ViewChild('contextMenu') public contextMenu!: ContextMenuComponent;
   public title =  this.starServices.getNLS([],"SCD_SCD_APPLICATION_TREE.scdapplicationScdScdApplicationTree.component_title","SCD APPLICATION TREE");
   public compTitleMsg =  "SCD_SCD_APPLICATION_TREE.scdapplicationScdScdApplicationTree";
   public routineName = "ScdApplicationScdScdApplicationTreeTree";
@@ -48,6 +51,7 @@ export class ScdApplicationScdScdApplicationTreeTreeComponent {
   public  form!: FormGroup; 
   public PDFfileName = this.title + ".PDF";
   public componentConfig: componentConfigDef;
+  public componentConfig_output: componentConfigDef;
   public editableMode = false;
   private CurrentRec = 0;
   public  executeQueryresult:any;
@@ -111,6 +115,9 @@ public disableAPP_LANGUAGE = false;
   @Output() clearCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() saveCompletedOutput: EventEmitter<any> = new EventEmitter();
   @Output() formValidationChangedOutput: EventEmitter<boolean> = new EventEmitter();
+  // Current selected node for context menu
+  private currentNode: any = null;
+  public contextMenuItems: any[] = [];
 
    constructor(public router: Router,public intl: IntlService, public responsive: BreakpointObserver, private starNotify: StarNotifyService,   public starServices: starServices) {
       this.router = router;
@@ -203,29 +210,7 @@ public disableAPP_LANGUAGE = false;
         this.executeQuery(form);
         this.isChild = true;
       }
-      /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdApplicationScdScdApplicationTreeTree form.APPLICATION_ID :' + form.APPLICATION_ID);
-    if ( (form.APPLICATION_ID != "") &&   (typeof form.APPLICATION_ID != "undefined"))
-    {
-      this.masterKey = form.APPLICATION_ID;
-      
-      this.isSearch = true;
-      this.executeQuery(form);
-      this.isChild = true;
-      //this.showToolBar = false;
-    }
-    else
-    {
-      
-      if (typeof this.form != "undefined")
-      {
-        //this.isChild = false;
-         this.form.reset();
-        this.masterKey = "";
-        
-      }
-    }
-    */
+    
   }
   @Input() public set executeQueryInput( form: any) {
     if ( (typeof form != "undefined") &&   (typeof form.APPLICATION_ID != "undefined") &&   (form.APPLICATION_ID != ""))
@@ -285,7 +270,7 @@ public disableAPP_LANGUAGE = false;
     async executeQuery( form: any ) {
       if (typeof form == "undefined")
         return;
-     
+     this.getMenu();
      await this.PRE_QUERY(form);
      if (this.FORM_TRIGGER_FAILURE == true)
          return;
@@ -635,6 +620,10 @@ public printScreen(){
      
 
 }
+ async ON_CLICK_CONTEXT_MENU(menuType,event){
+     
+
+}
  async ON_EVENT(type: string, event: any) {
     
   }
@@ -955,18 +944,193 @@ public treeData: any = [];
     
 public expandedKeys: any[] = [];
 
+// ========== NEW CONTEXT MENU IMPLEMENTATION ==========
 
-
-
-
-async  handleSelection({ index }: any) {
-    let dataItem = this.treeData[index].dataItem;
-    console.log("index:", index , dataItem)
-    await this.ON_CLICK(dataItem);
-    this.readCompletedOutput.emit(dataItem);
+/**
+ * Select a node and update the context menu based on it
+ */
+private selectNode(node: any): void {
+    if (!node) return;
+    console.log("selectNode:node:",node)
+    this.currentNode = node;
+    this.selectedKeys = [node.Id];
     
-  }
+    // Determine context type based on the node
+    // You can customize this logic based on your data structure
+    let contextType = node.Id; // default
+    
+    // // If the node has a MENU_TYPE, use it
+    // if (node.dataItem && node.dataItem.MENU_TYPE) {
+    //     contextType = node.dataItem.MENU_TYPE;
+    // } else if (node.Item) {
+    //     // If the node has an Item property, use that to determine context
+    //     contextType = node.Item;
+    // }
+    
+    this.setContextMenu(contextType);
+    
+    // Emit the selected data item
+    if (node.dataItem) {
+        this.readCompletedOutput.emit(node.dataItem);
+        this.ON_CLICK(node.dataItem);
+    }
+}
 
+/**
+ * Left-click handler for tree nodes
+ */
+public onNodeClick(event: MouseEvent, dataItem: any): void {
+    event.stopPropagation();
+    this.selectNode(dataItem);
+}
+
+/**
+ * Right-click handler for tree nodes - shows context menu
+ */
+public onNodeContextMenu(event: MouseEvent, dataItem: any): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Select the node first
+    this.selectNode(dataItem);
+    
+    // Show context menu at mouse position
+    if (this.contextMenu) {
+        this.contextMenu.show({
+            left: event.pageX,
+            top: event.pageY
+        });
+    }
+}
+
+/**
+ * Handle selection change from the TreeView
+ */
+
+public handleSelection(event: any): void {
+      if (event && event.dataItem) {
+        this.selectNode(event.dataItem);
+    }
 }
 
 
+/**
+ * Context menu select handler
+ */
+public onContextMenuSelect(event: any): void {
+    if (!this.currentNode) {
+        console.warn('No node selected for context menu');
+        return;
+    }
+    
+    const menuItem = event.item;
+    console.log('Context menu item selected:', menuItem, 'for node:', this.currentNode);
+    
+    // Handle different menu actions
+    if (menuItem && menuItem.text) {
+       this.ON_CLICK_CONTEXT_MENU('',event);
+        
+    }
+}
+/**
+ * Set the context menu items based on the current context type
+ */
+public setContextMenu(currentContextType: string): void {
+    console.log("setContextMenu - currentContextType:", currentContextType);
+    
+    // Check if we have context menus loaded
+    if (!this.contextMenus) {
+        console.warn('Context menus not loaded yet');
+        this.contextMenuItems = this.getDefaultContextMenu();
+        return;
+    }
+    
+    // Get the context menu for the current type
+    let contextMenus = this.contextMenus[currentContextType];
+    
+    if (contextMenus && contextMenus.length > 0) {
+        console.log("contextMenus for type:", contextMenus);
+        const result = this.buildHierarchy(contextMenus);
+        this.contextMenuItems = result;
+        console.log("this.contextMenuItems:", this.contextMenuItems);
+    } else {
+        // Default context menu if type not found
+        console.log('No context menu found for type:', currentContextType, 'using default');
+        this.contextMenuItems = this.getDefaultContextMenu();
+    }
+}
+
+/**
+ * Get default context menu items
+ */
+private getDefaultContextMenu(): any[] {
+    return [
+        // { text: 'Add', icon: 'k-i-add' },
+        // { text: 'Edit', icon: 'k-i-edit' },
+        // { text: 'Delete', icon: 'k-i-delete' }
+    ];
+}
+
+// ========== END OF CONTEXT MENU IMPLEMENTATION ==========
+
+
+
+///////// Conext Menu ////
+public ShapeMenu;
+public items =[];
+
+
+   public contextMenus;
+  
+  public contextMenuTable = "";
+  async getMenu() {
+    if (this.contextMenuTable == "") {
+      return;
+    }
+    let statement = "SELECT   * from " + this.contextMenuTable + " order by MENU_TYPE, LINE_NO";
+    let body = [
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement
+      }
+    ];
+    let data = await this.starServices.execSQLBody(this, body, this.starServices.MASTER_DB);
+    if (this.paramConfig.DEBUG_FLAG) console.log("getMenu:data[0].data:", data[0].data);
+    if (typeof data[0].data != "undefined") {
+      this.contextMenus = this.restructureMenuData(data[0].data);
+      // let ShapeMenu = this.contextMenus["APP_TREE"];
+      // this.ShapeMenu = this.buildHierarchy(ShapeMenu);
+      
+      // //this.contextMenus = data[0].data;
+      if (this.paramConfig.DEBUG_FLAG) console.log("getMenu:this.contextMenus:", this.contextMenus);
+    }
+  }
+  public restructureMenuData(data) {
+    // First, group by MENU_TYPE
+    const grouped = data.reduce((result, item) => {
+      const menuType = item.MENU_TYPE;
+      if (!result[menuType]) {
+        result[menuType] = [];
+      }
+
+      // Add only the Menu and Item fields (renamed)
+      result[menuType].push({
+        Menu: item.MENU,
+        Item: item.ITEM,
+        Id : item.ID
+      });
+
+      return result;
+    }, {});
+
+    // Note: Since we're processing in order of the original array
+    // and the original data is already ordered by LINE_NO for each MENU_TYPE,
+    // we don't need additional sorting. But to be safe, we can sort by LINE_NO
+    // by referencing the original data:
+
+    // Alternative approach that ensures sorting by LINE_NO:
+    return grouped;
+  }
+
+
+}

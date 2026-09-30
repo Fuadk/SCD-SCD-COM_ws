@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSYMBOL_STATE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSYMBOL_STATE_ID >
-		<kendo-label *ngIf="(!labelSYMBOL_STATE_IDTop && !isPhonePortrait) && labelSYMBOL_STATE_IDVisible" class="form-label" [for]="SYMBOL_STATE_ID" [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.SYMBOL_STATE_ID','Symbol State Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelSYMBOL_STATE_IDTop && !isPhonePortrait) && labelSYMBOL_STATE_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.SYMBOL_STATE_ID','Symbol State Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelSYMBOL_STATE_IDTop || isPhonePortrait) && labelSYMBOL_STATE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.SYMBOL_STATE_ID','Symbol State Id') + ' *'}}</label>
 		<input   formControlName="SYMBOL_STATE_ID"
- kendoTextBox #SYMBOL_STATE_ID 
+ kendoTextBox  #SYMBOL_STATE_ID 
 		[readonly]="primarKeyReadOnlyArr.isSYMBOL_STATE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.SYMBOL_STATE_ID_Hint','Please enter Symbol State Id.')"
 		(click)="ON_CLICK_SYMBOL_STATE_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SYMBOL_STATE_ID($event)"      adaptiveMode="auto"  />
@@ -71,19 +71,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_ID >
-		<kendo-label *ngIf="(!labelSTATE_IDTop && !isPhonePortrait) && labelSTATE_IDVisible" class="form-label" [for]="STATE_ID" [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_ID','State Id')"></kendo-label>
+		<kendo-label *ngIf="(!labelSTATE_IDTop && !isPhonePortrait) && labelSTATE_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_ID','State Id')"></kendo-label>
 		<label *ngIf="(labelSTATE_IDTop || isPhonePortrait) && labelSTATE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_ID','State Id')}}</label>
 		<input   formControlName="STATE_ID"
- kendoTextBox #STATE_ID  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_ID_Hint','Please enter State Id.')"
+ kendoTextBox  #STATE_ID  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_ID_Hint','Please enter State Id.')"
 		(click)="ON_CLICK_STATE_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_NAME >
-		<kendo-label *ngIf="(!labelSTATE_NAMETop && !isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label" [for]="STATE_NAME" [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_NAME','State Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelSTATE_NAMETop && !isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_NAME','State Name')"></kendo-label>
 		<label *ngIf="(labelSTATE_NAMETop || isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_NAME','State Name')}}</label>
 		<input   formControlName="STATE_NAME"
- kendoTextBox #STATE_NAME  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_NAME_Hint','Please enter State Name.')"
+ kendoTextBox  #STATE_NAME  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.STATE_NAME_Hint','Please enter State Name.')"
 		(click)="ON_CLICK_STATE_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -92,19 +92,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelVALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleVALUE >
-		<kendo-label *ngIf="(!labelVALUETop && !isPhonePortrait) && labelVALUEVisible" class="form-label" [for]="VALUE" [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.VALUE','Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelVALUETop && !isPhonePortrait) && labelVALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.VALUE','Value')"></kendo-label>
 		<label *ngIf="(labelVALUETop || isPhonePortrait) && labelVALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.VALUE','Value')}}</label>
 		<input   formControlName="VALUE"
- kendoTextBox #VALUE  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.VALUE_Hint','Please enter Value.')"
+ kendoTextBox  #VALUE  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.VALUE_Hint','Please enter Value.')"
 		(click)="ON_CLICK_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label" [for]="BORDER_COLOR" [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BORDER_COLOR','Border Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BORDER_COLOR','Border Color')"></kendo-label>
 		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BORDER_COLOR','Border Color')}}</label>
 		<input   formControlName="BORDER_COLOR"
- kendoTextBox #BORDER_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BORDER_COLOR_Hint','Please enter Border Color.')"
+ kendoTextBox  #BORDER_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BORDER_COLOR_Hint','Please enter Border Color.')"
 		(click)="ON_CLICK_BORDER_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -144,10 +144,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_STYLE >
-		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label" [for]="BACK_STYLE" [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BACK_STYLE','Back Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelBACK_STYLETop && !isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BACK_STYLE','Back Style')"></kendo-label>
 		<label *ngIf="(labelBACK_STYLETop || isPhonePortrait) && labelBACK_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BACK_STYLE','Back Style')}}</label>
 		<input   formControlName="BACK_STYLE"
- kendoTextBox #BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BACK_STYLE_Hint','Please enter Back Style.')"
+ kendoTextBox  #BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_SSP_SYMBOL_STATE_DEFINITION.scdsymbolStateScdSspSymbolStateDefinition.BACK_STYLE_Hint','Please enter Back Style.')"
 		(click)="ON_CLICK_BACK_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BACK_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

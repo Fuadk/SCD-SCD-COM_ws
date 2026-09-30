@@ -37,10 +37,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_STATE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_STATE_ID >
-		<kendo-label *ngIf="(!labelSHAPE_STATE_IDTop && !isPhonePortrait) && labelSHAPE_STATE_IDVisible" class="form-label" [for]="SHAPE_STATE_ID" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SHAPE_STATE_ID','Shape State Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelSHAPE_STATE_IDTop && !isPhonePortrait) && labelSHAPE_STATE_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SHAPE_STATE_ID','Shape State Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelSHAPE_STATE_IDTop || isPhonePortrait) && labelSHAPE_STATE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SHAPE_STATE_ID','Shape State Id') + ' *'}}</label>
 		<input   formControlName="SHAPE_STATE_ID"
- kendoTextBox #SHAPE_STATE_ID 
+ kendoTextBox  #SHAPE_STATE_ID 
 		[readonly]="primarKeyReadOnlyArr.isSHAPE_STATE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SHAPE_STATE_ID_Hint','Please enter Shape State Id.')"
 		(click)="ON_CLICK_SHAPE_STATE_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHAPE_STATE_ID($event)"      adaptiveMode="auto"  />
@@ -95,7 +95,6 @@
 	 name="SAME_AS_ACTIVE_APPEARANCE"  ToggleValue  [true]= "'1'" [false]= "'0'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.SAME_AS_ACTIVE_APPEARANCE_Hint','Please enter Same as active appearance.')" 
-[position]="'top'" [showOn]="'hover'"  
  />
 	</kendo-formfield>
 
@@ -103,19 +102,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_ID >
-		<kendo-label *ngIf="(!labelSTATE_IDTop && !isPhonePortrait) && labelSTATE_IDVisible" class="form-label" [for]="STATE_ID" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_ID','State Id')"></kendo-label>
+		<kendo-label *ngIf="(!labelSTATE_IDTop && !isPhonePortrait) && labelSTATE_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_ID','State Id')"></kendo-label>
 		<label *ngIf="(labelSTATE_IDTop || isPhonePortrait) && labelSTATE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_ID','State Id')}}</label>
 		<input   formControlName="STATE_ID"
- kendoTextBox #STATE_ID  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_ID_Hint','Please enter State Id.')"
+ kendoTextBox  #STATE_ID  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_ID_Hint','Please enter State Id.')"
 		(click)="ON_CLICK_STATE_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSTATE_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTATE_NAME >
-		<kendo-label *ngIf="(!labelSTATE_NAMETop && !isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label" [for]="STATE_NAME" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_NAME','State Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelSTATE_NAMETop && !isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_NAME','State Name')"></kendo-label>
 		<label *ngIf="(labelSTATE_NAMETop || isPhonePortrait) && labelSTATE_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_NAME','State Name')}}</label>
 		<input   formControlName="STATE_NAME"
- kendoTextBox #STATE_NAME  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_NAME_Hint','Please enter State Name.')"
+ kendoTextBox  #STATE_NAME  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.STATE_NAME_Hint','Please enter State Name.')"
 		(click)="ON_CLICK_STATE_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -124,19 +123,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelVALUETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleVALUE >
-		<kendo-label *ngIf="(!labelVALUETop && !isPhonePortrait) && labelVALUEVisible" class="form-label" [for]="VALUE" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.VALUE','Value')"></kendo-label>
+		<kendo-label *ngIf="(!labelVALUETop && !isPhonePortrait) && labelVALUEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.VALUE','Value')"></kendo-label>
 		<label *ngIf="(labelVALUETop || isPhonePortrait) && labelVALUEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.VALUE','Value')}}</label>
 		<input   formControlName="VALUE"
- kendoTextBox #VALUE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.VALUE_Hint','Please enter Value.')"
+ kendoTextBox  #VALUE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.VALUE_Hint','Please enter Value.')"
 		(click)="ON_CLICK_VALUE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_VALUE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBACK_COLOR >
-		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label" [for]="BACK_COLOR" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BACK_COLOR','Back Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelBACK_COLORTop && !isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BACK_COLOR','Back Color')"></kendo-label>
 		<label *ngIf="(labelBACK_COLORTop || isPhonePortrait) && labelBACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BACK_COLOR','Back Color')}}</label>
 		<input   formControlName="BACK_COLOR"
- kendoTextBox #BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BACK_COLOR_Hint','Please enter Back Color.')"
+ kendoTextBox  #BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BACK_COLOR_Hint','Please enter Back Color.')"
 		(click)="ON_CLICK_BACK_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BACK_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -145,19 +144,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBORDER_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBORDER_COLOR >
-		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label" [for]="BORDER_COLOR" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BORDER_COLOR','Border Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelBORDER_COLORTop && !isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BORDER_COLOR','Border Color')"></kendo-label>
 		<label *ngIf="(labelBORDER_COLORTop || isPhonePortrait) && labelBORDER_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BORDER_COLOR','Border Color')}}</label>
 		<input   formControlName="BORDER_COLOR"
- kendoTextBox #BORDER_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BORDER_COLOR_Hint','Please enter Border Color.')"
+ kendoTextBox  #BORDER_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BORDER_COLOR_Hint','Please enter Border Color.')"
 		(click)="ON_CLICK_BORDER_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BORDER_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK >
-		<kendo-label *ngIf="(!labelBLINKTop && !isPhonePortrait) && labelBLINKVisible" class="form-label" [for]="BLINK" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BLINK','Blink')"></kendo-label>
+		<kendo-label *ngIf="(!labelBLINKTop && !isPhonePortrait) && labelBLINKVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BLINK','Blink')"></kendo-label>
 		<label *ngIf="(labelBLINKTop || isPhonePortrait) && labelBLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BLINK','Blink')}}</label>
 		<input   formControlName="BLINK"
- kendoTextBox #BLINK  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BLINK_Hint','Please enter Blink.')"
+ kendoTextBox  #BLINK  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.BLINK_Hint','Please enter Blink.')"
 		(click)="ON_CLICK_BLINK($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BLINK($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -166,19 +165,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_STYLE >
-		<kendo-label *ngIf="(!labelPATTERN_STYLETop && !isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label" [for]="PATTERN_STYLE" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_STYLE','Pattern Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelPATTERN_STYLETop && !isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_STYLE','Pattern Style')"></kendo-label>
 		<label *ngIf="(labelPATTERN_STYLETop || isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_STYLE','Pattern Style')}}</label>
 		<input   formControlName="PATTERN_STYLE"
- kendoTextBox #PATTERN_STYLE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_STYLE_Hint','Please enter Pattern Style.')"
+ kendoTextBox  #PATTERN_STYLE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_STYLE_Hint','Please enter Pattern Style.')"
 		(click)="ON_CLICK_PATTERN_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PATTERN_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_COLOR >
-		<kendo-label *ngIf="(!labelPATTERN_COLORTop && !isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label" [for]="PATTERN_COLOR" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_COLOR','Pattern Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelPATTERN_COLORTop && !isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_COLOR','Pattern Color')"></kendo-label>
 		<label *ngIf="(labelPATTERN_COLORTop || isPhonePortrait) && labelPATTERN_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_COLOR','Pattern Color')}}</label>
 		<input   formControlName="PATTERN_COLOR"
- kendoTextBox #PATTERN_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_COLOR_Hint','Please enter Pattern Color.')"
+ kendoTextBox  #PATTERN_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.PATTERN_COLOR_Hint','Please enter Pattern Color.')"
 		(click)="ON_CLICK_PATTERN_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PATTERN_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -187,19 +186,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION >
-		<kendo-label *ngIf="(!labelCAPTIONTop && !isPhonePortrait) && labelCAPTIONVisible" class="form-label" [for]="CAPTION" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION','Caption')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTIONTop && !isPhonePortrait) && labelCAPTIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION','Caption')"></kendo-label>
 		<label *ngIf="(labelCAPTIONTop || isPhonePortrait) && labelCAPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION','Caption')}}</label>
 		<input   formControlName="CAPTION"
- kendoTextBox #CAPTION  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_Hint','Please enter Caption.')"
+ kendoTextBox  #CAPTION  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_Hint','Please enter Caption.')"
 		(click)="ON_CLICK_CAPTION($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_NAME >
-		<kendo-label *ngIf="(!labelFONT_NAMETop && !isPhonePortrait) && labelFONT_NAMEVisible" class="form-label" [for]="FONT_NAME" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_NAME','Font Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_NAMETop && !isPhonePortrait) && labelFONT_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_NAME','Font Name')"></kendo-label>
 		<label *ngIf="(labelFONT_NAMETop || isPhonePortrait) && labelFONT_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_NAME','Font Name')}}</label>
 		<input   formControlName="FONT_NAME"
- kendoTextBox #FONT_NAME  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_NAME_Hint','Please enter Font Name.')"
+ kendoTextBox  #FONT_NAME  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_NAME_Hint','Please enter Font Name.')"
 		(click)="ON_CLICK_FONT_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -208,19 +207,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_SIZETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_SIZE >
-		<kendo-label *ngIf="(!labelFONT_SIZETop && !isPhonePortrait) && labelFONT_SIZEVisible" class="form-label" [for]="FONT_SIZE" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_SIZE','Font Size')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_SIZETop && !isPhonePortrait) && labelFONT_SIZEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_SIZE','Font Size')"></kendo-label>
 		<label *ngIf="(labelFONT_SIZETop || isPhonePortrait) && labelFONT_SIZEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_SIZE','Font Size')}}</label>
 		<input   formControlName="FONT_SIZE"
- kendoTextBox #FONT_SIZE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_SIZE_Hint','Please enter Font Size.')"
+ kendoTextBox  #FONT_SIZE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_SIZE_Hint','Please enter Font Size.')"
 		(click)="ON_CLICK_FONT_SIZE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_SIZE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_BOLDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_BOLD >
-		<kendo-label *ngIf="(!labelFONT_BOLDTop && !isPhonePortrait) && labelFONT_BOLDVisible" class="form-label" [for]="FONT_BOLD" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_BOLD','Font Bold')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_BOLDTop && !isPhonePortrait) && labelFONT_BOLDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_BOLD','Font Bold')"></kendo-label>
 		<label *ngIf="(labelFONT_BOLDTop || isPhonePortrait) && labelFONT_BOLDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_BOLD','Font Bold')}}</label>
 		<input   formControlName="FONT_BOLD"
- kendoTextBox #FONT_BOLD  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_BOLD_Hint','Please enter Font Bold.')"
+ kendoTextBox  #FONT_BOLD  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_BOLD_Hint','Please enter Font Bold.')"
 		(click)="ON_CLICK_FONT_BOLD($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_BOLD($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -229,19 +228,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_ITALICTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_ITALIC >
-		<kendo-label *ngIf="(!labelFONT_ITALICTop && !isPhonePortrait) && labelFONT_ITALICVisible" class="form-label" [for]="FONT_ITALIC" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_ITALIC','Font Italic')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_ITALICTop && !isPhonePortrait) && labelFONT_ITALICVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_ITALIC','Font Italic')"></kendo-label>
 		<label *ngIf="(labelFONT_ITALICTop || isPhonePortrait) && labelFONT_ITALICVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_ITALIC','Font Italic')}}</label>
 		<input   formControlName="FONT_ITALIC"
- kendoTextBox #FONT_ITALIC  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_ITALIC_Hint','Please enter Font Italic.')"
+ kendoTextBox  #FONT_ITALIC  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_ITALIC_Hint','Please enter Font Italic.')"
 		(click)="ON_CLICK_FONT_ITALIC($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_ITALIC($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_UNDERLINETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_UNDERLINE >
-		<kendo-label *ngIf="(!labelFONT_UNDERLINETop && !isPhonePortrait) && labelFONT_UNDERLINEVisible" class="form-label" [for]="FONT_UNDERLINE" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_UNDERLINE','Font Underline')"></kendo-label>
+		<kendo-label *ngIf="(!labelFONT_UNDERLINETop && !isPhonePortrait) && labelFONT_UNDERLINEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_UNDERLINE','Font Underline')"></kendo-label>
 		<label *ngIf="(labelFONT_UNDERLINETop || isPhonePortrait) && labelFONT_UNDERLINEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_UNDERLINE','Font Underline')}}</label>
 		<input   formControlName="FONT_UNDERLINE"
- kendoTextBox #FONT_UNDERLINE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_UNDERLINE_Hint','Please enter Font Underline.')"
+ kendoTextBox  #FONT_UNDERLINE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.FONT_UNDERLINE_Hint','Please enter Font Underline.')"
 		(click)="ON_CLICK_FONT_UNDERLINE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FONT_UNDERLINE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -250,19 +249,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_COLOR >
-		<kendo-label *ngIf="(!labelCAPTION_COLORTop && !isPhonePortrait) && labelCAPTION_COLORVisible" class="form-label" [for]="CAPTION_COLOR" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_COLOR','Caption Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTION_COLORTop && !isPhonePortrait) && labelCAPTION_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_COLOR','Caption Color')"></kendo-label>
 		<label *ngIf="(labelCAPTION_COLORTop || isPhonePortrait) && labelCAPTION_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_COLOR','Caption Color')}}</label>
 		<input   formControlName="CAPTION_COLOR"
- kendoTextBox #CAPTION_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_COLOR_Hint','Please enter Caption Color.')"
+ kendoTextBox  #CAPTION_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_COLOR_Hint','Please enter Caption Color.')"
 		(click)="ON_CLICK_CAPTION_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_BACK_COLORTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_BACK_COLOR >
-		<kendo-label *ngIf="(!labelCAPTION_BACK_COLORTop && !isPhonePortrait) && labelCAPTION_BACK_COLORVisible" class="form-label" [for]="CAPTION_BACK_COLOR" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_COLOR','Caption Back Color')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTION_BACK_COLORTop && !isPhonePortrait) && labelCAPTION_BACK_COLORVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_COLOR','Caption Back Color')"></kendo-label>
 		<label *ngIf="(labelCAPTION_BACK_COLORTop || isPhonePortrait) && labelCAPTION_BACK_COLORVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_COLOR','Caption Back Color')}}</label>
 		<input   formControlName="CAPTION_BACK_COLOR"
- kendoTextBox #CAPTION_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_COLOR_Hint','Please enter Caption Back Color.')"
+ kendoTextBox  #CAPTION_BACK_COLOR  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_COLOR_Hint','Please enter Caption Back Color.')"
 		(click)="ON_CLICK_CAPTION_BACK_COLOR($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION_BACK_COLOR($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -271,19 +270,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_BLINKTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_BLINK >
-		<kendo-label *ngIf="(!labelCAPTION_BLINKTop && !isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label" [for]="CAPTION_BLINK" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BLINK','Caption Blink')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTION_BLINKTop && !isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BLINK','Caption Blink')"></kendo-label>
 		<label *ngIf="(labelCAPTION_BLINKTop || isPhonePortrait) && labelCAPTION_BLINKVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BLINK','Caption Blink')}}</label>
 		<input   formControlName="CAPTION_BLINK"
- kendoTextBox #CAPTION_BLINK  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')"
+ kendoTextBox  #CAPTION_BLINK  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BLINK_Hint','Please enter Caption Blink.')"
 		(click)="ON_CLICK_CAPTION_BLINK($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION_BLINK($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_WORD_WRAPTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_WORD_WRAP >
-		<kendo-label *ngIf="(!labelCAPTION_WORD_WRAPTop && !isPhonePortrait) && labelCAPTION_WORD_WRAPVisible" class="form-label" [for]="CAPTION_WORD_WRAP" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_WORD_WRAP','Caption Word Wrap')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTION_WORD_WRAPTop && !isPhonePortrait) && labelCAPTION_WORD_WRAPVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_WORD_WRAP','Caption Word Wrap')"></kendo-label>
 		<label *ngIf="(labelCAPTION_WORD_WRAPTop || isPhonePortrait) && labelCAPTION_WORD_WRAPVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_WORD_WRAP','Caption Word Wrap')}}</label>
 		<input   formControlName="CAPTION_WORD_WRAP"
- kendoTextBox #CAPTION_WORD_WRAP  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_WORD_WRAP_Hint','Please enter Caption Word Wrap.')"
+ kendoTextBox  #CAPTION_WORD_WRAP  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_WORD_WRAP_Hint','Please enter Caption Word Wrap.')"
 		(click)="ON_CLICK_CAPTION_WORD_WRAP($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION_WORD_WRAP($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -292,19 +291,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_BACK_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_BACK_STYLE >
-		<kendo-label *ngIf="(!labelCAPTION_BACK_STYLETop && !isPhonePortrait) && labelCAPTION_BACK_STYLEVisible" class="form-label" [for]="CAPTION_BACK_STYLE" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_STYLE','Caption Back Style')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTION_BACK_STYLETop && !isPhonePortrait) && labelCAPTION_BACK_STYLEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_STYLE','Caption Back Style')"></kendo-label>
 		<label *ngIf="(labelCAPTION_BACK_STYLETop || isPhonePortrait) && labelCAPTION_BACK_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_STYLE','Caption Back Style')}}</label>
 		<input   formControlName="CAPTION_BACK_STYLE"
- kendoTextBox #CAPTION_BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_STYLE_Hint','Please enter Caption Back Style.')"
+ kendoTextBox  #CAPTION_BACK_STYLE  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_BACK_STYLE_Hint','Please enter Caption Back Style.')"
 		(click)="ON_CLICK_CAPTION_BACK_STYLE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION_BACK_STYLE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTION_ALIGNMENTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION_ALIGNMENT >
-		<kendo-label *ngIf="(!labelCAPTION_ALIGNMENTTop && !isPhonePortrait) && labelCAPTION_ALIGNMENTVisible" class="form-label" [for]="CAPTION_ALIGNMENT" [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_ALIGNMENT','Caption Alignment')"></kendo-label>
+		<kendo-label *ngIf="(!labelCAPTION_ALIGNMENTTop && !isPhonePortrait) && labelCAPTION_ALIGNMENTVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_ALIGNMENT','Caption Alignment')"></kendo-label>
 		<label *ngIf="(labelCAPTION_ALIGNMENTTop || isPhonePortrait) && labelCAPTION_ALIGNMENTVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_ALIGNMENT','Caption Alignment')}}</label>
 		<input   formControlName="CAPTION_ALIGNMENT"
- kendoTextBox #CAPTION_ALIGNMENT  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_ALIGNMENT_Hint','Please enter Caption Alignment.')"
+ kendoTextBox  #CAPTION_ALIGNMENT  [placeholder]="starServices.getNLS([],'SCD_SSP_SHAPE_STATE_DEFINITION.scdshapeStateScdSspShapeStateDefinition.CAPTION_ALIGNMENT_Hint','Please enter Caption Alignment.')"
 		(click)="ON_CLICK_CAPTION_ALIGNMENT($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION_ALIGNMENT($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>

@@ -53,10 +53,10 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelOPCUA_SERVER_DIAGNOSTIC_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleOPCUA_SERVER_DIAGNOSTIC_ID >
-		<kendo-label *ngIf="(!labelOPCUA_SERVER_DIAGNOSTIC_IDTop && !isPhonePortrait) && labelOPCUA_SERVER_DIAGNOSTIC_IDVisible" class="form-label" [for]="OPCUA_SERVER_DIAGNOSTIC_ID" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.OPCUA_SERVER_DIAGNOSTIC_ID','Opcua Server Diagnostic Id') + ' *'"></kendo-label>
+		<kendo-label *ngIf="(!labelOPCUA_SERVER_DIAGNOSTIC_IDTop && !isPhonePortrait) && labelOPCUA_SERVER_DIAGNOSTIC_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.OPCUA_SERVER_DIAGNOSTIC_ID','Opcua Server Diagnostic Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelOPCUA_SERVER_DIAGNOSTIC_IDTop || isPhonePortrait) && labelOPCUA_SERVER_DIAGNOSTIC_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.OPCUA_SERVER_DIAGNOSTIC_ID','Opcua Server Diagnostic Id') + ' *'}}</label>
 		<input   formControlName="OPCUA_SERVER_DIAGNOSTIC_ID"
- kendoTextBox #OPCUA_SERVER_DIAGNOSTIC_ID 
+ kendoTextBox  #OPCUA_SERVER_DIAGNOSTIC_ID 
 		[readonly]="primarKeyReadOnlyArr.isOPCUA_SERVER_DIAGNOSTIC_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.OPCUA_SERVER_DIAGNOSTIC_ID_Hint','Please enter Opcua Server Diagnostic Id.')"
 		(click)="ON_CLICK_OPCUA_SERVER_DIAGNOSTIC_ID($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_OPCUA_SERVER_DIAGNOSTIC_ID($event)"      adaptiveMode="auto"  />
@@ -85,19 +85,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSERVER_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSERVER_NAME >
-		<kendo-label *ngIf="(!labelSERVER_NAMETop && !isPhonePortrait) && labelSERVER_NAMEVisible" class="form-label" [for]="SERVER_NAME" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SERVER_NAME','Server Name')"></kendo-label>
+		<kendo-label *ngIf="(!labelSERVER_NAMETop && !isPhonePortrait) && labelSERVER_NAMEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SERVER_NAME','Server Name')"></kendo-label>
 		<label *ngIf="(labelSERVER_NAMETop || isPhonePortrait) && labelSERVER_NAMEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SERVER_NAME','Server Name')}}</label>
 		<input   formControlName="SERVER_NAME"
- kendoTextBox #SERVER_NAME  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SERVER_NAME_Hint','Please enter Server Name.')"
+ kendoTextBox  #SERVER_NAME  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SERVER_NAME_Hint','Please enter Server Name.')"
 		(click)="ON_CLICK_SERVER_NAME($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SERVER_NAME($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelREQUESTED_GROUPSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleREQUESTED_GROUPS >
-		<kendo-label *ngIf="(!labelREQUESTED_GROUPSTop && !isPhonePortrait) && labelREQUESTED_GROUPSVisible" class="form-label" [for]="REQUESTED_GROUPS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.REQUESTED_GROUPS','Requested Groups')"></kendo-label>
+		<kendo-label *ngIf="(!labelREQUESTED_GROUPSTop && !isPhonePortrait) && labelREQUESTED_GROUPSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.REQUESTED_GROUPS','Requested Groups')"></kendo-label>
 		<label *ngIf="(labelREQUESTED_GROUPSTop || isPhonePortrait) && labelREQUESTED_GROUPSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.REQUESTED_GROUPS','Requested Groups')}}</label>
 		<input   formControlName="REQUESTED_GROUPS"
- kendoTextBox #REQUESTED_GROUPS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.REQUESTED_GROUPS_Hint','Please enter Requested Groups.')"
+ kendoTextBox  #REQUESTED_GROUPS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.REQUESTED_GROUPS_Hint','Please enter Requested Groups.')"
 		(click)="ON_CLICK_REQUESTED_GROUPS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_REQUESTED_GROUPS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -106,19 +106,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelMONITORED_TAGSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleMONITORED_TAGS >
-		<kendo-label *ngIf="(!labelMONITORED_TAGSTop && !isPhonePortrait) && labelMONITORED_TAGSVisible" class="form-label" [for]="MONITORED_TAGS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.MONITORED_TAGS','Monitored Tags')"></kendo-label>
+		<kendo-label *ngIf="(!labelMONITORED_TAGSTop && !isPhonePortrait) && labelMONITORED_TAGSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.MONITORED_TAGS','Monitored Tags')"></kendo-label>
 		<label *ngIf="(labelMONITORED_TAGSTop || isPhonePortrait) && labelMONITORED_TAGSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.MONITORED_TAGS','Monitored Tags')}}</label>
 		<input   formControlName="MONITORED_TAGS"
- kendoTextBox #MONITORED_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.MONITORED_TAGS_Hint','Please enter Monitored Tags.')"
+ kendoTextBox  #MONITORED_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.MONITORED_TAGS_Hint','Please enter Monitored Tags.')"
 		(click)="ON_CLICK_MONITORED_TAGS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_MONITORED_TAGS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_UPDATES_PER_SECONDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_UPDATES_PER_SECOND >
-		<kendo-label *ngIf="(!labelTAG_UPDATES_PER_SECONDTop && !isPhonePortrait) && labelTAG_UPDATES_PER_SECONDVisible" class="form-label" [for]="TAG_UPDATES_PER_SECOND" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_UPDATES_PER_SECOND','Tag Updates Per Second')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_UPDATES_PER_SECONDTop && !isPhonePortrait) && labelTAG_UPDATES_PER_SECONDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_UPDATES_PER_SECOND','Tag Updates Per Second')"></kendo-label>
 		<label *ngIf="(labelTAG_UPDATES_PER_SECONDTop || isPhonePortrait) && labelTAG_UPDATES_PER_SECONDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_UPDATES_PER_SECOND','Tag Updates Per Second')}}</label>
 		<input   formControlName="TAG_UPDATES_PER_SECOND"
- kendoTextBox #TAG_UPDATES_PER_SECOND  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_UPDATES_PER_SECOND_Hint','Please enter Tag Updates Per Second.')"
+ kendoTextBox  #TAG_UPDATES_PER_SECOND  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_UPDATES_PER_SECOND_Hint','Please enter Tag Updates Per Second.')"
 		(click)="ON_CLICK_TAG_UPDATES_PER_SECOND($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_UPDATES_PER_SECOND($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -127,19 +127,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBAD_QUALITY_TAGSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBAD_QUALITY_TAGS >
-		<kendo-label *ngIf="(!labelBAD_QUALITY_TAGSTop && !isPhonePortrait) && labelBAD_QUALITY_TAGSVisible" class="form-label" [for]="BAD_QUALITY_TAGS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.BAD_QUALITY_TAGS','Bad Quality Tags')"></kendo-label>
+		<kendo-label *ngIf="(!labelBAD_QUALITY_TAGSTop && !isPhonePortrait) && labelBAD_QUALITY_TAGSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.BAD_QUALITY_TAGS','Bad Quality Tags')"></kendo-label>
 		<label *ngIf="(labelBAD_QUALITY_TAGSTop || isPhonePortrait) && labelBAD_QUALITY_TAGSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.BAD_QUALITY_TAGS','Bad Quality Tags')}}</label>
 		<input   formControlName="BAD_QUALITY_TAGS"
- kendoTextBox #BAD_QUALITY_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.BAD_QUALITY_TAGS_Hint','Please enter Bad Quality Tags.')"
+ kendoTextBox  #BAD_QUALITY_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.BAD_QUALITY_TAGS_Hint','Please enter Bad Quality Tags.')"
 		(click)="ON_CLICK_BAD_QUALITY_TAGS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_BAD_QUALITY_TAGS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFAILED_ITEM_REQUESTSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFAILED_ITEM_REQUESTS >
-		<kendo-label *ngIf="(!labelFAILED_ITEM_REQUESTSTop && !isPhonePortrait) && labelFAILED_ITEM_REQUESTSVisible" class="form-label" [for]="FAILED_ITEM_REQUESTS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ITEM_REQUESTS','Failed Item Requests')"></kendo-label>
+		<kendo-label *ngIf="(!labelFAILED_ITEM_REQUESTSTop && !isPhonePortrait) && labelFAILED_ITEM_REQUESTSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ITEM_REQUESTS','Failed Item Requests')"></kendo-label>
 		<label *ngIf="(labelFAILED_ITEM_REQUESTSTop || isPhonePortrait) && labelFAILED_ITEM_REQUESTSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ITEM_REQUESTS','Failed Item Requests')}}</label>
 		<input   formControlName="FAILED_ITEM_REQUESTS"
- kendoTextBox #FAILED_ITEM_REQUESTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ITEM_REQUESTS_Hint','Please enter Failed Item Requests.')"
+ kendoTextBox  #FAILED_ITEM_REQUESTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ITEM_REQUESTS_Hint','Please enter Failed Item Requests.')"
 		(click)="ON_CLICK_FAILED_ITEM_REQUESTS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FAILED_ITEM_REQUESTS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -155,19 +155,19 @@
 	<ng-template kendoTabContent>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_REQUESTSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_REQUESTS >
-		<kendo-label *ngIf="(!labelTAG_REQUESTSTop && !isPhonePortrait) && labelTAG_REQUESTSVisible" class="form-label" [for]="TAG_REQUESTS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_REQUESTS','Tag Requests')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAG_REQUESTSTop && !isPhonePortrait) && labelTAG_REQUESTSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_REQUESTS','Tag Requests')"></kendo-label>
 		<label *ngIf="(labelTAG_REQUESTSTop || isPhonePortrait) && labelTAG_REQUESTSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_REQUESTS','Tag Requests')}}</label>
 		<input   formControlName="TAG_REQUESTS"
- kendoTextBox #TAG_REQUESTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_REQUESTS_Hint','Please enter Tag Requests.')"
+ kendoTextBox  #TAG_REQUESTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAG_REQUESTS_Hint','Please enter Tag Requests.')"
 		(click)="ON_CLICK_TAG_REQUESTS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAG_REQUESTS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFAILED_TAG_REQUESTSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFAILED_TAG_REQUESTS >
-		<kendo-label *ngIf="(!labelFAILED_TAG_REQUESTSTop && !isPhonePortrait) && labelFAILED_TAG_REQUESTSVisible" class="form-label" [for]="FAILED_TAG_REQUESTS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_REQUESTS','Failed Tag Requests')"></kendo-label>
+		<kendo-label *ngIf="(!labelFAILED_TAG_REQUESTSTop && !isPhonePortrait) && labelFAILED_TAG_REQUESTSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_REQUESTS','Failed Tag Requests')"></kendo-label>
 		<label *ngIf="(labelFAILED_TAG_REQUESTSTop || isPhonePortrait) && labelFAILED_TAG_REQUESTSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_REQUESTS','Failed Tag Requests')}}</label>
 		<input   formControlName="FAILED_TAG_REQUESTS"
- kendoTextBox #FAILED_TAG_REQUESTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_REQUESTS_Hint','Please enter Failed Tag Requests.')"
+ kendoTextBox  #FAILED_TAG_REQUESTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_REQUESTS_Hint','Please enter Failed Tag Requests.')"
 		(click)="ON_CLICK_FAILED_TAG_REQUESTS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FAILED_TAG_REQUESTS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -176,19 +176,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelACTIVE_TAGSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleACTIVE_TAGS >
-		<kendo-label *ngIf="(!labelACTIVE_TAGSTop && !isPhonePortrait) && labelACTIVE_TAGSVisible" class="form-label" [for]="ACTIVE_TAGS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_TAGS','Active Tags')"></kendo-label>
+		<kendo-label *ngIf="(!labelACTIVE_TAGSTop && !isPhonePortrait) && labelACTIVE_TAGSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_TAGS','Active Tags')"></kendo-label>
 		<label *ngIf="(labelACTIVE_TAGSTop || isPhonePortrait) && labelACTIVE_TAGSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_TAGS','Active Tags')}}</label>
 		<input   formControlName="ACTIVE_TAGS"
- kendoTextBox #ACTIVE_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_TAGS_Hint','Please enter Active Tags.')"
+ kendoTextBox  #ACTIVE_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_TAGS_Hint','Please enter Active Tags.')"
 		(click)="ON_CLICK_ACTIVE_TAGS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ACTIVE_TAGS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelINACTIVE_TAGSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleINACTIVE_TAGS >
-		<kendo-label *ngIf="(!labelINACTIVE_TAGSTop && !isPhonePortrait) && labelINACTIVE_TAGSVisible" class="form-label" [for]="INACTIVE_TAGS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.INACTIVE_TAGS','Inactive Tags')"></kendo-label>
+		<kendo-label *ngIf="(!labelINACTIVE_TAGSTop && !isPhonePortrait) && labelINACTIVE_TAGSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.INACTIVE_TAGS','Inactive Tags')"></kendo-label>
 		<label *ngIf="(labelINACTIVE_TAGSTop || isPhonePortrait) && labelINACTIVE_TAGSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.INACTIVE_TAGS','Inactive Tags')}}</label>
 		<input   formControlName="INACTIVE_TAGS"
- kendoTextBox #INACTIVE_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.INACTIVE_TAGS_Hint','Please enter Inactive Tags.')"
+ kendoTextBox  #INACTIVE_TAGS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.INACTIVE_TAGS_Hint','Please enter Inactive Tags.')"
 		(click)="ON_CLICK_INACTIVE_TAGS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_INACTIVE_TAGS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -204,19 +204,19 @@
 	<ng-template kendoTabContent>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelATTEMPTED_TAG_WRITESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleATTEMPTED_TAG_WRITES >
-		<kendo-label *ngIf="(!labelATTEMPTED_TAG_WRITESTop && !isPhonePortrait) && labelATTEMPTED_TAG_WRITESVisible" class="form-label" [for]="ATTEMPTED_TAG_WRITES" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ATTEMPTED_TAG_WRITES','Attempted Tag Writes')"></kendo-label>
+		<kendo-label *ngIf="(!labelATTEMPTED_TAG_WRITESTop && !isPhonePortrait) && labelATTEMPTED_TAG_WRITESVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ATTEMPTED_TAG_WRITES','Attempted Tag Writes')"></kendo-label>
 		<label *ngIf="(labelATTEMPTED_TAG_WRITESTop || isPhonePortrait) && labelATTEMPTED_TAG_WRITESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ATTEMPTED_TAG_WRITES','Attempted Tag Writes')}}</label>
 		<input   formControlName="ATTEMPTED_TAG_WRITES"
- kendoTextBox #ATTEMPTED_TAG_WRITES  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ATTEMPTED_TAG_WRITES_Hint','Please enter Attempted Tag Writes.')"
+ kendoTextBox  #ATTEMPTED_TAG_WRITES  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ATTEMPTED_TAG_WRITES_Hint','Please enter Attempted Tag Writes.')"
 		(click)="ON_CLICK_ATTEMPTED_TAG_WRITES($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ATTEMPTED_TAG_WRITES($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFAILED_TAG_WRITESTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFAILED_TAG_WRITES >
-		<kendo-label *ngIf="(!labelFAILED_TAG_WRITESTop && !isPhonePortrait) && labelFAILED_TAG_WRITESVisible" class="form-label" [for]="FAILED_TAG_WRITES" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_WRITES','Failed Tag Writes')"></kendo-label>
+		<kendo-label *ngIf="(!labelFAILED_TAG_WRITESTop && !isPhonePortrait) && labelFAILED_TAG_WRITESVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_WRITES','Failed Tag Writes')"></kendo-label>
 		<label *ngIf="(labelFAILED_TAG_WRITESTop || isPhonePortrait) && labelFAILED_TAG_WRITESVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_WRITES','Failed Tag Writes')}}</label>
 		<input   formControlName="FAILED_TAG_WRITES"
- kendoTextBox #FAILED_TAG_WRITES  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_WRITES_Hint','Please enter Failed Tag Writes.')"
+ kendoTextBox  #FAILED_TAG_WRITES  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_TAG_WRITES_Hint','Please enter Failed Tag Writes.')"
 		(click)="ON_CLICK_FAILED_TAG_WRITES($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FAILED_TAG_WRITES($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -232,19 +232,19 @@
 	<ng-template kendoTabContent>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAGS_DETECTEDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAGS_DETECTED >
-		<kendo-label *ngIf="(!labelTAGS_DETECTEDTop && !isPhonePortrait) && labelTAGS_DETECTEDVisible" class="form-label" [for]="TAGS_DETECTED" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAGS_DETECTED','Tags Detected')"></kendo-label>
+		<kendo-label *ngIf="(!labelTAGS_DETECTEDTop && !isPhonePortrait) && labelTAGS_DETECTEDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAGS_DETECTED','Tags Detected')"></kendo-label>
 		<label *ngIf="(labelTAGS_DETECTEDTop || isPhonePortrait) && labelTAGS_DETECTEDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAGS_DETECTED','Tags Detected')}}</label>
 		<input   formControlName="TAGS_DETECTED"
- kendoTextBox #TAGS_DETECTED  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAGS_DETECTED_Hint','Please enter Tags Detected.')"
+ kendoTextBox  #TAGS_DETECTED  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.TAGS_DETECTED_Hint','Please enter Tags Detected.')"
 		(click)="ON_CLICK_TAGS_DETECTED($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_TAGS_DETECTED($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelNODE_IDS_DETECTEDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleNODE_IDS_DETECTED >
-		<kendo-label *ngIf="(!labelNODE_IDS_DETECTEDTop && !isPhonePortrait) && labelNODE_IDS_DETECTEDVisible" class="form-label" [for]="NODE_IDS_DETECTED" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.NODE_IDS_DETECTED','Node Ids Detected')"></kendo-label>
+		<kendo-label *ngIf="(!labelNODE_IDS_DETECTEDTop && !isPhonePortrait) && labelNODE_IDS_DETECTEDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.NODE_IDS_DETECTED','Node Ids Detected')"></kendo-label>
 		<label *ngIf="(labelNODE_IDS_DETECTEDTop || isPhonePortrait) && labelNODE_IDS_DETECTEDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.NODE_IDS_DETECTED','Node Ids Detected')}}</label>
 		<input   formControlName="NODE_IDS_DETECTED"
- kendoTextBox #NODE_IDS_DETECTED  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.NODE_IDS_DETECTED_Hint','Please enter Node Ids Detected.')"
+ kendoTextBox  #NODE_IDS_DETECTED  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.NODE_IDS_DETECTED_Hint','Please enter Node Ids Detected.')"
 		(click)="ON_CLICK_NODE_IDS_DETECTED($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_NODE_IDS_DETECTED($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -253,19 +253,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCOMMUNICATIONS_ERRORSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCOMMUNICATIONS_ERRORS >
-		<kendo-label *ngIf="(!labelCOMMUNICATIONS_ERRORSTop && !isPhonePortrait) && labelCOMMUNICATIONS_ERRORSVisible" class="form-label" [for]="COMMUNICATIONS_ERRORS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.COMMUNICATIONS_ERRORS','Communications Errors')"></kendo-label>
+		<kendo-label *ngIf="(!labelCOMMUNICATIONS_ERRORSTop && !isPhonePortrait) && labelCOMMUNICATIONS_ERRORSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.COMMUNICATIONS_ERRORS','Communications Errors')"></kendo-label>
 		<label *ngIf="(labelCOMMUNICATIONS_ERRORSTop || isPhonePortrait) && labelCOMMUNICATIONS_ERRORSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.COMMUNICATIONS_ERRORS','Communications Errors')}}</label>
 		<input   formControlName="COMMUNICATIONS_ERRORS"
- kendoTextBox #COMMUNICATIONS_ERRORS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.COMMUNICATIONS_ERRORS_Hint','Please enter Communications Errors.')"
+ kendoTextBox  #COMMUNICATIONS_ERRORS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.COMMUNICATIONS_ERRORS_Hint','Please enter Communications Errors.')"
 		(click)="ON_CLICK_COMMUNICATIONS_ERRORS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_COMMUNICATIONS_ERRORS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelLONGEST_PROCESSING_TIME_MSECTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleLONGEST_PROCESSING_TIME_MSEC >
-		<kendo-label *ngIf="(!labelLONGEST_PROCESSING_TIME_MSECTop && !isPhonePortrait) && labelLONGEST_PROCESSING_TIME_MSECVisible" class="form-label" [for]="LONGEST_PROCESSING_TIME_MSEC" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.LONGEST_PROCESSING_TIME_MSEC','Longest Processing Time Msec')"></kendo-label>
+		<kendo-label *ngIf="(!labelLONGEST_PROCESSING_TIME_MSECTop && !isPhonePortrait) && labelLONGEST_PROCESSING_TIME_MSECVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.LONGEST_PROCESSING_TIME_MSEC','Longest Processing Time Msec')"></kendo-label>
 		<label *ngIf="(labelLONGEST_PROCESSING_TIME_MSECTop || isPhonePortrait) && labelLONGEST_PROCESSING_TIME_MSECVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.LONGEST_PROCESSING_TIME_MSEC','Longest Processing Time Msec')}}</label>
 		<input   formControlName="LONGEST_PROCESSING_TIME_MSEC"
- kendoTextBox #LONGEST_PROCESSING_TIME_MSEC  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.LONGEST_PROCESSING_TIME_MSEC_Hint','Please enter Longest Processing Time Msec.')"
+ kendoTextBox  #LONGEST_PROCESSING_TIME_MSEC  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.LONGEST_PROCESSING_TIME_MSEC_Hint','Please enter Longest Processing Time Msec.')"
 		(click)="ON_CLICK_LONGEST_PROCESSING_TIME_MSEC($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_LONGEST_PROCESSING_TIME_MSEC($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -274,19 +274,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSESSIONSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSESSIONS >
-		<kendo-label *ngIf="(!labelSESSIONSTop && !isPhonePortrait) && labelSESSIONSVisible" class="form-label" [for]="SESSIONS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SESSIONS','Sessions')"></kendo-label>
+		<kendo-label *ngIf="(!labelSESSIONSTop && !isPhonePortrait) && labelSESSIONSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SESSIONS','Sessions')"></kendo-label>
 		<label *ngIf="(labelSESSIONSTop || isPhonePortrait) && labelSESSIONSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SESSIONS','Sessions')}}</label>
 		<input   formControlName="SESSIONS"
- kendoTextBox #SESSIONS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SESSIONS_Hint','Please enter Sessions.')"
+ kendoTextBox  #SESSIONS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.SESSIONS_Hint','Please enter Sessions.')"
 		(click)="ON_CLICK_SESSIONS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SESSIONS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPERFORMANCE_WRITES_PER_SECONDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePERFORMANCE_WRITES_PER_SECOND >
-		<kendo-label *ngIf="(!labelPERFORMANCE_WRITES_PER_SECONDTop && !isPhonePortrait) && labelPERFORMANCE_WRITES_PER_SECONDVisible" class="form-label" [for]="PERFORMANCE_WRITES_PER_SECOND" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_WRITES_PER_SECOND','Performance Writes Per Second')"></kendo-label>
+		<kendo-label *ngIf="(!labelPERFORMANCE_WRITES_PER_SECONDTop && !isPhonePortrait) && labelPERFORMANCE_WRITES_PER_SECONDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_WRITES_PER_SECOND','Performance Writes Per Second')"></kendo-label>
 		<label *ngIf="(labelPERFORMANCE_WRITES_PER_SECONDTop || isPhonePortrait) && labelPERFORMANCE_WRITES_PER_SECONDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_WRITES_PER_SECOND','Performance Writes Per Second')}}</label>
 		<input   formControlName="PERFORMANCE_WRITES_PER_SECOND"
- kendoTextBox #PERFORMANCE_WRITES_PER_SECOND  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_WRITES_PER_SECOND_Hint','Please enter Performance Writes Per Second.')"
+ kendoTextBox  #PERFORMANCE_WRITES_PER_SECOND  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_WRITES_PER_SECOND_Hint','Please enter Performance Writes Per Second.')"
 		(click)="ON_CLICK_PERFORMANCE_WRITES_PER_SECOND($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PERFORMANCE_WRITES_PER_SECOND($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -295,10 +295,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPERFORMANCE_READS_PER_SECONDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePERFORMANCE_READS_PER_SECOND >
-		<kendo-label *ngIf="(!labelPERFORMANCE_READS_PER_SECONDTop && !isPhonePortrait) && labelPERFORMANCE_READS_PER_SECONDVisible" class="form-label" [for]="PERFORMANCE_READS_PER_SECOND" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_READS_PER_SECOND','Performance Reads Per Second')"></kendo-label>
+		<kendo-label *ngIf="(!labelPERFORMANCE_READS_PER_SECONDTop && !isPhonePortrait) && labelPERFORMANCE_READS_PER_SECONDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_READS_PER_SECOND','Performance Reads Per Second')"></kendo-label>
 		<label *ngIf="(labelPERFORMANCE_READS_PER_SECONDTop || isPhonePortrait) && labelPERFORMANCE_READS_PER_SECONDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_READS_PER_SECOND','Performance Reads Per Second')}}</label>
 		<input   formControlName="PERFORMANCE_READS_PER_SECOND"
- kendoTextBox #PERFORMANCE_READS_PER_SECOND  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_READS_PER_SECOND_Hint','Please enter Performance Reads Per Second.')"
+ kendoTextBox  #PERFORMANCE_READS_PER_SECOND  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.PERFORMANCE_READS_PER_SECOND_Hint','Please enter Performance Reads Per Second.')"
 		(click)="ON_CLICK_PERFORMANCE_READS_PER_SECOND($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PERFORMANCE_READS_PER_SECOND($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -329,19 +329,19 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCONFIGURED_ENDPOINTSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCONFIGURED_ENDPOINTS >
-		<kendo-label *ngIf="(!labelCONFIGURED_ENDPOINTSTop && !isPhonePortrait) && labelCONFIGURED_ENDPOINTSVisible" class="form-label" [for]="CONFIGURED_ENDPOINTS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.CONFIGURED_ENDPOINTS','Configured Endpoints')"></kendo-label>
+		<kendo-label *ngIf="(!labelCONFIGURED_ENDPOINTSTop && !isPhonePortrait) && labelCONFIGURED_ENDPOINTSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.CONFIGURED_ENDPOINTS','Configured Endpoints')"></kendo-label>
 		<label *ngIf="(labelCONFIGURED_ENDPOINTSTop || isPhonePortrait) && labelCONFIGURED_ENDPOINTSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.CONFIGURED_ENDPOINTS','Configured Endpoints')}}</label>
 		<input   formControlName="CONFIGURED_ENDPOINTS"
- kendoTextBox #CONFIGURED_ENDPOINTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.CONFIGURED_ENDPOINTS_Hint','Please enter Configured Endpoints.')"
+ kendoTextBox  #CONFIGURED_ENDPOINTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.CONFIGURED_ENDPOINTS_Hint','Please enter Configured Endpoints.')"
 		(click)="ON_CLICK_CONFIGURED_ENDPOINTS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CONFIGURED_ENDPOINTS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelACTIVE_ENDPOINTSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleACTIVE_ENDPOINTS >
-		<kendo-label *ngIf="(!labelACTIVE_ENDPOINTSTop && !isPhonePortrait) && labelACTIVE_ENDPOINTSVisible" class="form-label" [for]="ACTIVE_ENDPOINTS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_ENDPOINTS','Active Endpoints')"></kendo-label>
+		<kendo-label *ngIf="(!labelACTIVE_ENDPOINTSTop && !isPhonePortrait) && labelACTIVE_ENDPOINTSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_ENDPOINTS','Active Endpoints')"></kendo-label>
 		<label *ngIf="(labelACTIVE_ENDPOINTSTop || isPhonePortrait) && labelACTIVE_ENDPOINTSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_ENDPOINTS','Active Endpoints')}}</label>
 		<input   formControlName="ACTIVE_ENDPOINTS"
- kendoTextBox #ACTIVE_ENDPOINTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_ENDPOINTS_Hint','Please enter Active Endpoints.')"
+ kendoTextBox  #ACTIVE_ENDPOINTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.ACTIVE_ENDPOINTS_Hint','Please enter Active Endpoints.')"
 		(click)="ON_CLICK_ACTIVE_ENDPOINTS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_ACTIVE_ENDPOINTS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
@@ -350,10 +350,10 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFAILED_ENDPOINTSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFAILED_ENDPOINTS >
-		<kendo-label *ngIf="(!labelFAILED_ENDPOINTSTop && !isPhonePortrait) && labelFAILED_ENDPOINTSVisible" class="form-label" [for]="FAILED_ENDPOINTS" [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ENDPOINTS','Failed Endpoints')"></kendo-label>
+		<kendo-label *ngIf="(!labelFAILED_ENDPOINTSTop && !isPhonePortrait) && labelFAILED_ENDPOINTSVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ENDPOINTS','Failed Endpoints')"></kendo-label>
 		<label *ngIf="(labelFAILED_ENDPOINTSTop || isPhonePortrait) && labelFAILED_ENDPOINTSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ENDPOINTS','Failed Endpoints')}}</label>
 		<input   formControlName="FAILED_ENDPOINTS"
- kendoTextBox #FAILED_ENDPOINTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ENDPOINTS_Hint','Please enter Failed Endpoints.')"
+ kendoTextBox  #FAILED_ENDPOINTS  [placeholder]="starServices.getNLS([],'SCD_OSRTD_OPCUA_SERVER_DIAGNOSTICS.scdopcuaServerDiagnosticScdOsrtdOpcuaServerDiagnostics.FAILED_ENDPOINTS_Hint','Please enter Failed Endpoints.')"
 		(click)="ON_CLICK_FAILED_ENDPOINTS($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_FAILED_ENDPOINTS($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
