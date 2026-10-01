@@ -1,23 +1,22 @@
     <div>   
-        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_alarm_event_subscriptions_properties.scd_alarm_event_subscriptions_properties.component_title","") }}</legend> 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-adfl-alarm-display-filters-0 style="width : 200px ;" [hidden]="hide_comp_1" 
+        <app-scd-aesl-alarm-event-subscriptions-list style="width : 200px ;" [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_DISPLAY_FILTERSGrid_0Config">
-        </app-scd-adfl-alarm-display-filters-0 >
+                      [setComponentConfig_Input]="SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config">
+        </app-scd-aesl-alarm-event-subscriptions-list >
 
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-adfc-alarm-display-filters-conditions-1  [hidden]="hide_comp_2" [detail_Input]="grid_1_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS"  
+
+        <app-scd-aesd-alarm-event-subscriptions-1  [hidden]="hide_comp_2" [detail_Input]="formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONS"  
                       (formValidationChangedOutput)="formValidationChangedMD($event,2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config">
-        </app-scd-adfc-alarm-display-filters-conditions-1 >
+                      [setComponentConfig_Input]="SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config">
+        </app-scd-aesd-alarm-event-subscriptions-1 >
 
 </div>
 

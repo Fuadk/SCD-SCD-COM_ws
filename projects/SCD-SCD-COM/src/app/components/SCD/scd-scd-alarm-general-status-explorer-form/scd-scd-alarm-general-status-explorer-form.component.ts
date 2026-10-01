@@ -11,41 +11,52 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdalarmBehaviorScdAbdAlarmBehavior , componentConfigDef} from '@modeldir/model';
+import { scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'BEHAVIOR_ID' : new FormControl(dataItem.BEHAVIOR_ID  , ) ,
+'GENERAL_ID' : new FormControl(dataItem.GENERAL_ID  , ) ,
 'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
 'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
-'ALLOW_COLUMNS_RESIZED' : new FormControl(dataItem.ALLOW_COLUMNS_RESIZED  , ) ,
-'ALLOW_SORTING_CLICK_HEADINGS' : new FormControl(dataItem.ALLOW_SORTING_CLICK_HEADINGS  , ) ,
-'DISPLAY_CONTEXT_MENU' : new FormControl(dataItem.DISPLAY_CONTEXT_MENU  , ) ,
-'ROW_DOUBLE_CLICK_ACTION' : new FormControl(dataItem.ROW_DOUBLE_CLICK_ACTION  , ) ,
-'ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED' : new FormControl(dataItem.ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED  , ) ,
-'DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG' : new FormControl(dataItem.DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG  , ) ,
-'SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE' : new FormControl(dataItem.SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE  , ) 
+'TEXT_COLOR' : new FormControl(dataItem.TEXT_COLOR  , ) ,
+'BACKGROUND_COLOR' : new FormControl(dataItem.BACKGROUND_COLOR  , ) ,
+'LIST_BACKGROUD_COLOR' : new FormControl(dataItem.LIST_BACKGROUD_COLOR  , ) ,
+'FONT' : new FormControl(dataItem.FONT  , ) ,
+'ROOT_AREA' : new FormControl(dataItem.ROOT_AREA  , ) ,
+'SOURCE_FILE_NAME' : new FormControl(dataItem.SOURCE_FILE_NAME  , ) ,
+'SOURCE_FILE_STATUS' : new FormControl(dataItem.SOURCE_FILE_STATUS  , ) ,
+'SHOW_TOOLBARS' : new FormControl(dataItem.SHOW_TOOLBARS  , ) ,
+'SHOW_ENABLE_AND_DISABLE_BUTTONS' : new FormControl(dataItem.SHOW_ENABLE_AND_DISABLE_BUTTONS  , ) ,
+'SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS' : new FormControl(dataItem.SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS  , ) ,
+'SHOW_UNSHELVE_AND_SHELVE_BUTTONS' : new FormControl(dataItem.SHOW_UNSHELVE_AND_SHELVE_BUTTONS  , ) ,
+'SHOW_DETAILS_BUTTON' : new FormControl(dataItem.SHOW_DETAILS_BUTTON  , ) ,
+'SHOW_HELP_BUTTON' : new FormControl(dataItem.SHOW_HELP_BUTTON  , ) ,
+'SHOW_AREA_TREE' : new FormControl(dataItem.SHOW_AREA_TREE  , ) ,
+'PANEL_WIDTH' : new FormControl(dataItem.PANEL_WIDTH  , ) ,
+'DISPLAY_ERRORS_IN_DIALOG' : new FormControl(dataItem.DISPLAY_ERRORS_IN_DIALOG  , ) ,
+'ICON_STYLE' : new FormControl(dataItem.ICON_STYLE  , ) ,
+'SHOW_TIME_STAMPE' : new FormControl(dataItem.SHOW_TIME_STAMPE  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-abd-alarm-behavior',
+  selector: 'app-scd-scd-alarm-general-status-explorer-form',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-abd-alarm-behavior.component.html',
-  styleUrls: ['./scd-abd-alarm-behavior.component.scss'],
+  templateUrl: './scd-scd-alarm-general-status-explorer-form.component.html',
+  styleUrls: ['./scd-scd-alarm-general-status-explorer-form.component.scss'],
   standalone: false
 })
 
 
-export class ScdAlarmBehaviorScdAbdAlarmBehaviorFormComponent {
-  public title =  this.starServices.getNLS([],"SCD_ABD_ALARM_BEHAVIOR.scdalarmBehaviorScdAbdAlarmBehavior.component_title","Alarm Behavior");
-  public compTitleMsg =  "SCD_ABD_ALARM_BEHAVIOR.scdalarmBehaviorScdAbdAlarmBehavior";
-  public routineName = "ScdAlarmBehaviorScdAbdAlarmBehaviorForm";
-  private insertCMD = "INSERT_SCD_ALARM_BEHAVIOR";
-  private updateCMD = "UPDATE_SCD_ALARM_BEHAVIOR";
-  private deleteCMD =   "DELETE_SCD_ALARM_BEHAVIOR";
-  private getCMD = "GET_SCD_ALARM_BEHAVIOR_QUERY";
+export class ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormFormComponent {
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.component_title","SCD ALARM GENERAL STATUS EXPLORER FORM");
+  public compTitleMsg =  "SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm";
+  public routineName = "ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormForm";
+  private insertCMD = "INSERT_SCD_ALARM_GENERAL_STATUS_EXPLORER";
+  private updateCMD = "UPDATE_SCD_ALARM_GENERAL_STATUS_EXPLORER";
+  private deleteCMD =   "DELETE_SCD_ALARM_GENERAL_STATUS_EXPLORER";
+  private getCMD = "GET_SCD_ALARM_GENERAL_STATUS_EXPLORER_QUERY";
 
   public value: Date = new Date(2019, 5, 1, 22);
   public format: string = 'MM/dd/yyyy HH:mm';
@@ -73,7 +84,7 @@ export class ScdAlarmBehaviorScdAbdAlarmBehaviorFormComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isBEHAVIOR_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isGENERAL_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
@@ -87,56 +98,100 @@ export class ScdAlarmBehaviorScdAbdAlarmBehaviorFormComponent {
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-abd-alarm-behavior';
-  public PK_AUTO = 'BEHAVIOR_ID';
+  public compSelector = 'app-scd-scd-alarm-general-status-explorer-form';
+  public PK_AUTO = 'GENERAL_ID';
   public customerFacing = false;
   public FormStepsArr = [] ;
-public labelBEHAVIOR_IDTop=false;
-public labelBEHAVIOR_IDVisible=true;
-public labelAPP_IDTop=false;
+public labelGENERAL_IDTop=true;
+public labelGENERAL_IDVisible=true;
+public labelAPP_IDTop=true;
 public labelAPP_IDVisible=true;
-public labelDISPLAY_IDTop=false;
+public labelDISPLAY_IDTop=true;
 public labelDISPLAY_IDVisible=true;
-public labelSHAPE_IDTop=false;
+public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
-public labelALLOW_COLUMNS_RESIZEDTop=false;
-public labelALLOW_COLUMNS_RESIZEDVisible=true;
-public labelALLOW_SORTING_CLICK_HEADINGSTop=false;
-public labelALLOW_SORTING_CLICK_HEADINGSVisible=true;
-public labelDISPLAY_CONTEXT_MENUTop=false;
-public labelDISPLAY_CONTEXT_MENUVisible=true;
-public labelROW_DOUBLE_CLICK_ACTIONTop=false;
-public labelROW_DOUBLE_CLICK_ACTIONVisible=true;
-public labelALLOW_DETAIL_PANE_HEIGHT_ADJUSTEDTop=false;
-public labelALLOW_DETAIL_PANE_HEIGHT_ADJUSTEDVisible=true;
-public labelDISPLAY_ERRORS_OPERATOR_ACTION_DIALOGTop=false;
-public labelDISPLAY_ERRORS_OPERATOR_ACTION_DIALOGVisible=true;
-public labelSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCETop=false;
-public labelSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCEVisible=true;
+public labelTEXT_COLORTop=true;
+public labelTEXT_COLORVisible=true;
+public labelBACKGROUND_COLORTop=true;
+public labelBACKGROUND_COLORVisible=true;
+public labelLIST_BACKGROUD_COLORTop=true;
+public labelLIST_BACKGROUD_COLORVisible=true;
+public labelFONTTop=true;
+public labelFONTVisible=true;
+public labelROOT_AREATop=true;
+public labelROOT_AREAVisible=true;
+public labelSOURCE_FILE_NAMETop=true;
+public labelSOURCE_FILE_NAMEVisible=true;
+public labelSOURCE_FILE_STATUSTop=true;
+public labelSOURCE_FILE_STATUSVisible=true;
+public labelSHOW_TOOLBARSTop=true;
+public labelSHOW_TOOLBARSVisible=true;
+public labelSHOW_ENABLE_AND_DISABLE_BUTTONSTop=true;
+public labelSHOW_ENABLE_AND_DISABLE_BUTTONSVisible=true;
+public labelSHOW_UNSUPRESS_AND_SUPRESS_BUTTONSTop=true;
+public labelSHOW_UNSUPRESS_AND_SUPRESS_BUTTONSVisible=true;
+public labelSHOW_UNSHELVE_AND_SHELVE_BUTTONSTop=true;
+public labelSHOW_UNSHELVE_AND_SHELVE_BUTTONSVisible=true;
+public labelSHOW_DETAILS_BUTTONTop=true;
+public labelSHOW_DETAILS_BUTTONVisible=true;
+public labelSHOW_HELP_BUTTONTop=true;
+public labelSHOW_HELP_BUTTONVisible=true;
+public labelSHOW_AREA_TREETop=true;
+public labelSHOW_AREA_TREEVisible=true;
+public labelPANEL_WIDTHTop=true;
+public labelPANEL_WIDTHVisible=true;
+public labelDISPLAY_ERRORS_IN_DIALOGTop=true;
+public labelDISPLAY_ERRORS_IN_DIALOGVisible=true;
+public labelICON_STYLETop=true;
+public labelICON_STYLEVisible=true;
+public labelSHOW_TIME_STAMPETop=true;
+public labelSHOW_TIME_STAMPEVisible=true;
 
-public visibleBEHAVIOR_ID = true;
+public visibleGENERAL_ID = true;
 public visibleAPP_ID = true;
 public visibleDISPLAY_ID = true;
 public visibleSHAPE_ID = true;
-public visibleALLOW_COLUMNS_RESIZED = true;
-public visibleALLOW_SORTING_CLICK_HEADINGS = true;
-public visibleDISPLAY_CONTEXT_MENU = true;
-public visibleROW_DOUBLE_CLICK_ACTION = true;
-public visibleALLOW_DETAIL_PANE_HEIGHT_ADJUSTED = true;
-public visibleDISPLAY_ERRORS_OPERATOR_ACTION_DIALOG = true;
-public visibleSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = true;
+public visibleTEXT_COLOR = true;
+public visibleBACKGROUND_COLOR = true;
+public visibleLIST_BACKGROUD_COLOR = true;
+public visibleFONT = true;
+public visibleROOT_AREA = true;
+public visibleSOURCE_FILE_NAME = true;
+public visibleSOURCE_FILE_STATUS = true;
+public visibleSHOW_TOOLBARS = true;
+public visibleSHOW_ENABLE_AND_DISABLE_BUTTONS = true;
+public visibleSHOW_UNSUPRESS_AND_SUPRESS_BUTTONS = true;
+public visibleSHOW_UNSHELVE_AND_SHELVE_BUTTONS = true;
+public visibleSHOW_DETAILS_BUTTON = true;
+public visibleSHOW_HELP_BUTTON = true;
+public visibleSHOW_AREA_TREE = true;
+public visiblePANEL_WIDTH = true;
+public visibleDISPLAY_ERRORS_IN_DIALOG = true;
+public visibleICON_STYLE = true;
+public visibleSHOW_TIME_STAMPE = true;
 
-public disableBEHAVIOR_ID = false;
+public disableGENERAL_ID = false;
 public disableAPP_ID = false;
 public disableDISPLAY_ID = false;
 public disableSHAPE_ID = false;
-public disableALLOW_COLUMNS_RESIZED = false;
-public disableALLOW_SORTING_CLICK_HEADINGS = false;
-public disableDISPLAY_CONTEXT_MENU = false;
-public disableROW_DOUBLE_CLICK_ACTION = false;
-public disableALLOW_DETAIL_PANE_HEIGHT_ADJUSTED = false;
-public disableDISPLAY_ERRORS_OPERATOR_ACTION_DIALOG = false;
-public disableSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = false;
+public disableTEXT_COLOR = false;
+public disableBACKGROUND_COLOR = false;
+public disableLIST_BACKGROUD_COLOR = false;
+public disableFONT = false;
+public disableROOT_AREA = false;
+public disableSOURCE_FILE_NAME = false;
+public disableSOURCE_FILE_STATUS = false;
+public disableSHOW_TOOLBARS = false;
+public disableSHOW_ENABLE_AND_DISABLE_BUTTONS = false;
+public disableSHOW_UNSUPRESS_AND_SUPRESS_BUTTONS = false;
+public disableSHOW_UNSHELVE_AND_SHELVE_BUTTONS = false;
+public disableSHOW_DETAILS_BUTTON = false;
+public disableSHOW_HELP_BUTTON = false;
+public disableSHOW_AREA_TREE = false;
+public disablePANEL_WIDTH = false;
+public disableDISPLAY_ERRORS_IN_DIALOG = false;
+public disableICON_STYLE = false;
+public disableSHOW_TIME_STAMPE = false;
 
 
   
@@ -161,7 +216,7 @@ public disableSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = false;
       this.componentConfig.queryable  = true;
       this.componentConfig.navigable = true;
       this.componentConfig.insertable = true;
-      this.componentConfig.removeable = false;
+      this.componentConfig.removeable = true;
       this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
     //  this.componentConfig.enabled = true;
@@ -259,7 +314,7 @@ public disableSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdalarmBehaviorScdAbdAlarmBehavior();   
+  private formInitialValues:any =   new scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -267,7 +322,7 @@ public disableSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmBehaviorScdAbdAlarmBehaviorForm form.APP_ID :' + form.APP_ID);
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormForm form.APP_ID :' + form.APP_ID);
     if ( (form.APP_ID != "") &&   (typeof form.APP_ID != "undefined"))
     {
       this.masterKey = form.APP_ID;
@@ -448,8 +503,8 @@ public disableSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = false;
       }
       this.Comp_Config = new componentConfigDef();
       this.Comp_Config.masterSaved = NewVal;
-      this.Comp_Config.masterKeyArr =  [NewVal['BEHAVIOR_ID']];
-      this.Comp_Config.masterKeyNameArr =  ["BEHAVIOR_ID"];
+      this.Comp_Config.masterKeyArr =  [NewVal['GENERAL_ID']];
+      this.Comp_Config.masterKeyNameArr =  ["GENERAL_ID"];
          
        await this.POST_INSERT(NewVal);
       if (this.FORM_TRIGGER_FAILURE) 
@@ -550,14 +605,18 @@ public disableSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM SCD_APPLICATION  order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
+	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='DISPLAY_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
+	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ROW_DOUBLE_CLICK_ACTION\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrROW_DOUBLE_CLICK_ACTION"}];
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SOURCE_FILE_STATUS\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrSOURCE_FILE_STATUS"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrICON_STYLE"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SHOW_TIME_STAMPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrSHOW_TIME_STAMPE"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
@@ -568,7 +627,11 @@ public lkpArrDISPLAY_ID = [];
 
 public lkpArrSHAPE_ID = [];
 
-public lkpArrROW_DOUBLE_CLICK_ACTION = [];
+public lkpArrSOURCE_FILE_STATUS = [];
+
+public lkpArrICON_STYLE = [];
+
+public lkpArrSHOW_TIME_STAMPE = [];
 
 public lkpArrGetAPP_ID(CODE: any): any {
 var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
@@ -585,13 +648,29 @@ var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
-public lkpArrGetROW_DOUBLE_CLICK_ACTION(CODE: any): any {
-var rec = this.lkpArrROW_DOUBLE_CLICK_ACTION.find((x:any) => x.CODE === CODE);
+public lkpArrGetSOURCE_FILE_STATUS(CODE: any): any {
+var rec = this.lkpArrSOURCE_FILE_STATUS.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetICON_STYLE(CODE: any): any {
+var rec = this.lkpArrICON_STYLE.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetSHOW_TIME_STAMPE(CODE: any): any {
+var rec = this.lkpArrSHOW_TIME_STAMPE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
 onChanges(): void {
-this.form.get('BEHAVIOR_ID').valueChanges.subscribe(val => {
+this.form.get('GENERAL_ID').valueChanges.subscribe(val => {
+});
+this.form.get('ROOT_AREA').valueChanges.subscribe(val => {
+});
+this.form.get('SOURCE_FILE_NAME').valueChanges.subscribe(val => {
+});
+this.form.get('PANEL_WIDTH').valueChanges.subscribe(val => {
 });
 }
 
@@ -625,7 +704,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmBehaviorScdAbdAlarmBehaviorForm ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormForm ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -774,23 +853,23 @@ public printScreen(){
 
 
 
-async WHEN_VALIDATE_ITEM_BEHAVIOR_ID(value) {
+async WHEN_VALIDATE_ITEM_GENERAL_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BEHAVIOR_ID'] != "undefined" ) 
-      this.form.controls['BEHAVIOR_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['GENERAL_ID'] != "undefined" ) 
+      this.form.controls['GENERAL_ID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['BEHAVIOR_ID'] != "undefined" ) 
-     this.form.get('BEHAVIOR_ID').updateValueAndValidity();
+ if (typeof this.form.controls['GENERAL_ID'] != "undefined" ) 
+     this.form.get('GENERAL_ID').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_BEHAVIOR_ID(event){
+ async ON_CLICK_GENERAL_ID(event){
 
 }
 
@@ -854,152 +933,372 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_ALLOW_COLUMNS_RESIZED(value) {
+async WHEN_VALIDATE_ITEM_TEXT_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ALLOW_COLUMNS_RESIZED'] != "undefined" ) 
-      this.form.controls['ALLOW_COLUMNS_RESIZED'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['TEXT_COLOR'] != "undefined" ) 
+      this.form.controls['TEXT_COLOR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['ALLOW_COLUMNS_RESIZED'] != "undefined" ) 
-     this.form.get('ALLOW_COLUMNS_RESIZED').updateValueAndValidity();
+ if (typeof this.form.controls['TEXT_COLOR'] != "undefined" ) 
+     this.form.get('TEXT_COLOR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_ALLOW_COLUMNS_RESIZED(event){
+ async ON_CLICK_TEXT_COLOR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_ALLOW_SORTING_CLICK_HEADINGS(value) {
+async WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ALLOW_SORTING_CLICK_HEADINGS'] != "undefined" ) 
-      this.form.controls['ALLOW_SORTING_CLICK_HEADINGS'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['BACKGROUND_COLOR'] != "undefined" ) 
+      this.form.controls['BACKGROUND_COLOR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['ALLOW_SORTING_CLICK_HEADINGS'] != "undefined" ) 
-     this.form.get('ALLOW_SORTING_CLICK_HEADINGS').updateValueAndValidity();
+ if (typeof this.form.controls['BACKGROUND_COLOR'] != "undefined" ) 
+     this.form.get('BACKGROUND_COLOR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_ALLOW_SORTING_CLICK_HEADINGS(event){
+ async ON_CLICK_BACKGROUND_COLOR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_DISPLAY_CONTEXT_MENU(value) {
+async WHEN_VALIDATE_ITEM_LIST_BACKGROUD_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_CONTEXT_MENU'] != "undefined" ) 
-      this.form.controls['DISPLAY_CONTEXT_MENU'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['LIST_BACKGROUD_COLOR'] != "undefined" ) 
+      this.form.controls['LIST_BACKGROUD_COLOR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DISPLAY_CONTEXT_MENU'] != "undefined" ) 
-     this.form.get('DISPLAY_CONTEXT_MENU').updateValueAndValidity();
+ if (typeof this.form.controls['LIST_BACKGROUD_COLOR'] != "undefined" ) 
+     this.form.get('LIST_BACKGROUD_COLOR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DISPLAY_CONTEXT_MENU(event){
+ async ON_CLICK_LIST_BACKGROUD_COLOR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_ROW_DOUBLE_CLICK_ACTION(value) {
+async WHEN_VALIDATE_ITEM_FONT(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ROW_DOUBLE_CLICK_ACTION'] != "undefined" ) 
-      this.form.controls['ROW_DOUBLE_CLICK_ACTION'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['FONT'] != "undefined" ) 
+      this.form.controls['FONT'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['ROW_DOUBLE_CLICK_ACTION'] != "undefined" ) 
-     this.form.get('ROW_DOUBLE_CLICK_ACTION').updateValueAndValidity();
+ if (typeof this.form.controls['FONT'] != "undefined" ) 
+     this.form.get('FONT').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_ROW_DOUBLE_CLICK_ACTION(event){
+ async ON_CLICK_FONT(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(value) {
+async WHEN_VALIDATE_ITEM_ROOT_AREA(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED'] != "undefined" ) 
-      this.form.controls['ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['ROOT_AREA'] != "undefined" ) 
+      this.form.controls['ROOT_AREA'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED'] != "undefined" ) 
-     this.form.get('ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED').updateValueAndValidity();
+ if (typeof this.form.controls['ROOT_AREA'] != "undefined" ) 
+     this.form.get('ROOT_AREA').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(event){
+ async ON_CLICK_ROOT_AREA(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(value) {
+async WHEN_VALIDATE_ITEM_SOURCE_FILE_NAME(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG'] != "undefined" ) 
-      this.form.controls['DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SOURCE_FILE_NAME'] != "undefined" ) 
+      this.form.controls['SOURCE_FILE_NAME'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG'] != "undefined" ) 
-     this.form.get('DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG').updateValueAndValidity();
+ if (typeof this.form.controls['SOURCE_FILE_NAME'] != "undefined" ) 
+     this.form.get('SOURCE_FILE_NAME').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(event){
+ async ON_CLICK_SOURCE_FILE_NAME(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(value) {
+async WHEN_VALIDATE_ITEM_SOURCE_FILE_STATUS(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE'] != "undefined" ) 
-      this.form.controls['SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SOURCE_FILE_STATUS'] != "undefined" ) 
+      this.form.controls['SOURCE_FILE_STATUS'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE'] != "undefined" ) 
-     this.form.get('SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE').updateValueAndValidity();
+ if (typeof this.form.controls['SOURCE_FILE_STATUS'] != "undefined" ) 
+     this.form.get('SOURCE_FILE_STATUS').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(event){
+ async ON_CLICK_SOURCE_FILE_STATUS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_TOOLBARS(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_TOOLBARS'] != "undefined" ) 
+      this.form.controls['SHOW_TOOLBARS'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_TOOLBARS'] != "undefined" ) 
+     this.form.get('SHOW_TOOLBARS').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_TOOLBARS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_ENABLE_AND_DISABLE_BUTTONS(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_ENABLE_AND_DISABLE_BUTTONS'] != "undefined" ) 
+      this.form.controls['SHOW_ENABLE_AND_DISABLE_BUTTONS'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_ENABLE_AND_DISABLE_BUTTONS'] != "undefined" ) 
+     this.form.get('SHOW_ENABLE_AND_DISABLE_BUTTONS').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_ENABLE_AND_DISABLE_BUTTONS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS'] != "undefined" ) 
+      this.form.controls['SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS'] != "undefined" ) 
+     this.form.get('SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_UNSHELVE_AND_SHELVE_BUTTONS(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_UNSHELVE_AND_SHELVE_BUTTONS'] != "undefined" ) 
+      this.form.controls['SHOW_UNSHELVE_AND_SHELVE_BUTTONS'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_UNSHELVE_AND_SHELVE_BUTTONS'] != "undefined" ) 
+     this.form.get('SHOW_UNSHELVE_AND_SHELVE_BUTTONS').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_UNSHELVE_AND_SHELVE_BUTTONS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_DETAILS_BUTTON(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_DETAILS_BUTTON'] != "undefined" ) 
+      this.form.controls['SHOW_DETAILS_BUTTON'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_DETAILS_BUTTON'] != "undefined" ) 
+     this.form.get('SHOW_DETAILS_BUTTON').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_DETAILS_BUTTON(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_HELP_BUTTON(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_HELP_BUTTON'] != "undefined" ) 
+      this.form.controls['SHOW_HELP_BUTTON'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_HELP_BUTTON'] != "undefined" ) 
+     this.form.get('SHOW_HELP_BUTTON').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_HELP_BUTTON(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_AREA_TREE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_AREA_TREE'] != "undefined" ) 
+      this.form.controls['SHOW_AREA_TREE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_AREA_TREE'] != "undefined" ) 
+     this.form.get('SHOW_AREA_TREE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_AREA_TREE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_PANEL_WIDTH(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['PANEL_WIDTH'] != "undefined" ) 
+      this.form.controls['PANEL_WIDTH'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['PANEL_WIDTH'] != "undefined" ) 
+     this.form.get('PANEL_WIDTH').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_PANEL_WIDTH(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_DISPLAY_ERRORS_IN_DIALOG(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['DISPLAY_ERRORS_IN_DIALOG'] != "undefined" ) 
+      this.form.controls['DISPLAY_ERRORS_IN_DIALOG'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['DISPLAY_ERRORS_IN_DIALOG'] != "undefined" ) 
+     this.form.get('DISPLAY_ERRORS_IN_DIALOG').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_DISPLAY_ERRORS_IN_DIALOG(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['ICON_STYLE'] != "undefined" ) 
+      this.form.controls['ICON_STYLE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['ICON_STYLE'] != "undefined" ) 
+     this.form.get('ICON_STYLE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_ICON_STYLE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_TIME_STAMPE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_TIME_STAMPE'] != "undefined" ) 
+      this.form.controls['SHOW_TIME_STAMPE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_TIME_STAMPE'] != "undefined" ) 
+     this.form.get('SHOW_TIME_STAMPE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_TIME_STAMPE(event){
 
 }
  
- async onChange_BEHAVIOR_ID(event:any) { 
+ async onChange_GENERAL_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_BEHAVIOR_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_GENERAL_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
@@ -1021,66 +1320,147 @@ async WHEN_VALIDATE_ITEM_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onChange_ALLOW_COLUMNS_RESIZED(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_ALLOW_COLUMNS_RESIZED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_ALLOW_SORTING_CLICK_HEADINGS(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_ALLOW_SORTING_CLICK_HEADINGS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_DISPLAY_CONTEXT_MENU(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DISPLAY_CONTEXT_MENU(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onValueChange_ROW_DOUBLE_CLICK_ACTION(value) { 
+ async onValueChange_TEXT_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_ROW_DOUBLE_CLICK_ACTION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_TEXT_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onChange_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(event:any) { 
+ async onValueChange_BACKGROUND_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_LIST_BACKGROUD_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_LIST_BACKGROUD_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_FONT(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FONT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_ROOT_AREA(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_ROOT_AREA(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(event:any) { 
+ async onChange_SOURCE_FILE_NAME(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SOURCE_FILE_NAME(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(event:any) { 
+ async onValueChange_SOURCE_FILE_STATUS(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_SOURCE_FILE_STATUS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_SHOW_TOOLBARS(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SHOW_TOOLBARS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
- }
+ } 
+ async onChange_SHOW_ENABLE_AND_DISABLE_BUTTONS(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_ENABLE_AND_DISABLE_BUTTONS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SHOW_UNSHELVE_AND_SHELVE_BUTTONS(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_UNSHELVE_AND_SHELVE_BUTTONS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SHOW_DETAILS_BUTTON(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_DETAILS_BUTTON(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SHOW_HELP_BUTTON(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_HELP_BUTTON(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SHOW_AREA_TREE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_AREA_TREE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_PANEL_WIDTH(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_PANEL_WIDTH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_DISPLAY_ERRORS_IN_DIALOG(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_DISPLAY_ERRORS_IN_DIALOG(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_ICON_STYLE(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_ICON_STYLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_SHOW_TIME_STAMPE(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_SHOW_TIME_STAMPE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  }
 
 // For Adding new CODE
   public  grid_som_tabs_codes={};

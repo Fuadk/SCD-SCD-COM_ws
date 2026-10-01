@@ -1,3 +1,116 @@
+ export class scdalarmGeneralBannerScdScdAlarmGeneralBanner{
+	public GENERAL_ID = '';
+	public APP_ID = '';
+	public DISPLAY_ID = '';
+	public SHAPE_ID = '';
+	public BACKGROUND_COLOR = '';
+	public SELECTED_ITEM_TEXT_COLOR = '';
+	public SELECTED_ITEM_BACKGROUND_COLOR = '';
+	public FONT_AL = '';
+	public NUMBER_OF_ROWS = '';
+	public ICON_STYLE = '';
+	public ROW_DOUBLE_CLICK_ACTION = '';
+	public FONT_SB = '';
+	public BUTTON_SIZE = '';
+	public SAMPLE = '';
+	public SHOW_TOOLTIPS = '';
+	public HIDE_BAR = '';
+	public COMMAND = '';
+	public COMMAND_BUTTON = '';
+	public DISPLAY_ERROR_OPERATOR_ACTIONS_DIALOG = '';
+	public MAINTAIN_SELECTION_FOCUS_LOST = '';
+
+}
+
+ export class scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm{
+	public GENERAL_ID = '';
+	public APP_ID = '';
+	public DISPLAY_ID = '';
+	public SHAPE_ID = '';
+	public TEXT_COLOR = '';
+	public BACKGROUND_COLOR = '';
+	public LIST_BACKGROUD_COLOR = '';
+	public FONT = '';
+	public ROOT_AREA = '';
+	public SOURCE_FILE_NAME = '';
+	public SOURCE_FILE_STATUS = '';
+	public SHOW_TOOLBARS = '';
+	public SHOW_ENABLE_AND_DISABLE_BUTTONS = '';
+	public SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS = '';
+	public SHOW_UNSHELVE_AND_SHELVE_BUTTONS = '';
+	public SHOW_DETAILS_BUTTON = '';
+	public SHOW_HELP_BUTTON = '';
+	public SHOW_AREA_TREE = '';
+	public PANEL_WIDTH = '';
+	public DISPLAY_ERRORS_IN_DIALOG = '';
+	public ICON_STYLE = '';
+	public SHOW_TIME_STAMPE = '';
+
+}
+
+ export class scdalarmGeneralSttusExplorerScdScdAlarmGeneralSttusExplorerForm{
+	public GENERAL_ID = '';
+	public APP_ID = '';
+	public DISPLAY_ID = '';
+	public SHAPE_ID = '';
+	public TEXT_COLOR = '';
+	public BACKGROUND_COLOR = '';
+	public LIST_BACKGROUD_COLOR = '';
+	public FONT = '';
+	public ROOT_AREA = '';
+	public SOURCE_FILE_NAME = '';
+	public SOURCE_FILE_STATUS = '';
+	public SHOW_TOOLBARS = '';
+	public SHOW_ENABLE_AND_DISABLE_BUTTONS = '';
+	public SHOW_UNSUPRESS_AND_SUPRESS_BUTTONS = '';
+	public SHOW_UNSHELVE_AND_SHELVE_BUTTONS = '';
+	public SHOW_DETAILS_BUTTON = '';
+	public SHOW_HELP_BUTTON = '';
+	public SHOW_AREA_TREE = '';
+	public PANEL_WIDTH = '';
+	public DISPLAY_ERRORS_IN_DIALOG = '';
+	public ICON_STYLE = '';
+	public SHOW_TIME_STAMPE = '';
+
+}
+
+ export class scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs{
+	public GENERAL_ID = '';
+	public APP_ID = '';
+	public DISPLAY_ID = '';
+	public SHAPE_ID = '';
+	public SELECT_LOG = '';
+	public DISPLAY_REPORT_ON_STARTUP = '';
+	public ALLOW_DETAILS_APNE_TO_BE_ADJUSTED = '';
+	public HORIZONTAL_GRID_LINES = '';
+	public VERTICA_GRIDLINES = '';
+	public DETAIL_PANS = '';
+	public TOOLBAR = '';
+	public STATUS_BAR = '';
+	public TOOLTIPS = '';
+	public ICON_STYLE = '';
+	public BACKGROUND_COLOR = '';
+	public TEXT_COLOR = '';
+	public BACKGROUND_COLOR_CH = '';
+	public HEIGHT_PERCENT = '';
+	public BACKGROUND_COLOR_DP = '';
+	public TEXT_COLOR_DP = '';
+	public LINE_COLOR = '';
+	public BACKGROUND_COLOR_GRID = '';
+	public SELECTION_FOREGROUND_COLOR = '';
+	public SELECTION_BACKGROUND_COLOR = '';
+	public DETAIL_POINT_FONT = '';
+	public TEXT_FONT = '';
+	public TEXT_COLOR_CH = '';
+
+}
+
+
+
+ export class scdalarmScdAlarmDisplayFiltersProperties{
+}
+ export class scdalarmScdAlarmEventSubscriptionsProperties{
+}
  export class scdAslAlarmStates0{
 
 }
@@ -167,8 +280,24 @@
 	public COMMAND_BUTTON = '';
 	public DISPLAY_ERROR_OPERATOR_ACTIONS_DIALOG = '';
 	public MAINTAIN_SELECTION_FOCUS_LOST = '';
+	public TEXT_COLOR = '';
+	public TEXT_COLOR_CH = '';
+	public BACKGROUND_COLOR_CH = '';
+	public SELECTION_FOREGROUND_COLOR = '';
+	public SELECTION_BACKGROUND_COLOR = '';
+	public LINE_COLOR = '';
+	public BACKGROUND_COLOR_GRID = '';
+	public TEXT_COLOR_DP = '';
+	public BACKGROUND_COLOR_DP = '';
+	public HEIGHT_PERCENT = '';
+	public DETAIL_POINT_FONT = '';
+	public TEXT_FONT = '';
 
 }
+
+
+
+
 
  export class scdalarmGeneralScdAgdAlarmGeneral{
 	public GENERAL_ID = '';
@@ -191,8 +320,24 @@
 	public COMMAND_BUTTON = '';
 	public DISPLAY_ERROR_OPERATOR_ACTIONS_DIALOG = '';
 	public MAINTAIN_SELECTION_FOCUS_LOST = '';
+	public TEXT_COLOR = '';
+	public TEXT_COLOR_CH = '';
+	public BACKGROUND_COLOR_CH = '';
+	public SELECTION_FOREGROUND_COLOR = '';
+	public SELECTION_BACKGROUND_COLOR = '';
+	public LINE_COLOR = '';
+	public BACKGROUND_COLOR_GRID = '';
+	public TEXT_COLOR_DP = '';
+	public BACKGROUND_COLOR_DP = '';
+	public HEIGHT_PERCENT = '';
+	public DETAIL_POINT_FONT = '';
+	public TEXT_FONT = '';
 
 }
+
+
+
+
 
  export class scdalarmEventSubscriptionsScdAessSearchAlarmEventSubscriptions{
 	public EVENT_ID = '';

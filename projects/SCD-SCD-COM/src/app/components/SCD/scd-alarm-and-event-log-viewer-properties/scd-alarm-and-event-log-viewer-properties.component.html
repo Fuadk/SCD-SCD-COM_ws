@@ -1,52 +1,108 @@
-    <div>   
+<div>
         <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.component_title","") }}</legend> 
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-agd-alarm-general-1  [hidden]="hide_comp_1" 
+        <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
+
+<kendo-tabstrip-tab [selected]="true">
+    <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID1","Common") }}</legend>
+     </ng-template>
+    <ng-template kendoTabContent>
+        <app-scd-tp-common-screen 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_GENERALFormdivs_0Config">
-        </app-scd-agd-alarm-general-1 >
+                      [setComponentConfig_Input]="SCD_SHAPEForm_0Config">
+        </app-scd-tp-common-screen >
 
-
-        <app-scd-acl-alarm-columns-2  [hidden]="hide_comp_2" [detail_Input]="grid_1_SCD_ALARM_COLUMNS"  
-                      (formValidationChangedOutput)="formValidationChangedMD($event,2)"
+    </ng-template>
+  </kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID2","General") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-scd-alarm-general-log-viewer-formdivs [detail_Input]="formdivs_1_SCD_ALARM_GENERAL_LOG_VIEWER"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_COLUMNSGrid_1Config">
+                      [setComponentConfig_Input]="SCD_ALARM_GENERAL_LOG_VIEWERFormdivs_1Config">
+        </app-scd-scd-alarm-general-log-viewer-formdivs >
+
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID3","Columns") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-acl-alarm-columns-2 [detail_Input]="grid_2_SCD_ALARM_COLUMNS"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ALARM_COLUMNSGrid_2Config">
         </app-scd-acl-alarm-columns-2 >
 
-
-
-        <app-scd-adfl-alarm-display-filters-3  [hidden]="hide_comp_3" [detail_Input]="grid_2_SCD_ALARM_DISPLAY_FILTERS"  
-                      (formValidationChangedOutput)="formValidationChangedMD($event,3)"
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID4","Toolvar") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-acl-alarm-columns-2 [detail_Input]="grid_3_SCD_ALARM_COLUMNS"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 4)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_DISPLAY_FILTERSGrid_2Config">
-        </app-scd-adfl-alarm-display-filters-3 >
+                      [setComponentConfig_Input]="SCD_ALARM_COLUMNSGrid_3Config">
+        </app-scd-acl-alarm-columns-2 >
 
-
-
-        <app-scd-asl-alarm-states-4  [hidden]="hide_comp_4" [detail_Input]="grid_3_SCD_ALARM_STATES"  
-                      (formValidationChangedOutput)="formValidationChangedMD($event,4)"
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID5","Display Filters") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-alarm-display-filters-properties [detail_Input]="formtabs_4_SCD_ALARM"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 5)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_STATESGrid_3Config">
+                      [setComponentConfig_Input]="SCD_ALARMFormtabs_4Config">
+        </app-scd-alarm-display-filters-properties >
+
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID6","States") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-asl-alarm-states-4 [detail_Input]="grid_5_SCD_ALARM_STATES"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 6)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ALARM_STATESGrid_5Config">
         </app-scd-asl-alarm-states-4 >
 
-
-
-        <app-scd-aaesp-alarm-sort  [hidden]="hide_comp_5" [detail_Input]="form_4_SCD_ALARM_SORT"  
-                      (formValidationChangedOutput)="formValidationChangedMD($event,5)"
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID7","Sort") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-aaesp-alarm-sort [detail_Input]="form_6_SCD_ALARM_SORT"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 7)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_SORTForm_4Config">
+                      [setComponentConfig_Input]="SCD_ALARM_SORTForm_6Config">
         </app-scd-aaesp-alarm-sort >
 
-</div>
-
+</ng-template>
+</kendo-tabstrip-tab>
+   </kendo-tabstrip> 
     </div>   
 <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
 		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"

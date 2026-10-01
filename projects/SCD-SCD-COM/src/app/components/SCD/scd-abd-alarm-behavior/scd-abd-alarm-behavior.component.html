@@ -1,10 +1,12 @@
-
 <div>
-    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{ this.starServices.getNLS([],"SCD_ABD_ALARM_BEHAVIOR.scdalarmBehaviorScdAbdAlarmBehavior.component_title","Alarm Behavior") }}</legend>
+    <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_ABD_ALARM_BEHAVIOR.scdalarmBehaviorScdAbdAlarmBehavior.component_title","Alarm Behavior") }}</legend>
 <div class="form-toolbar"> </div>
+
 <kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
 
-
+ 
     <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
     <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form.value);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
     <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="onCancel($event)" *ngIf="componentConfig.queryable"></kendo-toolbar-button >
@@ -26,27 +28,13 @@
 
 
 <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
-
-
-  
-
-
-
-
-
-
-    
-
-           <div class="form-borders" > 
-    <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
-    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
+ <div class="form-borders" > 
+    <form class="form-layout" [ngClass]="isPhonePortrait ? 'k-form k-form-horizontal-star' : 'k-form k-form-horizontal' "
+     [formGroup]="form" (click)="ON_CLICK(form.value)">
+    <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled && !isSearch"-->
     <fieldset class="form-fieldset"  class="k-form-fieldset" >
 
-         <legend *ngIf="FormStepsArr[1].visible" class="divTitle">{{FormStepsArr.length > 0 ?
-          FormStepsArr[1].CODETEXT_LANG:this.starServices.getNLS([],"SCD_ABD_ALARM_BEHAVIOR.scdalarmBehaviorScdAbdAlarmBehavior.component_title","Alarm Behavior") }}</legend>
-			 <div *ngIf="FormStepsArr[1].visible" class="form-div">
 
-    
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBEHAVIOR_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBEHAVIOR_ID >
 		<kendo-label *ngIf="(!labelBEHAVIOR_IDTop && !isPhonePortrait) && labelBEHAVIOR_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ABD_ALARM_BEHAVIOR.scdalarmBehaviorScdAbdAlarmBehavior.BEHAVIOR_ID','Behavior Id') + ' *'"></kendo-label>
@@ -216,30 +204,19 @@
 	</kendo-formfield>
 </div>
 
-
-    
-      </div>
     </fieldset>
     </form>
     </div>
- 
+    <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
 
-
-
-
-
-
-
+      <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
 
 </kendo-pdf-export>
 </div>
-
-   <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
-			[setComponentConfig_Input]="DSP_UPLOADConfig">
-		</app-dsp-upload>
-    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveFormCompletedHandler($event,this)"
-			[setComponentConfig_Input]="DSP_WEBCAMConfig">
-		</app-dsp-webcam>
 
 <div [hidden]="!showCodeDetails">
 	<kendo-dialog 
@@ -252,3 +229,8 @@
   
 	</kendo-dialog>
   </div>
+  
+
+
+
+
