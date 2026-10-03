@@ -331,10 +331,10 @@ import { ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent } f
 import { ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptionsFormdivsComponent } from '../components/SCD/scd-aesd-alarm-event-subscriptions/scd-aesd-alarm-event-subscriptions.component';
 import { ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions1FormdivsComponent } from '../components/SCD/scd-aesd-alarm-event-subscriptions-1/scd-aesd-alarm-event-subscriptions-1.component';
 import { ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions3FormdivsComponent } from '../components/SCD/scd-aesd-alarm-event-subscriptions-3/scd-aesd-alarm-event-subscriptions-3.component';
-import { ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridComponent } from '../components/SCD/scd-aesl-alarm-event-subscriptions-list/scd-aesl-alarm-event-subscriptions-list.component';
+
 import { ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3GridComponent } from '../components/SCD/scd-aesl-alarm-event-subscriptions-list-3/scd-aesl-alarm-event-subscriptions-list-3.component';
-import { ScdAlarmEventSubscriptionsScdAessAlarmEventSubscriptionsListComponent } from '../components/SCD/scd-aess-alarm-event-subscriptions/scd-aess-alarm-event-subscriptions.component';
-import { ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsFormComponent } from '../components/SCD/scd-aess-search-alarm-event-subscriptions/scd-aess-search-alarm-event-subscriptions.component';
+
+
 
 
 import { ScdAlarmSortScdAsdAlarmSortFormdivsComponent } from '../components/SCD/scd-asd-alarm-sort/scd-asd-alarm-sort.component';
@@ -359,7 +359,7 @@ import { ScdAlarmDisplayFiltersPropertiesComponent } from '../components/SCD/scd
 
 
 
-import { ScdAlarmEventSubscriptionsSearchComponent } from '../components/SCD/scd-alarm-event-subscriptions-search/scd-alarm-event-subscriptions-search.component';
+
 
 
 
@@ -381,6 +381,14 @@ import { ScdAlarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivsFormdivsComp
 import { ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormFormComponent } from '../components/SCD/scd-scd-alarm-general-status-explorer-form/scd-scd-alarm-general-status-explorer-form.component';
 
 import { ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivsComponent } from '../components/SCD/scd-scd-alarm-general-banner/scd-scd-alarm-general-banner.component';
+import { ScdAlarmColumnsScdScdAlarmColumnsFormFormComponent } from '../components/SCD/scd-scd-alarm-columns-form/scd-scd-alarm-columns-form.component';
+
+
+
+import { ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridComponent } from '../components/SCD/scd-aesl-alarm-event-subscriptions-list/scd-aesl-alarm-event-subscriptions-list.component';
+import { ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGridComponent } from '../components/SCD/scd-scd-alarm-event-subscriptions-grid/scd-scd-alarm-event-subscriptions-grid.component';
+
+import { ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivsComponent } from '../components/SCD/scd-scd-alarm-event-subscriptions-form/scd-scd-alarm-event-subscriptions-form.component';
 const scdRoutes: Routes = [
  
 
@@ -634,10 +642,10 @@ const scdRoutes: Routes = [
 		{ path: 'scd_aesd_alarm_event_subscriptions', component: ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptionsFormdivsComponent },
 		{ path: 'scd_aesd_alarm_event_subscriptions_1', component: ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions1FormdivsComponent },
 		{ path: 'scd_aesd_alarm_event_subscriptions_3', component: ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions3FormdivsComponent },
-		{ path: 'scd_aesl_alarm_event_subscriptions_list', component: ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridComponent },
+
 		{ path: 'scd_aesl_alarm_event_subscriptions_list_3', component: ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3GridComponent },
-		{ path: 'scd_aess_alarm_event_subscriptions', component: ScdAlarmEventSubscriptionsScdAessAlarmEventSubscriptionsListComponent },
-		{ path: 'scd_aess_search_alarm_event_subscriptions', component: ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsFormComponent },
+
+
 
 
 		{ path: 'scd_asd_alarm_sort', component: ScdAlarmSortScdAsdAlarmSortFormdivsComponent },
@@ -663,7 +671,7 @@ const scdRoutes: Routes = [
 		
 		
 		
-		{ path: 'scd_alarm_event_subscriptions_search', component: ScdAlarmEventSubscriptionsSearchComponent },
+		
 		
 		
 		
@@ -685,6 +693,14 @@ const scdRoutes: Routes = [
 		{ path: 'scd_scd_alarm_general_status_explorer_form', component: ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormFormComponent },
 
 		{ path: 'scd_scd_alarm_general_banner', component: ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivsComponent },
+		{ path: 'scd_scd_alarm_columns_form', component: ScdAlarmColumnsScdScdAlarmColumnsFormFormComponent },
+		
+
+
+		{ path: 'scd_aesl_alarm_event_subscriptions_list', component: ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridComponent },
+		{ path: 'scd_scd_alarm_event_subscriptions_grid', component: ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGridComponent },
+
+		{ path: 'scd_scd_alarm_event_subscriptions_form', component: ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivsComponent },
 ];
 
 
@@ -942,10 +958,10 @@ const scdRoutes: Routes = [
 		ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptionsFormdivsComponent,
 		ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions1FormdivsComponent,
 		ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions3FormdivsComponent,
-		ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridComponent,
+
 		ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3GridComponent,
-		ScdAlarmEventSubscriptionsScdAessAlarmEventSubscriptionsListComponent,
-		ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsFormComponent,
+
+
 
 
 		ScdAlarmSortScdAsdAlarmSortFormdivsComponent,
@@ -971,7 +987,7 @@ const scdRoutes: Routes = [
 		
 		
 		
-		ScdAlarmEventSubscriptionsSearchComponent,
+
 		
 	
 		
@@ -993,6 +1009,14 @@ const scdRoutes: Routes = [
 		ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormFormComponent,
 
 		ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivsComponent,
+		ScdAlarmColumnsScdScdAlarmColumnsFormFormComponent,
+		
+
+
+		ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridComponent,
+		ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGridComponent,
+
+		ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivsComponent,
   ],
   
   imports: [

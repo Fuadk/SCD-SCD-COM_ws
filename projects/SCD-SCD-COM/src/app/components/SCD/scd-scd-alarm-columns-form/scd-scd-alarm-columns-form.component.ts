@@ -11,47 +11,44 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdshapeScdTpCommonScreen , componentConfigDef} from '@modeldir/model';
+import { scdalarmColumnsScdScdAlarmColumnsForm , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
-'SHAPE_TYPE' : new FormControl(dataItem.SHAPE_TYPE  , ) ,
-'ICON_ID' : new FormControl(dataItem.ICON_ID  , ) ,
-'DG_SHAPE_ID' : new FormControl(dataItem.DG_SHAPE_ID  , ) ,
-'HEIGHT' : new FormControl(dataItem.HEIGHT  , ) ,
+'COLUMN_ID' : new FormControl(dataItem.COLUMN_ID  , ) ,
+'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'ALARM_TYPE' : new FormControl(dataItem.ALARM_TYPE  , ) ,
+'ROW_ORDER' : new FormControl(dataItem.ROW_ORDER  , ) ,
+'ROW_TYPE' : new FormControl(dataItem.ROW_TYPE  , ) ,
+'SHOW_COLUMN_BUTTON_PANEL' : new FormControl(dataItem.SHOW_COLUMN_BUTTON_PANEL  , ) ,
+'IMAGE_ICON' : new FormControl(dataItem.IMAGE_ICON  , ) ,
+'HEADING_TEXT' : new FormControl(dataItem.HEADING_TEXT  , ) ,
 'WIDTH' : new FormControl(dataItem.WIDTH  , ) ,
-'TOP' : new FormControl(dataItem.TOP  , ) ,
-'LEFT' : new FormControl(dataItem.LEFT  , ) ,
-'NAME' : new FormControl(dataItem.NAME  , ) ,
-'VISIBLE' : new FormControl(dataItem.VISIBLE  , ) ,
-'KEY_NAVIGATION' : new FormControl(dataItem.KEY_NAVIGATION  , ) ,
-'FOCUS_HIGHLIGHT' : new FormControl(dataItem.FOCUS_HIGHLIGHT  , ) ,
-'POINTER_HIGHLIGHT' : new FormControl(dataItem.POINTER_HIGHLIGHT  , ) ,
-'TOOLTIP_TEXT' : new FormControl(dataItem.TOOLTIP_TEXT  , ) ,
-'TAB_INDEX' : new FormControl(dataItem.TAB_INDEX  , ) ,
-'INSERT_VARIABLE' : new FormControl(dataItem.INSERT_VARIABLE  , ) 
+'ALIGN' : new FormControl(dataItem.ALIGN  , ) ,
+'FORMAT' : new FormControl(dataItem.FORMAT  , ) ,
+'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) ,
+'TOOLTIP' : new FormControl(dataItem.TOOLTIP  , ) ,
+'SHOW_COLUMN_FIELD' : new FormControl(dataItem.SHOW_COLUMN_FIELD  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-tp-common-screen',
+  selector: 'app-scd-scd-alarm-columns-form',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-tp-common-screen.component.html',
-  styleUrls: ['./scd-tp-common-screen.component.scss'],
+  templateUrl: './scd-scd-alarm-columns-form.component.html',
+  styleUrls: ['./scd-scd-alarm-columns-form.component.scss'],
   standalone: false
 })
 
 
-export class ScdShapeScdTpCommonScreenFormComponent {
-  public title =  this.starServices.getNLS([],"SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.component_title","Common Screen");
-  public compTitleMsg =  "SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen";
-  public routineName = "ScdShapeScdTpCommonScreenForm";
-  private insertCMD = "INSERT_SCD_SHAPE";
-  private updateCMD = "UPDATE_SCD_SHAPE";
-  private deleteCMD =   "DELETE_SCD_SHAPE";
-  private getCMD = "GET_SCD_SHAPE_QUERY";
+export class ScdAlarmColumnsScdScdAlarmColumnsFormFormComponent {
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.component_title","SCD ALARM COLUMNS FORM");
+  public compTitleMsg =  "SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm";
+  public routineName = "ScdAlarmColumnsScdScdAlarmColumnsFormForm";
+  private insertCMD = "INSERT_SCD_ALARM_COLUMNS";
+  private updateCMD = "UPDATE_SCD_ALARM_COLUMNS";
+  private deleteCMD =   "DELETE_SCD_ALARM_COLUMNS";
+  private getCMD = "GET_SCD_ALARM_COLUMNS_QUERY";
 
   public value: Date = new Date(2019, 5, 1, 22);
   public format: string = 'MM/dd/yyyy HH:mm';
@@ -68,7 +65,7 @@ export class ScdShapeScdTpCommonScreenFormComponent {
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isDISPLAY_IDEnable : boolean = true;
+  public  isSHAPE_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -79,12 +76,12 @@ export class ScdShapeScdTpCommonScreenFormComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isSHAPE_IDreadOnly : false , isDISPLAY_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isCOLUMN_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="DISPLAY_ID";
+  public masterKeyName ="SHAPE_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -93,80 +90,68 @@ export class ScdShapeScdTpCommonScreenFormComponent {
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-tp-common-screen';
-  public PK_AUTO = 'SHAPE_ID';
+  public compSelector = 'app-scd-scd-alarm-columns-form';
+  public PK_AUTO = 'COLUMN_ID';
   public customerFacing = false;
   public FormStepsArr = [] ;
+public labelCOLUMN_IDTop=true;
+public labelCOLUMN_IDVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
-public labelDISPLAY_IDTop=true;
-public labelDISPLAY_IDVisible=true;
-public labelSHAPE_TYPETop=true;
-public labelSHAPE_TYPEVisible=true;
-public labelICON_IDTop=true;
-public labelICON_IDVisible=true;
-public labelDG_SHAPE_IDTop=true;
-public labelDG_SHAPE_IDVisible=true;
-public labelHEIGHTTop=true;
-public labelHEIGHTVisible=true;
+public labelALARM_TYPETop=true;
+public labelALARM_TYPEVisible=true;
+public labelROW_ORDERTop=true;
+public labelROW_ORDERVisible=true;
+public labelROW_TYPETop=true;
+public labelROW_TYPEVisible=true;
+public labelSHOW_COLUMN_BUTTON_PANELTop=true;
+public labelSHOW_COLUMN_BUTTON_PANELVisible=true;
+public labelIMAGE_ICONTop=true;
+public labelIMAGE_ICONVisible=true;
+public labelHEADING_TEXTTop=true;
+public labelHEADING_TEXTVisible=true;
 public labelWIDTHTop=true;
 public labelWIDTHVisible=true;
-public labelTOPTop=true;
-public labelTOPVisible=true;
-public labelLEFTTop=true;
-public labelLEFTVisible=true;
-public labelNAMETop=true;
-public labelNAMEVisible=true;
-public labelVISIBLETop=true;
-public labelVISIBLEVisible=true;
-public labelKEY_NAVIGATIONTop=true;
-public labelKEY_NAVIGATIONVisible=true;
-public labelFOCUS_HIGHLIGHTTop=true;
-public labelFOCUS_HIGHLIGHTVisible=true;
-public labelPOINTER_HIGHLIGHTTop=true;
-public labelPOINTER_HIGHLIGHTVisible=true;
-public labelTOOLTIP_TEXTTop=true;
-public labelTOOLTIP_TEXTVisible=true;
-public labelTAB_INDEXTop=true;
-public labelTAB_INDEXVisible=true;
-public labelINSERT_VARIABLETop=true;
-public labelINSERT_VARIABLEVisible=true;
+public labelALIGNTop=true;
+public labelALIGNVisible=true;
+public labelFORMATTop=true;
+public labelFORMATVisible=true;
+public labelSAMPLETop=true;
+public labelSAMPLEVisible=true;
+public labelTOOLTIPTop=true;
+public labelTOOLTIPVisible=true;
+public labelSHOW_COLUMN_FIELDTop=true;
+public labelSHOW_COLUMN_FIELDVisible=true;
 
+public visibleCOLUMN_ID = true;
 public visibleSHAPE_ID = true;
-public visibleDISPLAY_ID = true;
-public visibleSHAPE_TYPE = true;
-public visibleICON_ID = false;
-public visibleDG_SHAPE_ID = false;
-public visibleHEIGHT = true;
+public visibleALARM_TYPE = true;
+public visibleROW_ORDER = true;
+public visibleROW_TYPE = true;
+public visibleSHOW_COLUMN_BUTTON_PANEL = true;
+public visibleIMAGE_ICON = true;
+public visibleHEADING_TEXT = true;
 public visibleWIDTH = true;
-public visibleTOP = true;
-public visibleLEFT = true;
-public visibleNAME = true;
-public visibleVISIBLE = true;
-public visibleKEY_NAVIGATION = false;
-public visibleFOCUS_HIGHLIGHT = false;
-public visiblePOINTER_HIGHLIGHT = false;
-public visibleTOOLTIP_TEXT = true;
-public visibleTAB_INDEX = false;
-public visibleINSERT_VARIABLE = true;
+public visibleALIGN = true;
+public visibleFORMAT = true;
+public visibleSAMPLE = true;
+public visibleTOOLTIP = true;
+public visibleSHOW_COLUMN_FIELD = true;
 
+public disableCOLUMN_ID = false;
 public disableSHAPE_ID = false;
-public disableDISPLAY_ID = false;
-public disableSHAPE_TYPE = false;
-public disableICON_ID = false;
-public disableDG_SHAPE_ID = false;
-public disableHEIGHT = false;
+public disableALARM_TYPE = false;
+public disableROW_ORDER = false;
+public disableROW_TYPE = false;
+public disableSHOW_COLUMN_BUTTON_PANEL = false;
+public disableIMAGE_ICON = false;
+public disableHEADING_TEXT = false;
 public disableWIDTH = false;
-public disableTOP = false;
-public disableLEFT = false;
-public disableNAME = false;
-public disableVISIBLE = false;
-public disableKEY_NAVIGATION = false;
-public disableFOCUS_HIGHLIGHT = false;
-public disablePOINTER_HIGHLIGHT = false;
-public disableTOOLTIP_TEXT = false;
-public disableTAB_INDEX = false;
-public disableINSERT_VARIABLE = false;
+public disableALIGN = false;
+public disableFORMAT = false;
+public disableSAMPLE = false;
+public disableTOOLTIP = false;
+public disableSHOW_COLUMN_FIELD = false;
 
 
   
@@ -290,7 +275,7 @@ public disableINSERT_VARIABLE = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdshapeScdTpCommonScreen();   
+  private formInitialValues:any =   new scdalarmColumnsScdScdAlarmColumnsForm();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -298,10 +283,10 @@ public disableINSERT_VARIABLE = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdShapeScdTpCommonScreenForm form.DISPLAY_ID :' + form.DISPLAY_ID);
-    if ( (form.DISPLAY_ID != "") &&   (typeof form.DISPLAY_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmColumnsScdScdAlarmColumnsFormForm form.SHAPE_ID :' + form.SHAPE_ID);
+    if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
-      this.masterKey = form.DISPLAY_ID;
+      this.masterKey = form.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -322,7 +307,7 @@ public disableINSERT_VARIABLE = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.DISPLAY_ID != "undefined") &&   (form.DISPLAY_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.SHAPE_ID != "undefined") &&   (form.SHAPE_ID != ""))
     {
       
       this.isSearch = true;
@@ -482,8 +467,8 @@ public disableINSERT_VARIABLE = false;
       }
       this.Comp_Config = new componentConfigDef();
       this.Comp_Config.masterSaved = NewVal;
-      this.Comp_Config.masterKeyArr =  [NewVal['SHAPE_ID']];
-      this.Comp_Config.masterKeyNameArr =  ["SHAPE_ID"];
+      this.Comp_Config.masterKeyArr =  [NewVal['COLUMN_ID']];
+      this.Comp_Config.masterKeyNameArr =  ["COLUMN_ID"];
          
        await this.POST_INSERT(NewVal);
       if (this.FORM_TRIGGER_FAILURE) 
@@ -584,49 +569,43 @@ public disableINSERT_VARIABLE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"INSERT_VARIABLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrINSERT_VARIABLE"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrSHAPE_ID"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrINSERT_VARIABLE = [];
+public lkpArrSHAPE_ID = [];
 
-public lkpArrGetINSERT_VARIABLE(CODE: any): any {
-var rec = this.lkpArrINSERT_VARIABLE.find((x:any) => x.CODE === CODE);
+public lkpArrGetSHAPE_ID(CODE: any): any {
+var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
 onChanges(): void {
-this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
+this.form.get('COLUMN_ID').valueChanges.subscribe(val => {
 });
-this.form.get('DISPLAY_ID').valueChanges.subscribe(val => {
+this.form.get('ALARM_TYPE').valueChanges.subscribe(val => {
 });
-this.form.get('SHAPE_TYPE').valueChanges.subscribe(val => {
+this.form.get('ROW_ORDER').valueChanges.subscribe(val => {
 });
-this.form.get('ICON_ID').valueChanges.subscribe(val => {
+this.form.get('ROW_TYPE').valueChanges.subscribe(val => {
 });
-this.form.get('DG_SHAPE_ID').valueChanges.subscribe(val => {
+this.form.get('SHOW_COLUMN_BUTTON_PANEL').valueChanges.subscribe(val => {
 });
-this.form.get('HEIGHT').valueChanges.subscribe(val => {
+this.form.get('HEADING_TEXT').valueChanges.subscribe(val => {
 });
 this.form.get('WIDTH').valueChanges.subscribe(val => {
 });
-this.form.get('TOP').valueChanges.subscribe(val => {
+this.form.get('ALIGN').valueChanges.subscribe(val => {
 });
-this.form.get('LEFT').valueChanges.subscribe(val => {
+this.form.get('FORMAT').valueChanges.subscribe(val => {
 });
-this.form.get('NAME').valueChanges.subscribe(val => {
+this.form.get('SAMPLE').valueChanges.subscribe(val => {
 });
-this.form.get('KEY_NAVIGATION').valueChanges.subscribe(val => {
+this.form.get('TOOLTIP').valueChanges.subscribe(val => {
 });
-this.form.get('FOCUS_HIGHLIGHT').valueChanges.subscribe(val => {
-});
-this.form.get('POINTER_HIGHLIGHT').valueChanges.subscribe(val => {
-});
-this.form.get('TOOLTIP_TEXT').valueChanges.subscribe(val => {
-});
-this.form.get('TAB_INDEX').valueChanges.subscribe(val => {
+this.form.get('SHOW_COLUMN_FIELD').valueChanges.subscribe(val => {
 });
 }
 
@@ -660,7 +639,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdShapeScdTpCommonScreenForm ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmColumnsScdScdAlarmColumnsFormForm ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -742,31 +721,12 @@ public printScreen(){
 
   }
   async WHEN_NOTIFY(ComponentConfig){
-    if (ComponentConfig.masterParams != null) {
-    console.log("WHEN_NOTIFY:ComponentConfig.masterParams:", ComponentConfig.masterParams.data.action)
-    this.shapeType = ComponentConfig.masterParams.data.SHAPE_TYPE;
-
-    if (ComponentConfig.masterParams.data.action == "open" && this.SHAPE_ID == null) {
-
-        let masterParams = ComponentConfig.masterParams;
-        console.log("Text masterParams:", masterParams)
-        setTimeout(() => {
-            this.isSearch = true;
-            let form: any = {};
-            form.SHAPE_ID = masterParams.data.SHAPE_ID;
-            this.SHAPE_ID = masterParams.data.SHAPE_ID
-            console.log("User masterParams:", masterParams.data.DIAGRAM_ID, masterParams, form, this.form, "this.isSearch:", this.isSearch)
-            this.executeQuery(form);
-        }, 300);
-
-    }
-
-}
+    
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	// if (!this.isChild){
-	// 	this.executeQuery(this.form.value);
-	// }
+    	if (!this.isChild){
+		this.executeQuery(this.form.value);
+	}
 
     
   }
@@ -806,16 +766,7 @@ public printScreen(){
     
   }
   async  POST_INSERT(formGroup){
-    this.componentConfig_output = new componentConfigDef();
-    let masterParams = {
-
-      action: "insert",
-      shapeType: this.shapeType,
-      data: formGroup
-    }
-    this.componentConfig_output.eventFrom = this.compSelector;
-    this.componentConfig_output.masterParams = masterParams;
-    this.setComponentConfig_Output.emit(this.componentConfig_output);
+    
    
   }
   async  PRE_QUERY (formGroup){
@@ -837,6 +788,26 @@ public printScreen(){
 
 
 
+async WHEN_VALIDATE_ITEM_COLUMN_ID(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['COLUMN_ID'] != "undefined" ) 
+      this.form.controls['COLUMN_ID'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['COLUMN_ID'] != "undefined" ) 
+     this.form.get('COLUMN_ID').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_COLUMN_ID(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -857,103 +828,123 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
+async WHEN_VALIDATE_ITEM_ALARM_TYPE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['ALARM_TYPE'] != "undefined" ) 
+      this.form.controls['ALARM_TYPE'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
+ if (typeof this.form.controls['ALARM_TYPE'] != "undefined" ) 
+     this.form.get('ALARM_TYPE').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DISPLAY_ID(event){
+ async ON_CLICK_ALARM_TYPE(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_SHAPE_TYPE(value) {
+async WHEN_VALIDATE_ITEM_ROW_ORDER(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SHAPE_TYPE'] != "undefined" ) 
-      this.form.controls['SHAPE_TYPE'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['ROW_ORDER'] != "undefined" ) 
+      this.form.controls['ROW_ORDER'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['SHAPE_TYPE'] != "undefined" ) 
-     this.form.get('SHAPE_TYPE').updateValueAndValidity();
+ if (typeof this.form.controls['ROW_ORDER'] != "undefined" ) 
+     this.form.get('ROW_ORDER').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_SHAPE_TYPE(event){
+ async ON_CLICK_ROW_ORDER(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_ICON_ID(value) {
+async WHEN_VALIDATE_ITEM_ROW_TYPE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ICON_ID'] != "undefined" ) 
-      this.form.controls['ICON_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['ROW_TYPE'] != "undefined" ) 
+      this.form.controls['ROW_TYPE'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['ICON_ID'] != "undefined" ) 
-     this.form.get('ICON_ID').updateValueAndValidity();
+ if (typeof this.form.controls['ROW_TYPE'] != "undefined" ) 
+     this.form.get('ROW_TYPE').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_ICON_ID(event){
+ async ON_CLICK_ROW_TYPE(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_DG_SHAPE_ID(value) {
+async WHEN_VALIDATE_ITEM_SHOW_COLUMN_BUTTON_PANEL(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DG_SHAPE_ID'] != "undefined" ) 
-      this.form.controls['DG_SHAPE_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SHOW_COLUMN_BUTTON_PANEL'] != "undefined" ) 
+      this.form.controls['SHOW_COLUMN_BUTTON_PANEL'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DG_SHAPE_ID'] != "undefined" ) 
-     this.form.get('DG_SHAPE_ID').updateValueAndValidity();
+ if (typeof this.form.controls['SHOW_COLUMN_BUTTON_PANEL'] != "undefined" ) 
+     this.form.get('SHOW_COLUMN_BUTTON_PANEL').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DG_SHAPE_ID(event){
+ async ON_CLICK_SHOW_COLUMN_BUTTON_PANEL(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_HEIGHT(value) {
+async WHEN_VALIDATE_ITEM_IMAGE_ICON(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['HEIGHT'] != "undefined" ) 
-      this.form.controls['HEIGHT'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['IMAGE_ICON'] != "undefined" ) 
+      this.form.controls['IMAGE_ICON'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['HEIGHT'] != "undefined" ) 
-     this.form.get('HEIGHT').updateValueAndValidity();
+ if (typeof this.form.controls['IMAGE_ICON'] != "undefined" ) 
+     this.form.get('IMAGE_ICON').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_HEIGHT(event){
+ async ON_CLICK_IMAGE_ICON(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_HEADING_TEXT(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['HEADING_TEXT'] != "undefined" ) 
+      this.form.controls['HEADING_TEXT'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['HEADING_TEXT'] != "undefined" ) 
+     this.form.get('HEADING_TEXT').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_HEADING_TEXT(event){
 
 }
 
@@ -977,257 +968,169 @@ async WHEN_VALIDATE_ITEM_WIDTH(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_TOP(value) {
+async WHEN_VALIDATE_ITEM_ALIGN(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TOP'] != "undefined" ) 
-      this.form.controls['TOP'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['ALIGN'] != "undefined" ) 
+      this.form.controls['ALIGN'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['TOP'] != "undefined" ) 
-     this.form.get('TOP').updateValueAndValidity();
+ if (typeof this.form.controls['ALIGN'] != "undefined" ) 
+     this.form.get('ALIGN').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_TOP(event){
+ async ON_CLICK_ALIGN(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_LEFT(value) {
+async WHEN_VALIDATE_ITEM_FORMAT(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['LEFT'] != "undefined" ) 
-      this.form.controls['LEFT'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['FORMAT'] != "undefined" ) 
+      this.form.controls['FORMAT'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['LEFT'] != "undefined" ) 
-     this.form.get('LEFT').updateValueAndValidity();
+ if (typeof this.form.controls['FORMAT'] != "undefined" ) 
+     this.form.get('FORMAT').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_LEFT(event){
+ async ON_CLICK_FORMAT(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_NAME(value) {
+async WHEN_VALIDATE_ITEM_SAMPLE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['NAME'] != "undefined" ) 
-      this.form.controls['NAME'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SAMPLE'] != "undefined" ) 
+      this.form.controls['SAMPLE'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['NAME'] != "undefined" ) 
-     this.form.get('NAME').updateValueAndValidity();
+ if (typeof this.form.controls['SAMPLE'] != "undefined" ) 
+     this.form.get('SAMPLE').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_NAME(event){
+ async ON_CLICK_SAMPLE(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_VISIBLE(value) {
+async WHEN_VALIDATE_ITEM_TOOLTIP(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['VISIBLE'] != "undefined" ) 
-      this.form.controls['VISIBLE'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['TOOLTIP'] != "undefined" ) 
+      this.form.controls['TOOLTIP'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['VISIBLE'] != "undefined" ) 
-     this.form.get('VISIBLE').updateValueAndValidity();
+ if (typeof this.form.controls['TOOLTIP'] != "undefined" ) 
+     this.form.get('TOOLTIP').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_VISIBLE(event){
+ async ON_CLICK_TOOLTIP(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_KEY_NAVIGATION(value) {
+async WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['KEY_NAVIGATION'] != "undefined" ) 
-      this.form.controls['KEY_NAVIGATION'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SHOW_COLUMN_FIELD'] != "undefined" ) 
+      this.form.controls['SHOW_COLUMN_FIELD'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['KEY_NAVIGATION'] != "undefined" ) 
-     this.form.get('KEY_NAVIGATION').updateValueAndValidity();
+ if (typeof this.form.controls['SHOW_COLUMN_FIELD'] != "undefined" ) 
+     this.form.get('SHOW_COLUMN_FIELD').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_KEY_NAVIGATION(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_FOCUS_HIGHLIGHT(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['FOCUS_HIGHLIGHT'] != "undefined" ) 
-      this.form.controls['FOCUS_HIGHLIGHT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['FOCUS_HIGHLIGHT'] != "undefined" ) 
-     this.form.get('FOCUS_HIGHLIGHT').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_FOCUS_HIGHLIGHT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_POINTER_HIGHLIGHT(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['POINTER_HIGHLIGHT'] != "undefined" ) 
-      this.form.controls['POINTER_HIGHLIGHT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['POINTER_HIGHLIGHT'] != "undefined" ) 
-     this.form.get('POINTER_HIGHLIGHT').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_POINTER_HIGHLIGHT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TOOLTIP_TEXT(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TOOLTIP_TEXT'] != "undefined" ) 
-      this.form.controls['TOOLTIP_TEXT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TOOLTIP_TEXT'] != "undefined" ) 
-     this.form.get('TOOLTIP_TEXT').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TOOLTIP_TEXT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TAB_INDEX(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TAB_INDEX'] != "undefined" ) 
-      this.form.controls['TAB_INDEX'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TAB_INDEX'] != "undefined" ) 
-     this.form.get('TAB_INDEX').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TAB_INDEX(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
-      this.form.controls['INSERT_VARIABLE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['INSERT_VARIABLE'] != "undefined" ) 
-     this.form.get('INSERT_VARIABLE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_INSERT_VARIABLE(event){
+ async ON_CLICK_SHOW_COLUMN_FIELD(event){
 
 }
  
- async onChange_SHAPE_ID(event:any) { 
+ async onChange_COLUMN_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_COLUMN_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_DISPLAY_ID(event:any) { 
+ async onValueChange_SHAPE_ID(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_ALARM_TYPE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_ALARM_TYPE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_SHAPE_TYPE(event:any) { 
+ async onChange_ROW_ORDER(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_SHAPE_TYPE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_ROW_ORDER(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_ICON_ID(event:any) { 
+ async onChange_ROW_TYPE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_ICON_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_ROW_TYPE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_DG_SHAPE_ID(event:any) { 
+ async onChange_SHOW_COLUMN_BUTTON_PANEL(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DG_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SHOW_COLUMN_BUTTON_PANEL(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_HEIGHT(event:any) { 
+ async onValueChange_IMAGE_ICON(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_HEADING_TEXT(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_HEIGHT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_HEADING_TEXT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
@@ -1240,95 +1143,52 @@ async WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_TOP(event:any) { 
+ async onChange_ALIGN(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TOP(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_ALIGN(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_LEFT(event:any) { 
+ async onChange_FORMAT(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_LEFT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_FORMAT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_NAME(event:any) { 
+ async onChange_SAMPLE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_NAME(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SAMPLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_VISIBLE(event:any) { 
+ async onChange_TOOLTIP(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_VISIBLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_TOOLTIP(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_KEY_NAVIGATION(event:any) { 
+ async onChange_SHOW_COLUMN_FIELD(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_KEY_NAVIGATION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
- } 
- async onChange_FOCUS_HIGHLIGHT(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_FOCUS_HIGHLIGHT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_POINTER_HIGHLIGHT(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_POINTER_HIGHLIGHT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onValueChange_TOOLTIP_TEXT(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_TOOLTIP_TEXT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
- async onChange_TAB_INDEX(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TAB_INDEX(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onValueChange_INSERT_VARIABLE(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_INSERT_VARIABLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  }
-public SHAPE_ID = null;
-public shapeType = null;
+ }
 
-
-//sssss
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1348,7 +1208,7 @@ public multiselect_tree_arr = [];
 public AttDwnUrl = "";
 public uploadimage = false;
 public showIcon=true;
-public svg_arr = [];
+public svg_arr = ["IMAGE_ICON"];
 public svg_data = [];
 
 
@@ -1356,7 +1216,11 @@ public svg_data = [];
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

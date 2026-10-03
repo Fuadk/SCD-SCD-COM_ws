@@ -20,9 +20,7 @@ import {   scdalarmColumnsScdAclAlarmColumns2 , componentConfigDef } from '@mode
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'COLUMN_ID' : new FormControl(dataItem.COLUMN_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
 'ALARM_TYPE' : new FormControl(dataItem.ALARM_TYPE  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'ROW_ORDER' : new FormControl(dataItem.ROW_ORDER  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'ROW_TYPE' : new FormControl(dataItem.ROW_TYPE  , ) ,
@@ -32,6 +30,7 @@ import {   scdalarmColumnsScdAclAlarmColumns2 , componentConfigDef } from '@mode
 'WIDTH' : new FormControl(dataItem.WIDTH  , ) ,
 'ALIGN' : new FormControl(dataItem.ALIGN  , ) ,
 'FORMAT' : new FormControl(dataItem.FORMAT  , ) ,
+'SHOW_COLUMN_FIELD' : new FormControl(dataItem.SHOW_COLUMN_FIELD  , ) ,
 'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) ,
 'TOOLTIP' : new FormControl(dataItem.TOOLTIP  , ) 
 });
@@ -81,9 +80,7 @@ export class ScdAlarmColumnsScdAclAlarmColumns2GridComponent implements OnInit,O
   public isChild: boolean = false;
   public isMaster: boolean = false;
   
-  				public  isCOLUMN_IDEnable : boolean = true; 
-public  isAPP_IDEnable : boolean = true; 
-public  isDISPLAY_IDEnable : boolean = true; 
+  		public  isCOLUMN_IDEnable : boolean = true; 
 public  isSHAPE_IDEnable : boolean = true; 
 
   public  isFilterable : boolean = false;
@@ -93,7 +90,7 @@ public  isSHAPE_IDEnable : boolean = true;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   private masterKey ="";
-  private masterKeyName ="APP_ID";
+  private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_ALARM_COLUMNS";
   private updateCMD = "UPDATE_SCD_ALARM_COLUMNS";
   private deleteCMD =   "DELETE_SCD_ALARM_COLUMNS";
@@ -112,7 +109,7 @@ public  isSHAPE_IDEnable : boolean = true;
   public OrderByClause = "";
 
   public formattedWhere:any = null;
-  public primarKeyReadOnlyArr = {isCOLUMN_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isCOLUMN_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   public createFormGroupGrid = createFormGroup;
 
@@ -124,9 +121,7 @@ public  isSHAPE_IDEnable : boolean = true;
   public masterParams:any;
 public isPhonePortrait = false;
 public visibleCOLUMN_ID = true;
-public visibleAPP_ID = false;
 public visibleALARM_TYPE = true;
-public visibleDISPLAY_ID = false;
 public visibleROW_ORDER = true;
 public visibleSHAPE_ID = false;
 public visibleROW_TYPE = true;
@@ -136,6 +131,7 @@ public visibleHEADING_TEXT = true;
 public visibleWIDTH = true;
 public visibleALIGN = true;
 public visibleFORMAT = true;
+public visibleSHOW_COLUMN_FIELD = true;
 public visibleSAMPLE = true;
 public visibleTOOLTIP = true;
 
@@ -276,9 +272,9 @@ public compSelector = 'app-scd-acl-alarm-columns-2';
       this.isChild = true;
     }
     /*
-    if ( (grid.APP_ID != "") &&   (typeof grid.APP_ID != "undefined"))
+    if ( (grid.SHAPE_ID != "") &&   (typeof grid.SHAPE_ID != "undefined"))
     {
-      this.masterKey = grid.APP_ID;
+      this.masterKey = grid.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(grid);
@@ -384,8 +380,8 @@ public compSelector = 'app-scd-acl-alarm-columns-2';
         data: this.formGroup.value
       }
 
-      let masterKeyArr = [this.formGroup.value['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [this.formGroup.value['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -432,8 +428,8 @@ public compSelector = 'app-scd-acl-alarm-columns-2';
         data: GridData.data[0]
       }
 
-      let masterKeyArr = [GridData.data[0]['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [GridData.data[0]['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -453,8 +449,8 @@ public compSelector = 'app-scd-acl-alarm-columns-2';
       data: this.masterKeyArr
     }
 
-       let masterKeyArr = [data['APP_ID'],data['DISPLAY_ID'],data['SHAPE_ID'],data['COLUMN_ID']];
-      let masterKeyNameArr = ['APP_ID','DISPLAY_ID','SHAPE_ID','COLUMN_ID'];
+       let masterKeyArr = [data['SHAPE_ID'],data['COLUMN_ID']];
+      let masterKeyNameArr = ['SHAPE_ID','COLUMN_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -629,12 +625,8 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALARM_TYPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALARM_TYPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrALARM_TYPE"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
 	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALIGN\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
@@ -645,11 +637,7 @@ this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME C
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
 public lkpArrALARM_TYPE = [];
-
-public lkpArrDISPLAY_ID = [];
 
 public lkpArrSHAPE_ID = [];
 
@@ -657,18 +645,8 @@ public lkpArrALIGN = [];
 
 public lkpArrFORMAT = [];
 
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
 public lkpArrGetALARM_TYPE(CODE: any): any {
 var rec = this.lkpArrALARM_TYPE.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -857,26 +835,6 @@ this.router.navigate(['/' + routerLink] , { skipLocationChange: true });
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-      this.formGroup.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-     this.formGroup.get('APP_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_ALARM_TYPE(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -894,26 +852,6 @@ async WHEN_VALIDATE_ITEM_ALARM_TYPE(formGroup) {
  }
 
  async ON_CLICK_ALARM_TYPE(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-      this.formGroup.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-     this.formGroup.get('DISPLAY_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
 
 }
 
@@ -1097,6 +1035,26 @@ async WHEN_VALIDATE_ITEM_FORMAT(formGroup) {
 
 }
 
+async WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['SHOW_COLUMN_FIELD'] != "undefined" ) 
+      this.formGroup.controls['SHOW_COLUMN_FIELD'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['SHOW_COLUMN_FIELD'] != "undefined" ) 
+     this.formGroup.get('SHOW_COLUMN_FIELD').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_COLUMN_FIELD(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_SAMPLE(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1140,14 +1098,8 @@ async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
  async onBlur_COLUMN_ID() { 
   await this.WHEN_VALIDATE_ITEM_COLUMN_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeAPP_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_APP_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
  async valueChangeALARM_TYPE(value: any) { 
  await this.WHEN_VALIDATE_ITEM_ALARM_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeDISPLAY_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_ROW_ORDER() { 
   await this.WHEN_VALIDATE_ITEM_ROW_ORDER(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
@@ -1175,6 +1127,9 @@ async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
  } 
  async valueChangeFORMAT(value: any) { 
  await this.WHEN_VALIDATE_ITEM_FORMAT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_SHOW_COLUMN_FIELD() { 
+  await this.WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SAMPLE() { 
   await this.WHEN_VALIDATE_ITEM_SAMPLE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  

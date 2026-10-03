@@ -1,5 +1,5 @@
 import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
-import {  scdshapeScdTpCommonScreen  ,scdalarmGeneralBannerScdScdAlarmGeneralBanner  ,scdalarmColumnsScdAclAlarmColumns2  ,scdalarmScdAlarmEventSubscriptionsProperties  ,scdalarmStatesScdAslAlarmStates4  ,scdalarmSortScdAaespAlarmSort  , componentConfigDef} from '@modeldir/model';
+import {  scdshapeScdTpCommonScreen  ,scdalarmGeneralBannerScdScdAlarmGeneralBanner  ,scdalarmColumnsScdAclAlarmColumns      ,scdalarmScdAlarmEventSubscriptionsProperties  ,scdalarmStatesScdAslAlarmStates  ,scdalarmSortScdAaespAlarmSort  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
@@ -44,22 +44,28 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
 
   public form_0_SCD_SHAPE : scdshapeScdTpCommonScreen;
   public formdivs_1_SCD_ALARM_GENERAL_BANNER : scdalarmGeneralBannerScdScdAlarmGeneralBanner;
-  public grid_2_SCD_ALARM_COLUMNS : scdalarmColumnsScdAclAlarmColumns2;
-  public formtabs_3_SCD_ALARM : scdalarmScdAlarmEventSubscriptionsProperties;
-  public grid_4_SCD_ALARM_STATES : scdalarmStatesScdAslAlarmStates4;
-  public form_5_SCD_ALARM_SORT : scdalarmSortScdAaespAlarmSort;
+  public grid_2_SCD_ALARM_COLUMNS : scdalarmColumnsScdAclAlarmColumns;
+  public grid_3_SCD_ALARM_COLUMNS : scdalarmColumnsScdAclAlarmColumns;
+  public grid_4_SCD_ALARM_COLUMNS : scdalarmColumnsScdAclAlarmColumns;
+  public formtabs_5_SCD_ALARM : scdalarmScdAlarmEventSubscriptionsProperties;
+  public grid_6_SCD_ALARM_STATES : scdalarmStatesScdAslAlarmStates;
+  public form_7_SCD_ALARM_SORT : scdalarmSortScdAaespAlarmSort;
   public  SCD_SHAPEForm_0Config : componentConfigDef;
   public  hide_comp_1 = false
   public  SCD_ALARM_GENERAL_BANNERFormdivs_1Config : componentConfigDef;
   public  hide_comp_2 = false
   public  SCD_ALARM_COLUMNSGrid_2Config : componentConfigDef;
   public  hide_comp_3 = false
-  public  SCD_ALARMFormtabs_3Config : componentConfigDef;
+  public  SCD_ALARM_COLUMNSGrid_3Config : componentConfigDef;
   public  hide_comp_4 = false
-  public  SCD_ALARM_STATESGrid_4Config : componentConfigDef;
+  public  SCD_ALARM_COLUMNSGrid_4Config : componentConfigDef;
   public  hide_comp_5 = false
-  public  SCD_ALARM_SORTForm_5Config : componentConfigDef;
+  public  SCD_ALARMFormtabs_5Config : componentConfigDef;
   public  hide_comp_6 = false
+  public  SCD_ALARM_STATESGrid_6Config : componentConfigDef;
+  public  hide_comp_7 = false
+  public  SCD_ALARM_SORTForm_7Config : componentConfigDef;
+  public  hide_comp_8 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdAlarmAndEventBannerProperties";
 
@@ -131,35 +137,55 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
      //this.SCD_ALARM_COLUMNSGrid_2Config.insertable = true;
      //this.SCD_ALARM_COLUMNSGrid_2Config.removeable = true;
    }
-   this.SCD_ALARMFormtabs_3Config = new componentConfigDef();
-   this.SCD_ALARMFormtabs_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID4","Event Subscriptions");
-   this.SCD_ALARMFormtabs_3Config.isChild = true;
-   this.SCD_ALARMFormtabs_3Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
-   this.SCD_ALARMFormtabs_3Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
+   this.SCD_ALARM_COLUMNSGrid_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID4","Status Bar Panel");
+   this.SCD_ALARM_COLUMNSGrid_3Config.isChild = true;
+   this.SCD_ALARM_COLUMNSGrid_3Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
+   this.SCD_ALARM_COLUMNSGrid_3Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ALARMFormtabs_3Config.navigable = false;
-     //this.SCD_ALARMFormtabs_3Config.insertable = true;
-     //this.SCD_ALARMFormtabs_3Config.removeable = true;
+     this.SCD_ALARM_COLUMNSGrid_3Config.navigable = false;
+     //this.SCD_ALARM_COLUMNSGrid_3Config.insertable = true;
+     //this.SCD_ALARM_COLUMNSGrid_3Config.removeable = true;
    }
-   this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef();
-   this.SCD_ALARM_STATESGrid_4Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID5","States");
-   this.SCD_ALARM_STATESGrid_4Config.isChild = true;
-   this.SCD_ALARM_STATESGrid_4Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
-   this.SCD_ALARM_STATESGrid_4Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
+   this.SCD_ALARM_COLUMNSGrid_4Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID5","Status Bar Button");
+   this.SCD_ALARM_COLUMNSGrid_4Config.isChild = true;
+   this.SCD_ALARM_COLUMNSGrid_4Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
+   this.SCD_ALARM_COLUMNSGrid_4Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ALARM_STATESGrid_4Config.navigable = false;
-     //this.SCD_ALARM_STATESGrid_4Config.insertable = true;
-     //this.SCD_ALARM_STATESGrid_4Config.removeable = true;
+     this.SCD_ALARM_COLUMNSGrid_4Config.navigable = false;
+     //this.SCD_ALARM_COLUMNSGrid_4Config.insertable = true;
+     //this.SCD_ALARM_COLUMNSGrid_4Config.removeable = true;
    }
-   this.SCD_ALARM_SORTForm_5Config = new componentConfigDef();
-   this.SCD_ALARM_SORTForm_5Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID6","Sort");
-   this.SCD_ALARM_SORTForm_5Config.isChild = true;
-   this.SCD_ALARM_SORTForm_5Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
-   this.SCD_ALARM_SORTForm_5Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
+   this.SCD_ALARMFormtabs_5Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID6","Event Subscriptions");
+   this.SCD_ALARMFormtabs_5Config.isChild = true;
+   this.SCD_ALARMFormtabs_5Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
+   this.SCD_ALARMFormtabs_5Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ALARM_SORTForm_5Config.navigable = false;
-     //this.SCD_ALARM_SORTForm_5Config.insertable = true;
-     //this.SCD_ALARM_SORTForm_5Config.removeable = true;
+     this.SCD_ALARMFormtabs_5Config.navigable = false;
+     //this.SCD_ALARMFormtabs_5Config.insertable = true;
+     //this.SCD_ALARMFormtabs_5Config.removeable = true;
+   }
+   this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+   this.SCD_ALARM_STATESGrid_6Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID7","States");
+   this.SCD_ALARM_STATESGrid_6Config.isChild = true;
+   this.SCD_ALARM_STATESGrid_6Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
+   this.SCD_ALARM_STATESGrid_6Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_ALARM_STATESGrid_6Config.navigable = false;
+     //this.SCD_ALARM_STATESGrid_6Config.insertable = true;
+     //this.SCD_ALARM_STATESGrid_6Config.removeable = true;
+   }
+   this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
+   this.SCD_ALARM_SORTForm_7Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID8","Sort");
+   this.SCD_ALARM_SORTForm_7Config.isChild = true;
+   this.SCD_ALARM_SORTForm_7Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
+   this.SCD_ALARM_SORTForm_7Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_ALARM_SORTForm_7Config.navigable = false;
+     //this.SCD_ALARM_SORTForm_7Config.insertable = true;
+     //this.SCD_ALARM_SORTForm_7Config.removeable = true;
    }
   }
   public ngOnDestroy(): void {
@@ -175,12 +201,16 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
     	this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.formattedWhere  = form_SCD_SHAPE;
     	this.SCD_ALARM_COLUMNSGrid_2Config = new componentConfigDef();
     	this.SCD_ALARM_COLUMNSGrid_2Config.formattedWhere  = form_SCD_SHAPE;
-    	this.SCD_ALARMFormtabs_3Config = new componentConfigDef();
-    	this.SCD_ALARMFormtabs_3Config.formattedWhere  = form_SCD_SHAPE;
-    	this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef();
-    	this.SCD_ALARM_STATESGrid_4Config.formattedWhere  = form_SCD_SHAPE;
-    	this.SCD_ALARM_SORTForm_5Config = new componentConfigDef();
-    	this.SCD_ALARM_SORTForm_5Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
+    	this.SCD_ALARM_COLUMNSGrid_3Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
+    	this.SCD_ALARM_COLUMNSGrid_4Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
+    	this.SCD_ALARMFormtabs_5Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+    	this.SCD_ALARM_STATESGrid_6Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
+    	this.SCD_ALARM_SORTForm_7Config.formattedWhere  = form_SCD_SHAPE;
     	return;
 	  }
     //this.formdivs_1_SCD_ALARM_GENERAL_BANNER = new scdalarmGeneralBannerScdScdAlarmGeneralBanner();
@@ -196,7 +226,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
      //this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.removeable = true;
      //this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.updateable = true;
    }
-    //this.grid_2_SCD_ALARM_COLUMNS = new scdalarmColumnsScdAclAlarmColumns2();
+    //this.grid_2_SCD_ALARM_COLUMNS = new scdalarmColumnsScdAclAlarmColumns();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
     //   this.grid_2_SCD_ALARM_COLUMNS[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
@@ -209,44 +239,70 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
      //this.SCD_ALARM_COLUMNSGrid_2Config.removeable = true;
      //this.SCD_ALARM_COLUMNSGrid_2Config.updateable = true;
    }
-    //this.formtabs_3_SCD_ALARM = new scdalarmScdAlarmEventSubscriptionsProperties();
+    //this.grid_3_SCD_ALARM_COLUMNS = new scdalarmColumnsScdAclAlarmColumns();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.formtabs_3_SCD_ALARM[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.grid_3_SCD_ALARM_COLUMNS[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ALARMFormtabs_3Config = new componentConfigDef();
-    this.SCD_ALARMFormtabs_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARMFormtabs_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_ALARMFormtabs_3Config.masterReadCompleted = true;
+    this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
+    this.SCD_ALARM_COLUMNSGrid_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_COLUMNSGrid_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARM_COLUMNSGrid_3Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ALARMFormtabs_3Config.queryable = false;
-     //this.SCD_ALARMFormtabs_3Config.removeable = true;
-     //this.SCD_ALARMFormtabs_3Config.updateable = true;
+     this.SCD_ALARM_COLUMNSGrid_3Config.queryable = false;
+     //this.SCD_ALARM_COLUMNSGrid_3Config.removeable = true;
+     //this.SCD_ALARM_COLUMNSGrid_3Config.updateable = true;
    }
-    //this.grid_4_SCD_ALARM_STATES = new scdalarmStatesScdAslAlarmStates4();
+    //this.grid_4_SCD_ALARM_COLUMNS = new scdalarmColumnsScdAclAlarmColumns();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.grid_4_SCD_ALARM_STATES[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.grid_4_SCD_ALARM_COLUMNS[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef();
-    this.SCD_ALARM_STATESGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARM_STATESGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_ALARM_STATESGrid_4Config.masterReadCompleted = true;
+    this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
+    this.SCD_ALARM_COLUMNSGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_COLUMNSGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARM_COLUMNSGrid_4Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ALARM_STATESGrid_4Config.queryable = false;
-     //this.SCD_ALARM_STATESGrid_4Config.removeable = true;
-     //this.SCD_ALARM_STATESGrid_4Config.updateable = true;
+     this.SCD_ALARM_COLUMNSGrid_4Config.queryable = false;
+     //this.SCD_ALARM_COLUMNSGrid_4Config.removeable = true;
+     //this.SCD_ALARM_COLUMNSGrid_4Config.updateable = true;
    }
-    //this.form_5_SCD_ALARM_SORT = new scdalarmSortScdAaespAlarmSort();
+    //this.formtabs_5_SCD_ALARM = new scdalarmScdAlarmEventSubscriptionsProperties();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.form_5_SCD_ALARM_SORT[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.formtabs_5_SCD_ALARM[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ALARM_SORTForm_5Config = new componentConfigDef();
-    this.SCD_ALARM_SORTForm_5Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARM_SORTForm_5Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_ALARM_SORTForm_5Config.masterReadCompleted = true;
+    this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_5Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARMFormtabs_5Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARMFormtabs_5Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ALARM_SORTForm_5Config.queryable = false;
-     //this.SCD_ALARM_SORTForm_5Config.removeable = true;
-     //this.SCD_ALARM_SORTForm_5Config.updateable = true;
+     this.SCD_ALARMFormtabs_5Config.queryable = false;
+     //this.SCD_ALARMFormtabs_5Config.removeable = true;
+     //this.SCD_ALARMFormtabs_5Config.updateable = true;
+   }
+    //this.grid_6_SCD_ALARM_STATES = new scdalarmStatesScdAslAlarmStates();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.grid_6_SCD_ALARM_STATES[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+    this.SCD_ALARM_STATESGrid_6Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_STATESGrid_6Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARM_STATESGrid_6Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_ALARM_STATESGrid_6Config.queryable = false;
+     //this.SCD_ALARM_STATESGrid_6Config.removeable = true;
+     //this.SCD_ALARM_STATESGrid_6Config.updateable = true;
+   }
+    //this.form_7_SCD_ALARM_SORT = new scdalarmSortScdAaespAlarmSort();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.form_7_SCD_ALARM_SORT[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
+    this.SCD_ALARM_SORTForm_7Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_SORTForm_7Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARM_SORTForm_7Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_ALARM_SORTForm_7Config.queryable = false;
+     //this.SCD_ALARM_SORTForm_7Config.removeable = true;
+     //this.SCD_ALARM_SORTForm_7Config.updateable = true;
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
@@ -255,11 +311,15 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
      await this.starServices.sleep(200);
     this.SCD_ALARM_COLUMNSGrid_2Config = new componentConfigDef();
      await this.starServices.sleep(200);
-    this.SCD_ALARMFormtabs_3Config = new componentConfigDef();
+    this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
      await this.starServices.sleep(200);
-    this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef();
+    this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
      await this.starServices.sleep(200);
-    this.SCD_ALARM_SORTForm_5Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+     await this.starServices.sleep(200);
+    this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
 
@@ -287,16 +347,24 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
   	this.SCD_ALARM_COLUMNSGrid_2Config = componentConfig; 
    }
    if ( (pageNo + 1) == 4){
-  	this.SCD_ALARMFormtabs_3Config = new componentConfigDef(); 
-  	this.SCD_ALARMFormtabs_3Config = componentConfig; 
+  	this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef(); 
+  	this.SCD_ALARM_COLUMNSGrid_3Config = componentConfig; 
    }
    if ( (pageNo + 1) == 5){
-  	this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef(); 
-  	this.SCD_ALARM_STATESGrid_4Config = componentConfig; 
+  	this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef(); 
+  	this.SCD_ALARM_COLUMNSGrid_4Config = componentConfig; 
    }
    if ( (pageNo + 1) == 6){
-  	this.SCD_ALARM_SORTForm_5Config = new componentConfigDef(); 
-  	this.SCD_ALARM_SORTForm_5Config = componentConfig; 
+  	this.SCD_ALARMFormtabs_5Config = new componentConfigDef(); 
+  	this.SCD_ALARMFormtabs_5Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 7){
+  	this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef(); 
+  	this.SCD_ALARM_STATESGrid_6Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 8){
+  	this.SCD_ALARM_SORTForm_7Config = new componentConfigDef(); 
+  	this.SCD_ALARM_SORTForm_7Config = componentConfig; 
    }
  } 
   public saveCompletedHandler( form_SCD_SHAPE) {
@@ -312,20 +380,30 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
     this.SCD_ALARM_COLUMNSGrid_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
     this.SCD_ALARM_COLUMNSGrid_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
-    this.SCD_ALARMFormtabs_3Config = new componentConfigDef();
-    this.SCD_ALARMFormtabs_3Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_ALARMFormtabs_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARMFormtabs_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
+    this.SCD_ALARM_COLUMNSGrid_3Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ALARM_COLUMNSGrid_3Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_COLUMNSGrid_3Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
-    this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef();
-    this.SCD_ALARM_STATESGrid_4Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_ALARM_STATESGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARM_STATESGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
+    this.SCD_ALARM_COLUMNSGrid_4Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ALARM_COLUMNSGrid_4Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_COLUMNSGrid_4Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
-    this.SCD_ALARM_SORTForm_5Config = new componentConfigDef();
-    this.SCD_ALARM_SORTForm_5Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_ALARM_SORTForm_5Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARM_SORTForm_5Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_5Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ALARMFormtabs_5Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARMFormtabs_5Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+  
+    this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+    this.SCD_ALARM_STATESGrid_6Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ALARM_STATESGrid_6Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_STATESGrid_6Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+  
+    this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
+    this.SCD_ALARM_SORTForm_7Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ALARM_SORTForm_7Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARM_SORTForm_7Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
     this.saveTriggerOutput.emit(form_SCD_SHAPE);
   } 
@@ -400,15 +478,21 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
              this.SCD_ALARM_COLUMNSGrid_2Config = new componentConfigDef();
              this.SCD_ALARM_COLUMNSGrid_2Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARM_COLUMNSGrid_2Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID3","Columns");
-             this.SCD_ALARMFormtabs_3Config = new componentConfigDef();
-             this.SCD_ALARMFormtabs_3Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARMFormtabs_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID4","Event Subscriptions");
-             this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef();
-             this.SCD_ALARM_STATESGrid_4Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARM_STATESGrid_4Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID5","States");
-             this.SCD_ALARM_SORTForm_5Config = new componentConfigDef();
-             this.SCD_ALARM_SORTForm_5Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARM_SORTForm_5Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID6","Sort");
+             this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
+             this.SCD_ALARM_COLUMNSGrid_3Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARM_COLUMNSGrid_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID4","Status Bar Panel");
+             this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
+             this.SCD_ALARM_COLUMNSGrid_4Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARM_COLUMNSGrid_4Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID5","Status Bar Button");
+             this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
+             this.SCD_ALARMFormtabs_5Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARMFormtabs_5Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID6","Event Subscriptions");
+             this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+             this.SCD_ALARM_STATESGrid_6Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARM_STATESGrid_6Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID7","States");
+             this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
+             this.SCD_ALARM_SORTForm_7Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARM_SORTForm_7Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID8","Sort");
            this.setSteps(this);
            }, 500);
        }
@@ -416,26 +500,32 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
        this.SCD_SHAPEForm_0Config = new componentConfigDef();
        this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config = new componentConfigDef();
        this.SCD_ALARM_COLUMNSGrid_2Config = new componentConfigDef();
-       this.SCD_ALARMFormtabs_3Config = new componentConfigDef();
-       this.SCD_ALARM_STATESGrid_4Config = new componentConfigDef();
-       this.SCD_ALARM_SORTForm_5Config = new componentConfigDef();
+       this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
+       this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
+       this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
+       this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+       this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
               this.SCD_SHAPEForm_0Config.masterParams = ComponentConfig.masterParams;
               this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.masterParams = ComponentConfig.masterParams;
               this.SCD_ALARM_COLUMNSGrid_2Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ALARMFormtabs_3Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ALARM_STATESGrid_4Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ALARM_SORTForm_5Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARM_COLUMNSGrid_3Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARM_COLUMNSGrid_4Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARMFormtabs_5Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARM_STATESGrid_6Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARM_SORTForm_7Config.masterParams = ComponentConfig.masterParams;
    		
        }
        if (ComponentConfig.showToolBar != null) {
               this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARM_COLUMNSGrid_2Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ALARMFormtabs_3Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ALARM_STATESGrid_4Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ALARM_SORTForm_5Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARM_COLUMNSGrid_3Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARM_COLUMNSGrid_4Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARMFormtabs_5Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARM_STATESGrid_6Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARM_SORTForm_7Config.showToolBar = ComponentConfig.showToolBar;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {
@@ -446,18 +536,22 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
        this.SCD_SHAPEForm_0Config.newRec = ComponentConfig.newRec;
        this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.newRec = ComponentConfig.newRec;
        this.SCD_ALARM_COLUMNSGrid_2Config.newRec = ComponentConfig.newRec;
-       this.SCD_ALARMFormtabs_3Config.newRec = ComponentConfig.newRec;
-       this.SCD_ALARM_STATESGrid_4Config.newRec = ComponentConfig.newRec;
-       this.SCD_ALARM_SORTForm_5Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARM_COLUMNSGrid_3Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARM_COLUMNSGrid_4Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARMFormtabs_5Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARM_STATESGrid_6Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARM_SORTForm_7Config.newRec = ComponentConfig.newRec;
       }
       if (ComponentConfig.clearScreen != null)
       {
        this.SCD_SHAPEForm_0Config.clearScreen = ComponentConfig.clearScreen;
        this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.clearScreen = ComponentConfig.clearScreen;
        this.SCD_ALARM_COLUMNSGrid_2Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ALARMFormtabs_3Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ALARM_STATESGrid_4Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ALARM_SORTForm_5Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARM_COLUMNSGrid_3Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARM_COLUMNSGrid_4Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARMFormtabs_5Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARM_STATESGrid_6Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARM_SORTForm_7Config.clearScreen = ComponentConfig.clearScreen;
 	   }
       if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
       {
@@ -481,23 +575,35 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
          {
              this.SCD_ALARM_COLUMNSGrid_2Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ALARMFormtabs_3Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ALARMFormtabs_3Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_ALARM_COLUMNSGrid_3Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARM_COLUMNSGrid_3Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ALARMFormtabs_3Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_ALARM_COLUMNSGrid_3Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ALARM_STATESGrid_4Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ALARM_STATESGrid_4Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_ALARM_COLUMNSGrid_4Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARM_COLUMNSGrid_4Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ALARM_STATESGrid_4Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_ALARM_COLUMNSGrid_4Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ALARM_SORTForm_5Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ALARM_SORTForm_5Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_ALARMFormtabs_5Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARMFormtabs_5Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ALARM_SORTForm_5Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_ALARMFormtabs_5Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_ALARM_STATESGrid_6Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARM_STATESGrid_6Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_ALARM_STATESGrid_6Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_ALARM_SORTForm_7Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARM_SORTForm_7Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_ALARM_SORTForm_7Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
        }
       }
@@ -519,28 +625,44 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
     this.grid_2_SCD_ALARM_COLUMNSOpened = true;  
   }
   
-  public formtabs_3_SCD_ALARMOpened = false;
-  public  formtabs_3_SCD_ALARMClose() { 
-    this.formtabs_3_SCD_ALARMOpened = false;  
+  public grid_3_SCD_ALARM_COLUMNSOpened = false;
+  public  grid_3_SCD_ALARM_COLUMNSClose() { 
+    this.grid_3_SCD_ALARM_COLUMNSOpened = false;  
   }
-  public  formtabs_3_SCD_ALARMOpen() { 
-    this.formtabs_3_SCD_ALARMOpened = true;  
-  }
-  
-  public grid_4_SCD_ALARM_STATESOpened = false;
-  public  grid_4_SCD_ALARM_STATESClose() { 
-    this.grid_4_SCD_ALARM_STATESOpened = false;  
-  }
-  public  grid_4_SCD_ALARM_STATESOpen() { 
-    this.grid_4_SCD_ALARM_STATESOpened = true;  
+  public  grid_3_SCD_ALARM_COLUMNSOpen() { 
+    this.grid_3_SCD_ALARM_COLUMNSOpened = true;  
   }
   
-  public form_5_SCD_ALARM_SORTOpened = false;
-  public  form_5_SCD_ALARM_SORTClose() { 
-    this.form_5_SCD_ALARM_SORTOpened = false;  
+  public grid_4_SCD_ALARM_COLUMNSOpened = false;
+  public  grid_4_SCD_ALARM_COLUMNSClose() { 
+    this.grid_4_SCD_ALARM_COLUMNSOpened = false;  
   }
-  public  form_5_SCD_ALARM_SORTOpen() { 
-    this.form_5_SCD_ALARM_SORTOpened = true;  
+  public  grid_4_SCD_ALARM_COLUMNSOpen() { 
+    this.grid_4_SCD_ALARM_COLUMNSOpened = true;  
+  }
+  
+  public formtabs_5_SCD_ALARMOpened = false;
+  public  formtabs_5_SCD_ALARMClose() { 
+    this.formtabs_5_SCD_ALARMOpened = false;  
+  }
+  public  formtabs_5_SCD_ALARMOpen() { 
+    this.formtabs_5_SCD_ALARMOpened = true;  
+  }
+  
+  public grid_6_SCD_ALARM_STATESOpened = false;
+  public  grid_6_SCD_ALARM_STATESClose() { 
+    this.grid_6_SCD_ALARM_STATESOpened = false;  
+  }
+  public  grid_6_SCD_ALARM_STATESOpen() { 
+    this.grid_6_SCD_ALARM_STATESOpened = true;  
+  }
+  
+  public form_7_SCD_ALARM_SORTOpened = false;
+  public  form_7_SCD_ALARM_SORTClose() { 
+    this.form_7_SCD_ALARM_SORTOpened = false;  
+  }
+  public  form_7_SCD_ALARM_SORTOpen() { 
+    this.form_7_SCD_ALARM_SORTOpened = true;  
   }
   
  

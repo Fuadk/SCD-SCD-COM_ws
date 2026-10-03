@@ -16,8 +16,6 @@ import { scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm , com
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'GENERAL_ID' : new FormControl(dataItem.GENERAL_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'TEXT_COLOR' : new FormControl(dataItem.TEXT_COLOR  , ) ,
 'BACKGROUND_COLOR' : new FormControl(dataItem.BACKGROUND_COLOR  , ) ,
@@ -73,7 +71,7 @@ export class ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormFo
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isAPP_IDEnable : boolean = true;
+  public  isSHAPE_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -84,12 +82,12 @@ export class ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormFo
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isGENERAL_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isGENERAL_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="APP_ID";
+  public masterKeyName ="SHAPE_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -104,10 +102,6 @@ export class ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormFo
   public FormStepsArr = [] ;
 public labelGENERAL_IDTop=true;
 public labelGENERAL_IDVisible=true;
-public labelAPP_IDTop=true;
-public labelAPP_IDVisible=true;
-public labelDISPLAY_IDTop=true;
-public labelDISPLAY_IDVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
 public labelTEXT_COLORTop=true;
@@ -148,8 +142,6 @@ public labelSHOW_TIME_STAMPETop=true;
 public labelSHOW_TIME_STAMPEVisible=true;
 
 public visibleGENERAL_ID = true;
-public visibleAPP_ID = true;
-public visibleDISPLAY_ID = true;
 public visibleSHAPE_ID = true;
 public visibleTEXT_COLOR = true;
 public visibleBACKGROUND_COLOR = true;
@@ -171,8 +163,6 @@ public visibleICON_STYLE = true;
 public visibleSHOW_TIME_STAMPE = true;
 
 public disableGENERAL_ID = false;
-public disableAPP_ID = false;
-public disableDISPLAY_ID = false;
 public disableSHAPE_ID = false;
 public disableTEXT_COLOR = false;
 public disableBACKGROUND_COLOR = false;
@@ -322,10 +312,10 @@ public disableSHOW_TIME_STAMPE = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormForm form.APP_ID :' + form.APP_ID);
-    if ( (form.APP_ID != "") &&   (typeof form.APP_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerFormForm form.SHAPE_ID :' + form.SHAPE_ID);
+    if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
-      this.masterKey = form.APP_ID;
+      this.masterKey = form.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -346,7 +336,7 @@ public disableSHOW_TIME_STAMPE = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.APP_ID != "undefined") &&   (form.APP_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.SHAPE_ID != "undefined") &&   (form.SHAPE_ID != ""))
     {
       
       this.isSearch = true;
@@ -433,6 +423,9 @@ public disableSHOW_TIME_STAMPE = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+      this.FormStepsArr.forEach(item => {
+      (item as any).visible = true;
+    });
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -605,11 +598,7 @@ public disableSHOW_TIME_STAMPE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='DISPLAY_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SOURCE_FILE_STATUS\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrSOURCE_FILE_STATUS"},
@@ -621,10 +610,6 @@ this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME C
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrSHAPE_ID = [];
 
 public lkpArrSOURCE_FILE_STATUS = [];
@@ -632,16 +617,6 @@ public lkpArrSOURCE_FILE_STATUS = [];
 public lkpArrICON_STYLE = [];
 
 public lkpArrSHOW_TIME_STAMPE = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
@@ -870,46 +845,6 @@ async WHEN_VALIDATE_ITEM_GENERAL_ID(value) {
  }
 
  async ON_CLICK_GENERAL_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_APP_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-      this.form.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-     this.form.get('APP_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
 
 }
 
@@ -1302,18 +1237,6 @@ async WHEN_VALIDATE_ITEM_SHOW_TIME_STAMPE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_APP_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APP_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
- async onValueChange_DISPLAY_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_SHAPE_ID(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 

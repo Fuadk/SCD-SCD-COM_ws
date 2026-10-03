@@ -16,9 +16,7 @@ import { scdalarmAppearanceScdAadAlarmAppearance1 , componentConfigDef} from '@m
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'GENERAL_ID' : new FormControl(dataItem.GENERAL_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
 'COLUMN_HEADINGS_DISPLAYED' : new FormControl(dataItem.COLUMN_HEADINGS_DISPLAYED  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'HORIZONTAL_GRID_LINES_DISPLAYED' : new FormControl(dataItem.HORIZONTAL_GRID_LINES_DISPLAYED  , ) ,
 'VERTICAL_GRID_LINES_DISPLAYED' : new FormControl(dataItem.VERTICAL_GRID_LINES_DISPLAYED  , ) ,
 'HORIZONTAL_SCROLL_BAR' : new FormControl(dataItem.HORIZONTAL_SCROLL_BAR  , ) ,
@@ -86,7 +84,7 @@ export class ScdAlarmAppearanceScdAadAlarmAppearance1FormdivsComponent {
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isAPP_IDEnable : boolean = true;
+  public  isSHAPE_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -97,12 +95,12 @@ export class ScdAlarmAppearanceScdAadAlarmAppearance1FormdivsComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isGENERAL_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isGENERAL_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="APP_ID";
+  public masterKeyName ="SHAPE_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -117,12 +115,8 @@ export class ScdAlarmAppearanceScdAadAlarmAppearance1FormdivsComponent {
   public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"Show","visible":true},{"CODE":"2","CODETEXT_LANG":"Columns Headings","visible":true},{"CODE":"3","CODETEXT_LANG":"Row Text","visible":true},{"CODE":"4","CODETEXT_LANG":"Grid","visible":true},{"CODE":"5","CODETEXT_LANG":"Details Pane","visible":true},{"CODE":"6","CODETEXT_LANG":"Toolbar","visible":true},{"CODE":"7","CODETEXT_LANG":"Status Bar","visible":true}] ;
 public labelGENERAL_IDTop=false;
 public labelGENERAL_IDVisible=true;
-public labelAPP_IDTop=false;
-public labelAPP_IDVisible=true;
 public labelCOLUMN_HEADINGS_DISPLAYEDTop=false;
 public labelCOLUMN_HEADINGS_DISPLAYEDVisible=true;
-public labelDISPLAY_IDTop=false;
-public labelDISPLAY_IDVisible=true;
 public labelHORIZONTAL_GRID_LINES_DISPLAYEDTop=false;
 public labelHORIZONTAL_GRID_LINES_DISPLAYEDVisible=true;
 public labelVERTICAL_GRID_LINES_DISPLAYEDTop=false;
@@ -187,9 +181,7 @@ public labelICON_SIZE_STATUS_BARTop=false;
 public labelICON_SIZE_STATUS_BARVisible=true;
 
 public visibleGENERAL_ID = true;
-public visibleAPP_ID = false;
 public visibleCOLUMN_HEADINGS_DISPLAYED = true;
-public visibleDISPLAY_ID = false;
 public visibleHORIZONTAL_GRID_LINES_DISPLAYED = true;
 public visibleVERTICAL_GRID_LINES_DISPLAYED = true;
 public visibleHORIZONTAL_SCROLL_BAR = true;
@@ -223,9 +215,7 @@ public visibleFONT_STATUS_BAR = true;
 public visibleICON_SIZE_STATUS_BAR = true;
 
 public disableGENERAL_ID = false;
-public disableAPP_ID = false;
 public disableCOLUMN_HEADINGS_DISPLAYED = false;
-public disableDISPLAY_ID = false;
 public disableHORIZONTAL_GRID_LINES_DISPLAYED = false;
 public disableVERTICAL_GRID_LINES_DISPLAYED = false;
 public disableHORIZONTAL_SCROLL_BAR = false;
@@ -387,10 +377,10 @@ public disableICON_SIZE_STATUS_BAR = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmAppearanceScdAadAlarmAppearance1Formdivs form.APP_ID :' + form.APP_ID);
-    if ( (form.APP_ID != "") &&   (typeof form.APP_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmAppearanceScdAadAlarmAppearance1Formdivs form.SHAPE_ID :' + form.SHAPE_ID);
+    if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
-      this.masterKey = form.APP_ID;
+      this.masterKey = form.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -411,7 +401,7 @@ public disableICON_SIZE_STATUS_BAR = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.APP_ID != "undefined") &&   (form.APP_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.SHAPE_ID != "undefined") &&   (form.SHAPE_ID != ""))
     {
       
       this.isSearch = true;
@@ -498,6 +488,9 @@ public disableICON_SIZE_STATUS_BAR = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+      this.FormStepsArr.forEach(item => {
+      (item as any).visible = true;
+    });
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -670,11 +663,7 @@ public disableICON_SIZE_STATUS_BAR = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrICON_STYLE"},
 	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"},
@@ -692,10 +681,6 @@ this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME C
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrICON_STYLE = [];
 
 public lkpArrSHAPE_ID = [];
@@ -709,16 +694,6 @@ public lkpArrPOSITION = [];
 public lkpArrFONT_STATUS_BAR = [];
 
 public lkpArrICON_SIZE_STATUS_BAR = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetICON_STYLE(CODE: any): any {
 var rec = this.lkpArrICON_STYLE.find((x:any) => x.CODE === CODE);
@@ -961,26 +936,6 @@ async WHEN_VALIDATE_ITEM_GENERAL_ID(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-      this.form.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-     this.form.get('APP_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_COLUMN_HEADINGS_DISPLAYED(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -998,26 +953,6 @@ async WHEN_VALIDATE_ITEM_COLUMN_HEADINGS_DISPLAYED(value) {
  }
 
  async ON_CLICK_COLUMN_HEADINGS_DISPLAYED(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
 
 }
 
@@ -1650,12 +1585,6 @@ async WHEN_VALIDATE_ITEM_ICON_SIZE_STATUS_BAR(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_APP_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APP_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_COLUMN_HEADINGS_DISPLAYED(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1665,12 +1594,6 @@ async WHEN_VALIDATE_ITEM_ICON_SIZE_STATUS_BAR(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_DISPLAY_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_HORIZONTAL_GRID_LINES_DISPLAYED(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	

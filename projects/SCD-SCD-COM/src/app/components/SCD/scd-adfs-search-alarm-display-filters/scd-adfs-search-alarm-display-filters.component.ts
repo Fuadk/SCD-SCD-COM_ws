@@ -17,9 +17,7 @@ import { scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters , componentConfi
  const createFormGroup = (dataItem:any) => new FormGroup({
 'FILTER_ID' : new FormControl(dataItem.FILTER_ID  , ) ,
 'FILTER_NAME' : new FormControl(dataItem.FILTER_NAME  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
 'WHERE_CLAUSE' : new FormControl(dataItem.WHERE_CLAUSE  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) 
 });
 
@@ -57,7 +55,7 @@ export class ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isAPP_IDEnable : boolean = true;
+  public  isSHAPE_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -73,7 +71,7 @@ export class ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="APP_ID";
+  public masterKeyName ="SHAPE_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -90,27 +88,19 @@ public labelFILTER_IDTop=true;
 public labelFILTER_IDVisible=true;
 public labelFILTER_NAMETop=true;
 public labelFILTER_NAMEVisible=true;
-public labelAPP_IDTop=true;
-public labelAPP_IDVisible=true;
 public labelWHERE_CLAUSETop=true;
 public labelWHERE_CLAUSEVisible=true;
-public labelDISPLAY_IDTop=true;
-public labelDISPLAY_IDVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
 
 public visibleFILTER_ID = false;
 public visibleFILTER_NAME = true;
-public visibleAPP_ID = false;
 public visibleWHERE_CLAUSE = true;
-public visibleDISPLAY_ID = false;
 public visibleSHAPE_ID = false;
 
 public disableFILTER_ID = false;
 public disableFILTER_NAME = false;
-public disableAPP_ID = false;
 public disableWHERE_CLAUSE = false;
-public disableDISPLAY_ID = false;
 public disableSHAPE_ID = false;
 
 
@@ -242,10 +232,10 @@ public disableSHAPE_ID = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersForm form.APP_ID :' + form.APP_ID);
-    if ( (form.APP_ID != "") &&   (typeof form.APP_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersForm form.SHAPE_ID :' + form.SHAPE_ID);
+    if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
-      this.masterKey = form.APP_ID;
+      this.masterKey = form.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -266,7 +256,7 @@ public disableSHAPE_ID = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.APP_ID != "undefined") &&   (form.APP_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.SHAPE_ID != "undefined") &&   (form.SHAPE_ID != ""))
     {
       
       this.isSearch = true;
@@ -353,6 +343,9 @@ public disableSHAPE_ID = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+      this.FormStepsArr.forEach(item => {
+      (item as any).visible = true;
+    });
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -525,31 +518,13 @@ public disableSHAPE_ID = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
+this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrSHAPE_ID = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
@@ -784,26 +759,6 @@ async WHEN_VALIDATE_ITEM_FILTER_NAME(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-      this.form.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-     this.form.get('APP_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_WHERE_CLAUSE(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -821,26 +776,6 @@ async WHEN_VALIDATE_ITEM_WHERE_CLAUSE(value) {
  }
 
  async ON_CLICK_WHERE_CLAUSE(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
 
 }
 
@@ -882,12 +817,6 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_APP_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APP_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_WHERE_CLAUSE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -897,12 +826,6 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_DISPLAY_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_SHAPE_ID(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 

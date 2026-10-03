@@ -46,25 +46,6 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SORT_ID($event)"    class="BASE"  adaptiveMode="auto"  />
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPP_ID >
-		<kendo-label *ngIf="(!labelAPP_IDTop && !isPhonePortrait) && labelAPP_IDVisible" class="form-label" [for]="APP_ID" [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.APP_ID','App Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelAPP_IDTop || isPhonePortrait) && labelAPP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.APP_ID','App Id') + ' *'}}</label>
-		<kendo-combobox  #APP_ID class="form-field-combobox"  [formControlName]="'APP_ID'"
-		[data]="lkpArrAPP_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.APP_ID_Hint','Please enter App Id.')"		(click)="ON_CLICK_APP_ID($event)"
- (valueChange)="onValueChange_APP_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APP_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
-
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSORT_BY_FIELDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSORT_BY_FIELD >
 		<kendo-label *ngIf="(!labelSORT_BY_FIELDTop && !isPhonePortrait) && labelSORT_BY_FIELDVisible" class="form-label" [for]="SORT_BY_FIELD" [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.SORT_BY_FIELD','Sort By Field')"></kendo-label>
 		<label *ngIf="(labelSORT_BY_FIELDTop || isPhonePortrait) && labelSORT_BY_FIELDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.SORT_BY_FIELD','Sort By Field')}}</label>
@@ -77,25 +58,6 @@
 		 <ng-template kendoDropDownListNoDataTemplate>
 		 <div> 
 		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SORT_BY_FIELD')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
-
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ID >
-		<kendo-label *ngIf="(!labelDISPLAY_IDTop && !isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label" [for]="DISPLAY_ID" [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.DISPLAY_ID','Display Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelDISPLAY_IDTop || isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.DISPLAY_ID','Display Id') + ' *'}}</label>
-		<kendo-combobox  #DISPLAY_ID class="form-field-combobox"  [formControlName]="'DISPLAY_ID'"
-		[data]="lkpArrDISPLAY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT_0.scdalarmSortScdAaespAlarmSort0.DISPLAY_ID_Hint','Please enter Display Id.')"		(click)="ON_CLICK_DISPLAY_ID($event)"
- (valueChange)="onValueChange_DISPLAY_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DISPLAY_ID')"> 
 		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
 		 	</button> 
 		 </div> 

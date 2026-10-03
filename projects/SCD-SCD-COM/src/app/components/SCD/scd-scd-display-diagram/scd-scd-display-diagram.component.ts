@@ -42,41 +42,45 @@ import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scddisplayScdScdDisplayDiagram , componentConfigDef} from '@modeldir/model';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../../../services/scada-integration.service';
 import { ServerConfig } from '../../../services/scada.service';
-import {ScdAllAlarmsComponent} from '../scd-all-alarms/scd-all-alarms.component';
-import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
-import {ScdArrowButtonTimingComponent} from '../scd-arrow-button-timing/scd-arrow-button-timing.component';
-import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
-import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
-import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
-import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
-import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
-import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
-import {ScdDisplayKeysScreenComponent} from '../scd-display-keys-screen/scd-display-keys-screen.component';
-import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
-import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
-import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
-import {ScdGridPropertiesSettingsComponent} from '../scd-grid-properties-settings/scd-grid-properties-settings.component';
-import {ScdJavascriptCodeScreenComponent} from '../scd-javascript-code-screen/scd-javascript-code-screen.component';
+import {ScdAlarmStatusExplorerComponent} from '../scd-alarm-status-explorer/scd-alarm-status-explorer.component';
+import {ScdAlarmAndEventLogViewerPropertiesComponent} from '../scd-alarm-and-event-log-viewer-properties/scd-alarm-and-event-log-viewer-properties.component';
+import {ScdAlarmAndEventSummaryPropertiesComponent} from '../scd-alarm-and-event-summary-properties/scd-alarm-and-event-summary-properties.component';
+import {ScdAlarmAndEventBannerPropertiesComponent} from '../scd-alarm-and-event-banner-properties/scd-alarm-and-event-banner-properties.component';
+import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
+import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
+import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
 import {ScdListIndicatorPropertiesComponent} from '../scd-list-indicator-properties/scd-list-indicator-properties.component';
 import {ScdListIndicatorStatesPropertiesComponent} from '../scd-list-indicator-states-properties/scd-list-indicator-states-properties.component';
-import {ScdLocalMessagePropertiesComponent} from '../scd-local-message-properties/scd-local-message-properties.component';
-import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
-import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
-import {ScdNavigationButtonPropertiesComponent} from '../scd-navigation-button-properties/scd-navigation-button-properties.component';
-import {ScdNumericDisplayPropertiesComponent} from '../scd-numeric-display-properties/scd-numeric-display-properties.component';
-import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
-import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
-import {ScdPushButtonPropertiesComponent} from '../scd-push-button-properties/scd-push-button-properties.component';
-import {ScdRampButtonTimingComponent} from '../scd-ramp-button-timing/scd-ramp-button-timing.component';
+import {ScdBarGraphPropertiesComponent} from '../scd-bar-graph-properties/scd-bar-graph-properties.component';
+import {ScdGaugePropertiesComponent} from '../scd-gauge-properties/scd-gauge-properties.component';
 import {ScdScalePropertiesComponent} from '../scd-scale-properties/scd-scale-properties.component';
+import {ScdArrowButtonPropertiesComponent} from '../scd-arrow-button-properties/scd-arrow-button-properties.component';
+import {ScdArrowTimingPropertiesComponent} from '../scd-arrow-timing-properties/scd-arrow-timing-properties.component';
+import {ScdArrowPropertiesComponent} from '../scd-arrow-properties/scd-arrow-properties.component';
+import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
+import {ScdControlListSelectorPropertiesComponent} from '../scd-control-list-selector-properties/scd-control-list-selector-properties.component';
+import {ScdDisplayListSelectorPropertiesComponent} from '../scd-display-list-selector-properties/scd-display-list-selector-properties.component';
+import {ScdMessageDatePropertiesComponent} from '../scd-message-date-properties/scd-message-date-properties.component';
+import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
+import {ScdBrowserPropertiesComponent} from '../scd-browser-properties/scd-browser-properties.component';
+import {ScdPilotedListSelectorPropertiesComponent} from '../scd-piloted-list-selector-properties/scd-piloted-list-selector-properties.component';
+import {ScdNumericInputPropertiesComponent} from '../scd-numeric-input-properties/scd-numeric-input-properties.component';
+import {ScdDisplaySettingsScreenComponent} from '../scd-display-settings-screen/scd-display-settings-screen.component';
+import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
 import {ScdShapePropertiesComponent} from '../scd-shape-properties/scd-shape-properties.component';
+import {ScdDisplayKeysScreenComponent} from '../scd-display-keys-screen/scd-display-keys-screen.component';
+import {ScdJavascriptCodeScreenComponent} from '../scd-javascript-code-screen/scd-javascript-code-screen.component';
+import {ScdGridPropertiesSettingsComponent} from '../scd-grid-properties-settings/scd-grid-properties-settings.component';
+import {ScdAllAlarmsComponent} from '../scd-all-alarms/scd-all-alarms.component';
+import {ScdArrowButtonTimingComponent} from '../scd-arrow-button-timing/scd-arrow-button-timing.component';
+import {ScdNavigationButtonPropertiesComponent} from '../scd-navigation-button-properties/scd-navigation-button-properties.component';
+import {ScdRampButtonTimingComponent} from '../scd-ramp-button-timing/scd-ramp-button-timing.component';
+import {ScdLocalMessagePropertiesComponent} from '../scd-local-message-properties/scd-local-message-properties.component';
+import {ScdButtonPropertiesComponent} from '../scd-button-properties/scd-button-properties.component';
+import {ScdNumericDisplayPropertiesComponent} from '../scd-numeric-display-properties/scd-numeric-display-properties.component';
 import {ScdStringDisplayPropertiesComponent} from '../scd-string-display-properties/scd-string-display-properties.component';
 import {ScdStringInputPropertiesComponent} from '../scd-string-input-properties/scd-string-input-properties.component';
-import {ScdSymbolPropertiesComponent} from '../scd-symbol-properties/scd-symbol-properties.component';
-import {ScdSymbolStatesPropertiesComponent} from '../scd-symbol-states-properties/scd-symbol-states-properties.component';
-import {ScdSymbolfactoryplusComponent} from '../scd-symbolfactoryplus/scd-symbolfactoryplus.component';
-import {ScdTagLabelPropertiesComponent} from '../scd-tag-label-properties/scd-tag-label-properties.component';
-import {ScdTextPropertiesComponent} from '../scd-text-properties/scd-text-properties.component';
+import {ScdMultistateIndicatorPropertiesComponent} from '../scd-multistate-indicator-properties/scd-multistate-indicator-properties.component';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
@@ -1041,6 +1045,18 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
         case 'Interlocked':
           Id = 'Push_Button_Properties';
           title = shapeType + ' Push Button Properties';
+          break;
+        case 'Banner':
+          Id = 'Alarm_and_Event_Banner_Properties';
+          break;
+        case 'Summary':
+          Id = 'Alarm_and_Event_Summary_Properties';
+          break;
+        case 'Log Viewer':
+          Id = 'Alarm_and_Event_Log_Viewer_Properties';
+          break;
+        case 'Status Explorer':
+          Id = 'Alarm_Status_Explorer';
           break;
         case 'Multistate':
           Id = 'Arrow_Button_Timing';
@@ -2012,9 +2028,39 @@ async  prepareShapes(){
   let statement_SCD_ARROW_BUTTON_LABEL = "DELETE from SCD_ARROW_BUTTON_LABEL where shape_id  in "
                   + "(SELECT  shape_id from scd_shape where shape_id not in (" 
                   + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_ARROW_BUTTON_TIMINGE = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                                    
+  
+  let statement_SCD_ALARM_APPEARANCE = "DELETE from SCD_ALARM_APPEARANCE where shape_id in "
+  + "(SELECT shape_id from scd_shape where shape_id not in ("
+  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+
+  let statement_SCD_ALARM_BEHAVIOR = "DELETE from SCD_ALARM_BEHAVIOR where shape_id in "
+    + "(SELECT shape_id from scd_shape where shape_id not in ("
+    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+
+  let statement_SCD_ALARM_COLUMNS = "DELETE from SCD_ALARM_COLUMNS where shape_id in "
+    + "(SELECT shape_id from scd_shape where shape_id not in ("
+    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+
+  let statement_SCD_ALARM_EVENT_SUBSCRIPTIONS = "DELETE from SCD_ALARM_EVENT_SUBSCRIPTIONS where shape_id in "
+    + "(SELECT shape_id from scd_shape where shape_id not in ("
+    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+
+  let statement_SCD_ALARM_GENERAL_BANNER = "DELETE from SCD_ALARM_GENERAL_BANNER where shape_id in "
+    + "(SELECT shape_id from scd_shape where shape_id not in ("
+    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+
+  let statement_SCD_ALARM_GENERAL_LOG_VIEWER = "DELETE from SCD_ALARM_GENERAL_LOG_VIEWER where shape_id in "
+    + "(SELECT shape_id from scd_shape where shape_id not in ("
+    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+
+  let statement_SCD_ALARM_SORT = "DELETE from SCD_ALARM_SORT where shape_id in "
+    + "(SELECT shape_id from scd_shape where shape_id not in ("
+    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+
+  let statement_SCD_ALARM_STATES = "DELETE from SCD_ALARM_STATES where shape_id in "
+    + "(SELECT shape_id from scd_shape where shape_id not in ("
+    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
+                                                                                                                                  
                 
   let body_defs = [
      {
@@ -2097,9 +2143,34 @@ async  prepareShapes(){
         "_QUERY": "EXECSQL",
         "_STMT": statement_SCD_ARROW_BUTTON_LABEL
       },
-           {
+       
+      {
         "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_TIMINGE
+        "_STMT": statement_SCD_ALARM_BEHAVIOR
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ALARM_COLUMNS
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ALARM_EVENT_SUBSCRIPTIONS
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ALARM_GENERAL_BANNER
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ALARM_GENERAL_LOG_VIEWER
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ALARM_SORT
+      },
+      {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_SCD_ALARM_STATES
       }
 
     ];
@@ -2376,7 +2447,7 @@ public lastClickY: number = 0;
   public onDiagramClick(event: any): void {
     this.lastClickX = event.offsetX || event.layerX || 0;
     this.lastClickY = event.offsetY || event.layerY || 0;
-    if (this.event.text != "FreeHand") {
+    //if (this.event.text != "FreeHand") {
       if (this.insertShapeFlag == true) {
         let shapeType = this.event.text;
         let options = null;
@@ -2392,6 +2463,7 @@ public lastClickY: number = 0;
         || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
         || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
         || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
+        || (shapeType == "Banner") || (shapeType == "Summary") || (shapeType == "Log Viewer") || (shapeType == "Status Explorer")
          )
           options = {
             width: 180,
@@ -2410,6 +2482,7 @@ public lastClickY: number = 0;
           || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
           || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
           || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
+          || (shapeType == "Banner") || (shapeType == "Summary") || (shapeType == "Log Viewer") || (shapeType == "Status Explorer")
         ) {
           options.fillColor = "#D3D3D3"
         }
@@ -2421,7 +2494,7 @@ public lastClickY: number = 0;
           //this.ON_CLICK_CONTEXT_MENU(this.menuType,this.event);
         }, 500);
       }
-    }
+    //}
     let target = event.target.outerHTML;
     if (target.startsWith("<svg")) {
       console.log("Clicked on empty space");
@@ -2917,7 +2990,7 @@ public valueChange_del(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"34","Component":"Arrow_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"37","Component":"Local_Message_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"35","Component":"Navigation_Button_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"1000","Height":"800","Maximize":""},{"Id":"36","Component":"Ramp_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"800","Maximize":"Y"},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""}]
+  public dialogProperties = [{"Id":"41","Component":"Alarm_Status_Explorer","Width":"800","Height":"800","Maximize":null},{"Id":"40","Component":"Alarm_and_Event_Log_Viewer_Properties","Width":"800","Height":"800","Maximize":null},{"Id":"39","Component":"Alarm_and_Event_Summary_Properties","Width":"800","Height":"880","Maximize":null},{"Id":"38","Component":"Alarm_and_Event_Banner_Properties","Width":"800","Height":"880","Maximize":null},{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"1000","Height":"800","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"800","Maximize":"Y"},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"34","Component":"Arrow_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"35","Component":"Navigation_Button_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"36","Component":"Ramp_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"37","Component":"Local_Message_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -2925,76 +2998,84 @@ public valueChange_del(value: any): void {
     }
 
     	switch (shapeType) {
-		case '33': 
-		return ScdAllAlarmsComponent; 
-		case '17': 
-		return ScdArrowButtonPropertiesComponent; 
-		case '34': 
-		return ScdArrowButtonTimingComponent; 
-		case '19': 
-		return ScdArrowPropertiesComponent; 
-		case '18': 
-		return ScdArrowTimingPropertiesComponent; 
-		case '14': 
-		return ScdBarGraphPropertiesComponent; 
-		case '24': 
-		return ScdBrowserPropertiesComponent; 
-		case '4': 
-		return ScdButtonPropertiesComponent; 
-		case '20': 
-		return ScdControlListSelectorPropertiesComponent; 
-		case '30': 
-		return ScdDisplayKeysScreenComponent; 
-		case '21': 
-		return ScdDisplayListSelectorPropertiesComponent; 
-		case '28': 
-		return ScdDisplaySettingsScreenComponent; 
-		case '15': 
-		return ScdGaugePropertiesComponent; 
-		case '32': 
-		return ScdGridPropertiesSettingsComponent; 
-		case '31': 
-		return ScdJavascriptCodeScreenComponent; 
+		case '41': 
+		return ScdAlarmStatusExplorerComponent; 
+		case '40': 
+		return ScdAlarmAndEventLogViewerPropertiesComponent; 
+		case '39': 
+		return ScdAlarmAndEventSummaryPropertiesComponent; 
+		case '38': 
+		return ScdAlarmAndEventBannerPropertiesComponent; 
+		case '1': 
+		return ScdPushButtonPropertiesComponent; 
+		case '10': 
+		return ScdSymbolStatesPropertiesComponent; 
+		case '11': 
+		return ScdSymbolPropertiesComponent; 
 		case '12': 
 		return ScdListIndicatorPropertiesComponent; 
 		case '13': 
 		return ScdListIndicatorStatesPropertiesComponent; 
-		case '37': 
-		return ScdLocalMessagePropertiesComponent; 
-		case '22': 
-		return ScdMessageDatePropertiesComponent; 
-		case '9': 
-		return ScdMultistateIndicatorPropertiesComponent; 
-		case '35': 
-		return ScdNavigationButtonPropertiesComponent; 
-		case '5': 
-		return ScdNumericDisplayPropertiesComponent; 
-		case '27': 
-		return ScdNumericInputPropertiesComponent; 
-		case '25': 
-		return ScdPilotedListSelectorPropertiesComponent; 
-		case '1': 
-		return ScdPushButtonPropertiesComponent; 
-		case '36': 
-		return ScdRampButtonTimingComponent; 
+		case '14': 
+		return ScdBarGraphPropertiesComponent; 
+		case '15': 
+		return ScdGaugePropertiesComponent; 
 		case '16': 
 		return ScdScalePropertiesComponent; 
+		case '17': 
+		return ScdArrowButtonPropertiesComponent; 
+		case '18': 
+		return ScdArrowTimingPropertiesComponent; 
+		case '19': 
+		return ScdArrowPropertiesComponent; 
+		case '2': 
+		return ScdTextPropertiesComponent; 
+		case '20': 
+		return ScdControlListSelectorPropertiesComponent; 
+		case '21': 
+		return ScdDisplayListSelectorPropertiesComponent; 
+		case '22': 
+		return ScdMessageDatePropertiesComponent; 
+		case '23': 
+		return ScdTagLabelPropertiesComponent; 
+		case '24': 
+		return ScdBrowserPropertiesComponent; 
+		case '25': 
+		return ScdPilotedListSelectorPropertiesComponent; 
+		case '27': 
+		return ScdNumericInputPropertiesComponent; 
+		case '28': 
+		return ScdDisplaySettingsScreenComponent; 
+		case '29': 
+		return ScdSymbolfactoryplusComponent; 
 		case '3': 
 		return ScdShapePropertiesComponent; 
+		case '30': 
+		return ScdDisplayKeysScreenComponent; 
+		case '31': 
+		return ScdJavascriptCodeScreenComponent; 
+		case '32': 
+		return ScdGridPropertiesSettingsComponent; 
+		case '33': 
+		return ScdAllAlarmsComponent; 
+		case '34': 
+		return ScdArrowButtonTimingComponent; 
+		case '35': 
+		return ScdNavigationButtonPropertiesComponent; 
+		case '36': 
+		return ScdRampButtonTimingComponent; 
+		case '37': 
+		return ScdLocalMessagePropertiesComponent; 
+		case '4': 
+		return ScdButtonPropertiesComponent; 
+		case '5': 
+		return ScdNumericDisplayPropertiesComponent; 
 		case '7': 
 		return ScdStringDisplayPropertiesComponent; 
 		case '8': 
 		return ScdStringInputPropertiesComponent; 
-		case '11': 
-		return ScdSymbolPropertiesComponent; 
-		case '10': 
-		return ScdSymbolStatesPropertiesComponent; 
-		case '29': 
-		return ScdSymbolfactoryplusComponent; 
-		case '23': 
-		return ScdTagLabelPropertiesComponent; 
-		case '2': 
-		return ScdTextPropertiesComponent; 
+		case '9': 
+		return ScdMultistateIndicatorPropertiesComponent; 
 	default:
 	return null;
 	}
@@ -3549,11 +3630,42 @@ public getShapeInfo(){
         tables.push('INSERT_SCD_BUTTON_APPEARANCE');
         tables.push('INSERT_SCD_BUTTON_APPEARANCE');
         break;
+      case 'Banner':
+        tables.push('INSERT_SCD_ALARM_GENERAL_BANNER');
+        tables.push('INSERT_SCD_ALARM_COLUMNS');
+        tables.push('INSERT_SCD_ALARM_COLUMNS');
+        tables.push('INSERT_SCD_ALARM_COLUMNS');
+        tables.push('INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS');
+        tables.push('INSERT_SCD_ALARM_STATES');
+        tables.push('INSERT_SCD_ALARM_SORT');
+        break;
+
+      case 'Summary':
+        tables.push('INSERT_SCD_ALARM_APPEARANCE');
+        tables.push('INSERT_SCD_ALARM_COLUMNS');
+        tables.push('INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS');
+        tables.push('INSERT_SCD_ALARM_STATES');
+        tables.push('INSERT_SCD_ALARM_SORT');
+        tables.push('INSERT_SCD_ALARM_BEHAVIOR');
+        break;
+      case 'Log Viewer':
+        tables.push('INSERT_SCD_ALARM_GENERAL_LOG_VIEWER');
+        tables.push('INSERT_SCD_ALARM_COLUMNS');
+        tables.push('INSERT_SCD_ALARM_COLUMNS');
+        //tables.push('INSERT_SCD_SCD_ALARM_DISPLAY_FILTERS');
+        //tables.push('INSERT_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS');
+        tables.push('INSERT_SCD_ALARM_STATES');
+        tables.push('INSERT_SCD_ALARM_SORT');
+        break;
+      case 'Status Explorer':
+        tables.push('INSERT_SCD_ALARM_GENERAL_STATUS_EXPLORER');
+        break;
       default:
         break;
     }
     console.log("insertSCDShapeTables:tables:", shapeType, tables)
     let butApp = 0;
+    let ALARM_COLUMNS = 0;
     if (tables.length > 0) {
       for (let i = 0; i < tables.length; i++) {
         let useshapeType = null;
@@ -3561,6 +3673,15 @@ public getShapeInfo(){
           useshapeType = shapeType;
           if ((shapeType == "Maintained") || (shapeType == "Multistate"))
             useshapeType = "Momentry";
+        }
+        if ( (tables[i] == "INSERT_SCD_ALARM_COLUMNS") && (shapeType == "Banner") ) {
+          if (ALARM_COLUMNS == 0)
+            useshapeType = shapeType;
+          if (ALARM_COLUMNS == 1)
+            useshapeType = "Status Bar Panel";
+          if (ALARM_COLUMNS == 2)
+            useshapeType = "Status Bar Button";
+            ALARM_COLUMNS++;
         }
         let TableDefauls = await this.starlib1.setShapeDefaults(tables[i], useshapeType);
         console.log("insertSCDShapeTables:TableDefauls:", JSON.stringify(TableDefauls));
@@ -4218,6 +4339,7 @@ public onFreehandPointerUp(event: PointerEvent): void {
      || (kind == "backspace")  || (kind == "end")  || (kind == "enter") 
      || (kind == "moveleft")  || (kind == "moveright")  || (kind == "movedown") 
      || (kind == "moveup")  || (kind == "pageup")  || (kind == "pagedown") 
+     || (kind == "banner") || (kind == "summary") || (kind == "logViewer") || (kind == "statusExplorer")
      ) {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
@@ -5955,7 +6077,39 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="9" cy="11" r="2" fill="#e94560"/><path d="M4 18 L10 13 L14 17 L18 14 L21 17" fill="none" stroke="#e94560" stroke-width="2"/>`,
     browser:
       `<rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#e94560" stroke-width="2"/><circle cx="6" cy="8" r="1" fill="#e94560"/>`,
-
+    banner:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="8" width="20" height="8" rx="1.5" stroke="#e94560" stroke-width="2"/>
+      <circle cx="6.5" cy="12" r="1.2" fill="#e94560"/>
+      <line x1="10" y1="12" x2="19" y2="12" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+    summary:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="4" width="18" height="16" rx="1.5" stroke="#e94560" stroke-width="2"/>
+      <line x1="7" y1="9" x2="13" y2="9" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="13" x2="17" y2="13" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="17" x2="15" y2="17" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+    logViewer:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="3" width="14" height="18" rx="1.5" stroke="#e94560" stroke-width="2"/>
+      <line x1="7" y1="8" x2="15" y2="8" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="12" x2="15" y2="12" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="16" x2="15" y2="16" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="19" y1="6" x2="19" y2="18" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="19" cy="8" r="1.5" fill="#e94560"/>
+    </svg>`,
+    statusExplorer:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="5" cy="6" r="2" stroke="#e94560" stroke-width="2"/>
+      <circle cx="5" cy="12" r="2" stroke="#e94560" stroke-width="2"/>
+      <circle cx="5" cy="18" r="2" stroke="#e94560" stroke-width="2"/>
+      <line x1="7" y1="6" x2="20" y2="6" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="12" x2="16" y2="12" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="18" x2="18" y2="18" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="5" y1="8" x2="5" y2="10" stroke="#e94560" stroke-width="2"/>
+      <line x1="5" y1="14" x2="5" y2="16" stroke="#e94560" stroke-width="2"/>
+    </svg>`,
     // ── Generic fallback ──
     default:
       `<rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2" stroke-dasharray="3 2"/><line x1="12" y1="9" x2="12" y2="15" stroke="#e94560" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="#e94560" stroke-width="2"/>`,
@@ -6019,11 +6173,12 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Time and Date Display': 'timeDateDisplay',
     'Local Message': 'localMessage',
     'Tag Label': 'tagLabel',
-    'Banner': 'text',
     'Alarms and Events': 'list',
-    'Status Explorer': 'list',
-    'Log Viewer': 'list',
+    'Banner': 'banner',
+    'Status Explorer': 'statusExplorer',
+    'Log Viewer': 'logViewer',
     'Summary': 'list',
+
     'Symbol': 'polygon',
     'Web Browser': 'browser',
     'Image': 'image',

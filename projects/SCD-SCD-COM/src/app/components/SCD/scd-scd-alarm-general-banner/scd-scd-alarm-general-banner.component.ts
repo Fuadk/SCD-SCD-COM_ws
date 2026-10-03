@@ -15,9 +15,7 @@ import { scdalarmGeneralBannerScdScdAlarmGeneralBanner , componentConfigDef} fro
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
 'GENERAL_ID' : new FormControl(dataItem.GENERAL_ID  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'BACKGROUND_COLOR' : new FormControl(dataItem.BACKGROUND_COLOR  , ) ,
 'SELECTED_ITEM_TEXT_COLOR' : new FormControl(dataItem.SELECTED_ITEM_TEXT_COLOR  , ) ,
@@ -71,7 +69,7 @@ export class ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivsComponent {
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isAPP_IDEnable : boolean = true;
+  public  isSHAPE_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -82,12 +80,12 @@ export class ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivsComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isAPP_IDreadOnly : false , isGENERAL_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isGENERAL_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="APP_ID";
+  public masterKeyName ="SHAPE_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -100,12 +98,8 @@ export class ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivsComponent {
   public PK_AUTO = 'GENERAL_ID';
   public customerFacing = false;
   public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"Alarm List","visible":true},{"CODE":"2","CODETEXT_LANG":"Status Bar","visible":true},{"CODE":"3","CODETEXT_LANG":"Alarm and Event Summary Coomand","visible":true}] ;
-public labelAPP_IDTop=true;
-public labelAPP_IDVisible=true;
 public labelGENERAL_IDTop=true;
 public labelGENERAL_IDVisible=true;
-public labelDISPLAY_IDTop=true;
-public labelDISPLAY_IDVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
 public labelBACKGROUND_COLORTop=true;
@@ -141,10 +135,8 @@ public labelDISPLAY_ERROR_OPERATOR_ACTIONS_DIALOGVisible=true;
 public labelMAINTAIN_SELECTION_FOCUS_LOSTTop=true;
 public labelMAINTAIN_SELECTION_FOCUS_LOSTVisible=true;
 
-public visibleAPP_ID = true;
 public visibleGENERAL_ID = true;
-public visibleDISPLAY_ID = false;
-public visibleSHAPE_ID = false;
+public visibleSHAPE_ID = true;
 public visibleBACKGROUND_COLOR = true;
 public visibleSELECTED_ITEM_TEXT_COLOR = true;
 public visibleSELECTED_ITEM_BACKGROUND_COLOR = true;
@@ -162,9 +154,7 @@ public visibleCOMMAND_BUTTON = true;
 public visibleDISPLAY_ERROR_OPERATOR_ACTIONS_DIALOG = true;
 public visibleMAINTAIN_SELECTION_FOCUS_LOST = true;
 
-public disableAPP_ID = false;
 public disableGENERAL_ID = false;
-public disableDISPLAY_ID = false;
 public disableSHAPE_ID = false;
 public disableBACKGROUND_COLOR = false;
 public disableSELECTED_ITEM_TEXT_COLOR = false;
@@ -312,10 +302,10 @@ public disableMAINTAIN_SELECTION_FOCUS_LOST = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivs form.APP_ID :' + form.APP_ID);
-    if ( (form.APP_ID != "") &&   (typeof form.APP_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmGeneralBannerScdScdAlarmGeneralBannerFormdivs form.SHAPE_ID :' + form.SHAPE_ID);
+    if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
-      this.masterKey = form.APP_ID;
+      this.masterKey = form.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -336,7 +326,7 @@ public disableMAINTAIN_SELECTION_FOCUS_LOST = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.APP_ID != "undefined") &&   (form.APP_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.SHAPE_ID != "undefined") &&   (form.SHAPE_ID != ""))
     {
       
       this.isSearch = true;
@@ -598,13 +588,7 @@ public disableMAINTAIN_SELECTION_FOCUS_LOST = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='DISPLAY_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrICON_STYLE"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ROW_DOUBLE_CLICK_ACTION\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrROW_DOUBLE_CLICK_ACTION"},
@@ -616,12 +600,6 @@ this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME C
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
-public lkpArrSHAPE_ID = [];
-
 public lkpArrICON_STYLE = [];
 
 public lkpArrROW_DOUBLE_CLICK_ACTION = [];
@@ -629,21 +607,6 @@ public lkpArrROW_DOUBLE_CLICK_ACTION = [];
 public lkpArrFONT_SB = [];
 
 public lkpArrBUTTON_SIZE = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetICON_STYLE(CODE: any): any {
 var rec = this.lkpArrICON_STYLE.find((x:any) => x.CODE === CODE);
@@ -667,6 +630,8 @@ return rec;
 
 onChanges(): void {
 this.form.get('GENERAL_ID').valueChanges.subscribe(val => {
+});
+this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
 });
 this.form.get('NUMBER_OF_ROWS').valueChanges.subscribe(val => {
 });
@@ -791,9 +756,9 @@ public printScreen(){
     
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
     
   }
@@ -855,26 +820,6 @@ public printScreen(){
 
 
 
-async WHEN_VALIDATE_ITEM_APP_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-      this.form.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-     this.form.get('APP_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_GENERAL_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -892,26 +837,6 @@ async WHEN_VALIDATE_ITEM_GENERAL_ID(value) {
  }
 
  async ON_CLICK_GENERAL_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
 
 }
 
@@ -1255,12 +1180,6 @@ async WHEN_VALIDATE_ITEM_MAINTAIN_SELECTION_FOCUS_LOST(value) {
 
 }
  
- async onValueChange_APP_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APP_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_GENERAL_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1270,18 +1189,15 @@ async WHEN_VALIDATE_ITEM_MAINTAIN_SELECTION_FOCUS_LOST(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_DISPLAY_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_SHAPE_ID(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  } 
- async onValueChange_SHAPE_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
+ } 
  async onValueChange_BACKGROUND_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 

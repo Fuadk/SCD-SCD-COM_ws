@@ -20,9 +20,7 @@ import {   scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4 , componentConfigDe
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'FILTER_ID' : new FormControl(dataItem.FILTER_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
 'FILTER_NAME' : new FormControl(dataItem.FILTER_NAME  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'WHERE_CLAUSE' : new FormControl(dataItem.WHERE_CLAUSE  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) 
 });
@@ -72,9 +70,7 @@ export class ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters4GridComponent impl
   public isChild: boolean = false;
   public isMaster: boolean = false;
   
-  				public  isFILTER_IDEnable : boolean = true; 
-public  isAPP_IDEnable : boolean = true; 
-public  isDISPLAY_IDEnable : boolean = true; 
+  		public  isFILTER_IDEnable : boolean = true; 
 public  isSHAPE_IDEnable : boolean = true; 
 
   public  isFilterable : boolean = false;
@@ -84,7 +80,7 @@ public  isSHAPE_IDEnable : boolean = true;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   private masterKey ="";
-  private masterKeyName ="APP_ID";
+  private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_ALARM_DISPLAY_FILTERS";
   private updateCMD = "UPDATE_SCD_ALARM_DISPLAY_FILTERS";
   private deleteCMD =   "DELETE_SCD_ALARM_DISPLAY_FILTERS";
@@ -103,7 +99,7 @@ public  isSHAPE_IDEnable : boolean = true;
   public OrderByClause = "";
 
   public formattedWhere:any = null;
-  public primarKeyReadOnlyArr = {isFILTER_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isFILTER_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   public createFormGroupGrid = createFormGroup;
 
@@ -115,9 +111,7 @@ public  isSHAPE_IDEnable : boolean = true;
   public masterParams:any;
 public isPhonePortrait = false;
 public visibleFILTER_ID = true;
-public visibleAPP_ID = false;
 public visibleFILTER_NAME = true;
-public visibleDISPLAY_ID = false;
 public visibleWHERE_CLAUSE = true;
 public visibleSHAPE_ID = false;
 
@@ -258,9 +252,9 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-4';
       this.isChild = true;
     }
     /*
-    if ( (grid.APP_ID != "") &&   (typeof grid.APP_ID != "undefined"))
+    if ( (grid.SHAPE_ID != "") &&   (typeof grid.SHAPE_ID != "undefined"))
     {
-      this.masterKey = grid.APP_ID;
+      this.masterKey = grid.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(grid);
@@ -366,8 +360,8 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-4';
         data: this.formGroup.value
       }
 
-      let masterKeyArr = [this.formGroup.value['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [this.formGroup.value['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -414,8 +408,8 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-4';
         data: GridData.data[0]
       }
 
-      let masterKeyArr = [GridData.data[0]['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [GridData.data[0]['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -435,8 +429,8 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-4';
       data: this.masterKeyArr
     }
 
-       let masterKeyArr = [data['APP_ID'],data['DISPLAY_ID'],data['SHAPE_ID'],data['FILTER_ID']];
-      let masterKeyNameArr = ['APP_ID','DISPLAY_ID','SHAPE_ID','FILTER_ID'];
+       let masterKeyArr = [data['SHAPE_ID'],data['FILTER_ID']];
+      let masterKeyNameArr = ['SHAPE_ID','FILTER_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -611,31 +605,13 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
+this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrSHAPE_ID = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
@@ -812,26 +788,6 @@ this.router.navigate(['/' + routerLink] , { skipLocationChange: true });
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-      this.formGroup.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-     this.formGroup.get('APP_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_FILTER_NAME(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -849,26 +805,6 @@ async WHEN_VALIDATE_ITEM_FILTER_NAME(formGroup) {
  }
 
  async ON_CLICK_FILTER_NAME(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-      this.formGroup.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-     this.formGroup.get('DISPLAY_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
 
 }
 
@@ -915,14 +851,8 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
  async onBlur_FILTER_ID() { 
   await this.WHEN_VALIDATE_ITEM_FILTER_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeAPP_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_APP_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
  async onBlur_FILTER_NAME() { 
   await this.WHEN_VALIDATE_ITEM_FILTER_NAME(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeDISPLAY_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async valueChangeWHERE_CLAUSE(value: any) { 
  await this.WHEN_VALIDATE_ITEM_WHERE_CLAUSE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  

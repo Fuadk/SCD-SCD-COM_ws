@@ -20,10 +20,8 @@ import {   scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList , compon
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'EVENT_ID' : new FormControl(dataItem.EVENT_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
-'EVENT_NAME' : new FormControl(dataItem.EVENT_NAME  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'EVENT_NAME' : new FormControl(dataItem.EVENT_NAME  , ) ,
 'PRIORITY' : new FormControl(dataItem.PRIORITY  , ) ,
 'URGENT' : new FormControl(dataItem.URGENT  , ) ,
 'HIGH' : new FormControl(dataItem.HIGH  , ) ,
@@ -31,7 +29,8 @@ import {   scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList , compon
 'LOW' : new FormControl(dataItem.LOW  , ) ,
 'EVENT' : new FormControl(dataItem.EVENT  , ) ,
 'SCOPES' : new FormControl(dataItem.SCOPES  , ) ,
-'EVENT_SOURCE' : new FormControl(dataItem.EVENT_SOURCE  , ) 
+'EVENT_SOURCE' : new FormControl(dataItem.EVENT_SOURCE  , ) ,
+'dummy' : new FormControl(dataItem.dummy  , ) 
 });
 
 
@@ -79,7 +78,8 @@ export class ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridCom
   public isChild: boolean = false;
   public isMaster: boolean = false;
   
-  	public  isEVENT_IDEnable : boolean = true; 
+  		public  isEVENT_IDEnable : boolean = true; 
+public  isSHAPE_IDEnable : boolean = true; 
 
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
@@ -88,7 +88,7 @@ export class ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridCom
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   private masterKey ="";
-  private masterKeyName ="APP_ID";
+  private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS";
   private updateCMD = "UPDATE_SCD_ALARM_EVENT_SUBSCRIPTIONS";
   private deleteCMD =   "DELETE_SCD_ALARM_EVENT_SUBSCRIPTIONS";
@@ -107,7 +107,7 @@ export class ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridCom
   public OrderByClause = "";
 
   public formattedWhere:any = null;
-  public primarKeyReadOnlyArr = {isEVENT_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isEVENT_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   public createFormGroupGrid = createFormGroup;
 
@@ -118,19 +118,18 @@ export class ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridCom
   public children = ["any"];
   public masterParams:any;
 public isPhonePortrait = false;
-public visibleEVENT_ID = true;
-public visibleAPP_ID = false;
-public visibleEVENT_NAME = true;
-public visibleDISPLAY_ID = false;
-public visibleSHAPE_ID = false;
-public visiblePRIORITY = false;
-public visibleURGENT = false;
-public visibleHIGH = false;
-public visibleMEDIUM = false;
-public visibleLOW = false;
-public visibleEVENT = false;
-public visibleSCOPES = false;
-public visibleEVENT_SOURCE = false;
+public visibleEVENT_ID = undefined;
+public visibleSHAPE_ID = undefined;
+public visibleEVENT_NAME = undefined;
+public visiblePRIORITY = undefined;
+public visibleURGENT = undefined;
+public visibleHIGH = undefined;
+public visibleMEDIUM = undefined;
+public visibleLOW = undefined;
+public visibleEVENT = undefined;
+public visibleSCOPES = undefined;
+public visibleEVENT_SOURCE = undefined;
+public visibledummy = true;
 
 public compSelector = 'app-scd-aesl-alarm-event-subscriptions-list';
 
@@ -149,9 +148,9 @@ public compSelector = 'app-scd-aesl-alarm-event-subscriptions-list';
       //this.componentConfig.gridHeight =  "500";
       this.componentConfig.showTitle = true;
       this.componentConfig.queryable  = true;
-      this.componentConfig.insertable = false;
-      this.componentConfig.removeable = false;
-      this.componentConfig.updateable = false;       
+      this.componentConfig.insertable = true;
+      this.componentConfig.removeable = true;
+      this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
       this.componentConfig.enabled = true;
       this.title = this.componentConfig.title ? this.componentConfig.title :this.starServices.getNLS([],"SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList.component_title","Alarm Event Subscriptions List");
@@ -269,9 +268,9 @@ public compSelector = 'app-scd-aesl-alarm-event-subscriptions-list';
       this.isChild = true;
     }
     /*
-    if ( (grid.APP_ID != "") &&   (typeof grid.APP_ID != "undefined"))
+    if ( (grid.SHAPE_ID != "") &&   (typeof grid.SHAPE_ID != "undefined"))
     {
-      this.masterKey = grid.APP_ID;
+      this.masterKey = grid.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(grid);
@@ -377,8 +376,8 @@ public compSelector = 'app-scd-aesl-alarm-event-subscriptions-list';
         data: this.formGroup.value
       }
 
-      let masterKeyArr = [this.formGroup.value['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [this.formGroup.value['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -425,8 +424,8 @@ public compSelector = 'app-scd-aesl-alarm-event-subscriptions-list';
         data: GridData.data[0]
       }
 
-      let masterKeyArr = [GridData.data[0]['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [GridData.data[0]['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -446,8 +445,8 @@ public compSelector = 'app-scd-aesl-alarm-event-subscriptions-list';
       data: this.masterKeyArr
     }
 
-       let masterKeyArr = [data['EVENT_ID']];
-      let masterKeyNameArr = ['EVENT_ID'];
+       let masterKeyArr = [data['SHAPE_ID'],data['EVENT_ID']];
+      let masterKeyNameArr = ['SHAPE_ID','EVENT_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -622,35 +621,9 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+this.lookupArrDef =[];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
-}
-
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
-public lkpArrSHAPE_ID = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
 }
 
 
@@ -798,309 +771,50 @@ async POST_QUERY(formGroup:any, P_INDEX:any){
 
 
 
-async WHEN_VALIDATE_ITEM_EVENT_ID(formGroup) {
+async WHEN_VALIDATE_ITEM_dummy(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['EVENT_ID'] != "undefined" ) 
-      this.formGroup.controls['EVENT_ID'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['dummy'] != "undefined" ) 
+      this.formGroup.controls['dummy'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['EVENT_ID'] != "undefined" ) 
-     this.formGroup.get('EVENT_ID').updateValueAndValidity();
+ if (typeof this.formGroup.controls['dummy'] != "undefined" ) 
+     this.formGroup.get('dummy').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_EVENT_ID(event){
-await this.starServices.sleep(200);
-this.starServices.sessionParams['NAVIGATE_DATA'] = this.formGroup;
-console.log ('NAVIGATE:NAVIGATE_DATA', this.starServices.sessionParams['NAVIGATE_DATA'] );
-let routerLink =  ' SCD_';
-this.router.navigate(['/' + routerLink] , { skipLocationChange: true });
-
-}
-
-async WHEN_VALIDATE_ITEM_APP_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-      this.formGroup.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-     this.formGroup.get('APP_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_EVENT_NAME(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['EVENT_NAME'] != "undefined" ) 
-      this.formGroup.controls['EVENT_NAME'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['EVENT_NAME'] != "undefined" ) 
-     this.formGroup.get('EVENT_NAME').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_EVENT_NAME(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-      this.formGroup.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-     this.formGroup.get('DISPLAY_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SHAPE_ID'] != "undefined" ) 
-      this.formGroup.controls['SHAPE_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['SHAPE_ID'] != "undefined" ) 
-     this.formGroup.get('SHAPE_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SHAPE_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_PRIORITY(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['PRIORITY'] != "undefined" ) 
-      this.formGroup.controls['PRIORITY'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['PRIORITY'] != "undefined" ) 
-     this.formGroup.get('PRIORITY').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_PRIORITY(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_URGENT(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['URGENT'] != "undefined" ) 
-      this.formGroup.controls['URGENT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['URGENT'] != "undefined" ) 
-     this.formGroup.get('URGENT').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_URGENT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_HIGH(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['HIGH'] != "undefined" ) 
-      this.formGroup.controls['HIGH'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['HIGH'] != "undefined" ) 
-     this.formGroup.get('HIGH').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_HIGH(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_MEDIUM(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['MEDIUM'] != "undefined" ) 
-      this.formGroup.controls['MEDIUM'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['MEDIUM'] != "undefined" ) 
-     this.formGroup.get('MEDIUM').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_MEDIUM(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_LOW(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['LOW'] != "undefined" ) 
-      this.formGroup.controls['LOW'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['LOW'] != "undefined" ) 
-     this.formGroup.get('LOW').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_LOW(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_EVENT(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['EVENT'] != "undefined" ) 
-      this.formGroup.controls['EVENT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['EVENT'] != "undefined" ) 
-     this.formGroup.get('EVENT').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_EVENT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SCOPES(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SCOPES'] != "undefined" ) 
-      this.formGroup.controls['SCOPES'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['SCOPES'] != "undefined" ) 
-     this.formGroup.get('SCOPES').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SCOPES(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_EVENT_SOURCE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['EVENT_SOURCE'] != "undefined" ) 
-      this.formGroup.controls['EVENT_SOURCE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['EVENT_SOURCE'] != "undefined" ) 
-     this.formGroup.get('EVENT_SOURCE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_EVENT_SOURCE(event){
+ async ON_CLICK_dummy(event){
 
 }
  
  async onBlur_EVENT_ID() { 
-  await this.WHEN_VALIDATE_ITEM_EVENT_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeAPP_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_APP_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_SHAPE_ID() { 
  } 
  async onBlur_EVENT_NAME() { 
-  await this.WHEN_VALIDATE_ITEM_EVENT_NAME(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeDISPLAY_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeSHAPE_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_PRIORITY() { 
-  await this.WHEN_VALIDATE_ITEM_PRIORITY(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_URGENT() { 
-  await this.WHEN_VALIDATE_ITEM_URGENT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_HIGH() { 
-  await this.WHEN_VALIDATE_ITEM_HIGH(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_MEDIUM() { 
-  await this.WHEN_VALIDATE_ITEM_MEDIUM(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_LOW() { 
-  await this.WHEN_VALIDATE_ITEM_LOW(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_EVENT() { 
-  await this.WHEN_VALIDATE_ITEM_EVENT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SCOPES() { 
-  await this.WHEN_VALIDATE_ITEM_SCOPES(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_EVENT_SOURCE() { 
-  await this.WHEN_VALIDATE_ITEM_EVENT_SOURCE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_dummy() { 
+  await this.WHEN_VALIDATE_ITEM_dummy(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
 
 // For Adding new CODE

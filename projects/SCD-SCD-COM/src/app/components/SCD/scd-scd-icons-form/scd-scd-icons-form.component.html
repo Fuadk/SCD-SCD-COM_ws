@@ -4,7 +4,7 @@
        this.starServices.getNLS([],"SCD_SCD_ICONS_FORM.scdiconsScdScdIconsForm.component_title","SCD ICONS FORM") }}</legend>
 <div class="form-toolbar"> </div>
 
-<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig?.showToolBar == null ? true : componentConfig.showToolBar">
 
  
     <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
@@ -20,7 +20,7 @@
 
     <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
 
-    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
     <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
 
     <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
@@ -103,8 +103,9 @@
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelsvg_contentTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblesvg_content >
 		<kendo-label *ngIf="(!labelsvg_contentTop && !isPhonePortrait) && labelsvg_contentVisible" class="form-label" [text]="starServices.getNLS([],'SCD_SCD_ICONS_FORM.scdiconsScdScdIconsForm.svg_content','Svg Content')"></kendo-label>
 		<label *ngIf="(labelsvg_contentTop || isPhonePortrait) && labelsvg_contentVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ICONS_FORM.scdiconsScdScdIconsForm.svg_content','Svg Content')}}</label>
-<kendo-svg-icon *ngIf="showIcon" #svg_content style="width: 10em;height: 10em;"    adaptiveMode="auto" 		(click)="ON_CLICK_svg_content($event)"
- [icon]="svg_data['svg_content']"  ></kendo-svg-icon> 
+		<kendo-svg-icon *ngIf="showIcon" #svg_content style="width: 10em;height: 10em;"    adaptiveMode="auto" 		(click)="ON_CLICK_svg_content($event)"
+		[icon]="starServices.convertSvgToKendoSVGIcon(this,form.value.svg_content, null, 'svg_content')" >
+		</kendo-svg-icon> 
 		<input *ngIf="form.touched&&componentConfig.enabled" [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="svg_content"
  kendoTextBox #svg_content  [placeholder]="starServices.getNLS([],'SCD_SCD_ICONS_FORM.scdiconsScdScdIconsForm.svg_content_Hint','Please enter Svg Content.')"
  (valueChange)="onValueChange_svg_content($event)"  />

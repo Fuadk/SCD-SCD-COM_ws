@@ -74,22 +74,12 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPP_LANGUAGETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPP_LANGUAGE >
-		<kendo-label *ngIf="(!labelAPP_LANGUAGETop && !isPhonePortrait) && labelAPP_LANGUAGEVisible" class="form-label" [for]="APP_LANGUAGE" [text]="starServices.getNLS([],'SCD_AD_APPLICATION.scdapplicationScdAdApplication.APP_LANGUAGE','App Language')"></kendo-label>
+		<kendo-label *ngIf="(!labelAPP_LANGUAGETop && !isPhonePortrait) && labelAPP_LANGUAGEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AD_APPLICATION.scdapplicationScdAdApplication.APP_LANGUAGE','App Language')"></kendo-label>
 		<label *ngIf="(labelAPP_LANGUAGETop || isPhonePortrait) && labelAPP_LANGUAGEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AD_APPLICATION.scdapplicationScdAdApplication.APP_LANGUAGE','App Language')}}</label>
-		<kendo-multiselect  #APP_LANGUAGE class="form-field-combobox"  [formControlName]="'APP_LANGUAGE'"
-		[data]="lkpArrAPP_LANGUAGE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_AD_APPLICATION.scdapplicationScdAdApplication.APP_LANGUAGE_Hint','Please enter App Language.')"		(click)="ON_CLICK_APP_LANGUAGE($event)"
- (valueChange)="onValueChange_APP_LANGUAGE($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APP_LANGUAGE')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-multiselect>
+		<input   formControlName="APP_LANGUAGE"
+ kendoTextBox  #APP_LANGUAGE  [placeholder]="starServices.getNLS([],'SCD_AD_APPLICATION.scdapplicationScdAdApplication.APP_LANGUAGE_Hint','Please enter App Language.')"
+		(click)="ON_CLICK_APP_LANGUAGE($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_APP_LANGUAGE($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 </div>
 

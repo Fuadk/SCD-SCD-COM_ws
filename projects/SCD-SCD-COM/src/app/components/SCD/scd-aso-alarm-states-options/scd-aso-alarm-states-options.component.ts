@@ -16,8 +16,6 @@ import { scdalarmStatesOptionsScdAsoAlarmStatesOptions , componentConfigDef} fro
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'STATE_OPTION_ID' : new FormControl(dataItem.STATE_OPTION_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'TEST_RATES' : new FormControl(dataItem.TEST_RATES  , ) ,
 'BLINK_RATE' : new FormControl(dataItem.BLINK_RATE  , ) 
@@ -57,7 +55,7 @@ export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent {
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isAPP_IDEnable : boolean = true;
+  public  isSHAPE_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -68,12 +66,12 @@ export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isSTATE_OPTION_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isSTATE_OPTION_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="APP_ID";
+  public masterKeyName ="SHAPE_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -88,10 +86,6 @@ export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent {
   public FormStepsArr = [] ;
 public labelSTATE_OPTION_IDTop=false;
 public labelSTATE_OPTION_IDVisible=true;
-public labelAPP_IDTop=false;
-public labelAPP_IDVisible=true;
-public labelDISPLAY_IDTop=false;
-public labelDISPLAY_IDVisible=true;
 public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
 public labelTEST_RATESTop=false;
@@ -100,15 +94,11 @@ public labelBLINK_RATETop=false;
 public labelBLINK_RATEVisible=true;
 
 public visibleSTATE_OPTION_ID = true;
-public visibleAPP_ID = true;
-public visibleDISPLAY_ID = true;
 public visibleSHAPE_ID = true;
 public visibleTEST_RATES = true;
 public visibleBLINK_RATE = true;
 
 public disableSTATE_OPTION_ID = false;
-public disableAPP_ID = false;
-public disableDISPLAY_ID = false;
 public disableSHAPE_ID = false;
 public disableTEST_RATES = false;
 public disableBLINK_RATE = false;
@@ -242,10 +232,10 @@ public disableBLINK_RATE = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsForm form.APP_ID :' + form.APP_ID);
-    if ( (form.APP_ID != "") &&   (typeof form.APP_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsForm form.SHAPE_ID :' + form.SHAPE_ID);
+    if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
-      this.masterKey = form.APP_ID;
+      this.masterKey = form.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -266,7 +256,7 @@ public disableBLINK_RATE = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.APP_ID != "undefined") &&   (form.APP_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.SHAPE_ID != "undefined") &&   (form.SHAPE_ID != ""))
     {
       
       this.isSearch = true;
@@ -353,6 +343,9 @@ public disableBLINK_RATE = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+      this.FormStepsArr.forEach(item => {
+      (item as any).visible = true;
+    });
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -525,11 +518,7 @@ public disableBLINK_RATE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
+this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BLINK_RATE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrBLINK_RATE"}];
@@ -537,23 +526,9 @@ this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME C
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrSHAPE_ID = [];
 
 public lkpArrBLINK_RATE = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
@@ -769,46 +744,6 @@ async WHEN_VALIDATE_ITEM_STATE_OPTION_ID(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-      this.form.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-     this.form.get('APP_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -878,18 +813,6 @@ async WHEN_VALIDATE_ITEM_BLINK_RATE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_APP_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APP_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
- async onValueChange_DISPLAY_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onValueChange_SHAPE_ID(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
  await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 

@@ -20,10 +20,8 @@ import {   scdalarmSortScdAssAlarmSortResults , componentConfigDef } from '@mode
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'SORT_ID' : new FormControl(dataItem.SORT_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
 'SORT_BY_FIELD' : new FormControl(dataItem.SORT_BY_FIELD  , ) ,
 'THEN_BY_FIELD_ASC_DESC' : new FormControl(dataItem.THEN_BY_FIELD_ASC_DESC  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SORT_BY_FIELD_ASC_DESC' : new FormControl(dataItem.SORT_BY_FIELD_ASC_DESC  , ) ,
 'THEN_BY_2' : new FormControl(dataItem.THEN_BY_2  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
@@ -85,7 +83,7 @@ export class ScdAlarmSortScdAssAlarmSortResultsGridComponent implements OnInit,O
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   private masterKey ="";
-  private masterKeyName ="APP_ID";
+  private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_ALARM_SORT";
   private updateCMD = "UPDATE_SCD_ALARM_SORT";
   private deleteCMD =   "DELETE_SCD_ALARM_SORT";
@@ -116,10 +114,8 @@ export class ScdAlarmSortScdAssAlarmSortResultsGridComponent implements OnInit,O
   public masterParams:any;
 public isPhonePortrait = false;
 public visibleSORT_ID = true;
-public visibleAPP_ID = false;
 public visibleSORT_BY_FIELD = true;
 public visibleTHEN_BY_FIELD_ASC_DESC = true;
-public visibleDISPLAY_ID = false;
 public visibleSORT_BY_FIELD_ASC_DESC = true;
 public visibleTHEN_BY_2 = true;
 public visibleSHAPE_ID = false;
@@ -263,9 +259,9 @@ public compSelector = 'app-scd-ass-alarm-sort-results';
       this.isChild = true;
     }
     /*
-    if ( (grid.APP_ID != "") &&   (typeof grid.APP_ID != "undefined"))
+    if ( (grid.SHAPE_ID != "") &&   (typeof grid.SHAPE_ID != "undefined"))
     {
-      this.masterKey = grid.APP_ID;
+      this.masterKey = grid.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(grid);
@@ -371,8 +367,8 @@ public compSelector = 'app-scd-ass-alarm-sort-results';
         data: this.formGroup.value
       }
 
-      let masterKeyArr = [this.formGroup.value['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [this.formGroup.value['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -419,8 +415,8 @@ public compSelector = 'app-scd-ass-alarm-sort-results';
         data: GridData.data[0]
       }
 
-      let masterKeyArr = [GridData.data[0]['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [GridData.data[0]['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -616,31 +612,13 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
+this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrSHAPE_ID"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrSHAPE_ID = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
@@ -812,26 +790,6 @@ async WHEN_VALIDATE_ITEM_SORT_ID(formGroup) {
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-      this.formGroup.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-     this.formGroup.get('APP_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_SORT_BY_FIELD(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -869,26 +827,6 @@ async WHEN_VALIDATE_ITEM_THEN_BY_FIELD_ASC_DESC(formGroup) {
  }
 
  async ON_CLICK_THEN_BY_FIELD_ASC_DESC(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-      this.formGroup.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-     this.formGroup.get('DISPLAY_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
 
 }
 
@@ -995,17 +933,11 @@ async WHEN_VALIDATE_ITEM_THEN_BY_2_FIELD_ASC_DESC(formGroup) {
  async onBlur_SORT_ID() { 
   await this.WHEN_VALIDATE_ITEM_SORT_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeAPP_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_APP_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
  async onBlur_SORT_BY_FIELD() { 
   await this.WHEN_VALIDATE_ITEM_SORT_BY_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_THEN_BY_FIELD_ASC_DESC() { 
   await this.WHEN_VALIDATE_ITEM_THEN_BY_FIELD_ASC_DESC(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeDISPLAY_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SORT_BY_FIELD_ASC_DESC() { 
   await this.WHEN_VALIDATE_ITEM_SORT_BY_FIELD_ASC_DESC(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  

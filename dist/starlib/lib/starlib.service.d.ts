@@ -244,6 +244,16 @@ export declare class starServices {
     showMultiStepForm(object: any, templateName: any): Promise<any>;
     callScreen(object: any, templateInfo: any): Promise<void>;
     getInvalidControls(object: any): any[];
+    convertSvgToKendoSVGIcon(object: any, svgContent: string, iconName: string, column: string): {
+        name: string;
+        content: string;
+        viewBox: string;
+        variants: {
+            solid: string;
+            outline: string;
+            duotone: string;
+        };
+    };
     convertSvgToKendoIcon(object: any, svgContent: string, iconName: string, column: any): {
         name: string;
         content: string;

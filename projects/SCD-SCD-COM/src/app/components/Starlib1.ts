@@ -636,7 +636,7 @@ gridUserSelectionChange(object, selectedData) {
     let whereClause = "SCREEN_NAME ='" + screenName.toUpperCase() + "'"
     if (shapeType != null)  
         whereClause = whereClause + " AND SHAPE_TYPE ='" + shapeType + "'" 
-    whereClause = whereClause + " order by REC_NUM ";
+    whereClause = whereClause + " order by SHAPE_TYPE, REC_NUM ";
         let body = [
             {
                 "_QUERY": "GET_SCD_SHAPE_DEFAULTS_QUERY",

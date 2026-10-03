@@ -9,7 +9,7 @@
       >
 <div>
     <!-- <legend class="k-form-legend">{{ title }}</legend> -->
-<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig?.showToolBar == null ? true : componentConfig.showToolBar">
     <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{starServices.getNLS([],'FILTER','Filter')}}" title="{{starServices.getNLS([],'FILTER','Filter')}}" (click)="openFilter()" *ngIf="queryable2"></kendo-toolbar-button>
     <kendo-toolbar-button [icon]="'search'"  title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery( form2.value);" *ngIf="queryable2"></kendo-toolbar-button>
     <kendo-toolbar-button  [icon]="'cancel'"  title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="form2.reset()" *ngIf="queryable2"></kendo-toolbar-button >

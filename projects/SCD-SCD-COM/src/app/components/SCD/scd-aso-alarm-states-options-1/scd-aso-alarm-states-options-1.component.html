@@ -46,52 +46,10 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STATE_OPTION_ID($event)"    class="HIGH"  adaptiveMode="auto"  />
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPP_ID >
-		<kendo-label *ngIf="(!labelAPP_IDTop && !isPhonePortrait) && labelAPP_IDVisible" class="form-label" [for]="APP_ID" [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.APP_ID','App Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelAPP_IDTop || isPhonePortrait) && labelAPP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.APP_ID','App Id') + ' *'}}</label>
-		<kendo-combobox  #APP_ID class="form-field-combobox"  [formControlName]="'APP_ID'"
-		[data]="lkpArrAPP_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-
-		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.APP_ID.errors }"  required 
-		[readonly]="primarKeyReadOnlyArr.isAPP_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.APP_ID_Hint','Please enter App Id.')"		(click)="ON_CLICK_APP_ID($event)"
- (valueChange)="onValueChange_APP_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APP_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
-
 		<button  (valueChange)="onValueChange_TEST_RATES($event)"    class="MEDIUM"  adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.TEST_RATES_Hint','Please enter Test Rates.')" 
  iconClass="fas fa-"  *ngIf=visibleTEST_RATES 		(click)="ON_CLICK_TEST_RATES($event)"
  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.TEST_RATES','Test Rates')}}</button>
-
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ID >
-		<kendo-label *ngIf="(!labelDISPLAY_IDTop && !isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label" [for]="DISPLAY_ID" [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.DISPLAY_ID','Display Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelDISPLAY_IDTop || isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.DISPLAY_ID','Display Id') + ' *'}}</label>
-		<kendo-combobox  #DISPLAY_ID class="form-field-combobox"  [formControlName]="'DISPLAY_ID'"
-		[data]="lkpArrDISPLAY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-
-		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.DISPLAY_ID.errors }"  required 
-		[readonly]="primarKeyReadOnlyArr.isDISPLAY_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.DISPLAY_ID_Hint','Please enter Display Id.')"		(click)="ON_CLICK_DISPLAY_ID($event)"
- (valueChange)="onValueChange_DISPLAY_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DISPLAY_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBLINK_RATETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBLINK_RATE >
 		<kendo-label *ngIf="(!labelBLINK_RATETop && !isPhonePortrait) && labelBLINK_RATEVisible" class="form-label" [for]="BLINK_RATE" [text]="starServices.getNLS([],'SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.BLINK_RATE','Blink Rate')"></kendo-label>

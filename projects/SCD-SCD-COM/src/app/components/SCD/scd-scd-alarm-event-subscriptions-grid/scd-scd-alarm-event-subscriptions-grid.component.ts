@@ -15,20 +15,22 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import {   scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1 , componentConfigDef } from '@modeldir/model';
+import {   scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid , componentConfigDef } from '@modeldir/model';
 
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
-'CONDITION_ID' : new FormControl(dataItem.CONDITION_ID  , ) ,
-'CONDITION_ORDER' : new FormControl(dataItem.CONDITION_ORDER  , ) ,
-'BRACKET_OPEN' : new FormControl(dataItem.BRACKET_OPEN  , ) ,
-'CONDITION' : new FormControl(dataItem.CONDITION  , ) ,
-'EVENT_FIELD' : new FormControl(dataItem.EVENT_FIELD  , ) ,
-'VALUE' : new FormControl(dataItem.VALUE  , ) ,
+'EVENT_ID' : new FormControl(dataItem.EVENT_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
-'WHERE_FIELD' : new FormControl(dataItem.WHERE_FIELD  , ) ,
-'BRACKET_CLOSE' : new FormControl(dataItem.BRACKET_CLOSE  , ) ,
-'FILTER_ID' : new FormControl(dataItem.FILTER_ID  ,   Validators.required ) 
+'EVENT_NAME' : new FormControl(dataItem.EVENT_NAME  , ) ,
+'PRIORITY' : new FormControl(dataItem.PRIORITY  , ) ,
+'URGENT' : new FormControl(dataItem.URGENT  , ) ,
+'HIGH' : new FormControl(dataItem.HIGH  , ) ,
+'MEDIUM' : new FormControl(dataItem.MEDIUM  , ) ,
+'LOW' : new FormControl(dataItem.LOW  , ) ,
+'EVENT' : new FormControl(dataItem.EVENT  , ) ,
+'SCOPES' : new FormControl(dataItem.SCOPES  , ) ,
+'EVENT_SOURCE' : new FormControl(dataItem.EVENT_SOURCE  , ) ,
+'dummy' : new FormControl(dataItem.dummy  , ) 
 });
 
 
@@ -37,11 +39,11 @@ const matches = (el:any, selector:any) => (el.matches || el.msMatchesSelector).c
 declare function getParamConfig():any;
 declare function setParamConfig(var1:any):any;
 @Component({
-  selector: 'app-scd-adfc-alarm-display-filters-conditions-1',
+  selector: 'app-scd-scd-alarm-event-subscriptions-grid',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-adfc-alarm-display-filters-conditions-1.component.html',
+  templateUrl: './scd-scd-alarm-event-subscriptions-grid.component.html',
   standalone: false,
-  styleUrls: ['./scd-adfc-alarm-display-filters-conditions-1.component.scss'
+  styleUrls: ['./scd-scd-alarm-event-subscriptions-grid.component.scss'
 ],
   
   styles: [
@@ -58,7 +60,7 @@ declare function setParamConfig(var1:any):any;
     ]
 })
 
-export class ScdAlarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1GridComponent implements OnInit,OnDestroy {
+export class ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGridComponent implements OnInit,OnDestroy {
   @ViewChild(GridComponent) 
  
  public grid!: GridComponent;
@@ -76,9 +78,8 @@ export class ScdAlarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersCondition
   public isChild: boolean = false;
   public isMaster: boolean = false;
   
-  			public  isCONDITION_IDEnable : boolean = true; 
+  		public  isEVENT_IDEnable : boolean = true; 
 public  isSHAPE_IDEnable : boolean = true; 
-public  isFILTER_IDEnable : boolean = true; 
 
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
@@ -88,25 +89,25 @@ public  isFILTER_IDEnable : boolean = true;
   private masterKeyNameArr = [];
   private masterKey ="";
   private masterKeyName ="SHAPE_ID";
-  private insertCMD = "INSERT_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS";
-  private updateCMD = "UPDATE_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS";
-  private deleteCMD =   "DELETE_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS";
-  private getCMD = "GET_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS_QUERY";
+  private insertCMD = "INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS";
+  private updateCMD = "UPDATE_SCD_ALARM_EVENT_SUBSCRIPTIONS";
+  private deleteCMD =   "DELETE_SCD_ALARM_EVENT_SUBSCRIPTIONS";
+  private getCMD = "GET_SCD_ALARM_EVENT_SUBSCRIPTIONS_QUERY";
 
   public  executeQueryresult:any;
-  public title =  this.starServices.getNLS([],"SCD_ADFC_ALARM_DISPLAY_FILTERS_CONDITIONS_1.scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1.component_title","Alarm Display Filters Conditions");
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.component_title","SCD ALARM EVENT SUBSCRIPTIONS GRID");
   public PDFfileName = this.title + ".PDF";
   public ExcelfileName = this.title + ".xlsx";
   public componentConfig: componentConfigDef;
   public componentConfig_output: componentConfigDef;
-  public compTitleMsg =  "SCD_ADFC_ALARM_DISPLAY_FILTERS_CONDITIONS_1.scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1";
+  public compTitleMsg =  "SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid";
   public editableMode = false;
   
   public WhereClause = "";
   public OrderByClause = "";
 
   public formattedWhere:any = null;
-  public primarKeyReadOnlyArr = {isCONDITION_IDreadOnly : false , isSHAPE_IDreadOnly : false , isFILTER_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isEVENT_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   public createFormGroupGrid = createFormGroup;
 
@@ -117,18 +118,20 @@ public  isFILTER_IDEnable : boolean = true;
   public children = ["any"];
   public masterParams:any;
 public isPhonePortrait = false;
-public visibleCONDITION_ID = true;
-public visibleCONDITION_ORDER = true;
-public visibleBRACKET_OPEN = true;
-public visibleCONDITION = true;
-public visibleEVENT_FIELD = true;
-public visibleVALUE = true;
+public visibleEVENT_ID = true;
 public visibleSHAPE_ID = false;
-public visibleWHERE_FIELD = true;
-public visibleBRACKET_CLOSE = true;
-public visibleFILTER_ID = false;
+public visibleEVENT_NAME = true;
+public visiblePRIORITY = false;
+public visibleURGENT = false;
+public visibleHIGH = false;
+public visibleMEDIUM = false;
+public visibleLOW = false;
+public visibleEVENT = false;
+public visibleSCOPES = false;
+public visibleEVENT_SOURCE = false;
+public visibledummy = false;
 
-public compSelector = 'app-scd-adfc-alarm-display-filters-conditions-1';
+public compSelector = 'app-scd-scd-alarm-event-subscriptions-grid';
 
   private Body:any =[];
   @Output() readCompletedOutput: EventEmitter<any> = new EventEmitter();
@@ -150,7 +153,7 @@ public compSelector = 'app-scd-adfc-alarm-display-filters-conditions-1';
       this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
       this.componentConfig.enabled = true;
-      this.title = this.componentConfig.title ? this.componentConfig.title :this.starServices.getNLS([],"SCD_ADFC_ALARM_DISPLAY_FILTERS_CONDITIONS_1.scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1.component_title","Alarm Display Filters Conditions");
+      this.title = this.componentConfig.title ? this.componentConfig.title :this.starServices.getNLS([],"SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.component_title","SCD ALARM EVENT SUBSCRIPTIONS GRID");
   }
   private componentConfigChangeEvent!: Subscription;
   public ngAfterViewInit() {
@@ -296,7 +299,7 @@ public compSelector = 'app-scd-adfc-alarm-display-filters-conditions-1';
   }
 
   
-  private gridInitialValues:any = new scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1();   
+  private gridInitialValues:any = new scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid();   
 
   private addToBody(NewVal:any){
     this.Body.push(NewVal);
@@ -442,8 +445,8 @@ public compSelector = 'app-scd-adfc-alarm-display-filters-conditions-1';
       data: this.masterKeyArr
     }
 
-       let masterKeyArr = [data['SHAPE_ID'],data['FILTER_ID'],data['CONDITION_ID']];
-      let masterKeyNameArr = ['SHAPE_ID','FILTER_ID','CONDITION_ID'];
+       let masterKeyArr = [data['SHAPE_ID'],data['EVENT_ID']];
+      let masterKeyNameArr = ['SHAPE_ID','EVENT_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -618,70 +621,16 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"CONDITION_ORDER\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrCONDITION_ORDER"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BRACKET_OPEN\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrBRACKET_OPEN"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"EVENT_FIELD\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrEVENT_FIELD"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"WHERE_FIELD\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrWHERE_FIELD"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BRACKET_CLOSE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrBRACKET_CLOSE"},
-	{"statment":"SELECT FILTER_ID CODE, FILTER_NAME CODETEXT_LANG  FROM  SCD_ALARM_DISPLAY_FILTERS  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrFILTER_ID"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrSHAPE_ID"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrCONDITION_ORDER = [];
-
-public lkpArrBRACKET_OPEN = [];
-
-public lkpArrEVENT_FIELD = [];
-
 public lkpArrSHAPE_ID = [];
-
-public lkpArrWHERE_FIELD = [];
-
-public lkpArrBRACKET_CLOSE = [];
-
-public lkpArrFILTER_ID = [];
-
-public lkpArrGetCONDITION_ORDER(CODE: any): any {
-var rec = this.lkpArrCONDITION_ORDER.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetBRACKET_OPEN(CODE: any): any {
-var rec = this.lkpArrBRACKET_OPEN.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetEVENT_FIELD(CODE: any): any {
-var rec = this.lkpArrEVENT_FIELD.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetWHERE_FIELD(CODE: any): any {
-var rec = this.lkpArrWHERE_FIELD.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetBRACKET_CLOSE(CODE: any): any {
-var rec = this.lkpArrBRACKET_CLOSE.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetFILTER_ID(CODE: any): any {
-var rec = this.lkpArrFILTER_ID.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -692,7 +641,7 @@ public printScreen(){
    public handleComponentConfig(ComponentConfig:any) {
 
       if (typeof ComponentConfig !== "undefined") {
-         if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1Grid ComponentConfig:", ComponentConfig);
+         if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGrid ComponentConfig:", ComponentConfig);
          this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
          this.WHEN_NOTIFY(ComponentConfig);
          if (ComponentConfig.gridHeight != null)
@@ -830,123 +779,23 @@ async POST_QUERY(formGroup:any, P_INDEX:any){
 
 
 
-async WHEN_VALIDATE_ITEM_CONDITION_ID(formGroup) {
+async WHEN_VALIDATE_ITEM_EVENT_ID(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['CONDITION_ID'] != "undefined" ) 
-      this.formGroup.controls['CONDITION_ID'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['EVENT_ID'] != "undefined" ) 
+      this.formGroup.controls['EVENT_ID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['CONDITION_ID'] != "undefined" ) 
-     this.formGroup.get('CONDITION_ID').updateValueAndValidity();
+ if (typeof this.formGroup.controls['EVENT_ID'] != "undefined" ) 
+     this.formGroup.get('EVENT_ID').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_CONDITION_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_CONDITION_ORDER(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['CONDITION_ORDER'] != "undefined" ) 
-      this.formGroup.controls['CONDITION_ORDER'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['CONDITION_ORDER'] != "undefined" ) 
-     this.formGroup.get('CONDITION_ORDER').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_CONDITION_ORDER(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_BRACKET_OPEN(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['BRACKET_OPEN'] != "undefined" ) 
-      this.formGroup.controls['BRACKET_OPEN'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['BRACKET_OPEN'] != "undefined" ) 
-     this.formGroup.get('BRACKET_OPEN').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BRACKET_OPEN(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_CONDITION(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['CONDITION'] != "undefined" ) 
-      this.formGroup.controls['CONDITION'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['CONDITION'] != "undefined" ) 
-     this.formGroup.get('CONDITION').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_CONDITION(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_EVENT_FIELD(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['EVENT_FIELD'] != "undefined" ) 
-      this.formGroup.controls['EVENT_FIELD'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['EVENT_FIELD'] != "undefined" ) 
-     this.formGroup.get('EVENT_FIELD').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_EVENT_FIELD(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_VALUE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['VALUE'] != "undefined" ) 
-      this.formGroup.controls['VALUE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['VALUE'] != "undefined" ) 
-     this.formGroup.get('VALUE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_VALUE(event){
+ async ON_CLICK_EVENT_ID(event){
 
 }
 
@@ -970,95 +819,241 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
 
 }
 
-async WHEN_VALIDATE_ITEM_WHERE_FIELD(formGroup) {
+async WHEN_VALIDATE_ITEM_EVENT_NAME(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['WHERE_FIELD'] != "undefined" ) 
-      this.formGroup.controls['WHERE_FIELD'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['EVENT_NAME'] != "undefined" ) 
+      this.formGroup.controls['EVENT_NAME'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['WHERE_FIELD'] != "undefined" ) 
-     this.formGroup.get('WHERE_FIELD').updateValueAndValidity();
+ if (typeof this.formGroup.controls['EVENT_NAME'] != "undefined" ) 
+     this.formGroup.get('EVENT_NAME').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_WHERE_FIELD(event){
+ async ON_CLICK_EVENT_NAME(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_BRACKET_CLOSE(formGroup) {
+async WHEN_VALIDATE_ITEM_PRIORITY(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['BRACKET_CLOSE'] != "undefined" ) 
-      this.formGroup.controls['BRACKET_CLOSE'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['PRIORITY'] != "undefined" ) 
+      this.formGroup.controls['PRIORITY'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['BRACKET_CLOSE'] != "undefined" ) 
-     this.formGroup.get('BRACKET_CLOSE').updateValueAndValidity();
+ if (typeof this.formGroup.controls['PRIORITY'] != "undefined" ) 
+     this.formGroup.get('PRIORITY').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_BRACKET_CLOSE(event){
+ async ON_CLICK_PRIORITY(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_FILTER_ID(formGroup) {
+async WHEN_VALIDATE_ITEM_URGENT(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['FILTER_ID'] != "undefined" ) 
-      this.formGroup.controls['FILTER_ID'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['URGENT'] != "undefined" ) 
+      this.formGroup.controls['URGENT'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['FILTER_ID'] != "undefined" ) 
-     this.formGroup.get('FILTER_ID').updateValueAndValidity();
+ if (typeof this.formGroup.controls['URGENT'] != "undefined" ) 
+     this.formGroup.get('URGENT').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_FILTER_ID(event){
+ async ON_CLICK_URGENT(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_HIGH(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['HIGH'] != "undefined" ) 
+      this.formGroup.controls['HIGH'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['HIGH'] != "undefined" ) 
+     this.formGroup.get('HIGH').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_HIGH(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_MEDIUM(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['MEDIUM'] != "undefined" ) 
+      this.formGroup.controls['MEDIUM'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['MEDIUM'] != "undefined" ) 
+     this.formGroup.get('MEDIUM').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_MEDIUM(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_LOW(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['LOW'] != "undefined" ) 
+      this.formGroup.controls['LOW'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['LOW'] != "undefined" ) 
+     this.formGroup.get('LOW').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_LOW(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_EVENT(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['EVENT'] != "undefined" ) 
+      this.formGroup.controls['EVENT'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['EVENT'] != "undefined" ) 
+     this.formGroup.get('EVENT').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_EVENT(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SCOPES(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['SCOPES'] != "undefined" ) 
+      this.formGroup.controls['SCOPES'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['SCOPES'] != "undefined" ) 
+     this.formGroup.get('SCOPES').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SCOPES(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_EVENT_SOURCE(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['EVENT_SOURCE'] != "undefined" ) 
+      this.formGroup.controls['EVENT_SOURCE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['EVENT_SOURCE'] != "undefined" ) 
+     this.formGroup.get('EVENT_SOURCE').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_EVENT_SOURCE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_dummy(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['dummy'] != "undefined" ) 
+      this.formGroup.controls['dummy'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['dummy'] != "undefined" ) 
+     this.formGroup.get('dummy').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_dummy(event){
 
 }
  
- async onBlur_CONDITION_ID() { 
-  await this.WHEN_VALIDATE_ITEM_CONDITION_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeCONDITION_ORDER(value: any) { 
- await this.WHEN_VALIDATE_ITEM_CONDITION_ORDER(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeBRACKET_OPEN(value: any) { 
- await this.WHEN_VALIDATE_ITEM_BRACKET_OPEN(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async onBlur_CONDITION() { 
-  await this.WHEN_VALIDATE_ITEM_CONDITION(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeEVENT_FIELD(value: any) { 
- await this.WHEN_VALIDATE_ITEM_EVENT_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async onBlur_VALUE() { 
-  await this.WHEN_VALIDATE_ITEM_VALUE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_EVENT_ID() { 
+  await this.WHEN_VALIDATE_ITEM_EVENT_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async valueChangeSHAPE_ID(value: any) { 
  await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeWHERE_FIELD(value: any) { 
- await this.WHEN_VALIDATE_ITEM_WHERE_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_EVENT_NAME() { 
+  await this.WHEN_VALIDATE_ITEM_EVENT_NAME(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeBRACKET_CLOSE(value: any) { 
- await this.WHEN_VALIDATE_ITEM_BRACKET_CLOSE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_PRIORITY() { 
+  await this.WHEN_VALIDATE_ITEM_PRIORITY(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeFILTER_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_FILTER_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_URGENT() { 
+  await this.WHEN_VALIDATE_ITEM_URGENT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_HIGH() { 
+  await this.WHEN_VALIDATE_ITEM_HIGH(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_MEDIUM() { 
+  await this.WHEN_VALIDATE_ITEM_MEDIUM(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_LOW() { 
+  await this.WHEN_VALIDATE_ITEM_LOW(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_EVENT() { 
+  await this.WHEN_VALIDATE_ITEM_EVENT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_SCOPES() { 
+  await this.WHEN_VALIDATE_ITEM_SCOPES(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_EVENT_SOURCE() { 
+  await this.WHEN_VALIDATE_ITEM_EVENT_SOURCE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_dummy() { 
+  await this.WHEN_VALIDATE_ITEM_dummy(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
 
 // For Adding new CODE

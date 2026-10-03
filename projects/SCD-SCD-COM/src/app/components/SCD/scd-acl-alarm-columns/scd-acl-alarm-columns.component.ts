@@ -20,18 +20,17 @@ import {   scdalarmColumnsScdAclAlarmColumns , componentConfigDef } from '@model
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'COLUMN_ID' : new FormControl(dataItem.COLUMN_ID  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
-'ALARM_TYPE' : new FormControl(dataItem.ALARM_TYPE  , ) ,
 'ROW_ORDER' : new FormControl(dataItem.ROW_ORDER  , ) ,
+'ALARM_TYPE' : new FormControl(dataItem.ALARM_TYPE  , ) ,
 'ROW_TYPE' : new FormControl(dataItem.ROW_TYPE  , ) ,
 'SHOW_COLUMN_BUTTON_PANEL' : new FormControl(dataItem.SHOW_COLUMN_BUTTON_PANEL  , ) ,
-'IMAGE_ICON' : new FormControl(dataItem.IMAGE_ICON  , ) ,
+'SHOW_COLUMN_FIELD' : new FormControl(dataItem.SHOW_COLUMN_FIELD  , ) ,
 'HEADING_TEXT' : new FormControl(dataItem.HEADING_TEXT  , ) ,
 'WIDTH' : new FormControl(dataItem.WIDTH  , ) ,
 'ALIGN' : new FormControl(dataItem.ALIGN  , ) ,
 'FORMAT' : new FormControl(dataItem.FORMAT  , ) ,
+'IMAGE_ICON' : new FormControl(dataItem.IMAGE_ICON  , ) ,
 'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) ,
 'TOOLTIP' : new FormControl(dataItem.TOOLTIP  , ) 
 });
@@ -81,9 +80,7 @@ export class ScdAlarmColumnsScdAclAlarmColumnsGridComponent implements OnInit,On
   public isChild: boolean = false;
   public isMaster: boolean = false;
   
-  				public  isCOLUMN_IDEnable : boolean = true; 
-public  isAPP_IDEnable : boolean = true; 
-public  isDISPLAY_IDEnable : boolean = true; 
+  		public  isCOLUMN_IDEnable : boolean = true; 
 public  isSHAPE_IDEnable : boolean = true; 
 
   public  isFilterable : boolean = false;
@@ -93,7 +90,7 @@ public  isSHAPE_IDEnable : boolean = true;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   private masterKey ="";
-  private masterKeyName ="APP_ID";
+  private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_ALARM_COLUMNS";
   private updateCMD = "UPDATE_SCD_ALARM_COLUMNS";
   private deleteCMD =   "DELETE_SCD_ALARM_COLUMNS";
@@ -112,7 +109,7 @@ public  isSHAPE_IDEnable : boolean = true;
   public OrderByClause = "";
 
   public formattedWhere:any = null;
-  public primarKeyReadOnlyArr = {isCOLUMN_IDreadOnly : false , isAPP_IDreadOnly : false , isDISPLAY_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isCOLUMN_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   public createFormGroupGrid = createFormGroup;
 
@@ -123,21 +120,20 @@ public  isSHAPE_IDEnable : boolean = true;
   public children = ["any"];
   public masterParams:any;
 public isPhonePortrait = false;
-public visibleCOLUMN_ID = true;
-public visibleAPP_ID = true;
-public visibleDISPLAY_ID = true;
-public visibleSHAPE_ID = true;
-public visibleALARM_TYPE = true;
+public visibleCOLUMN_ID = false;
+public visibleSHAPE_ID = false;
 public visibleROW_ORDER = true;
-public visibleROW_TYPE = true;
+public visibleALARM_TYPE = true;
+public visibleROW_TYPE = false;
 public visibleSHOW_COLUMN_BUTTON_PANEL = true;
-public visibleIMAGE_ICON = true;
-public visibleHEADING_TEXT = true;
+public visibleSHOW_COLUMN_FIELD = true;
+public visibleHEADING_TEXT = false;
 public visibleWIDTH = true;
 public visibleALIGN = true;
 public visibleFORMAT = true;
+public visibleIMAGE_ICON = true;
 public visibleSAMPLE = true;
-public visibleTOOLTIP = true;
+public visibleTOOLTIP = false;
 
 public compSelector = 'app-scd-acl-alarm-columns';
 
@@ -276,9 +272,9 @@ public compSelector = 'app-scd-acl-alarm-columns';
       this.isChild = true;
     }
     /*
-    if ( (grid.APP_ID != "") &&   (typeof grid.APP_ID != "undefined"))
+    if ( (grid.SHAPE_ID != "") &&   (typeof grid.SHAPE_ID != "undefined"))
     {
-      this.masterKey = grid.APP_ID;
+      this.masterKey = grid.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(grid);
@@ -384,8 +380,8 @@ public compSelector = 'app-scd-acl-alarm-columns';
         data: this.formGroup.value
       }
 
-      let masterKeyArr = [this.formGroup.value['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [this.formGroup.value['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -432,8 +428,8 @@ public compSelector = 'app-scd-acl-alarm-columns';
         data: GridData.data[0]
       }
 
-      let masterKeyArr = [GridData.data[0]['APP_ID']];
-      let masterKeyNameArr = ['APP_ID'];
+      let masterKeyArr = [GridData.data[0]['SHAPE_ID']];
+      let masterKeyNameArr = ['SHAPE_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -453,8 +449,8 @@ public compSelector = 'app-scd-acl-alarm-columns';
       data: this.masterKeyArr
     }
 
-       let masterKeyArr = [data['APP_ID'],data['DISPLAY_ID'],data['SHAPE_ID'],data['COLUMN_ID']];
-      let masterKeyNameArr = ['APP_ID','DISPLAY_ID','SHAPE_ID','COLUMN_ID'];
+       let masterKeyArr = [data['SHAPE_ID'],data['COLUMN_ID']];
+      let masterKeyNameArr = ['SHAPE_ID','COLUMN_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -629,70 +625,16 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALARM_TYPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrALARM_TYPE"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ROW_TYPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrROW_TYPE"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALIGN\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrALIGN"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FORMAT\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrFORMAT"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALIGN\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrALIGN"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
-public lkpArrSHAPE_ID = [];
-
-public lkpArrALARM_TYPE = [];
-
-public lkpArrROW_TYPE = [];
-
 public lkpArrALIGN = [];
-
-public lkpArrFORMAT = [];
-
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetALARM_TYPE(CODE: any): any {
-var rec = this.lkpArrALARM_TYPE.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetROW_TYPE(CODE: any): any {
-var rec = this.lkpArrROW_TYPE.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetALIGN(CODE: any): any {
 var rec = this.lkpArrALIGN.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetFORMAT(CODE: any): any {
-var rec = this.lkpArrFORMAT.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -789,11 +731,44 @@ public hiddenColumns: string[] = [];
 public disabledColumns: string[] = [];
 async WHEN_NOTIFY(ComponentConfig){
     
+if (ComponentConfig.masterSelector != null) {
+      console.log("WHEN_NOTIFY:masterSelector:", ComponentConfig.masterSelector)
+      if (ComponentConfig.masterSelector.toUpperCase().includes("BANNER"))
+            this.appMode = "Banner";
+}
+if (ComponentConfig.title != null) {
+      console.log("WHEN_NOTIFY:title:", ComponentConfig.title)
+      if (ComponentConfig.title.toUpperCase().startsWith("STATUS BAR PANEL"))
+            this.appMode = "Status Bar Panel";
+}
+if (ComponentConfig.title != null) {
+      console.log("WHEN_NOTIFY:title:", ComponentConfig.title)
+      if (ComponentConfig.title.toUpperCase().startsWith("STATUS BAR BUTTON"))
+            this.appMode = "Status Bar Button";
+}
+if (ComponentConfig.masterKeyNameArr != null) {
+      console.log("WHEN_NOTIFY:this.appMode:", this.appMode)
+      ComponentConfig.masterKeyNameArr.push("ALARM_TYPE");
+      ComponentConfig.masterKeyArr.push(this.appMode);
+      console.log("WHEN_NOTIFY:masterKeyNameArr:", ComponentConfig.masterKeyNameArr, ComponentConfig.masterKeyArr)
+
+}
+console.log("masterSelector:", ComponentConfig.masterSelector,
+ComponentConfig.title, this.appMode,  ComponentConfig.masterKeyArr)
+if ( (this.appMode == "Status Bar Panel") || (this.appMode == "Status Bar Button") ) {
+      this.visibleTOOLTIP = true;
+
+      this.visibleSAMPLE = false;
+      this.visibleWIDTH = false;
+      this.visibleALIGN = false;
+      this.visibleFORMAT = false;
+
+}
 }
 async WHEN_NEW_FORM_INSTANCE(){
-   	if (!this.isChild){
-this.executeQuery(this.grid);
-	}
+   // 	if (!this.isChild){
+// this.executeQuery(this.grid);
+// 	}
 
 
 }
@@ -861,46 +836,6 @@ async WHEN_VALIDATE_ITEM_COLUMN_ID(formGroup) {
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-      this.formGroup.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['APP_ID'] != "undefined" ) 
-     this.formGroup.get('APP_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-      this.formGroup.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['DISPLAY_ID'] != "undefined" ) 
-     this.formGroup.get('DISPLAY_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -921,26 +856,6 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
 
 }
 
-async WHEN_VALIDATE_ITEM_ALARM_TYPE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['ALARM_TYPE'] != "undefined" ) 
-      this.formGroup.controls['ALARM_TYPE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['ALARM_TYPE'] != "undefined" ) 
-     this.formGroup.get('ALARM_TYPE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_ALARM_TYPE(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_ROW_ORDER(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -958,6 +873,26 @@ async WHEN_VALIDATE_ITEM_ROW_ORDER(formGroup) {
  }
 
  async ON_CLICK_ROW_ORDER(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_ALARM_TYPE(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['ALARM_TYPE'] != "undefined" ) 
+      this.formGroup.controls['ALARM_TYPE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['ALARM_TYPE'] != "undefined" ) 
+     this.formGroup.get('ALARM_TYPE').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_ALARM_TYPE(event){
 
 }
 
@@ -1001,23 +936,23 @@ async WHEN_VALIDATE_ITEM_SHOW_COLUMN_BUTTON_PANEL(formGroup) {
 
 }
 
-async WHEN_VALIDATE_ITEM_IMAGE_ICON(formGroup) {
+async WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
-      this.formGroup.controls['IMAGE_ICON'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['SHOW_COLUMN_FIELD'] != "undefined" ) 
+      this.formGroup.controls['SHOW_COLUMN_FIELD'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
-     this.formGroup.get('IMAGE_ICON').updateValueAndValidity();
+ if (typeof this.formGroup.controls['SHOW_COLUMN_FIELD'] != "undefined" ) 
+     this.formGroup.get('SHOW_COLUMN_FIELD').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_IMAGE_ICON(event){
+ async ON_CLICK_SHOW_COLUMN_FIELD(event){
 
 }
 
@@ -1101,6 +1036,26 @@ async WHEN_VALIDATE_ITEM_FORMAT(formGroup) {
 
 }
 
+async WHEN_VALIDATE_ITEM_IMAGE_ICON(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
+      this.formGroup.controls['IMAGE_ICON'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
+     this.formGroup.get('IMAGE_ICON').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_IMAGE_ICON(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_SAMPLE(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1144,29 +1099,23 @@ async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
  async onBlur_COLUMN_ID() { 
   await this.WHEN_VALIDATE_ITEM_COLUMN_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeAPP_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_APP_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeDISPLAY_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeSHAPE_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeALARM_TYPE(value: any) { 
- await this.WHEN_VALIDATE_ITEM_ALARM_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_SHAPE_ID() { 
+  await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_ROW_ORDER() { 
   await this.WHEN_VALIDATE_ITEM_ROW_ORDER(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeROW_TYPE(value: any) { 
- await this.WHEN_VALIDATE_ITEM_ROW_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_ALARM_TYPE() { 
+  await this.WHEN_VALIDATE_ITEM_ALARM_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_ROW_TYPE() { 
+  await this.WHEN_VALIDATE_ITEM_ROW_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SHOW_COLUMN_BUTTON_PANEL() { 
   await this.WHEN_VALIDATE_ITEM_SHOW_COLUMN_BUTTON_PANEL(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeIMAGE_ICON(value: any) { 
- await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_SHOW_COLUMN_FIELD() { 
+  await this.WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_HEADING_TEXT() { 
   await this.WHEN_VALIDATE_ITEM_HEADING_TEXT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
@@ -1177,8 +1126,11 @@ async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
  async valueChangeALIGN(value: any) { 
  await this.WHEN_VALIDATE_ITEM_ALIGN(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeFORMAT(value: any) { 
- await this.WHEN_VALIDATE_ITEM_FORMAT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_FORMAT() { 
+  await this.WHEN_VALIDATE_ITEM_FORMAT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async valueChangeIMAGE_ICON(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SAMPLE() { 
   await this.WHEN_VALIDATE_ITEM_SAMPLE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
@@ -1186,7 +1138,7 @@ async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
  async onBlur_TOOLTIP() { 
   await this.WHEN_VALIDATE_ITEM_TOOLTIP(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
-
+public appMode ="";
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1203,7 +1155,6 @@ public att_arr = [];
 public img_arr = [];
 public AttDwnUrl = "";
 public uploadimage = false;
-public IMAGE_ICON_show = false;
 
 
 // 1. In Component

@@ -1,7 +1,61 @@
+ export class scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm{
+	public EVENT_ID = '';
+	public SHAPE_ID = '';
+	public EVENT_NAME = '';
+	public PRIORITY = '';
+	public URGENT = '';
+	public HIGH = '';
+	public MEDIUM = '';
+	public LOW = '';
+	public EVENT = '';
+	public SCOPES = '';
+	public EVENT_SOURCE = '';
+	public dummy = '';
+
+}
+
+ export class scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid{
+	public EVENT_ID = '';
+	public SHAPE_ID = '';
+	public EVENT_NAME = '';
+	public PRIORITY = '';
+	public URGENT = '';
+	public HIGH = '';
+	public MEDIUM = '';
+	public LOW = '';
+	public EVENT = '';
+	public SCOPES = '';
+	public EVENT_SOURCE = '';
+	public dummy = '';
+
+}
+
+ export class scdalarmScdStatusBarDef{
+}
+ export class scdalarmColumnsScdScdAlarmColumnsForm{
+	public COLUMN_ID = '';
+	public SHAPE_ID = '';
+	public ALARM_TYPE = '';
+	public ROW_ORDER = '';
+	public ROW_TYPE = '';
+	public SHOW_COLUMN_BUTTON_PANEL = '';
+	public IMAGE_ICON = '';
+	public HEADING_TEXT = '';
+	public WIDTH = '';
+	public ALIGN = '';
+	public FORMAT = '';
+	public SAMPLE = '';
+	public TOOLTIP = '';
+	public SHOW_COLUMN_FIELD = '';
+
+}
+
+ export class scdAclAlarmColumns{
+
+}
+
  export class scdalarmGeneralBannerScdScdAlarmGeneralBanner{
 	public GENERAL_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public BACKGROUND_COLOR = '';
 	public SELECTED_ITEM_TEXT_COLOR = '';
@@ -22,10 +76,10 @@
 
 }
 
+
+
  export class scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm{
 	public GENERAL_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public TEXT_COLOR = '';
 	public BACKGROUND_COLOR = '';
@@ -47,6 +101,7 @@
 	public SHOW_TIME_STAMPE = '';
 
 }
+
 
  export class scdalarmGeneralSttusExplorerScdScdAlarmGeneralSttusExplorerForm{
 	public GENERAL_ID = '';
@@ -76,8 +131,6 @@
 
  export class scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs{
 	public GENERAL_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SELECT_LOG = '';
 	public DISPLAY_REPORT_ON_STARTUP = '';
@@ -107,6 +160,7 @@
 
 
 
+
  export class scdalarmScdAlarmDisplayFiltersProperties{
 }
  export class scdalarmScdAlarmEventSubscriptionsProperties{
@@ -125,8 +179,6 @@
 
  export class scdalarmStatesScdAssSearchAlarmStates{
 	public STATE_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SHOW_EVENT_TYPE = '';
 	public PRIORITY = '';
@@ -136,11 +188,10 @@
 	public SAMPLE = '';
 
 }
+
 
  export class scdalarmSortScdAssAlarmSortResults{
 	public SORT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SORT_BY_FIELD = '';
 	public SORT_BY_FIELD_ASC_DESC = '';
@@ -150,31 +201,28 @@
 	public THEN_BY_2_FIELD_ASC_DESC = '';
 
 }
+
 
  export class scdalarmStatesOptionsScdAsoAlarmStatesOptions1{
 	public STATE_OPTION_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public TEST_RATES = '';
 	public BLINK_RATE = '';
 
 }
+
 
  export class scdalarmStatesOptionsScdAsoAlarmStatesOptions{
 	public STATE_OPTION_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public TEST_RATES = '';
 	public BLINK_RATE = '';
 
 }
 
+
  export class scdalarmStatesScdAslAlarmStates5{
 	public STATE_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SHOW_EVENT_TYPE = '';
 	public PRIORITY = '';
@@ -184,11 +232,10 @@
 	public SAMPLE = '';
 
 }
+
 
  export class scdalarmStatesScdAslAlarmStates4{
 	public STATE_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SHOW_EVENT_TYPE = '';
 	public PRIORITY = '';
@@ -198,11 +245,10 @@
 	public SAMPLE = '';
 
 }
+
 
  export class scdalarmStatesScdAslAlarmStates2{
 	public STATE_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SHOW_EVENT_TYPE = '';
 	public PRIORITY = '';
@@ -212,11 +258,10 @@
 	public SAMPLE = '';
 
 }
+
 
  export class scdalarmStatesScdAslAlarmStates0{
 	public STATE_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SHOW_EVENT_TYPE = '';
 	public PRIORITY = '';
@@ -226,11 +271,10 @@
 	public SAMPLE = '';
 
 }
+
 
  export class scdalarmStatesScdAslAlarmStates{
 	public STATE_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SHOW_EVENT_TYPE = '';
 	public PRIORITY = '';
@@ -241,10 +285,9 @@
 
 }
 
+
  export class scdalarmSortScdAsdAlarmSort{
 	public SORT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SORT_BY_FIELD = '';
 	public SORT_BY_FIELD_ASC_DESC = '';
@@ -254,6 +297,7 @@
 	public THEN_BY_2_FIELD_ASC_DESC = '';
 
 }
+
 
  export class scdcommonScreenScdAodShapeSummary{
 
@@ -341,8 +385,6 @@
 
  export class scdalarmEventSubscriptionsScdAessSearchAlarmEventSubscriptions{
 	public EVENT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public EVENT_NAME = '';
 	public PRIORITY = '';
@@ -353,13 +395,14 @@
 	public EVENT = '';
 	public SCOPES = '';
 	public EVENT_SOURCE = '';
+	public dummy = '';
 
 }
+
+
 
  export class scdalarmEventSubscriptionsScdAessAlarmEventSubscriptions{
 	public EVENT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public EVENT_NAME = '';
 	public PRIORITY = '';
@@ -370,13 +413,14 @@
 	public EVENT = '';
 	public SCOPES = '';
 	public EVENT_SOURCE = '';
+	public dummy = '';
 
 }
+
+
 
  export class scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3{
 	public EVENT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public EVENT_NAME = '';
 	public PRIORITY = '';
@@ -387,13 +431,14 @@
 	public EVENT = '';
 	public SCOPES = '';
 	public EVENT_SOURCE = '';
+	public dummy = '';
 
 }
+
+
 
  export class scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList{
 	public EVENT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public EVENT_NAME = '';
 	public PRIORITY = '';
@@ -404,13 +449,14 @@
 	public EVENT = '';
 	public SCOPES = '';
 	public EVENT_SOURCE = '';
+	public dummy = '';
 
 }
+
+
 
  export class scdalarmEventSubscriptionsScdAesdAlarmEventSubscriptions3{
 	public EVENT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public EVENT_NAME = '';
 	public PRIORITY = '';
@@ -423,11 +469,10 @@
 	public EVENT_SOURCE = '';
 
 }
+
 
  export class scdalarmEventSubscriptionsScdAesdAlarmEventSubscriptions1{
 	public EVENT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public EVENT_NAME = '';
 	public PRIORITY = '';
@@ -440,11 +485,10 @@
 	public EVENT_SOURCE = '';
 
 }
+
 
  export class scdalarmEventSubscriptionsScdAesdAlarmEventSubscriptions{
 	public EVENT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public EVENT_NAME = '';
 	public PRIORITY = '';
@@ -458,70 +502,63 @@
 
 }
 
+
  export class scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters{
 	public FILTER_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_NAME = '';
 	public WHERE_CLAUSE = '';
 
 }
+
 
  export class scdalarmDisplayFiltersScdAdfsAlarmDisplayFilters{
 	public FILTER_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_NAME = '';
 	public WHERE_CLAUSE = '';
 
 }
+
 
  export class scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4{
 	public FILTER_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_NAME = '';
 	public WHERE_CLAUSE = '';
 
 }
+
 
  export class scdalarmDisplayFiltersScdAdflAlarmDisplayFilters3{
 	public FILTER_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_NAME = '';
 	public WHERE_CLAUSE = '';
 
 }
+
 
  export class scdalarmDisplayFiltersScdAdflAlarmDisplayFilters0{
 	public FILTER_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_NAME = '';
 	public WHERE_CLAUSE = '';
 
 }
+
 
  export class scdalarmDisplayFiltersScdAdflAlarmDisplayFilters{
 	public FILTER_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_NAME = '';
 	public WHERE_CLAUSE = '';
 
 }
 
+
  export class scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1{
 	public CONDITION_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_ID = '';
 	public CONDITION_ORDER = '';
@@ -533,11 +570,10 @@
 	public BRACKET_CLOSE = '';
 
 }
+
 
  export class scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions{
 	public CONDITION_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public FILTER_ID = '';
 	public CONDITION_ORDER = '';
@@ -549,6 +585,7 @@
 	public BRACKET_CLOSE = '';
 
 }
+
 
  export class scdalarmColumnsOptionsScdAcoAlarmColumnsOptions1{
 	public OPTION_ID = '';
@@ -570,8 +607,6 @@
 
  export class scdalarmColumnsScdAclAlarmColumns2{
 	public COLUMN_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public ALARM_TYPE = '';
 	public ROW_ORDER = '';
@@ -584,13 +619,14 @@
 	public FORMAT = '';
 	public SAMPLE = '';
 	public TOOLTIP = '';
+	public SHOW_COLUMN_FIELD = '';
 
 }
+
+
 
  export class scdalarmColumnsScdAclAlarmColumns0{
 	public COLUMN_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public ALARM_TYPE = '';
 	public ROW_ORDER = '';
@@ -603,13 +639,14 @@
 	public FORMAT = '';
 	public SAMPLE = '';
 	public TOOLTIP = '';
+	public SHOW_COLUMN_FIELD = '';
 
 }
+
+
 
  export class scdalarmColumnsScdAclAlarmColumns{
 	public COLUMN_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public ALARM_TYPE = '';
 	public ROW_ORDER = '';
@@ -622,13 +659,14 @@
 	public FORMAT = '';
 	public SAMPLE = '';
 	public TOOLTIP = '';
+	public SHOW_COLUMN_FIELD = '';
 
 }
 
+
+
  export class scdalarmBehaviorScdAbdAlarmBehavior{
 	public BEHAVIOR_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public ALLOW_COLUMNS_RESIZED = '';
 	public ALLOW_SORTING_CLICK_HEADINGS = '';
@@ -640,10 +678,9 @@
 
 }
 
+
  export class scdalarmSortScdAaespAlarmSort0{
 	public SORT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SORT_BY_FIELD = '';
 	public SORT_BY_FIELD_ASC_DESC = '';
@@ -653,11 +690,10 @@
 	public THEN_BY_2_FIELD_ASC_DESC = '';
 
 }
+
 
  export class scdalarmSortScdAaespAlarmSort{
 	public SORT_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public SORT_BY_FIELD = '';
 	public SORT_BY_FIELD_ASC_DESC = '';
@@ -668,10 +704,9 @@
 
 }
 
+
  export class scdalarmAppearanceScdAadAlarmAppearance1{
 	public GENERAL_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public COLUMN_HEADINGS_DISPLAYED = '';
 	public HORIZONTAL_GRID_LINES_DISPLAYED = '';
@@ -706,11 +741,10 @@
 	public ICON_SIZE_STATUS_BAR = '';
 
 }
+
 
  export class scdalarmAppearanceScdAadAlarmAppearance{
 	public GENERAL_ID = '';
-	public APP_ID = '';
-	public DISPLAY_ID = '';
 	public SHAPE_ID = '';
 	public COLUMN_HEADINGS_DISPLAYED = '';
 	public HORIZONTAL_GRID_LINES_DISPLAYED = '';
@@ -745,6 +779,7 @@
 	public ICON_SIZE_STATUS_BAR = '';
 
 }
+
 
  export class scdcommonScreenScdAaespCommonScreen0{
 

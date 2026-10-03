@@ -48,27 +48,6 @@
 </div>
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPP_ID >
-		<kendo-label *ngIf="(!labelAPP_IDTop && !isPhonePortrait) && labelAPP_IDVisible" class="form-label" [for]="APP_ID" [text]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.APP_ID','App Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelAPP_IDTop || isPhonePortrait) && labelAPP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.APP_ID','App Id') + ' *'}}</label>
-		<kendo-combobox  #APP_ID class="form-field-combobox"  [formControlName]="'APP_ID'"
-		[data]="lkpArrAPP_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.APP_ID_Hint','Please enter App Id.')"		(click)="ON_CLICK_APP_ID($event)"
-     adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APP_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
-</div>
-
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHOW_EVENT_TYPETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHOW_EVENT_TYPE >
 		<kendo-label *ngIf="(!labelSHOW_EVENT_TYPETop && !isPhonePortrait) && labelSHOW_EVENT_TYPEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.SHOW_EVENT_TYPE','Show Event Type')"></kendo-label>
 		<label *ngIf="(labelSHOW_EVENT_TYPETop || isPhonePortrait) && labelSHOW_EVENT_TYPEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.SHOW_EVENT_TYPE','Show Event Type')}}</label>
@@ -76,27 +55,6 @@
  kendoTextBox  #SHOW_EVENT_TYPE  [placeholder]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.SHOW_EVENT_TYPE_Hint','Please enter Show Event Type.')"
 		(click)="ON_CLICK_SHOW_EVENT_TYPE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "   class="MEDIUM"  adaptiveMode="auto"  />
-	</kendo-formfield>
-</div>
-
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ID >
-		<kendo-label *ngIf="(!labelDISPLAY_IDTop && !isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label" [for]="DISPLAY_ID" [text]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.DISPLAY_ID','Display Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelDISPLAY_IDTop || isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.DISPLAY_ID','Display Id') + ' *'}}</label>
-		<kendo-combobox  #DISPLAY_ID class="form-field-combobox"  [formControlName]="'DISPLAY_ID'"
-		[data]="lkpArrDISPLAY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.DISPLAY_ID_Hint','Please enter Display Id.')"		(click)="ON_CLICK_DISPLAY_ID($event)"
-     adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DISPLAY_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
 	</kendo-formfield>
 </div>
 
@@ -235,18 +193,10 @@
 		 style="overflow-x: hidden;width:120px;"   class="HIGH"  adaptiveMode="auto" > 
 	  <i class="fas fa-hashtag" [title]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.STATE_ID','State Id') + ' *'"  ></i>
 		{{dataItem.STATE_ID}} 	</div>
-	 <div class="card-format"  *ngIf=visibleAPP_ID 		(click)="ON_CLICK_APP_ID($event)"
-		 style="overflow-x: hidden;width:120px;"     adaptiveMode="auto" > 
-	   <i  [title]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.APP_ID','App Id') + ' *'"  ></i>
-		{{lkpArrGetAPP_ID (dataItem.APP_ID)?.CODETEXT_LANG}} 	</div>
 	 <div class="card-format"  *ngIf=visibleSHOW_EVENT_TYPE 		(click)="ON_CLICK_SHOW_EVENT_TYPE($event)"
 		 style="overflow-x: hidden;width:120px;"   class="MEDIUM"  adaptiveMode="auto" > 
 	   <i  [title]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.SHOW_EVENT_TYPE','Show Event Type')"  ></i>
 		{{dataItem.SHOW_EVENT_TYPE}} 	</div>
-	 <div class="card-format"  *ngIf=visibleDISPLAY_ID 		(click)="ON_CLICK_DISPLAY_ID($event)"
-		 style="overflow-x: hidden;width:120px;"     adaptiveMode="auto" > 
-	   <i  [title]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.DISPLAY_ID','Display Id') + ' *'"  ></i>
-		{{lkpArrGetDISPLAY_ID (dataItem.DISPLAY_ID)?.CODETEXT_LANG}} 	</div>
 	 <div class="card-format"  *ngIf=visiblePRIORITY 		(click)="ON_CLICK_PRIORITY($event)"
 		 style="overflow-x: hidden;width:120px;"   class="MEDIUM"  adaptiveMode="auto" > 
 	  <i class="fas fa-exclamation-triangle" [title]="starServices.getNLS([],'SCD_ASS_SEARCH_ALARM_STATES.scdalarmStatesScdAssSearchAlarmStates.PRIORITY','Priority')"  ></i>

@@ -1,7 +1,7 @@
 <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
 <legend class="k-form-legend" *ngIf="componentConfig.showToolBar">{{
       componentConfig.title ? componentConfig.title :
-       this.starServices.getNLS([],"SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.component_title","Alarm Event Subscriptions") }}</legend>
+       this.starServices.getNLS([],"SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.component_title","SCD ALARM EVENT SUBSCRIPTIONS GRID") }}</legend>
 	
     <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
     
@@ -54,120 +54,122 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EVENT_ID"
  *ngIf=visibleEVENT_ID  [editable]=" !(disabledColumns.indexOf('EVENT_ID') > -1)  && !primarKeyReadOnlyArr.isEVENT_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('EVENT_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.EVENT_ID','') + ' *'}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('EVENT_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT_ID','Event Id') + ' *'}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.EVENT_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_EVENT_ID()"      [formControl]="formGroup.get('EVENT_ID')" [placeholder]="" />
+		<input  (blur)="onBlur_EVENT_ID()"      [formControl]="formGroup.get('EVENT_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT_ID_Hint','Please enter Event Id.')" />
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID"
- *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.SHAPE_ID','')}}"  [width]="400">
-		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_ID}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetSHAPE_ID(dataItem.SHAPE_ID)?.CODETEXT_LANG}}</span> </ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_SHAPE_ID()"      [formControl]="formGroup.get('SHAPE_ID')" [placeholder]="" />
+		<kendo-dropdownlist  [data]="lkpArrSHAPE_ID"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeSHAPE_ID($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('SHAPE_ID')">
+		</kendo-dropdownlist>
 		</ng-template>
-		</kendo-grid-column>
+	</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EVENT_NAME"
  *ngIf=visibleEVENT_NAME  [editable]=" !(disabledColumns.indexOf('EVENT_NAME') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('EVENT_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.EVENT_NAME','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('EVENT_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT_NAME','Event Name')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.EVENT_NAME}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_EVENT_NAME()"      [formControl]="formGroup.get('EVENT_NAME')" [placeholder]="" />
+		<input  (blur)="onBlur_EVENT_NAME()"      [formControl]="formGroup.get('EVENT_NAME')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT_NAME_Hint','Please enter Event Name.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="PRIORITY"
  *ngIf=visiblePRIORITY  [editable]=" !(disabledColumns.indexOf('PRIORITY') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('PRIORITY') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.PRIORITY','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('PRIORITY') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.PRIORITY','Priority')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.PRIORITY}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_PRIORITY()"      [formControl]="formGroup.get('PRIORITY')" [placeholder]="" />
+		<input  (blur)="onBlur_PRIORITY()"      [formControl]="formGroup.get('PRIORITY')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.PRIORITY_Hint','Please enter Priority.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="URGENT"
  *ngIf=visibleURGENT  [editable]=" !(disabledColumns.indexOf('URGENT') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('URGENT') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.URGENT','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('URGENT') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.URGENT','Urgent')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.URGENT}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_URGENT()"      [formControl]="formGroup.get('URGENT')" [placeholder]="" />
+		<input  (blur)="onBlur_URGENT()"      [formControl]="formGroup.get('URGENT')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.URGENT_Hint','Please enter Urgent.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="HIGH"
  *ngIf=visibleHIGH  [editable]=" !(disabledColumns.indexOf('HIGH') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('HIGH') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.HIGH','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('HIGH') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.HIGH','High')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.HIGH}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_HIGH()"      [formControl]="formGroup.get('HIGH')" [placeholder]="" />
+		<input  (blur)="onBlur_HIGH()"      [formControl]="formGroup.get('HIGH')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.HIGH_Hint','Please enter High.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="MEDIUM"
  *ngIf=visibleMEDIUM  [editable]=" !(disabledColumns.indexOf('MEDIUM') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('MEDIUM') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.MEDIUM','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('MEDIUM') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.MEDIUM','Medium')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.MEDIUM}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_MEDIUM()"      [formControl]="formGroup.get('MEDIUM')" [placeholder]="" />
+		<input  (blur)="onBlur_MEDIUM()"      [formControl]="formGroup.get('MEDIUM')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.MEDIUM_Hint','Please enter Medium.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="LOW"
  *ngIf=visibleLOW  [editable]=" !(disabledColumns.indexOf('LOW') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('LOW') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.LOW','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('LOW') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.LOW','Low')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.LOW}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_LOW()"      [formControl]="formGroup.get('LOW')" [placeholder]="" />
+		<input  (blur)="onBlur_LOW()"      [formControl]="formGroup.get('LOW')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.LOW_Hint','Please enter Low.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EVENT"
  *ngIf=visibleEVENT  [editable]=" !(disabledColumns.indexOf('EVENT') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('EVENT') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.EVENT','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('EVENT') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT','Event')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.EVENT}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_EVENT()"      [formControl]="formGroup.get('EVENT')" [placeholder]="" />
+		<input  (blur)="onBlur_EVENT()"      [formControl]="formGroup.get('EVENT')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT_Hint','Please enter Event.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SCOPES"
  *ngIf=visibleSCOPES  [editable]=" !(disabledColumns.indexOf('SCOPES') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SCOPES') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.SCOPES','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('SCOPES') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.SCOPES','Scopes')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SCOPES}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_SCOPES()"      [formControl]="formGroup.get('SCOPES')" [placeholder]="" />
+		<input  (blur)="onBlur_SCOPES()"      [formControl]="formGroup.get('SCOPES')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.SCOPES_Hint','Please enter Scopes.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EVENT_SOURCE"
  *ngIf=visibleEVENT_SOURCE  [editable]=" !(disabledColumns.indexOf('EVENT_SOURCE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('EVENT_SOURCE') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.EVENT_SOURCE','')}}"  [width]="400">
+ [hidden]="hiddenColumns.indexOf('EVENT_SOURCE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT_SOURCE','Event Source')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.EVENT_SOURCE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_EVENT_SOURCE()"      [formControl]="formGroup.get('EVENT_SOURCE')" [placeholder]="" />
+		<input  (blur)="onBlur_EVENT_SOURCE()"      [formControl]="formGroup.get('EVENT_SOURCE')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.EVENT_SOURCE_Hint','Please enter Event Source.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="dummy"
  *ngIf=visibledummy  [editable]=" !(disabledColumns.indexOf('dummy') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('dummy') > -1" 		 title="{{starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.dummy','Dummy')}}"  [width]="50">
+ [hidden]="hiddenColumns.indexOf('dummy') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.dummy','Dummy')}}"  [width]="100">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.dummy}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_dummy()"      [formControl]="formGroup.get('dummy')" [placeholder]="starServices.getNLS([],'SCD_AESL_ALARM_EVENT_SUBSCRIPTIONS_LIST_3.scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3.dummy_Hint','Please enter Dummy.')" />
+		<input  (blur)="onBlur_dummy()"      [formControl]="formGroup.get('dummy')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_GRID.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid.dummy_Hint','Please enter Dummy.')" />
 		</ng-template>
 		</kendo-grid-column>
 

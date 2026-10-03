@@ -61,28 +61,6 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelAPP_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleAPP_ID >
-		<kendo-label *ngIf="(!labelAPP_IDTop && !isPhonePortrait) && labelAPP_IDVisible" class="form-label" [for]="APP_ID" [text]="starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.APP_ID','App Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelAPP_IDTop || isPhonePortrait) && labelAPP_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.APP_ID','App Id') + ' *'}}</label>
-		<kendo-combobox  #APP_ID class="form-field-combobox"  [formControlName]="'APP_ID'"
-		[data]="lkpArrAPP_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.APP_ID_Hint','Please enter App Id.')"		(click)="ON_CLICK_APP_ID($event)"
- (valueChange)="onValueChange_APP_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'APP_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelWHERE_CLAUSETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleWHERE_CLAUSE >
 		<kendo-label *ngIf="(!labelWHERE_CLAUSETop && !isPhonePortrait) && labelWHERE_CLAUSEVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.WHERE_CLAUSE','Where Clause')"></kendo-label>
 		<label *ngIf="(labelWHERE_CLAUSETop || isPhonePortrait) && labelWHERE_CLAUSEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.WHERE_CLAUSE','Where Clause')}}</label>
@@ -90,28 +68,6 @@
  kendoTextBox  #WHERE_CLAUSE  [placeholder]="starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.WHERE_CLAUSE_Hint','Please enter Where Clause.')"
 		(click)="ON_CLICK_WHERE_CLAUSE($event)"
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_WHERE_CLAUSE($event)"      adaptiveMode="auto"  />
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ID >
-		<kendo-label *ngIf="(!labelDISPLAY_IDTop && !isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label" [for]="DISPLAY_ID" [text]="starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.DISPLAY_ID','Display Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelDISPLAY_IDTop || isPhonePortrait) && labelDISPLAY_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.DISPLAY_ID','Display Id') + ' *'}}</label>
-		<kendo-combobox  #DISPLAY_ID class="form-field-combobox"  [formControlName]="'DISPLAY_ID'"
-		[data]="lkpArrDISPLAY_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.DISPLAY_ID_Hint','Please enter Display Id.')"		(click)="ON_CLICK_DISPLAY_ID($event)"
- (valueChange)="onValueChange_DISPLAY_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'DISPLAY_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
 	</kendo-formfield>
 
 

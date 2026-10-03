@@ -343,6 +343,9 @@ public disableAPP_LANGUAGE = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+      this.FormStepsArr.forEach(item => {
+      (item as any).visible = true;
+    });
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -515,17 +518,9 @@ public disableAPP_LANGUAGE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='APP_LANGUAGE' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrAPP_LANGUAGE"}];
+this.lookupArrDef =[];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
-}
-
-public lkpArrAPP_LANGUAGE = [];
-
-public lkpArrGetAPP_LANGUAGE(CODE: any): any {
-var rec = this.lkpArrAPP_LANGUAGE.find((x:any) => x.CODE === CODE);
-return rec;
 }
 
 onChanges(): void {
@@ -534,6 +529,8 @@ this.form.get('APPLICATION_ID').valueChanges.subscribe(val => {
 this.form.get('APPLICATION_NAME').valueChanges.subscribe(val => {
 });
 this.form.get('DESCRIPTION').valueChanges.subscribe(val => {
+});
+this.form.get('APP_LANGUAGE').valueChanges.subscribe(val => {
 });
 }
 
@@ -823,12 +820,15 @@ async WHEN_VALIDATE_ITEM_APP_LANGUAGE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_APP_LANGUAGE(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APP_LANGUAGE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_APP_LANGUAGE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_APP_LANGUAGE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  }
+ }
 
 // For Adding new CODE
   public  grid_som_tabs_codes={};
@@ -844,7 +844,7 @@ public DSP_UPLOADConfig!: componentConfigDef;
 public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
-public multiselect_arr = ["APP_LANGUAGE"];
+public multiselect_arr = [];
 public multiselect_tree_arr = [];
 public AttDwnUrl = "";
 public uploadimage = false;

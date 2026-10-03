@@ -1,5 +1,5 @@
 import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
-import {  scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList  ,scdalarmEventSubscriptionsScdAesdAlarmEventSubscriptions1  , componentConfigDef} from '@modeldir/model';
+import {  scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid  ,scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
@@ -42,11 +42,11 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
 
   public componentConfig: componentConfigDef;
 
-  public grid_0_SCD_ALARM_EVENT_SUBSCRIPTIONS : scdalarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList;
-  public formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONS : scdalarmEventSubscriptionsScdAesdAlarmEventSubscriptions1;
+  public grid_0_SCD_ALARM_EVENT_SUBSCRIPTIONS : scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsGrid;
+  public form_1_SCD_ALARM_EVENT_SUBSCRIPTIONS : scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm;
   public  SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config : componentConfigDef;
   public  hide_comp_1 = false
-  public  SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config : componentConfigDef;
+  public  SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config : componentConfigDef;
   public  hide_comp_2 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdAlarmEventSubscriptionsProperties";
@@ -56,7 +56,7 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
   }
   private componentConfigChangeEvent!: Subscription;
   public compSelector = 'app-scd-alarm-event-subscriptions-properties';
-  public masterKeyNameArr = ["EVENT_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+  public masterKeyNameArr = ["EVENT_ID","SHAPE_ID"];
 
   public masterINSERT = 'INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS';
   public masterDataSource = 'SCD_ALARM_EVENT_SUBSCRIPTIONS';
@@ -99,15 +99,15 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
      this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.navigable = false;
      this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.insertable = false;
    }
-   this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef();
-   this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.title = this.starServices.getNLS([],"scd_alarm_event_subscriptions_properties.scd_alarm_event_subscriptions_properties.compsTitleID2","Alarm Event Subscriptions Def");
-   this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.isChild = true;
-   this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterSelector = 'app-scd-alarm-event-subscriptions-properties';
-   this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef();
+   this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.title = this.starServices.getNLS([],"scd_alarm_event_subscriptions_properties.scd_alarm_event_subscriptions_properties.compsTitleID2","Alarm Event Subscriptions Def");
+   this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.isChild = true;
+   this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterSelector = 'app-scd-alarm-event-subscriptions-properties';
+   this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.navigable = false;
-     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.insertable = true;
-     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.removeable = true;
+     this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.navigable = false;
+     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.insertable = true;
+     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.removeable = true;
    }
   }
   public ngOnDestroy(): void {
@@ -115,33 +115,33 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
      if (typeof this.componentConfigChangeEvent !== 'undefined') this.componentConfigChangeEvent.unsubscribe();
   }
   public readCompletedHandler( form_SCD_ALARM_EVENT_SUBSCRIPTIONS) {
-    let masterKeyArr = [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.APP_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.DISPLAY_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID];
-    let masterKeyNameArr = ["EVENT_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    let masterKeyArr = [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID];
+    let masterKeyNameArr = ["EVENT_ID","SHAPE_ID"];
      if (this.isSearchScreen == true) 
 	  {
-    	this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef();
-    	this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.formattedWhere  = form_SCD_ALARM_EVENT_SUBSCRIPTIONS;
+    	this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef();
+    	this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.formattedWhere  = form_SCD_ALARM_EVENT_SUBSCRIPTIONS;
     	return;
 	  }
-    //this.formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONS = new scdalarmEventSubscriptionsScdAesdAlarmEventSubscriptions1();
+    //this.form_1_SCD_ALARM_EVENT_SUBSCRIPTIONS = new scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONS[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.form_1_SCD_ALARM_EVENT_SUBSCRIPTIONS[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef();
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterKeyArr =  [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.APP_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.DISPLAY_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID];
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterKeyNameArr =  ["EVENT_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterReadCompleted = true;
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef();
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterKeyArr =  [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID];
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterKeyNameArr =  ["EVENT_ID","SHAPE_ID"];
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.queryable = false;
-     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.removeable = true;
-     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.updateable = true;
+     this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.queryable = false;
+     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.removeable = true;
+     //this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.updateable = true;
    }
   }
   async clearCompletedHandler( form_SCD_ALARM_EVENT_SUBSCRIPTIONS) {
      await this.starServices.sleep(200);
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef();
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef();
   }
-  public keyNameArr = ["EVENT_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+  public keyNameArr = ["EVENT_ID","SHAPE_ID"];
 
   public callreadSavedMaster( ) {
     let masterTable = 'SCD_ALARM_EVENT_SUBSCRIPTIONS' 
@@ -159,17 +159,17 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
     }
   public sendToChildren(componentConfig, pageNo){ 
    if ( (pageNo + 1) == 2){
-  	this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef(); 
-  	this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = componentConfig; 
+  	this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef(); 
+  	this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = componentConfig; 
    }
  } 
   public saveCompletedHandler( form_SCD_ALARM_EVENT_SUBSCRIPTIONS) {
- let key:any = [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.APP_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.DISPLAY_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID]; 
+ let key:any = [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID]; 
  if ( key != '') { 
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef();
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterSaved = form_SCD_ALARM_EVENT_SUBSCRIPTIONS;
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterKeyArr =  [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.APP_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.DISPLAY_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID];
-    this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterKeyNameArr =  ["EVENT_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef();
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterSaved = form_SCD_ALARM_EVENT_SUBSCRIPTIONS;
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterKeyArr =  [form_SCD_ALARM_EVENT_SUBSCRIPTIONS.EVENT_ID,form_SCD_ALARM_EVENT_SUBSCRIPTIONS.SHAPE_ID];
+    this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterKeyNameArr =  ["EVENT_ID","SHAPE_ID"];
   
     this.saveTriggerOutput.emit(form_SCD_ALARM_EVENT_SUBSCRIPTIONS);
   } 
@@ -238,24 +238,24 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
              this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config = new componentConfigDef();
              this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.title = this.starServices.getNLS([],"scd_alarm_event_subscriptions_properties.scd_alarm_event_subscriptions_properties.compsTitleID1","Alarm Event Subscriptions List");
-             this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef();
-             this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.title = this.starServices.getNLS([],"scd_alarm_event_subscriptions_properties.scd_alarm_event_subscriptions_properties.compsTitleID2","Alarm Event Subscriptions Def");
+             this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef();
+             this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.title = this.starServices.getNLS([],"scd_alarm_event_subscriptions_properties.scd_alarm_event_subscriptions_properties.compsTitleID2","Alarm Event Subscriptions Def");
            this.setSteps(this);
            }, 500);
        }
   
        this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config = new componentConfigDef();
-       this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config = new componentConfigDef();
+       this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
               this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterParams = ComponentConfig.masterParams;
    		
        }
        if (ComponentConfig.showToolBar != null) {
               this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.showToolBar = ComponentConfig.showToolBar;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {
@@ -264,12 +264,12 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
       if (ComponentConfig.newRec != null)
       {
        this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.newRec = ComponentConfig.newRec;
-       this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.newRec = ComponentConfig.newRec;
       }
       if (ComponentConfig.clearScreen != null)
       {
        this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.clearScreen = ComponentConfig.clearScreen;
 	   }
       if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
       {
@@ -281,22 +281,22 @@ export class ScdAlarmEventSubscriptionsPropertiesComponent implements OnInit {
          {
              this.SCD_ALARM_EVENT_SUBSCRIPTIONSGrid_0Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ALARM_EVENT_SUBSCRIPTIONSFormdivs_1Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_ALARM_EVENT_SUBSCRIPTIONSForm_1Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
        }
       }
     }
   }
-   public formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpened = false;
-  public  formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONSClose() { 
-    this.formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpened = false;  
+   public form_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpened = false;
+  public  form_1_SCD_ALARM_EVENT_SUBSCRIPTIONSClose() { 
+    this.form_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpened = false;  
   }
-  public  formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpen() { 
-    this.formdivs_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpened = true;  
+  public  form_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpen() { 
+    this.form_1_SCD_ALARM_EVENT_SUBSCRIPTIONSOpened = true;  
   }
   
  

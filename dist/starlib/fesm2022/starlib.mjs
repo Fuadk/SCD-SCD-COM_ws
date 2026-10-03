@@ -4611,7 +4611,61 @@ class starServices {
         this.showConfirmation(dialogStruc);
         return invalid;
     }
+    convertSvgToKendoSVGIcon(object, svgContent, iconName, column) {
+        if ((typeof iconName === 'undefined') || iconName === null)
+            iconName = column;
+        try {
+            // --- 1. viewBox (fallback to width/height, then 0 0 24 24) ---
+            let viewBox = svgContent.match(/viewBox\s*=\s*"([^"]+)"/)?.[1];
+            if (!viewBox) {
+                const wMatch = svgContent.match(/\bwidth\s*=\s*"([\d.]+)/);
+                const hMatch = svgContent.match(/\bheight\s*=\s*"([\d.]+)/);
+                const w = wMatch ? parseFloat(wMatch[1]) : 24;
+                const h = hMatch ? parseFloat(hMatch[1]) : 24;
+                viewBox = `0 0 ${w} ${h}`;
+            }
+            // --- 2. Extract inner content of <svg>...</svg> ---
+            const innerMatch = svgContent.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+            let content = innerMatch ? innerMatch[1] : svgContent;
+            // --- 3. Remove XML declaration and comments ---
+            content = content
+                .replace(/<\?xml[\s\S]*?\?>/g, '')
+                .replace(/<!--[\s\S]*?-->/g, '');
+            // --- 4. Collapse whitespace between tags but keep the shape markup intact ---
+            //    Keeps the exact attributes but avoids giant runs of spaces/newlines.
+            content = content
+                .replace(/\s+/g, ' ') // collapse all whitespace to single spaces
+                .replace(/>\s+</g, '><') // remove whitespace between adjacent tags
+                .trim();
+            // --- 5. Build the icon descriptor ---
+            const icon = {
+                name: iconName,
+                content: content,
+                viewBox: viewBox,
+                variants: {
+                    solid: '',
+                    outline: '',
+                    duotone: ''
+                }
+            };
+            // --- 6. Store on the caller's object (same pattern as before) ---
+            if (!object.svg_data)
+                object.svg_data = {};
+            object.svg_data[column] = icon;
+            console.log('convertSvgToKendoIcon:', icon);
+            return icon;
+        }
+        catch (error) {
+            if (object.svg_data)
+                object.svg_data[column] = {};
+            console.error(`convertSvgToKendoIcon error: ${iconName}`, error);
+            return null;
+        }
+    }
     convertSvgToKendoIcon(object, svgContent, iconName, column) {
+        if (typeof iconName == "undefined")
+            iconName = column;
+        console.log("convertSvgToKendoIcon:svgContent:", svgContent, "iconName:", iconName, "column:", column);
         try {
             // Extract viewBox
             const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/);
@@ -4754,6 +4808,7 @@ class starServices {
                 pathElement += ` />`;
                 paths.push(pathElement);
             }
+            console.log("convertSvgToKendoIcon:here1:");
             // If no paths found, try to extract from SVG content directly (fallback)
             if (paths.length === 0) {
                 console.warn('No paths found in SVG, trying fallback extraction');
@@ -4770,7 +4825,7 @@ class starServices {
             // If still no paths, return null or throw error
             if (paths.length === 0) {
                 console.error(`No paths found in SVG for icon: ${iconName}`);
-                return null;
+                //  return null;
             }
             // Build the content string with proper formatting
             const content = paths.join('');
@@ -4787,6 +4842,7 @@ class starServices {
                     duotone: ''
                 }
             };
+            console.log("convertSvgToKendoIcon:object.svg_data:", object.svg_data);
             return {
                 name: iconName,
                 content: content,

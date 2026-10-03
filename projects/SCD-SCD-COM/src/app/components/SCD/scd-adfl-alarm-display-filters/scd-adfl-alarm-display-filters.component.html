@@ -61,18 +61,6 @@
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="APP_ID" title="{{starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters.APP_ID','App Id') + ' *'}}" [width]="100"   *ngIf=visibleAPP_ID  [editable]=" !(disabledColumns.indexOf('APP_ID') > -1)  && !primarKeyReadOnlyArr.isAPP_IDreadOnly  "
-
- [hidden]="hiddenColumns.indexOf('APP_ID') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span    class="BASE" > {{lkpArrGetAPP_ID(dataItem.APP_ID)?.CODETEXT_LANG}}</span> </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrAPP_ID"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeAPP_ID($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('APP_ID')">
-		</kendo-dropdownlist>
-		</ng-template>
-	</kendo-grid-column>
-
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
 
  [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
@@ -81,18 +69,6 @@
 		<kendo-dropdownlist  [data]="lkpArrSHAPE_ID"  textField="CODETEXT_LANG" valueField="CODE"
 		 (valueChange)="valueChangeSHAPE_ID($event)" 
 		[valuePrimitive]="true" [formControl]="formGroup.get('SHAPE_ID')">
-		</kendo-dropdownlist>
-		</ng-template>
-	</kendo-grid-column>
-
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DISPLAY_ID" title="{{starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters.DISPLAY_ID','Display Id') + ' *'}}" [width]="100"   *ngIf=visibleDISPLAY_ID  [editable]=" !(disabledColumns.indexOf('DISPLAY_ID') > -1)  && !primarKeyReadOnlyArr.isDISPLAY_IDreadOnly  "
-
- [hidden]="hiddenColumns.indexOf('DISPLAY_ID') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span    class="BASE" > {{lkpArrGetDISPLAY_ID(dataItem.DISPLAY_ID)?.CODETEXT_LANG}}</span> </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrDISPLAY_ID"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeDISPLAY_ID($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('DISPLAY_ID')">
 		</kendo-dropdownlist>
 		</ng-template>
 	</kendo-grid-column>

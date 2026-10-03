@@ -61,18 +61,6 @@
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="APP_ID" title="{{starServices.getNLS([],'SCD_ASS_ALARM_SORT_RESULTS.scdalarmSortScdAssAlarmSortResults.APP_ID','App Id') + ' *'}}" [width]="100"   *ngIf=visibleAPP_ID  [editable]=" !(disabledColumns.indexOf('APP_ID') > -1)  "
-
- [hidden]="hiddenColumns.indexOf('APP_ID') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetAPP_ID(dataItem.APP_ID)?.CODETEXT_LANG}}</span> </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrAPP_ID"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeAPP_ID($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('APP_ID')">
-		</kendo-dropdownlist>
-		</ng-template>
-	</kendo-grid-column>
-
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SORT_BY_FIELD"
  *ngIf=visibleSORT_BY_FIELD  [editable]=" !(disabledColumns.indexOf('SORT_BY_FIELD') > -1)  "
 
@@ -92,18 +80,6 @@
 		<input  (blur)="onBlur_THEN_BY_FIELD_ASC_DESC()"    class="BASE"  [formControl]="formGroup.get('THEN_BY_FIELD_ASC_DESC')" [placeholder]="starServices.getNLS([],'SCD_ASS_ALARM_SORT_RESULTS.scdalarmSortScdAssAlarmSortResults.THEN_BY_FIELD_ASC_DESC_Hint','Please enter Then By Field Asc Desc.')" />
 		</ng-template>
 		</kendo-grid-column>
-
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="DISPLAY_ID" title="{{starServices.getNLS([],'SCD_ASS_ALARM_SORT_RESULTS.scdalarmSortScdAssAlarmSortResults.DISPLAY_ID','Display Id') + ' *'}}" [width]="100"   *ngIf=visibleDISPLAY_ID  [editable]=" !(disabledColumns.indexOf('DISPLAY_ID') > -1)  "
-
- [hidden]="hiddenColumns.indexOf('DISPLAY_ID') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetDISPLAY_ID(dataItem.DISPLAY_ID)?.CODETEXT_LANG}}</span> </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrDISPLAY_ID"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeDISPLAY_ID($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('DISPLAY_ID')">
-		</kendo-dropdownlist>
-		</ng-template>
-	</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SORT_BY_FIELD_ASC_DESC"
  *ngIf=visibleSORT_BY_FIELD_ASC_DESC  [editable]=" !(disabledColumns.indexOf('SORT_BY_FIELD_ASC_DESC') > -1)  "

@@ -11,39 +11,38 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdalarmEventSubscriptionsScdAessSearchAlarmEventSubscriptions , componentConfigDef} from '@modeldir/model';
+import { scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'EVENT_ID' : new FormControl(dataItem.EVENT_ID  , ) ,
-'EVENT_NAME' : new FormControl(dataItem.EVENT_NAME  , ) ,
-'APP_ID' : new FormControl(dataItem.APP_ID  ,   Validators.required ) ,
-'PRIORITY' : new FormControl(dataItem.PRIORITY  , ) ,
-'DISPLAY_ID' : new FormControl(dataItem.DISPLAY_ID  ,   Validators.required ) ,
-'EVENT_SOURCE' : new FormControl(dataItem.EVENT_SOURCE  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'EVENT_NAME' : new FormControl(dataItem.EVENT_NAME  , ) ,
+'PRIORITY' : new FormControl(dataItem.PRIORITY  , ) ,
 'URGENT' : new FormControl(dataItem.URGENT  , ) ,
 'HIGH' : new FormControl(dataItem.HIGH  , ) ,
 'MEDIUM' : new FormControl(dataItem.MEDIUM  , ) ,
 'LOW' : new FormControl(dataItem.LOW  , ) ,
 'EVENT' : new FormControl(dataItem.EVENT  , ) ,
-'SCOPES' : new FormControl(dataItem.SCOPES  , ) 
+'SCOPES' : new FormControl(dataItem.SCOPES  , ) ,
+'EVENT_SOURCE' : new FormControl(dataItem.EVENT_SOURCE  , ) ,
+'dummy' : new FormControl(dataItem.dummy  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-aess-search-alarm-event-subscriptions',
+  selector: 'app-scd-scd-alarm-event-subscriptions-form',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-aess-search-alarm-event-subscriptions.component.html',
-  styleUrls: ['./scd-aess-search-alarm-event-subscriptions.component.scss'],
+  templateUrl: './scd-scd-alarm-event-subscriptions-form.component.html',
+  styleUrls: ['./scd-scd-alarm-event-subscriptions-form.component.scss'],
   standalone: false
 })
 
 
-export class ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsFormComponent {
-  public title =  this.starServices.getNLS([],"SCD_AESS_SEARCH_ALARM_EVENT_SUBSCRIPTIONS.scdalarmEventSubscriptionsScdAessSearchAlarmEventSubscriptions.component_title","Search Alarm Event Subscriptions");
-  public compTitleMsg =  "SCD_AESS_SEARCH_ALARM_EVENT_SUBSCRIPTIONS.scdalarmEventSubscriptionsScdAessSearchAlarmEventSubscriptions";
-  public routineName = "ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsForm";
+export class ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivsComponent {
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_FORM.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm.component_title","SCD ALARM EVENT SUBSCRIPTIONS FORM");
+  public compTitleMsg =  "SCD_SCD_ALARM_EVENT_SUBSCRIPTIONS_FORM.scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm";
+  public routineName = "ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivs";
   private insertCMD = "INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS";
   private updateCMD = "UPDATE_SCD_ALARM_EVENT_SUBSCRIPTIONS";
   private deleteCMD =   "DELETE_SCD_ALARM_EVENT_SUBSCRIPTIONS";
@@ -64,7 +63,7 @@ export class ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsFormC
   public isChild: boolean = false;
   public isMaster: boolean = false;
   public isSearchScreen:boolean = false;
-  public  isAPP_IDEnable : boolean = true;
+  public  isSHAPE_IDEnable : boolean = true;
 
   public FORM_TRIGGER_FAILURE:any;
   public NOTFOUND:any;
@@ -75,12 +74,12 @@ export class ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsFormC
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isEVENT_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isEVENT_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
   public  masterKey="";
-  public masterKeyName ="APP_ID";
+  public masterKeyName ="SHAPE_ID";
   public WhereClause = "";
   public OrderByClause = "";
   
@@ -89,24 +88,18 @@ export class ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsFormC
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-aess-search-alarm-event-subscriptions';
+  public compSelector = 'app-scd-scd-alarm-event-subscriptions-form';
   public PK_AUTO = 'EVENT_ID';
   public customerFacing = false;
-  public FormStepsArr = [] ;
+  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"Subscriber to events where Priority :","visible":true}] ;
 public labelEVENT_IDTop=true;
 public labelEVENT_IDVisible=true;
-public labelEVENT_NAMETop=true;
-public labelEVENT_NAMEVisible=true;
-public labelAPP_IDTop=true;
-public labelAPP_IDVisible=true;
-public labelPRIORITYTop=true;
-public labelPRIORITYVisible=true;
-public labelDISPLAY_IDTop=true;
-public labelDISPLAY_IDVisible=true;
-public labelEVENT_SOURCETop=true;
-public labelEVENT_SOURCEVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
+public labelEVENT_NAMETop=true;
+public labelEVENT_NAMEVisible=true;
+public labelPRIORITYTop=true;
+public labelPRIORITYVisible=true;
 public labelURGENTTop=true;
 public labelURGENTVisible=true;
 public labelHIGHTop=true;
@@ -119,34 +112,36 @@ public labelEVENTTop=true;
 public labelEVENTVisible=true;
 public labelSCOPESTop=true;
 public labelSCOPESVisible=true;
+public labelEVENT_SOURCETop=true;
+public labelEVENT_SOURCEVisible=true;
+public labeldummyTop=true;
+public labeldummyVisible=true;
 
-public visibleEVENT_ID = false;
+public visibleEVENT_ID = true;
+public visibleSHAPE_ID = true;
 public visibleEVENT_NAME = true;
-public visibleAPP_ID = false;
 public visiblePRIORITY = true;
-public visibleDISPLAY_ID = false;
+public visibleURGENT = true;
+public visibleHIGH = true;
+public visibleMEDIUM = true;
+public visibleLOW = true;
+public visibleEVENT = true;
+public visibleSCOPES = true;
 public visibleEVENT_SOURCE = true;
-public visibleSHAPE_ID = false;
-public visibleURGENT = false;
-public visibleHIGH = false;
-public visibleMEDIUM = false;
-public visibleLOW = false;
-public visibleEVENT = false;
-public visibleSCOPES = false;
+public visibledummy = false;
 
 public disableEVENT_ID = false;
-public disableEVENT_NAME = false;
-public disableAPP_ID = false;
-public disablePRIORITY = false;
-public disableDISPLAY_ID = false;
-public disableEVENT_SOURCE = false;
 public disableSHAPE_ID = false;
+public disableEVENT_NAME = false;
+public disablePRIORITY = false;
 public disableURGENT = false;
 public disableHIGH = false;
 public disableMEDIUM = false;
 public disableLOW = false;
 public disableEVENT = false;
 public disableSCOPES = false;
+public disableEVENT_SOURCE = false;
+public disabledummy = false;
 
 
   
@@ -166,15 +161,16 @@ public disableSCOPES = false;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
       this.componentConfig.navigable = true;
-      this.componentConfig.insertable = false;
-      this.componentConfig.removeable = false;
-      this.componentConfig.updateable = false;       
+      this.componentConfig.insertable = true;
+      this.componentConfig.removeable = true;
+      this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
-    //  this.componentConfig.enabled = false;
+    //  this.componentConfig.enabled = true;
 
   }
   private componentConfigChangeEvent!: Subscription;
@@ -237,26 +233,26 @@ public disableSCOPES = false;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -269,7 +265,7 @@ public disableSCOPES = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdalarmEventSubscriptionsScdAessSearchAlarmEventSubscriptions();   
+  private formInitialValues:any =   new scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -277,10 +273,10 @@ public disableSCOPES = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsForm form.APP_ID :' + form.APP_ID);
-    if ( (form.APP_ID != "") &&   (typeof form.APP_ID != "undefined"))
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivs form.SHAPE_ID :' + form.SHAPE_ID);
+    if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
-      this.masterKey = form.APP_ID;
+      this.masterKey = form.SHAPE_ID;
       
       this.isSearch = true;
       this.executeQuery(form);
@@ -301,7 +297,7 @@ public disableSCOPES = false;
     */
   }
   @Input() public set executeQueryInput( form: any) {
-    if ( (typeof form != "undefined") &&   (typeof form.APP_ID != "undefined") &&   (form.APP_ID != ""))
+    if ( (typeof form != "undefined") &&   (typeof form.SHAPE_ID != "undefined") &&   (form.SHAPE_ID != ""))
     {
       
       this.isSearch = true;
@@ -388,9 +384,18 @@ public disableSCOPES = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+      this.FormStepsArr.forEach(item => {
+      (item as any).visible = true;
+    });
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
+
+
+
+this.lkpArrEVENT_SOURCE= this.starlib1.alarmsDefinition;
+console.log ("this.lkpArrEVENT_SOURCE:",JSON.stringify(this.lkpArrEVENT_SOURCE))
+
    }
 
   public onNew(e:any): void {
@@ -560,34 +565,34 @@ public disableSCOPES = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT APPLICATION_ID CODE, APPLICATION_NAME CODETEXT_LANG  FROM  SCD_APPLICATION  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrAPP_ID"},
-	{"statment":"SELECT DISPLAY_ID CODE, DISPLAY_NAME CODETEXT_LANG  FROM SCD_DISPLAY  order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrDISPLAY_ID"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrSHAPE_ID"},
+	{"statment":"SELECT OPCUA_SERVER_ID  CODE , SERVER_NAME CODETEXT_LANG FROM SCD_OPCUA_SERVER order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrSCOPES"},
+	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='EVENT_SOURCE' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrEVENT_SOURCE"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrAPP_ID = [];
-
-public lkpArrDISPLAY_ID = [];
-
 public lkpArrSHAPE_ID = [];
 
-public lkpArrGetAPP_ID(CODE: any): any {
-var rec = this.lkpArrAPP_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
+public lkpArrSCOPES = [];
 
-public lkpArrGetDISPLAY_ID(CODE: any): any {
-var rec = this.lkpArrDISPLAY_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
+public lkpArrEVENT_SOURCE = [];
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetSCOPES(CODE: any): any {
+var rec = this.lkpArrSCOPES.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetEVENT_SOURCE(CODE: any): any {
+var rec = this.lkpArrEVENT_SOURCE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -596,21 +601,7 @@ this.form.get('EVENT_ID').valueChanges.subscribe(val => {
 });
 this.form.get('EVENT_NAME').valueChanges.subscribe(val => {
 });
-this.form.get('PRIORITY').valueChanges.subscribe(val => {
-});
-this.form.get('EVENT_SOURCE').valueChanges.subscribe(val => {
-});
-this.form.get('URGENT').valueChanges.subscribe(val => {
-});
-this.form.get('HIGH').valueChanges.subscribe(val => {
-});
-this.form.get('MEDIUM').valueChanges.subscribe(val => {
-});
-this.form.get('LOW').valueChanges.subscribe(val => {
-});
-this.form.get('EVENT').valueChanges.subscribe(val => {
-});
-this.form.get('SCOPES').valueChanges.subscribe(val => {
+this.form.get('dummy').valueChanges.subscribe(val => {
 });
 }
 
@@ -644,7 +635,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmEventSubscriptionsScdAessSearchAlarmEventSubscriptionsForm ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivs ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -729,10 +720,11 @@ public printScreen(){
     
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    	if (!this.isChild){
-		this.executeQuery(this.form.value);
-	}
+    	// if (!this.isChild){
+	// 	this.executeQuery(this.form.value);
+	// }
 
+//this.lkpArrEVENT_SOURCE = null;
     
   }
   async WHEN_CREATE_RECORD(){
@@ -813,6 +805,26 @@ async WHEN_VALIDATE_ITEM_EVENT_ID(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHAPE_ID'] != "undefined" ) 
+      this.form.controls['SHAPE_ID'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHAPE_ID'] != "undefined" ) 
+     this.form.get('SHAPE_ID').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHAPE_ID(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_EVENT_NAME(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -833,26 +845,6 @@ async WHEN_VALIDATE_ITEM_EVENT_NAME(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_APP_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-      this.form.controls['APP_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['APP_ID'] != "undefined" ) 
-     this.form.get('APP_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_APP_ID(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_PRIORITY(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -870,66 +862,6 @@ async WHEN_VALIDATE_ITEM_PRIORITY(value) {
  }
 
  async ON_CLICK_PRIORITY(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_DISPLAY_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-      this.form.controls['DISPLAY_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['DISPLAY_ID'] != "undefined" ) 
-     this.form.get('DISPLAY_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_DISPLAY_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_EVENT_SOURCE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['EVENT_SOURCE'] != "undefined" ) 
-      this.form.controls['EVENT_SOURCE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['EVENT_SOURCE'] != "undefined" ) 
-     this.form.get('EVENT_SOURCE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_EVENT_SOURCE(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SHAPE_ID'] != "undefined" ) 
-      this.form.controls['SHAPE_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['SHAPE_ID'] != "undefined" ) 
-     this.form.get('SHAPE_ID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SHAPE_ID(event){
 
 }
 
@@ -1052,6 +984,46 @@ async WHEN_VALIDATE_ITEM_SCOPES(value) {
  async ON_CLICK_SCOPES(event){
 
 }
+
+async WHEN_VALIDATE_ITEM_EVENT_SOURCE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['EVENT_SOURCE'] != "undefined" ) 
+      this.form.controls['EVENT_SOURCE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['EVENT_SOURCE'] != "undefined" ) 
+     this.form.get('EVENT_SOURCE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_EVENT_SOURCE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_dummy(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['dummy'] != "undefined" ) 
+      this.form.controls['dummy'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['dummy'] != "undefined" ) 
+     this.form.get('dummy').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_dummy(event){
+
+}
  
  async onChange_EVENT_ID(event:any) { 
  var value = event.target.value; 
@@ -1062,6 +1034,12 @@ async WHEN_VALIDATE_ITEM_SCOPES(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onValueChange_SHAPE_ID(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_EVENT_NAME(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1071,12 +1049,6 @@ async WHEN_VALIDATE_ITEM_SCOPES(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_APP_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_APP_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_PRIORITY(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1086,27 +1058,6 @@ async WHEN_VALIDATE_ITEM_SCOPES(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_DISPLAY_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DISPLAY_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
- async onChange_EVENT_SOURCE(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_EVENT_SOURCE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onValueChange_SHAPE_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
-  } 
  async onChange_URGENT(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1152,12 +1103,24 @@ async WHEN_VALIDATE_ITEM_SCOPES(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onChange_SCOPES(event:any) { 
+ async onValueChange_SCOPES(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_SCOPES(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_EVENT_SOURCE(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_EVENT_SOURCE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_dummy(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_SCOPES(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_dummy(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  }
@@ -1176,8 +1139,8 @@ public DSP_UPLOADConfig!: componentConfigDef;
 public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
-public multiselect_arr = [];
-public multiselect_tree_arr = [];
+public multiselect_arr = ["SCOPES"];
+public multiselect_tree_arr = ["EVENT_SOURCE"];
 public AttDwnUrl = "";
 public uploadimage = false;
 public showIcon=true;
@@ -1185,10 +1148,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     
