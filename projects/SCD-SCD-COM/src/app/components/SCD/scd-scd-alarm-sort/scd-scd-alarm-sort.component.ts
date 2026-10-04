@@ -11,34 +11,38 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdalarmStatesOptionsScdAsoAlarmStatesOptions , componentConfigDef} from '@modeldir/model';
+import { scdalarmSortScdScdAlarmSort , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'STATE_OPTION_ID' : new FormControl(dataItem.STATE_OPTION_ID  , ) ,
+'SORT_ID' : new FormControl(dataItem.SORT_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
-'TEST_RATES' : new FormControl(dataItem.TEST_RATES  , ) ,
-'BLINK_RATE' : new FormControl(dataItem.BLINK_RATE  , ) 
+'SORT_BY_FIELD' : new FormControl(dataItem.SORT_BY_FIELD  , ) ,
+'SORT_BY_FIELD_ASC_DESC' : new FormControl(dataItem.SORT_BY_FIELD_ASC_DESC  , ) ,
+'THEN_BY' : new FormControl(dataItem.THEN_BY  , ) ,
+'THEN_BY_FIELD_ASC_DESC' : new FormControl(dataItem.THEN_BY_FIELD_ASC_DESC  , ) ,
+'THEN_BY_2' : new FormControl(dataItem.THEN_BY_2  , ) ,
+'THEN_BY_2_FIELD_ASC_DESC' : new FormControl(dataItem.THEN_BY_2_FIELD_ASC_DESC  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-aso-alarm-states-options',
+  selector: 'app-scd-scd-alarm-sort',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-aso-alarm-states-options.component.html',
-  styleUrls: ['./scd-aso-alarm-states-options.component.scss'],
+  templateUrl: './scd-scd-alarm-sort.component.html',
+  styleUrls: ['./scd-scd-alarm-sort.component.scss'],
   standalone: false
 })
 
 
-export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent {
-  public title =  this.starServices.getNLS([],"SCD_ASO_ALARM_STATES_OPTIONS.scdalarmStatesOptionsScdAsoAlarmStatesOptions.component_title","Alarm States Options");
-  public compTitleMsg =  "SCD_ASO_ALARM_STATES_OPTIONS.scdalarmStatesOptionsScdAsoAlarmStatesOptions";
-  public routineName = "ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsForm";
-  private insertCMD = "INSERT_SCD_ALARM_STATES_OPTIONS";
-  private updateCMD = "UPDATE_SCD_ALARM_STATES_OPTIONS";
-  private deleteCMD =   "DELETE_SCD_ALARM_STATES_OPTIONS";
-  private getCMD = "GET_SCD_ALARM_STATES_OPTIONS_QUERY";
+export class ScdAlarmSortScdScdAlarmSortFormComponent {
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.component_title","SCD ALARM SORT");
+  public compTitleMsg =  "SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort";
+  public routineName = "ScdAlarmSortScdScdAlarmSortForm";
+  private insertCMD = "INSERT_SCD_ALARM_SORT";
+  private updateCMD = "UPDATE_SCD_ALARM_SORT";
+  private deleteCMD =   "DELETE_SCD_ALARM_SORT";
+  private getCMD = "GET_SCD_ALARM_SORT_QUERY";
 
   public value: Date = new Date(2019, 5, 1, 22);
   public format: string = 'MM/dd/yyyy HH:mm';
@@ -66,7 +70,7 @@ export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isSTATE_OPTION_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isSORT_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
@@ -80,28 +84,44 @@ export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent {
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-aso-alarm-states-options';
-  public PK_AUTO = 'STATE_OPTION_ID';
+  public compSelector = 'app-scd-scd-alarm-sort';
+  public PK_AUTO = 'SORT_ID';
   public customerFacing = false;
   public FormStepsArr = [] ;
-public labelSTATE_OPTION_IDTop=false;
-public labelSTATE_OPTION_IDVisible=true;
-public labelSHAPE_IDTop=false;
+public labelSORT_IDTop=true;
+public labelSORT_IDVisible=true;
+public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
-public labelTEST_RATESTop=false;
-public labelTEST_RATESVisible=true;
-public labelBLINK_RATETop=false;
-public labelBLINK_RATEVisible=true;
+public labelSORT_BY_FIELDTop=true;
+public labelSORT_BY_FIELDVisible=true;
+public labelSORT_BY_FIELD_ASC_DESCTop=true;
+public labelSORT_BY_FIELD_ASC_DESCVisible=false;
+public labelTHEN_BYTop=true;
+public labelTHEN_BYVisible=true;
+public labelTHEN_BY_FIELD_ASC_DESCTop=true;
+public labelTHEN_BY_FIELD_ASC_DESCVisible=false;
+public labelTHEN_BY_2Top=true;
+public labelTHEN_BY_2Visible=true;
+public labelTHEN_BY_2_FIELD_ASC_DESCTop=true;
+public labelTHEN_BY_2_FIELD_ASC_DESCVisible=false;
 
-public visibleSTATE_OPTION_ID = true;
+public visibleSORT_ID = true;
 public visibleSHAPE_ID = true;
-public visibleTEST_RATES = true;
-public visibleBLINK_RATE = true;
+public visibleSORT_BY_FIELD = true;
+public visibleSORT_BY_FIELD_ASC_DESC = true;
+public visibleTHEN_BY = true;
+public visibleTHEN_BY_FIELD_ASC_DESC = true;
+public visibleTHEN_BY_2 = true;
+public visibleTHEN_BY_2_FIELD_ASC_DESC = true;
 
-public disableSTATE_OPTION_ID = false;
+public disableSORT_ID = false;
 public disableSHAPE_ID = false;
-public disableTEST_RATES = false;
-public disableBLINK_RATE = false;
+public disableSORT_BY_FIELD = false;
+public disableSORT_BY_FIELD_ASC_DESC = false;
+public disableTHEN_BY = false;
+public disableTHEN_BY_FIELD_ASC_DESC = false;
+public disableTHEN_BY_2 = false;
+public disableTHEN_BY_2_FIELD_ASC_DESC = false;
 
 
   
@@ -121,12 +141,13 @@ public disableBLINK_RATE = false;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
       this.componentConfig.navigable = true;
       this.componentConfig.insertable = true;
-      this.componentConfig.removeable = false;
+      this.componentConfig.removeable = true;
       this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
     //  this.componentConfig.enabled = true;
@@ -192,26 +213,26 @@ public disableBLINK_RATE = false;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -224,7 +245,7 @@ public disableBLINK_RATE = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdalarmStatesOptionsScdAsoAlarmStatesOptions();   
+  private formInitialValues:any =   new scdalarmSortScdScdAlarmSort();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -232,7 +253,7 @@ public disableBLINK_RATE = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsForm form.SHAPE_ID :' + form.SHAPE_ID);
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmSortScdScdAlarmSortForm form.SHAPE_ID :' + form.SHAPE_ID);
     if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
       this.masterKey = form.SHAPE_ID;
@@ -416,8 +437,8 @@ public disableBLINK_RATE = false;
       }
       this.Comp_Config = new componentConfigDef();
       this.Comp_Config.masterSaved = NewVal;
-      this.Comp_Config.masterKeyArr =  [NewVal['STATE_OPTION_ID']];
-      this.Comp_Config.masterKeyNameArr =  ["STATE_OPTION_ID"];
+      this.Comp_Config.masterKeyArr =  [NewVal['SORT_ID']];
+      this.Comp_Config.masterKeyNameArr =  ["SORT_ID"];
          
        await this.POST_INSERT(NewVal);
       if (this.FORM_TRIGGER_FAILURE) 
@@ -518,30 +539,68 @@ public disableBLINK_RATE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BLINK_RATE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrBLINK_RATE"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SORT_BY_FIELD\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrSORT_BY_FIELD"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SORT_BY_FIELD_ASC_DESC\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrSORT_BY_FIELD_ASC_DESC"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SORT_BY_FIELD\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrTHEN_BY"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SORT_BY_FIELD_ASC_DESC\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrTHEN_BY_FIELD_ASC_DESC"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SORT_BY_FIELD\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrTHEN_BY_2"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SORT_BY_FIELD_ASC_DESC\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrTHEN_BY_2_FIELD_ASC_DESC"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrSHAPE_ID = [];
+public lkpArrSORT_BY_FIELD = [];
 
-public lkpArrBLINK_RATE = [];
+public lkpArrSORT_BY_FIELD_ASC_DESC = [];
 
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
+public lkpArrTHEN_BY = [];
+
+public lkpArrTHEN_BY_FIELD_ASC_DESC = [];
+
+public lkpArrTHEN_BY_2 = [];
+
+public lkpArrTHEN_BY_2_FIELD_ASC_DESC = [];
+
+public lkpArrGetSORT_BY_FIELD(CODE: any): any {
+var rec = this.lkpArrSORT_BY_FIELD.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
-public lkpArrGetBLINK_RATE(CODE: any): any {
-var rec = this.lkpArrBLINK_RATE.find((x:any) => x.CODE === CODE);
+public lkpArrGetSORT_BY_FIELD_ASC_DESC(CODE: any): any {
+var rec = this.lkpArrSORT_BY_FIELD_ASC_DESC.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetTHEN_BY(CODE: any): any {
+var rec = this.lkpArrTHEN_BY.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetTHEN_BY_FIELD_ASC_DESC(CODE: any): any {
+var rec = this.lkpArrTHEN_BY_FIELD_ASC_DESC.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetTHEN_BY_2(CODE: any): any {
+var rec = this.lkpArrTHEN_BY_2.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetTHEN_BY_2_FIELD_ASC_DESC(CODE: any): any {
+var rec = this.lkpArrTHEN_BY_2_FIELD_ASC_DESC.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
 onChanges(): void {
-this.form.get('STATE_OPTION_ID').valueChanges.subscribe(val => {
+this.form.get('SORT_ID').valueChanges.subscribe(val => {
+});
+this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
 });
 }
 
@@ -575,7 +634,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsForm ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmSortScdScdAlarmSortForm ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -724,23 +783,23 @@ public printScreen(){
 
 
 
-async WHEN_VALIDATE_ITEM_STATE_OPTION_ID(value) {
+async WHEN_VALIDATE_ITEM_SORT_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['STATE_OPTION_ID'] != "undefined" ) 
-      this.form.controls['STATE_OPTION_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SORT_ID'] != "undefined" ) 
+      this.form.controls['SORT_ID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['STATE_OPTION_ID'] != "undefined" ) 
-     this.form.get('STATE_OPTION_ID').updateValueAndValidity();
+ if (typeof this.form.controls['SORT_ID'] != "undefined" ) 
+     this.form.get('SORT_ID').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_STATE_OPTION_ID(event){
+ async ON_CLICK_SORT_ID(event){
 
 }
 
@@ -764,73 +823,189 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_TEST_RATES(value) {
+async WHEN_VALIDATE_ITEM_SORT_BY_FIELD(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TEST_RATES'] != "undefined" ) 
-      this.form.controls['TEST_RATES'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SORT_BY_FIELD'] != "undefined" ) 
+      this.form.controls['SORT_BY_FIELD'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['TEST_RATES'] != "undefined" ) 
-     this.form.get('TEST_RATES').updateValueAndValidity();
+ if (typeof this.form.controls['SORT_BY_FIELD'] != "undefined" ) 
+     this.form.get('SORT_BY_FIELD').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_TEST_RATES(event){
+ async ON_CLICK_SORT_BY_FIELD(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_BLINK_RATE(value) {
+async WHEN_VALIDATE_ITEM_SORT_BY_FIELD_ASC_DESC(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BLINK_RATE'] != "undefined" ) 
-      this.form.controls['BLINK_RATE'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['SORT_BY_FIELD_ASC_DESC'] != "undefined" ) 
+      this.form.controls['SORT_BY_FIELD_ASC_DESC'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['BLINK_RATE'] != "undefined" ) 
-     this.form.get('BLINK_RATE').updateValueAndValidity();
+ if (typeof this.form.controls['SORT_BY_FIELD_ASC_DESC'] != "undefined" ) 
+     this.form.get('SORT_BY_FIELD_ASC_DESC').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_BLINK_RATE(event){
+ async ON_CLICK_SORT_BY_FIELD_ASC_DESC(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_THEN_BY(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['THEN_BY'] != "undefined" ) 
+      this.form.controls['THEN_BY'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['THEN_BY'] != "undefined" ) 
+     this.form.get('THEN_BY').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_THEN_BY(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_THEN_BY_FIELD_ASC_DESC(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['THEN_BY_FIELD_ASC_DESC'] != "undefined" ) 
+      this.form.controls['THEN_BY_FIELD_ASC_DESC'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['THEN_BY_FIELD_ASC_DESC'] != "undefined" ) 
+     this.form.get('THEN_BY_FIELD_ASC_DESC').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_THEN_BY_FIELD_ASC_DESC(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_THEN_BY_2(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['THEN_BY_2'] != "undefined" ) 
+      this.form.controls['THEN_BY_2'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['THEN_BY_2'] != "undefined" ) 
+     this.form.get('THEN_BY_2').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_THEN_BY_2(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_THEN_BY_2_FIELD_ASC_DESC(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['THEN_BY_2_FIELD_ASC_DESC'] != "undefined" ) 
+      this.form.controls['THEN_BY_2_FIELD_ASC_DESC'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['THEN_BY_2_FIELD_ASC_DESC'] != "undefined" ) 
+     this.form.get('THEN_BY_2_FIELD_ASC_DESC').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_THEN_BY_2_FIELD_ASC_DESC(event){
 
 }
  
- async onChange_STATE_OPTION_ID(event:any) { 
+ async onChange_SORT_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_STATE_OPTION_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_SORT_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_SHAPE_ID(value) { 
+ async onChange_SHAPE_ID(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_SORT_BY_FIELD(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_SORT_BY_FIELD(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_TEST_RATES(value) { 
+ async onChange_SORT_BY_FIELD_ASC_DESC(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SORT_BY_FIELD_ASC_DESC(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_THEN_BY(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_TEST_RATES(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_THEN_BY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_BLINK_RATE(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BLINK_RATE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_THEN_BY_FIELD_ASC_DESC(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_THEN_BY_FIELD_ASC_DESC(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  }
+ } 
+ async onValueChange_THEN_BY_2(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_THEN_BY_2(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_THEN_BY_2_FIELD_ASC_DESC(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_THEN_BY_2_FIELD_ASC_DESC(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ }
 
 // For Adding new CODE
   public  grid_som_tabs_codes={};
@@ -855,10 +1030,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

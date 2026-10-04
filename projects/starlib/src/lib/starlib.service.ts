@@ -5012,8 +5012,7 @@ convertSvgToKendoSVGIcon(
 }
 
 convertSvgToKendoIcon(object, svgContent: string, iconName: string, column) {
-  if (typeof iconName == "undefined")
-    iconName = column;
+  if ( (typeof iconName === 'undefined') || iconName === null ) iconName = column;
   console.log("convertSvgToKendoIcon:svgContent:", svgContent, "iconName:", iconName, "column:", column);
     try {
         // Extract viewBox
@@ -5206,7 +5205,7 @@ convertSvgToKendoIcon(object, svgContent: string, iconName: string, column) {
         // If still no paths, return null or throw error
         if (paths.length === 0) {
             console.error(`No paths found in SVG for icon: ${iconName}`);
-          //  return null;
+            return null;
         }
 
         // Build the content string with proper formatting

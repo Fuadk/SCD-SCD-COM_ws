@@ -11,34 +11,41 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdalarmStatesOptionsScdAsoAlarmStatesOptions1 , componentConfigDef} from '@modeldir/model';
+import { scdalarmStatesScdScdAlarmStatesForm , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'STATE_OPTION_ID' : new FormControl(dataItem.STATE_OPTION_ID  , ) ,
-'TEST_RATES' : new FormControl(dataItem.TEST_RATES  , ) ,
-'BLINK_RATE' : new FormControl(dataItem.BLINK_RATE  , ) ,
-'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) 
+'STATE_ID' : new FormControl(dataItem.STATE_ID  , ) ,
+'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'SHOW_EVENT_TYPE' : new FormControl(dataItem.SHOW_EVENT_TYPE  , ) ,
+'PRIORITY' : new FormControl(dataItem.PRIORITY  , ) ,
+'TEXT_COLOR' : new FormControl(dataItem.TEXT_COLOR  , ) ,
+'BACKGROUND_COLOR' : new FormControl(dataItem.BACKGROUND_COLOR  , ) ,
+'BLINK' : new FormControl(dataItem.BLINK  , ) ,
+'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) ,
+'SOUND' : new FormControl(dataItem.SOUND  , ) ,
+'IMAGE_ICON' : new FormControl(dataItem.IMAGE_ICON  , ) ,
+'EVENT_TYPE' : new FormControl(dataItem.EVENT_TYPE  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-aso-alarm-states-options-1',
+  selector: 'app-scd-scd-alarm-states-form',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-aso-alarm-states-options-1.component.html',
-  styleUrls: ['./scd-aso-alarm-states-options-1.component.scss'],
+  templateUrl: './scd-scd-alarm-states-form.component.html',
+  styleUrls: ['./scd-scd-alarm-states-form.component.scss'],
   standalone: false
 })
 
 
-export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1FormComponent {
-  public title =  this.starServices.getNLS([],"SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1.component_title","Alarm States Options");
-  public compTitleMsg =  "SCD_ASO_ALARM_STATES_OPTIONS_1.scdalarmStatesOptionsScdAsoAlarmStatesOptions1";
-  public routineName = "ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1Form";
-  private insertCMD = "INSERT_SCD_ALARM_STATES_OPTIONS";
-  private updateCMD = "UPDATE_SCD_ALARM_STATES_OPTIONS";
-  private deleteCMD =   "DELETE_SCD_ALARM_STATES_OPTIONS";
-  private getCMD = "GET_SCD_ALARM_STATES_OPTIONS_QUERY";
+export class ScdAlarmStatesScdScdAlarmStatesFormFormComponent {
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_STATES_FORM.scdalarmStatesScdScdAlarmStatesForm.component_title","SCD ALARM STATES FORM");
+  public compTitleMsg =  "SCD_SCD_ALARM_STATES_FORM.scdalarmStatesScdScdAlarmStatesForm";
+  public routineName = "ScdAlarmStatesScdScdAlarmStatesFormForm";
+  private insertCMD = "INSERT_SCD_ALARM_STATES";
+  private updateCMD = "UPDATE_SCD_ALARM_STATES";
+  private deleteCMD =   "DELETE_SCD_ALARM_STATES";
+  private getCMD = "GET_SCD_ALARM_STATES_QUERY";
 
   public value: Date = new Date(2019, 5, 1, 22);
   public format: string = 'MM/dd/yyyy HH:mm';
@@ -66,7 +73,7 @@ export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1FormComponent {
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isSTATE_OPTION_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isSTATE_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
@@ -80,28 +87,56 @@ export class ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1FormComponent {
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-aso-alarm-states-options-1';
-  public PK_AUTO = 'STATE_OPTION_ID';
+  public compSelector = 'app-scd-scd-alarm-states-form';
+  public PK_AUTO = 'STATE_ID';
   public customerFacing = false;
   public FormStepsArr = [] ;
-public labelSTATE_OPTION_IDTop=true;
-public labelSTATE_OPTION_IDVisible=true;
-public labelTEST_RATESTop=true;
-public labelTEST_RATESVisible=true;
-public labelBLINK_RATETop=true;
-public labelBLINK_RATEVisible=true;
+public labelSTATE_IDTop=true;
+public labelSTATE_IDVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
+public labelSHOW_EVENT_TYPETop=true;
+public labelSHOW_EVENT_TYPEVisible=true;
+public labelPRIORITYTop=true;
+public labelPRIORITYVisible=true;
+public labelTEXT_COLORTop=true;
+public labelTEXT_COLORVisible=true;
+public labelBACKGROUND_COLORTop=true;
+public labelBACKGROUND_COLORVisible=true;
+public labelBLINKTop=true;
+public labelBLINKVisible=true;
+public labelSAMPLETop=true;
+public labelSAMPLEVisible=true;
+public labelSOUNDTop=true;
+public labelSOUNDVisible=true;
+public labelIMAGE_ICONTop=true;
+public labelIMAGE_ICONVisible=true;
+public labelEVENT_TYPETop=true;
+public labelEVENT_TYPEVisible=true;
 
-public visibleSTATE_OPTION_ID = true;
-public visibleTEST_RATES = true;
-public visibleBLINK_RATE = true;
-public visibleSHAPE_ID = false;
+public visibleSTATE_ID = true;
+public visibleSHAPE_ID = true;
+public visibleSHOW_EVENT_TYPE = true;
+public visiblePRIORITY = true;
+public visibleTEXT_COLOR = true;
+public visibleBACKGROUND_COLOR = true;
+public visibleBLINK = true;
+public visibleSAMPLE = true;
+public visibleSOUND = true;
+public visibleIMAGE_ICON = true;
+public visibleEVENT_TYPE = true;
 
-public disableSTATE_OPTION_ID = false;
-public disableTEST_RATES = false;
-public disableBLINK_RATE = false;
+public disableSTATE_ID = false;
 public disableSHAPE_ID = false;
+public disableSHOW_EVENT_TYPE = false;
+public disablePRIORITY = false;
+public disableTEXT_COLOR = false;
+public disableBACKGROUND_COLOR = false;
+public disableBLINK = false;
+public disableSAMPLE = false;
+public disableSOUND = false;
+public disableIMAGE_ICON = false;
+public disableEVENT_TYPE = false;
 
 
   
@@ -121,12 +156,13 @@ public disableSHAPE_ID = false;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
       this.componentConfig.navigable = true;
       this.componentConfig.insertable = true;
-      this.componentConfig.removeable = false;
+      this.componentConfig.removeable = true;
       this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
     //  this.componentConfig.enabled = true;
@@ -192,26 +228,26 @@ public disableSHAPE_ID = false;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -224,7 +260,7 @@ public disableSHAPE_ID = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdalarmStatesOptionsScdAsoAlarmStatesOptions1();   
+  private formInitialValues:any =   new scdalarmStatesScdScdAlarmStatesForm();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -232,7 +268,7 @@ public disableSHAPE_ID = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1Form form.SHAPE_ID :' + form.SHAPE_ID);
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmStatesScdScdAlarmStatesFormForm form.SHAPE_ID :' + form.SHAPE_ID);
     if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
       this.masterKey = form.SHAPE_ID;
@@ -416,8 +452,8 @@ public disableSHAPE_ID = false;
       }
       this.Comp_Config = new componentConfigDef();
       this.Comp_Config.masterSaved = NewVal;
-      this.Comp_Config.masterKeyArr =  [NewVal['STATE_OPTION_ID']];
-      this.Comp_Config.masterKeyNameArr =  ["STATE_OPTION_ID"];
+      this.Comp_Config.masterKeyArr =  [NewVal['STATE_ID']];
+      this.Comp_Config.masterKeyNameArr =  ["STATE_ID"];
          
        await this.POST_INSERT(NewVal);
       if (this.FORM_TRIGGER_FAILURE) 
@@ -518,30 +554,21 @@ public disableSHAPE_ID = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BLINK_RATE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrBLINK_RATE"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+this.lookupArrDef =[];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrBLINK_RATE = [];
-
-public lkpArrSHAPE_ID = [];
-
-public lkpArrGetBLINK_RATE(CODE: any): any {
-var rec = this.lkpArrBLINK_RATE.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
 onChanges(): void {
-this.form.get('STATE_OPTION_ID').valueChanges.subscribe(val => {
+this.form.get('STATE_ID').valueChanges.subscribe(val => {
+});
+this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
+});
+this.form.get('PRIORITY').valueChanges.subscribe(val => {
+});
+this.form.get('SAMPLE').valueChanges.subscribe(val => {
+});
+this.form.get('EVENT_TYPE').valueChanges.subscribe(val => {
 });
 }
 
@@ -575,7 +602,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1Form ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmStatesScdScdAlarmStatesFormForm ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -724,63 +751,23 @@ public printScreen(){
 
 
 
-async WHEN_VALIDATE_ITEM_STATE_OPTION_ID(value) {
+async WHEN_VALIDATE_ITEM_STATE_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['STATE_OPTION_ID'] != "undefined" ) 
-      this.form.controls['STATE_OPTION_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['STATE_ID'] != "undefined" ) 
+      this.form.controls['STATE_ID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['STATE_OPTION_ID'] != "undefined" ) 
-     this.form.get('STATE_OPTION_ID').updateValueAndValidity();
+ if (typeof this.form.controls['STATE_ID'] != "undefined" ) 
+     this.form.get('STATE_ID').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_STATE_OPTION_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TEST_RATES(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TEST_RATES'] != "undefined" ) 
-      this.form.controls['TEST_RATES'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TEST_RATES'] != "undefined" ) 
-     this.form.get('TEST_RATES').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TEST_RATES(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_BLINK_RATE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BLINK_RATE'] != "undefined" ) 
-      this.form.controls['BLINK_RATE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['BLINK_RATE'] != "undefined" ) 
-     this.form.get('BLINK_RATE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BLINK_RATE(event){
+ async ON_CLICK_STATE_ID(event){
 
 }
 
@@ -803,34 +790,277 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  async ON_CLICK_SHAPE_ID(event){
 
 }
+
+async WHEN_VALIDATE_ITEM_SHOW_EVENT_TYPE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_EVENT_TYPE'] != "undefined" ) 
+      this.form.controls['SHOW_EVENT_TYPE'].setErrors({invalid: true}); 
+ // Code goes here 
  
- async onChange_STATE_OPTION_ID(event:any) { 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_EVENT_TYPE'] != "undefined" ) 
+     this.form.get('SHOW_EVENT_TYPE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_EVENT_TYPE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_PRIORITY(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['PRIORITY'] != "undefined" ) 
+      this.form.controls['PRIORITY'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['PRIORITY'] != "undefined" ) 
+     this.form.get('PRIORITY').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_PRIORITY(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_TEXT_COLOR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['TEXT_COLOR'] != "undefined" ) 
+      this.form.controls['TEXT_COLOR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['TEXT_COLOR'] != "undefined" ) 
+     this.form.get('TEXT_COLOR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_TEXT_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BACKGROUND_COLOR'] != "undefined" ) 
+      this.form.controls['BACKGROUND_COLOR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BACKGROUND_COLOR'] != "undefined" ) 
+     this.form.get('BACKGROUND_COLOR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BACKGROUND_COLOR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BLINK(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BLINK'] != "undefined" ) 
+      this.form.controls['BLINK'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BLINK'] != "undefined" ) 
+     this.form.get('BLINK').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BLINK(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SAMPLE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SAMPLE'] != "undefined" ) 
+      this.form.controls['SAMPLE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SAMPLE'] != "undefined" ) 
+     this.form.get('SAMPLE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SAMPLE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SOUND(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SOUND'] != "undefined" ) 
+      this.form.controls['SOUND'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SOUND'] != "undefined" ) 
+     this.form.get('SOUND').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SOUND(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_IMAGE_ICON(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['IMAGE_ICON'] != "undefined" ) 
+      this.form.controls['IMAGE_ICON'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['IMAGE_ICON'] != "undefined" ) 
+     this.form.get('IMAGE_ICON').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_IMAGE_ICON(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_EVENT_TYPE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['EVENT_TYPE'] != "undefined" ) 
+      this.form.controls['EVENT_TYPE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['EVENT_TYPE'] != "undefined" ) 
+     this.form.get('EVENT_TYPE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_EVENT_TYPE(event){
+
+}
+ 
+ async onChange_STATE_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_STATE_OPTION_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_STATE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_TEST_RATES(value) { 
+ async onChange_SHAPE_ID(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SHOW_EVENT_TYPE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_EVENT_TYPE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_PRIORITY(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_PRIORITY(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_TEXT_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_TEST_RATES(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_TEXT_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_BLINK_RATE(value) { 
+ async onValueChange_BACKGROUND_COLOR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BLINK_RATE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_SHAPE_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_BLINK(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_BLINK(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  }
+ } 
+ async onChange_SAMPLE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SAMPLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SOUND(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SOUND(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_IMAGE_ICON(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_EVENT_TYPE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_EVENT_TYPE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ }
 
 // For Adding new CODE
   public  grid_som_tabs_codes={};
@@ -855,10 +1085,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

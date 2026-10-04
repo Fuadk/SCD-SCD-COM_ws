@@ -37,12 +37,12 @@
       <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID3","Columns") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-acl-alarm-columns-2 [detail_Input]="grid_2_SCD_ALARM_COLUMNS"  
+        <app-scd-acl-alarm-columns [detail_Input]="grid_2_SCD_ALARM_COLUMNS"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ALARM_COLUMNSGrid_2Config">
-        </app-scd-acl-alarm-columns-2 >
+        </app-scd-acl-alarm-columns >
 
 </ng-template>
 </kendo-tabstrip-tab>
@@ -51,12 +51,12 @@
       <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID4","Toolvar") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-acl-alarm-columns-2 [detail_Input]="grid_3_SCD_ALARM_COLUMNS"  
+        <app-scd-acl-alarm-columns [detail_Input]="grid_3_SCD_ALARM_COLUMNS"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 4)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ALARM_COLUMNSGrid_3Config">
-        </app-scd-acl-alarm-columns-2 >
+        </app-scd-acl-alarm-columns >
 
 </ng-template>
 </kendo-tabstrip-tab>
@@ -79,12 +79,12 @@
       <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID6","States") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-asl-alarm-states-4 [detail_Input]="grid_5_SCD_ALARM_STATES"  
+        <app-scd-alarm-states-properties [detail_Input]="formtabs_5_SCD_ALARM"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 6)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ALARM_STATESGrid_5Config">
-        </app-scd-asl-alarm-states-4 >
+                      [setComponentConfig_Input]="SCD_ALARMFormtabs_5Config">
+        </app-scd-alarm-states-properties >
 
 </ng-template>
 </kendo-tabstrip-tab>
@@ -93,12 +93,12 @@
       <legend>{{ this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID7","Sort") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-aaesp-alarm-sort [detail_Input]="form_6_SCD_ALARM_SORT"  
+        <app-scd-scd-alarm-sort [detail_Input]="form_6_SCD_ALARM_SORT"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 7)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ALARM_SORTForm_6Config">
-        </app-scd-aaesp-alarm-sort >
+        </app-scd-scd-alarm-sort >
 
 </ng-template>
 </kendo-tabstrip-tab>

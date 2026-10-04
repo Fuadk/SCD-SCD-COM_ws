@@ -20,13 +20,16 @@ import {   scdalarmStatesScdAslAlarmStates5 , componentConfigDef } from '@modeld
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'STATE_ID' : new FormControl(dataItem.STATE_ID  , ) ,
+'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'SHOW_EVENT_TYPE' : new FormControl(dataItem.SHOW_EVENT_TYPE  , ) ,
 'PRIORITY' : new FormControl(dataItem.PRIORITY  , ) ,
-'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
 'TEXT_COLOR' : new FormControl(dataItem.TEXT_COLOR  , ) ,
 'BACKGROUND_COLOR' : new FormControl(dataItem.BACKGROUND_COLOR  , ) ,
 'BLINK' : new FormControl(dataItem.BLINK  , ) ,
-'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) 
+'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) ,
+'SOUND' : new FormControl(dataItem.SOUND  , ) ,
+'IMAGE_ICON' : new FormControl(dataItem.IMAGE_ICON  , ) ,
+'EVENT_TYPE' : new FormControl(dataItem.EVENT_TYPE  , ) 
 });
 
 
@@ -114,14 +117,17 @@ public  isSHAPE_IDEnable : boolean = true;
   public children = ["any"];
   public masterParams:any;
 public isPhonePortrait = false;
-public visibleSTATE_ID = true;
-public visibleSHOW_EVENT_TYPE = true;
-public visiblePRIORITY = true;
-public visibleSHAPE_ID = false;
-public visibleTEXT_COLOR = true;
-public visibleBACKGROUND_COLOR = true;
-public visibleBLINK = true;
-public visibleSAMPLE = true;
+public visibleSTATE_ID = undefined;
+public visibleSHAPE_ID = undefined;
+public visibleSHOW_EVENT_TYPE = undefined;
+public visiblePRIORITY = undefined;
+public visibleTEXT_COLOR = undefined;
+public visibleBACKGROUND_COLOR = undefined;
+public visibleBLINK = undefined;
+public visibleSAMPLE = undefined;
+public visibleSOUND = true;
+public visibleIMAGE_ICON = true;
+public visibleEVENT_TYPE = true;
 
 public compSelector = 'app-scd-asl-alarm-states-5';
 
@@ -613,26 +619,9 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"PRIORITY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrPRIORITY"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+this.lookupArrDef =[];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
-}
-
-public lkpArrPRIORITY = [];
-
-public lkpArrSHAPE_ID = [];
-
-public lkpArrGetPRIORITY(CODE: any): any {
-var rec = this.lkpArrPRIORITY.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
 }
 
 
@@ -780,194 +769,90 @@ async POST_QUERY(formGroup:any, P_INDEX:any){
 
 
 
-async WHEN_VALIDATE_ITEM_STATE_ID(formGroup) {
+async WHEN_VALIDATE_ITEM_SOUND(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['STATE_ID'] != "undefined" ) 
-      this.formGroup.controls['STATE_ID'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['SOUND'] != "undefined" ) 
+      this.formGroup.controls['SOUND'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['STATE_ID'] != "undefined" ) 
-     this.formGroup.get('STATE_ID').updateValueAndValidity();
+ if (typeof this.formGroup.controls['SOUND'] != "undefined" ) 
+     this.formGroup.get('SOUND').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_STATE_ID(event){
-await this.starServices.sleep(200);
-this.starServices.sessionParams['NAVIGATE_DATA'] = this.formGroup;
-console.log ('NAVIGATE:NAVIGATE_DATA', this.starServices.sessionParams['NAVIGATE_DATA'] );
-let routerLink =  ' SCD_alarm_states_properties';
-this.router.navigate(['/' + routerLink] , { skipLocationChange: true });
+ async ON_CLICK_SOUND(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_SHOW_EVENT_TYPE(formGroup) {
+async WHEN_VALIDATE_ITEM_IMAGE_ICON(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SHOW_EVENT_TYPE'] != "undefined" ) 
-      this.formGroup.controls['SHOW_EVENT_TYPE'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
+      this.formGroup.controls['IMAGE_ICON'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['SHOW_EVENT_TYPE'] != "undefined" ) 
-     this.formGroup.get('SHOW_EVENT_TYPE').updateValueAndValidity();
+ if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
+     this.formGroup.get('IMAGE_ICON').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_SHOW_EVENT_TYPE(event){
+ async ON_CLICK_IMAGE_ICON(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_PRIORITY(formGroup) {
+async WHEN_VALIDATE_ITEM_EVENT_TYPE(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['PRIORITY'] != "undefined" ) 
-      this.formGroup.controls['PRIORITY'].setErrors({invalid: true}); 
+ if (typeof this.formGroup.controls['EVENT_TYPE'] != "undefined" ) 
+      this.formGroup.controls['EVENT_TYPE'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.formGroup.controls['PRIORITY'] != "undefined" ) 
-     this.formGroup.get('PRIORITY').updateValueAndValidity();
+ if (typeof this.formGroup.controls['EVENT_TYPE'] != "undefined" ) 
+     this.formGroup.get('EVENT_TYPE').updateValueAndValidity();
  this.formGroup.updateValueAndValidity(); 
  }
 
- async ON_CLICK_PRIORITY(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SHAPE_ID'] != "undefined" ) 
-      this.formGroup.controls['SHAPE_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['SHAPE_ID'] != "undefined" ) 
-     this.formGroup.get('SHAPE_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SHAPE_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TEXT_COLOR(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['TEXT_COLOR'] != "undefined" ) 
-      this.formGroup.controls['TEXT_COLOR'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['TEXT_COLOR'] != "undefined" ) 
-     this.formGroup.get('TEXT_COLOR').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TEXT_COLOR(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['BACKGROUND_COLOR'] != "undefined" ) 
-      this.formGroup.controls['BACKGROUND_COLOR'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['BACKGROUND_COLOR'] != "undefined" ) 
-     this.formGroup.get('BACKGROUND_COLOR').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BACKGROUND_COLOR(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_BLINK(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['BLINK'] != "undefined" ) 
-      this.formGroup.controls['BLINK'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['BLINK'] != "undefined" ) 
-     this.formGroup.get('BLINK').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BLINK(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SAMPLE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SAMPLE'] != "undefined" ) 
-      this.formGroup.controls['SAMPLE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['SAMPLE'] != "undefined" ) 
-     this.formGroup.get('SAMPLE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SAMPLE(event){
+ async ON_CLICK_EVENT_TYPE(event){
 
 }
  
  async onBlur_STATE_ID() { 
-  await this.WHEN_VALIDATE_ITEM_STATE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_SHAPE_ID() { 
  } 
  async onBlur_SHOW_EVENT_TYPE() { 
-  await this.WHEN_VALIDATE_ITEM_SHOW_EVENT_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangePRIORITY(value: any) { 
- await this.WHEN_VALIDATE_ITEM_PRIORITY(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_PRIORITY() { 
  } 
- async valueChangeSHAPE_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_TEXT_COLOR() { 
  } 
- async valueChangeTEXT_COLOR(value: any) { 
- await this.WHEN_VALIDATE_ITEM_TEXT_COLOR(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeBACKGROUND_COLOR(value: any) { 
- await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_BACKGROUND_COLOR() { 
  } 
  async onBlur_BLINK() { 
-  await this.WHEN_VALIDATE_ITEM_BLINK(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SAMPLE() { 
-  await this.WHEN_VALIDATE_ITEM_SAMPLE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_SOUND() { 
+  await this.WHEN_VALIDATE_ITEM_SOUND(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async valueChangeIMAGE_ICON(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_EVENT_TYPE() { 
+  await this.WHEN_VALIDATE_ITEM_EVENT_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
 
 // For Adding new CODE
@@ -986,6 +871,7 @@ public att_arr = [];
 public img_arr = [];
 public AttDwnUrl = "";
 public uploadimage = false;
+public IMAGE_ICON_show = false;
 
 
 // 1. In Component

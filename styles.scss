@@ -1170,3 +1170,12 @@ kendo-combobox.ng-invalid.ng-touched {
 .k-button {
   padding: 3px 3px !important;
 }
+
+.color-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
-import {  scdshapeScdTpCommonScreen  ,scdalarmGeneralBannerScdScdAlarmGeneralBanner  ,scdalarmColumnsScdAclAlarmColumns      ,scdalarmScdAlarmEventSubscriptionsProperties  ,scdalarmStatesScdAslAlarmStates  ,scdalarmSortScdAaespAlarmSort  , componentConfigDef} from '@modeldir/model';
+import {  scdshapeScdTpCommonScreen  ,scdalarmGeneralBannerScdScdAlarmGeneralBanner  ,scdalarmColumnsScdAclAlarmColumns      ,scdalarmScdAlarmEventSubscriptionsProperties  ,scdalarmScdAlarmStatesProperties  ,scdalarmSortScdScdAlarmSort  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
@@ -48,8 +48,8 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
   public grid_3_SCD_ALARM_COLUMNS : scdalarmColumnsScdAclAlarmColumns;
   public grid_4_SCD_ALARM_COLUMNS : scdalarmColumnsScdAclAlarmColumns;
   public formtabs_5_SCD_ALARM : scdalarmScdAlarmEventSubscriptionsProperties;
-  public grid_6_SCD_ALARM_STATES : scdalarmStatesScdAslAlarmStates;
-  public form_7_SCD_ALARM_SORT : scdalarmSortScdAaespAlarmSort;
+  public formtabs_6_SCD_ALARM : scdalarmScdAlarmStatesProperties;
+  public form_7_SCD_ALARM_SORT : scdalarmSortScdScdAlarmSort;
   public  SCD_SHAPEForm_0Config : componentConfigDef;
   public  hide_comp_1 = false
   public  SCD_ALARM_GENERAL_BANNERFormdivs_1Config : componentConfigDef;
@@ -62,7 +62,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
   public  hide_comp_5 = false
   public  SCD_ALARMFormtabs_5Config : componentConfigDef;
   public  hide_comp_6 = false
-  public  SCD_ALARM_STATESGrid_6Config : componentConfigDef;
+  public  SCD_ALARMFormtabs_6Config : componentConfigDef;
   public  hide_comp_7 = false
   public  SCD_ALARM_SORTForm_7Config : componentConfigDef;
   public  hide_comp_8 = false
@@ -167,15 +167,15 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
      //this.SCD_ALARMFormtabs_5Config.insertable = true;
      //this.SCD_ALARMFormtabs_5Config.removeable = true;
    }
-   this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
-   this.SCD_ALARM_STATESGrid_6Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID7","States");
-   this.SCD_ALARM_STATESGrid_6Config.isChild = true;
-   this.SCD_ALARM_STATESGrid_6Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
-   this.SCD_ALARM_STATESGrid_6Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
+   this.SCD_ALARMFormtabs_6Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID7","States");
+   this.SCD_ALARMFormtabs_6Config.isChild = true;
+   this.SCD_ALARMFormtabs_6Config.masterSelector = 'app-scd-alarm-and-event-banner-properties';
+   this.SCD_ALARMFormtabs_6Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ALARM_STATESGrid_6Config.navigable = false;
-     //this.SCD_ALARM_STATESGrid_6Config.insertable = true;
-     //this.SCD_ALARM_STATESGrid_6Config.removeable = true;
+     this.SCD_ALARMFormtabs_6Config.navigable = false;
+     //this.SCD_ALARMFormtabs_6Config.insertable = true;
+     //this.SCD_ALARMFormtabs_6Config.removeable = true;
    }
    this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
    this.SCD_ALARM_SORTForm_7Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID8","Sort");
@@ -207,8 +207,8 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
     	this.SCD_ALARM_COLUMNSGrid_4Config.formattedWhere  = form_SCD_SHAPE;
     	this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
     	this.SCD_ALARMFormtabs_5Config.formattedWhere  = form_SCD_SHAPE;
-    	this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
-    	this.SCD_ALARM_STATESGrid_6Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
+    	this.SCD_ALARMFormtabs_6Config.formattedWhere  = form_SCD_SHAPE;
     	this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
     	this.SCD_ALARM_SORTForm_7Config.formattedWhere  = form_SCD_SHAPE;
     	return;
@@ -278,20 +278,20 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
      //this.SCD_ALARMFormtabs_5Config.removeable = true;
      //this.SCD_ALARMFormtabs_5Config.updateable = true;
    }
-    //this.grid_6_SCD_ALARM_STATES = new scdalarmStatesScdAslAlarmStates();
+    //this.formtabs_6_SCD_ALARM = new scdalarmScdAlarmStatesProperties();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.grid_6_SCD_ALARM_STATES[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.formtabs_6_SCD_ALARM[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
-    this.SCD_ALARM_STATESGrid_6Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARM_STATESGrid_6Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_ALARM_STATESGrid_6Config.masterReadCompleted = true;
+    this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_6Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARMFormtabs_6Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARMFormtabs_6Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ALARM_STATESGrid_6Config.queryable = false;
-     //this.SCD_ALARM_STATESGrid_6Config.removeable = true;
-     //this.SCD_ALARM_STATESGrid_6Config.updateable = true;
+     this.SCD_ALARMFormtabs_6Config.queryable = false;
+     //this.SCD_ALARMFormtabs_6Config.removeable = true;
+     //this.SCD_ALARMFormtabs_6Config.updateable = true;
    }
-    //this.form_7_SCD_ALARM_SORT = new scdalarmSortScdAaespAlarmSort();
+    //this.form_7_SCD_ALARM_SORT = new scdalarmSortScdScdAlarmSort();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
     //   this.form_7_SCD_ALARM_SORT[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
@@ -317,7 +317,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
      await this.starServices.sleep(200);
     this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
      await this.starServices.sleep(200);
-    this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
      await this.starServices.sleep(200);
     this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
   }
@@ -359,8 +359,8 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
   	this.SCD_ALARMFormtabs_5Config = componentConfig; 
    }
    if ( (pageNo + 1) == 7){
-  	this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef(); 
-  	this.SCD_ALARM_STATESGrid_6Config = componentConfig; 
+  	this.SCD_ALARMFormtabs_6Config = new componentConfigDef(); 
+  	this.SCD_ALARMFormtabs_6Config = componentConfig; 
    }
    if ( (pageNo + 1) == 8){
   	this.SCD_ALARM_SORTForm_7Config = new componentConfigDef(); 
@@ -395,10 +395,10 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
     this.SCD_ALARMFormtabs_5Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
     this.SCD_ALARMFormtabs_5Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
-    this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
-    this.SCD_ALARM_STATESGrid_6Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_ALARM_STATESGrid_6Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ALARM_STATESGrid_6Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
+    this.SCD_ALARMFormtabs_6Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ALARMFormtabs_6Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ALARMFormtabs_6Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
     this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
     this.SCD_ALARM_SORTForm_7Config.masterSaved = form_SCD_SHAPE;
@@ -487,9 +487,9 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
              this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
              this.SCD_ALARMFormtabs_5Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARMFormtabs_5Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID6","Event Subscriptions");
-             this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
-             this.SCD_ALARM_STATESGrid_6Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARM_STATESGrid_6Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID7","States");
+             this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
+             this.SCD_ALARMFormtabs_6Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ALARMFormtabs_6Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID7","States");
              this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
              this.SCD_ALARM_SORTForm_7Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARM_SORTForm_7Config.title = this.starServices.getNLS([],"scd_alarm_and_event_banner_properties.scd_alarm_and_event_banner_properties.compsTitleID8","Sort");
@@ -503,7 +503,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
        this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
        this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
        this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
-       this.SCD_ALARM_STATESGrid_6Config = new componentConfigDef();
+       this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
        this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
@@ -513,7 +513,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
               this.SCD_ALARM_COLUMNSGrid_3Config.masterParams = ComponentConfig.masterParams;
               this.SCD_ALARM_COLUMNSGrid_4Config.masterParams = ComponentConfig.masterParams;
               this.SCD_ALARMFormtabs_5Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ALARM_STATESGrid_6Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ALARMFormtabs_6Config.masterParams = ComponentConfig.masterParams;
               this.SCD_ALARM_SORTForm_7Config.masterParams = ComponentConfig.masterParams;
    		
        }
@@ -524,7 +524,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
               this.SCD_ALARM_COLUMNSGrid_3Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARM_COLUMNSGrid_4Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARMFormtabs_5Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ALARM_STATESGrid_6Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ALARMFormtabs_6Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARM_SORTForm_7Config.showToolBar = ComponentConfig.showToolBar;
        }
       if (ComponentConfig.masterSaved != null)//here1
@@ -539,7 +539,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
        this.SCD_ALARM_COLUMNSGrid_3Config.newRec = ComponentConfig.newRec;
        this.SCD_ALARM_COLUMNSGrid_4Config.newRec = ComponentConfig.newRec;
        this.SCD_ALARMFormtabs_5Config.newRec = ComponentConfig.newRec;
-       this.SCD_ALARM_STATESGrid_6Config.newRec = ComponentConfig.newRec;
+       this.SCD_ALARMFormtabs_6Config.newRec = ComponentConfig.newRec;
        this.SCD_ALARM_SORTForm_7Config.newRec = ComponentConfig.newRec;
       }
       if (ComponentConfig.clearScreen != null)
@@ -550,7 +550,7 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
        this.SCD_ALARM_COLUMNSGrid_3Config.clearScreen = ComponentConfig.clearScreen;
        this.SCD_ALARM_COLUMNSGrid_4Config.clearScreen = ComponentConfig.clearScreen;
        this.SCD_ALARMFormtabs_5Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ALARM_STATESGrid_6Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ALARMFormtabs_6Config.clearScreen = ComponentConfig.clearScreen;
        this.SCD_ALARM_SORTForm_7Config.clearScreen = ComponentConfig.clearScreen;
 	   }
       if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
@@ -593,11 +593,11 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
          {
              this.SCD_ALARMFormtabs_5Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ALARM_STATESGrid_6Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ALARM_STATESGrid_6Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_ALARMFormtabs_6Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ALARMFormtabs_6Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ALARM_STATESGrid_6Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_ALARMFormtabs_6Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
          this.SCD_ALARM_SORTForm_7Config.masterKeyArr = ComponentConfig.masterKeyArr;
          this.SCD_ALARM_SORTForm_7Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
@@ -649,12 +649,12 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
     this.formtabs_5_SCD_ALARMOpened = true;  
   }
   
-  public grid_6_SCD_ALARM_STATESOpened = false;
-  public  grid_6_SCD_ALARM_STATESClose() { 
-    this.grid_6_SCD_ALARM_STATESOpened = false;  
+  public formtabs_6_SCD_ALARMOpened = false;
+  public  formtabs_6_SCD_ALARMClose() { 
+    this.formtabs_6_SCD_ALARMOpened = false;  
   }
-  public  grid_6_SCD_ALARM_STATESOpen() { 
-    this.grid_6_SCD_ALARM_STATESOpened = true;  
+  public  formtabs_6_SCD_ALARMOpen() { 
+    this.formtabs_6_SCD_ALARMOpened = true;  
   }
   
   public form_7_SCD_ALARM_SORTOpened = false;

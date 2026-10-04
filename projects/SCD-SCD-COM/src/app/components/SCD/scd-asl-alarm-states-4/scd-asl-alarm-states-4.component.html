@@ -54,89 +54,114 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STATE_ID"
  *ngIf=visibleSTATE_ID  [editable]=" !(disabledColumns.indexOf('STATE_ID') > -1)  && !primarKeyReadOnlyArr.isSTATE_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('STATE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.STATE_ID','State Id') + ' *'}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="HIGH" >{{dataItem.STATE_ID}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('STATE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.STATE_ID','') + ' *'}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.STATE_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_STATE_ID()"    class="HIGH"  [formControl]="formGroup.get('STATE_ID')" [placeholder]="starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.STATE_ID_Hint','Please enter State Id.')" />
+		<input  (blur)="onBlur_STATE_ID()"      [formControl]="formGroup.get('STATE_ID')" [placeholder]="" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID"
+ *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SHAPE_ID','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SHAPE_ID()"      [formControl]="formGroup.get('SHAPE_ID')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHOW_EVENT_TYPE"
  *ngIf=visibleSHOW_EVENT_TYPE  [editable]=" !(disabledColumns.indexOf('SHOW_EVENT_TYPE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SHOW_EVENT_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SHOW_EVENT_TYPE','Show Event Type')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" >{{dataItem.SHOW_EVENT_TYPE}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('SHOW_EVENT_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SHOW_EVENT_TYPE','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHOW_EVENT_TYPE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_SHOW_EVENT_TYPE()"    class="MEDIUM"  [formControl]="formGroup.get('SHOW_EVENT_TYPE')" [placeholder]="starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SHOW_EVENT_TYPE_Hint','Please enter Show Event Type.')" />
+		<input  (blur)="onBlur_SHOW_EVENT_TYPE()"      [formControl]="formGroup.get('SHOW_EVENT_TYPE')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TEXT_COLOR"  [width]="100"	filter="date"	 editor="date"  title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.TEXT_COLOR','Text Color')}}" *ngIf=visibleTEXT_COLOR    class="LOW"  
- [editable]=" !(disabledColumns.indexOf('TEXT_COLOR') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="PRIORITY"
+ *ngIf=visiblePRIORITY  [editable]=" !(disabledColumns.indexOf('PRIORITY') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('TEXT_COLOR') > -1" 		[format]="paramConfig.DateTimeFormat">
-		<ng-template kendoGridEditTemplate  let-dataItem let-formGroup="formGroup">
-		<kendo-colorpicker   #TEXT_COLOR
-		[value]="dataItem.TEXT_COLOR" [formControl]="formGroup.get('TEXT_COLOR')" >
-		 (valueChange)="valueChangeTEXT_COLOR($event)" >
-		</kendo-colorpicker>
+ [hidden]="hiddenColumns.indexOf('PRIORITY') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.PRIORITY','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.PRIORITY}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_PRIORITY()"      [formControl]="formGroup.get('PRIORITY')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="PRIORITY" title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.PRIORITY','Priority')}}" [width]="100"   *ngIf=visiblePRIORITY  [editable]=" !(disabledColumns.indexOf('PRIORITY') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TEXT_COLOR"
+ *ngIf=visibleTEXT_COLOR  [editable]=" !(disabledColumns.indexOf('TEXT_COLOR') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('PRIORITY') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span    class="HIGHEST" > {{lkpArrGetPRIORITY(dataItem.PRIORITY)?.CODETEXT_LANG}}</span> </ng-template>
+ [hidden]="hiddenColumns.indexOf('TEXT_COLOR') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.TEXT_COLOR','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.TEXT_COLOR}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrPRIORITY"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangePRIORITY($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('PRIORITY')">
-		</kendo-dropdownlist>
+		<input  (blur)="onBlur_TEXT_COLOR()"      [formControl]="formGroup.get('TEXT_COLOR')" [placeholder]="" />
 		</ng-template>
-	</kendo-grid-column>
+		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BACKGROUND_COLOR"  [width]="100"	filter="date"	 editor="date"  title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.BACKGROUND_COLOR','Background Color')}}" *ngIf=visibleBACKGROUND_COLOR    class="LOW"  
- [editable]=" !(disabledColumns.indexOf('BACKGROUND_COLOR') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BACKGROUND_COLOR"
+ *ngIf=visibleBACKGROUND_COLOR  [editable]=" !(disabledColumns.indexOf('BACKGROUND_COLOR') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('BACKGROUND_COLOR') > -1" 		[format]="paramConfig.DateTimeFormat">
-		<ng-template kendoGridEditTemplate  let-dataItem let-formGroup="formGroup">
-		<kendo-colorpicker   #BACKGROUND_COLOR
-		[value]="dataItem.BACKGROUND_COLOR" [formControl]="formGroup.get('BACKGROUND_COLOR')" >
-		 (valueChange)="valueChangeBACKGROUND_COLOR($event)" >
-		</kendo-colorpicker>
+ [hidden]="hiddenColumns.indexOf('BACKGROUND_COLOR') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.BACKGROUND_COLOR','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.BACKGROUND_COLOR}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_BACKGROUND_COLOR()"      [formControl]="formGroup.get('BACKGROUND_COLOR')" [placeholder]="" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BLINK"
+ *ngIf=visibleBLINK  [editable]=" !(disabledColumns.indexOf('BLINK') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('BLINK') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.BLINK','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.BLINK}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_BLINK()"      [formControl]="formGroup.get('BLINK')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SAMPLE"
  *ngIf=visibleSAMPLE  [editable]=" !(disabledColumns.indexOf('SAMPLE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SAMPLE') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SAMPLE','Sample')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="LOW" >{{dataItem.SAMPLE}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('SAMPLE') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SAMPLE','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SAMPLE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_SAMPLE()"    class="LOW"  [formControl]="formGroup.get('SAMPLE')" [placeholder]="starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SAMPLE_Hint','Please enter Sample.')" />
+		<input  (blur)="onBlur_SAMPLE()"      [formControl]="formGroup.get('SAMPLE')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SOUND"
+ *ngIf=visibleSOUND      [editable]=" !(disabledColumns.indexOf('SOUND') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetSHAPE_ID(dataItem.SHAPE_ID)?.CODETEXT_LANG}}</span> </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrSHAPE_ID"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeSHAPE_ID($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('SHAPE_ID')">
-		</kendo-dropdownlist>
-		</ng-template>
-	</kendo-grid-column>
-
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BLINK"
- *ngIf=visibleBLINK    class="MEDIUM"  [editable]=" !(disabledColumns.indexOf('BLINK') > -1)  "
-
- [hidden]="hiddenColumns.indexOf('BLINK') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.BLINK','Blink')}}"  editor="boolean" [width]="100">
-		<ng-template kendoGridCellTemplate let-dataItem> <span    class="MEDIUM" > 
-		 {{dataItem.BLINK}} 
+ [hidden]="hiddenColumns.indexOf('SOUND') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.SOUND','Sound')}}"  editor="boolean" [width]="50">
+		<ng-template kendoGridCellTemplate let-dataItem> <span     > 
+		 {{dataItem.SOUND}} 
  		 </span>	</ng-template>
 	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_ICON" 
+ *ngIf=visibleIMAGE_ICON  [editable]=" !(disabledColumns.indexOf('IMAGE_ICON') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('IMAGE_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.IMAGE_ICON','Image icon')}}"   [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem>
+		 <kendo-avatar [imageSrc]="dataItem.IMAGE_ICON"  width="50px" height="50px"  ></kendo-avatar>
+		 </ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<textarea kendoTextArea  style="resize: both;"  [formControl]="formGroup.get('IMAGE_ICON')"  
+		kendoTextBox #IMAGE_ICON></textarea>
+		 </ng-template>
+</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EVENT_TYPE"
+ *ngIf=visibleEVENT_TYPE  [editable]=" !(disabledColumns.indexOf('EVENT_TYPE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('EVENT_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.EVENT_TYPE','Event type')}}"  [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.EVENT_TYPE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_EVENT_TYPE()"      [formControl]="formGroup.get('EVENT_TYPE')" [placeholder]="starServices.getNLS([],'SCD_ASL_ALARM_STATES_4.scdalarmStatesScdAslAlarmStates4.EVENT_TYPE_Hint','Please enter Event type.')" />
+		</ng-template>
+		</kendo-grid-column>
 
 
 

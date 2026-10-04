@@ -1,0 +1,242 @@
+<kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+<legend class="k-form-legend" *ngIf="componentConfig.showToolBar">{{
+      componentConfig.title ? componentConfig.title :
+       this.starServices.getNLS([],"SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.component_title","SCD ALARM STATES") }}</legend>
+	
+    <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
+    
+    id="grid" [sortable]="true" [height]="componentConfig.gridHeight ? componentConfig.gridHeight : gridHeight"
+    [resizable] ="true"
+    (cellClick)="cellClickHandler($event)" 
+    (add)="addHandler()"
+    (remove)="removeHandler($event)"
+    [filter]="state.filter"
+    [filterable]= "isFilterable"
+    [columnMenu]="isColumnMenu"
+    (dataStateChange)="dataStateChange($event)"
+    [resizable]="true"
+    [sortable]="true">
+
+    
+    
+      
+        <ng-template kendoGridToolbarTemplate *ngIf="componentConfig.showToolBar">
+
+
+        
+        
+
+        
+            <button  [icon]="'sliders'"  [disabled]="isSearch" kendoButton  title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery(grid);" *ngIf="componentConfig.queryable">{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}</button >
+            <button  kendoButton [icon]="'zoom'" title="{{starServices.getNLS([],'EXECUTE_QUERY','Execute Query')}}"  (click)="executeQuery(grid);" *ngIf="componentConfig.queryable"></button >
+            <button  kendoButton [icon]="'cancel'" title="Cancel" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
+        
+
+            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
+            <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isSearch && (componentConfig.updateable || componentConfig.insertable) "></button >
+            <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable && !isSearch"></button >
+
+        
+        <button  kendoButton [icon]="'menu'" title="{{starServices.getNLS([],'SHOW_HIDE_MENU','Show/Hide Menu')}}"   (click)="toggleColumnMenu()" *ngIf="!isSearch && !isPhonePortrait"></button >
+            <div *ngIf="isColumnMenu">
+				<button  kendoButton [icon]="'filter'" title="{{starServices.getNLS([],'SHOW_HIDE_FILTER_OPTIONS','Show/Hide Filter options')}}"  (click)="toggleFilter()" ></button >
+            <button  [icon]="'file-pdf'" title="{{starServices.getNLS([],'EXPORT_TO_PDF','Export to PDF')}}"  kendoGridPDFCommand ></button >
+            <button  [icon]="'file-excel'" title="{{starServices.getNLS([],'EXPORT_TO_EXCEL','Export to Excel')}}"  kendoGridExcelCommand ></button > 
+			</div>
+            
+            <button  kendoButton *ngIf="starServices.helpMsg_grid !=='' "    >{{starServices.helpMsg_grid}}</button>		
+            
+
+    
+    </ng-template>
+
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="STATE_ID"
+ *ngIf=visibleSTATE_ID  [editable]=" !(disabledColumns.indexOf('STATE_ID') > -1)  && !primarKeyReadOnlyArr.isSTATE_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('STATE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.STATE_ID','State Id') + ' *'}}"  [width]="30">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.STATE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_STATE_ID()"      [formControl]="formGroup.get('STATE_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.STATE_ID_Hint','Please enter State Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID"
+ *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHAPE_ID','Shape Id') + ' *'}}"  [width]="30">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SHAPE_ID()"      [formControl]="formGroup.get('SHAPE_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHAPE_ID_Hint','Please enter Shape Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHOW_EVENT_TYPE"
+ *ngIf=visibleSHOW_EVENT_TYPE      [editable]=" !(disabledColumns.indexOf('SHOW_EVENT_TYPE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SHOW_EVENT_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHOW_EVENT_TYPE','Show')}}"  [width]="30">
+		<ng-template kendoGridCellTemplate let-dataItem> <span     > 
+		 {{dataItem.SHOW_EVENT_TYPE}} 
+ 		 </span>	</ng-template>
+		 <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		 	<input kendoCheckBox type="checkbox" [formControl]="formGroup.get('SHOW_EVENT_TYPE')" 
+		 	
+	 name="SHOW_EVENT_TYPE"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+		 		 (click)="ON_CLICK_SHOW_EVENT_TYPE($event)"
+		 		[placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHOW_EVENT_TYPE_Hint','Please enter SHOW_EVENT_TYPE.')"
+		 		kendoTooltip
+		 		[title]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHOW_EVENT_TYPE_Hint','Please enter SHOW_EVENT_TYPE.')" />
+		 </ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_ICON"
+ *ngIf=visibleIMAGE_ICON  [editable]=" false &&  !(disabledColumns.indexOf('IMAGE_ICON') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('IMAGE_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.IMAGE_ICON','')}}"  [width]="40">
+		 <ng-template kendoGridCellTemplate let-dataItem><span 
+> 		 <kendo-svg-icon 
+		 [icon]="starServices.convertSvgToKendoSVGIcon(this,dataItem.IMAGE_ICON, null, 'IMAGE_ICON')"
+ style="width: 1.5em;height: 1.5em;"    ></kendo-svg-icon> </span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (valueChange)="valueChangeIMAGE_ICON($event)"  style="width: 1.5em;height: 1.5em;"    [formControl]="formGroup.get('IMAGE_ICON')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.IMAGE_ICON_Hint','Please enter Image Icon.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="EVENT_TYPE"
+ *ngIf=visibleEVENT_TYPE  [editable]=" false &&  !(disabledColumns.indexOf('EVENT_TYPE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('EVENT_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.EVENT_TYPE','Event Type')}}"  [width]="200">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.EVENT_TYPE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_EVENT_TYPE()"      [formControl]="formGroup.get('EVENT_TYPE')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.EVENT_TYPE_Hint','Please enter Event Type.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="PRIORITY"
+ *ngIf=visiblePRIORITY  [editable]=" false &&  !(disabledColumns.indexOf('PRIORITY') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('PRIORITY') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.PRIORITY','Priority')}}"  [width]="80">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.PRIORITY}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_PRIORITY()"      [formControl]="formGroup.get('PRIORITY')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.PRIORITY_Hint','Please enter Priority.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TEXT_COLOR"  [width]="60"	 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.TEXT_COLOR','Text')}}" *ngIf=visibleTEXT_COLOR      
+ [editable]=" !(disabledColumns.indexOf('TEXT_COLOR') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('TEXT_COLOR') > -1" 		>
+		<ng-template kendoGridCellTemplate let-dataItem>
+		<span class="color-swatch" [style.background-color]="dataItem.TEXT_COLOR" [title]="dataItem.TEXT_COLOR"></span>
+		</ng-template>
+		<ng-template kendoGridEditTemplate  let-dataItem let-formGroup="formGroup">
+		<kendo-colorpicker   #TEXT_COLOR
+		[value]="dataItem.TEXT_COLOR" [formControl]="formGroup.get('TEXT_COLOR')" 
+		 (valueChange)="valueChangeTEXT_COLOR($event)" >
+		</kendo-colorpicker>
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BACKGROUND_COLOR"  [width]="60"	 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.BACKGROUND_COLOR','Back ground')}}" *ngIf=visibleBACKGROUND_COLOR      
+ [editable]=" !(disabledColumns.indexOf('BACKGROUND_COLOR') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('BACKGROUND_COLOR') > -1" 		>
+		<ng-template kendoGridCellTemplate let-dataItem>
+		<span class="color-swatch" [style.background-color]="dataItem.BACKGROUND_COLOR" [title]="dataItem.BACKGROUND_COLOR"></span>
+		</ng-template>
+		<ng-template kendoGridEditTemplate  let-dataItem let-formGroup="formGroup">
+		<kendo-colorpicker   #BACKGROUND_COLOR
+		[value]="dataItem.BACKGROUND_COLOR" [formControl]="formGroup.get('BACKGROUND_COLOR')" 
+		 (valueChange)="valueChangeBACKGROUND_COLOR($event)" >
+		</kendo-colorpicker>
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="BLINK"
+ *ngIf=visibleBLINK      [editable]=" !(disabledColumns.indexOf('BLINK') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('BLINK') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.BLINK','Blink')}}"  [width]="60">
+		<ng-template kendoGridCellTemplate let-dataItem> <span     > 
+		 {{dataItem.BLINK}} 
+ 		 </span>	</ng-template>
+		 <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		 	<input kendoCheckBox type="checkbox" [formControl]="formGroup.get('BLINK')" 
+		 	
+	 name="BLINK"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+		 		 (click)="ON_CLICK_BLINK($event)"
+		 		[placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.BLINK_Hint','Please enter BLINK.')"
+		 		kendoTooltip
+		 		[title]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.BLINK_Hint','Please enter BLINK.')" />
+		 </ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SOUND"
+ *ngIf=visibleSOUND      [editable]=" !(disabledColumns.indexOf('SOUND') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SOUND') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SOUND','Sound')}}"  [width]="60">
+		<ng-template kendoGridCellTemplate let-dataItem> <span     > 
+		 {{dataItem.SOUND}} 
+ 		 </span>	</ng-template>
+		 <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		 	<input kendoCheckBox type="checkbox" [formControl]="formGroup.get('SOUND')" 
+		 	
+	 name="SOUND"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+		 		 (click)="ON_CLICK_SOUND($event)"
+		 		[placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SOUND_Hint','Please enter SOUND.')"
+		 		kendoTooltip
+		 		[title]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SOUND_Hint','Please enter SOUND.')" />
+		 </ng-template>
+	</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SAMPLE"
+ *ngIf=visibleSAMPLE  [editable]=" false &&  !(disabledColumns.indexOf('SAMPLE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SAMPLE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SAMPLE','Sample')}}"  [width]="240">
+		 <ng-template kendoGridCellTemplate let-dataItem><span    [style.color]="dataItem.TEXT_COLOR"               [style.background-color]="dataItem.BACKGROUND_COLOR" >{{dataItem.SAMPLE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SAMPLE()"    [style.color]="dataItem.TEXT_COLOR"               [style.background-color]="dataItem.BACKGROUND_COLOR"  [formControl]="formGroup.get('SAMPLE')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SAMPLE_Hint','Please enter Sample.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+
+
+
+    
+                       <kendo-grid-pdf [fileName]="PDFfileName" [allPages]="true" paperSize="A4" [repeatHeaders]="true" [landscape]="true">
+                        <kendo-grid-pdf-margin top="2cm" left="1cm" right="1cm" bottom="2cm"></kendo-grid-pdf-margin>
+                        <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+                         <div class="page-template">
+                            <div class="header">
+                              <div style="float: center">{{ title }}</div>
+                            </div>
+                            <div class="footer">
+                              Page {{ pageNum }} of {{ totalPages }}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </kendo-grid-pdf>
+                    <kendo-grid-excel fileName="ExcelfileName" ></kendo-grid-excel>
+    
+    </kendo-grid>
+    
+  <app-dsp-upload (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_UPLOADConfig">
+		</app-dsp-upload>
+    <app-dsp-webcam (saveCompletedOutput)="this.starServices.att_img_saveGridCompletedHandler($event,this)"
+			[setComponentConfig_Input]="DSP_WEBCAMConfig">
+		</app-dsp-webcam>
+
+    </kendo-pdf-export>
+
+<div [hidden]="!showCodeDetails">
+	<kendo-dialog 
+	(close)="showCodeDetails=false;setlookupArrDef();" resizable="true" [minWidth]="800" [width]="700" [height]="500"
+	  title="Add Code">
+	  <app-som-tabs-codes-grid 
+	  [detail_Input]="grid_som_tabs_codes"  
+	  [setComponentConfig_Input]="SOM_TABS_CODESConfig">
+	</app-som-tabs-codes-grid>
+  
+	</kendo-dialog>
+  </div>
+

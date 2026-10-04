@@ -626,15 +626,24 @@ public userLang = "EN" ;
 public lookupArrDef:any =[];
 public setlookupArrDef(){
 this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALIGN\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrALIGN"}];
+			"lkpArrName":"lkpArrALIGN"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FORMAT_ALARM\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrFORMAT"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
 public lkpArrALIGN = [];
 
+public lkpArrFORMAT = [];
+
 public lkpArrGetALIGN(CODE: any): any {
 var rec = this.lkpArrALIGN.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetFORMAT(CODE: any): any {
+var rec = this.lkpArrFORMAT.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -1126,8 +1135,8 @@ async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
  async valueChangeALIGN(value: any) { 
  await this.WHEN_VALIDATE_ITEM_ALIGN(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async onBlur_FORMAT() { 
-  await this.WHEN_VALIDATE_ITEM_FORMAT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async valueChangeFORMAT(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_FORMAT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async valueChangeIMAGE_ICON(value: any) { 
  await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  

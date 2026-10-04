@@ -82,7 +82,7 @@
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALARM_TYPE"
- *ngIf=visibleALARM_TYPE  [editable]=" !(disabledColumns.indexOf('ALARM_TYPE') > -1)  "
+ *ngIf=visibleALARM_TYPE  [editable]=" false &&  !(disabledColumns.indexOf('ALARM_TYPE') > -1)  "
 
  [hidden]="hiddenColumns.indexOf('ALARM_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.ALARM_TYPE','Alarm Type')}}"  [width]="80">
 		 <ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" >{{dataItem.ALARM_TYPE}}</span></ng-template>
@@ -140,7 +140,7 @@
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALIGN" title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.ALIGN','Align')}}" [width]="60"   *ngIf=visibleALIGN  [editable]=" !(disabledColumns.indexOf('ALIGN') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALIGN" title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.ALIGN','Align')}}" [width]="80"   *ngIf=visibleALIGN  [editable]=" !(disabledColumns.indexOf('ALIGN') > -1)  "
 
  [hidden]="hiddenColumns.indexOf('ALIGN') > -1" >
 		<ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" > {{lkpArrGetALIGN(dataItem.ALIGN)?.CODETEXT_LANG}}</span> </ng-template>
@@ -152,25 +152,28 @@
 		</ng-template>
 	</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FORMAT"
- *ngIf=visibleFORMAT  [editable]=" !(disabledColumns.indexOf('FORMAT') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FORMAT" title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.FORMAT','Format')}}" [width]="120"   *ngIf=visibleFORMAT  [editable]=" !(disabledColumns.indexOf('FORMAT') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('FORMAT') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.FORMAT','Format')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" >{{dataItem.FORMAT}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('FORMAT') > -1" >
+		<ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" > {{lkpArrGetFORMAT(dataItem.FORMAT)?.CODETEXT_LANG}}</span> </ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_FORMAT()"    class="MEDIUM"  [formControl]="formGroup.get('FORMAT')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.FORMAT_Hint','Please enter Format.')" />
+		<kendo-dropdownlist  [data]="lkpArrFORMAT"  textField="CODETEXT_LANG" valueField="CODE"
+		 (valueChange)="valueChangeFORMAT($event)" 
+		[valuePrimitive]="true" [formControl]="formGroup.get('FORMAT')">
+		</kendo-dropdownlist>
 		</ng-template>
-		</kendo-grid-column>
+	</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_ICON"
  *ngIf=visibleIMAGE_ICON  [editable]=" false &&  !(disabledColumns.indexOf('IMAGE_ICON') > -1)  "
 
  [hidden]="hiddenColumns.indexOf('IMAGE_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.IMAGE_ICON','')}}"  [width]="40">
-		 <ng-template kendoGridCellTemplate let-dataItem><span > 		 <kendo-svg-icon 
+		 <ng-template kendoGridCellTemplate let-dataItem><span 
+> 		 <kendo-svg-icon 
 		 [icon]="starServices.convertSvgToKendoSVGIcon(this,dataItem.IMAGE_ICON, null, 'IMAGE_ICON')"
-   class="LOW"  ></kendo-svg-icon> </span></ng-template>
+ style="width: 1.5em;height: 1.5em;"  class="LOW"  ></kendo-svg-icon> </span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (valueChange)="valueChangeIMAGE_ICON($event)"    class="LOW"  [formControl]="formGroup.get('IMAGE_ICON')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.IMAGE_ICON_Hint','Please enter Image Icon.')" />
+		<input  (valueChange)="valueChangeIMAGE_ICON($event)"  style="width: 1.5em;height: 1.5em;"  class="LOW"  [formControl]="formGroup.get('IMAGE_ICON')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.IMAGE_ICON_Hint','Please enter Image Icon.')" />
 		</ng-template>
 		</kendo-grid-column>
 
@@ -185,7 +188,7 @@
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TOOLTIP"
- *ngIf=visibleTOOLTIP  [editable]=" !(disabledColumns.indexOf('TOOLTIP') > -1)  "
+ *ngIf=visibleTOOLTIP  [editable]=" false &&  !(disabledColumns.indexOf('TOOLTIP') > -1)  "
 
  [hidden]="hiddenColumns.indexOf('TOOLTIP') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.TOOLTIP','Tooltip')}}"  [width]="140">
 		 <ng-template kendoGridCellTemplate let-dataItem><span    class="LOW" >{{dataItem.TOOLTIP}}</span></ng-template>

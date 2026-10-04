@@ -126,7 +126,7 @@ public visibleHIGH = true;
 public visibleMEDIUM = true;
 public visibleLOW = true;
 public visibleEVENT = true;
-public visibleSCOPES = true;
+public visibleSCOPES = false;
 public visibleEVENT_SOURCE = true;
 public visibledummy = false;
 
@@ -424,7 +424,13 @@ console.log ("this.lkpArrEVENT_SOURCE:",JSON.stringify(this.lkpArrEVENT_SOURCE))
 
   }
    public setInitialValues() {
-    
+    this.form.patchValue({ 'PRIORITY': 'Y' });
+		this.form.patchValue({ 'URGENT': 'Y' });
+		this.form.patchValue({ 'HIGH': 'Y' });
+		this.form.patchValue({ 'MEDIUM': 'Y' });
+		this.form.patchValue({ 'LOW': 'Y' });
+		this.form.patchValue({ 'EVENT': 'Y' });
+		
   
     //this.form.patchValue({ 'GSM_OPERATOR': 'N' });
     this.form.markAsPristine();
@@ -565,9 +571,7 @@ console.log ("this.lkpArrEVENT_SOURCE:",JSON.stringify(this.lkpArrEVENT_SOURCE))
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT OPCUA_SERVER_ID  CODE , SERVER_NAME CODETEXT_LANG FROM SCD_OPCUA_SERVER order by CODETEXT_LANG ",
+this.lookupArrDef =[	{"statment":"SELECT OPCUA_SERVER_ID  CODE , SERVER_NAME CODETEXT_LANG FROM SCD_OPCUA_SERVER order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrSCOPES"},
 	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='EVENT_SOURCE' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrEVENT_SOURCE"}];
@@ -575,16 +579,9 @@ this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FRO
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrSHAPE_ID = [];
-
 public lkpArrSCOPES = [];
 
 public lkpArrEVENT_SOURCE = [];
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
 
 public lkpArrGetSCOPES(CODE: any): any {
 var rec = this.lkpArrSCOPES.find((x:any) => x.CODE === CODE);
@@ -598,6 +595,8 @@ return rec;
 
 onChanges(): void {
 this.form.get('EVENT_ID').valueChanges.subscribe(val => {
+});
+this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
 });
 this.form.get('EVENT_NAME').valueChanges.subscribe(val => {
 });
@@ -1034,12 +1033,15 @@ async WHEN_VALIDATE_ITEM_dummy(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_SHAPE_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_SHAPE_ID(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  } 
+ } 
  async onChange_EVENT_NAME(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	

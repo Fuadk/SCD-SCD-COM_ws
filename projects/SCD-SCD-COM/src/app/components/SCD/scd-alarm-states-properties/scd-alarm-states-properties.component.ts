@@ -1,5 +1,5 @@
 import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
-import {  scdalarmStatesScdAslAlarmStates0  ,scdalarmStatesOptionsScdAsoAlarmStatesOptions1  , componentConfigDef} from '@modeldir/model';
+import {  scdalarmStatesScdScdAlarmStates  ,scdalarmStatesOptionsScdScdAlarmStatesOptions  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
@@ -42,8 +42,8 @@ export class ScdAlarmStatesPropertiesComponent implements OnInit {
 
   public componentConfig: componentConfigDef;
 
-  public grid_0_SCD_ALARM_STATES : scdalarmStatesScdAslAlarmStates0;
-  public form_1_SCD_ALARM_STATES_OPTIONS : scdalarmStatesOptionsScdAsoAlarmStatesOptions1;
+  public grid_0_SCD_ALARM_STATES : scdalarmStatesScdScdAlarmStates;
+  public form_1_SCD_ALARM_STATES_OPTIONS : scdalarmStatesOptionsScdScdAlarmStatesOptions;
   public  SCD_ALARM_STATESGrid_0Config : componentConfigDef;
   public  hide_comp_1 = false
   public  SCD_ALARM_STATES_OPTIONSForm_1Config : componentConfigDef;
@@ -56,7 +56,7 @@ export class ScdAlarmStatesPropertiesComponent implements OnInit {
   }
   private componentConfigChangeEvent!: Subscription;
   public compSelector = 'app-scd-alarm-states-properties';
-  public masterKeyNameArr = ["STATE_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+  public masterKeyNameArr = ["STATE_ID","SHAPE_ID"];
 
   public masterINSERT = 'INSERT_SCD_ALARM_STATES';
   public masterDataSource = 'SCD_ALARM_STATES';
@@ -115,21 +115,21 @@ export class ScdAlarmStatesPropertiesComponent implements OnInit {
      if (typeof this.componentConfigChangeEvent !== 'undefined') this.componentConfigChangeEvent.unsubscribe();
   }
   public readCompletedHandler( form_SCD_ALARM_STATES) {
-    let masterKeyArr = [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.APP_ID,form_SCD_ALARM_STATES.DISPLAY_ID,form_SCD_ALARM_STATES.SHAPE_ID];
-    let masterKeyNameArr = ["STATE_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    let masterKeyArr = [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.SHAPE_ID];
+    let masterKeyNameArr = ["STATE_ID","SHAPE_ID"];
      if (this.isSearchScreen == true) 
 	  {
     	this.SCD_ALARM_STATES_OPTIONSForm_1Config = new componentConfigDef();
     	this.SCD_ALARM_STATES_OPTIONSForm_1Config.formattedWhere  = form_SCD_ALARM_STATES;
     	return;
 	  }
-    //this.form_1_SCD_ALARM_STATES_OPTIONS = new scdalarmStatesOptionsScdAsoAlarmStatesOptions1();
+    //this.form_1_SCD_ALARM_STATES_OPTIONS = new scdalarmStatesOptionsScdScdAlarmStatesOptions();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
     //   this.form_1_SCD_ALARM_STATES_OPTIONS[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
     this.SCD_ALARM_STATES_OPTIONSForm_1Config = new componentConfigDef();
-    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyArr =  [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.APP_ID,form_SCD_ALARM_STATES.DISPLAY_ID,form_SCD_ALARM_STATES.SHAPE_ID];
-    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyNameArr =  ["STATE_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyArr =  [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.SHAPE_ID];
+    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyNameArr =  ["STATE_ID","SHAPE_ID"];
     this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
      this.SCD_ALARM_STATES_OPTIONSForm_1Config.queryable = false;
@@ -141,7 +141,7 @@ export class ScdAlarmStatesPropertiesComponent implements OnInit {
      await this.starServices.sleep(200);
     this.SCD_ALARM_STATES_OPTIONSForm_1Config = new componentConfigDef();
   }
-  public keyNameArr = ["STATE_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+  public keyNameArr = ["STATE_ID","SHAPE_ID"];
 
   public callreadSavedMaster( ) {
     let masterTable = 'SCD_ALARM_STATES' 
@@ -164,12 +164,12 @@ export class ScdAlarmStatesPropertiesComponent implements OnInit {
    }
  } 
   public saveCompletedHandler( form_SCD_ALARM_STATES) {
- let key:any = [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.APP_ID,form_SCD_ALARM_STATES.DISPLAY_ID,form_SCD_ALARM_STATES.SHAPE_ID]; 
+ let key:any = [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.SHAPE_ID]; 
  if ( key != '') { 
     this.SCD_ALARM_STATES_OPTIONSForm_1Config = new componentConfigDef();
     this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterSaved = form_SCD_ALARM_STATES;
-    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyArr =  [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.APP_ID,form_SCD_ALARM_STATES.DISPLAY_ID,form_SCD_ALARM_STATES.SHAPE_ID];
-    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyNameArr =  ["STATE_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyArr =  [form_SCD_ALARM_STATES.STATE_ID,form_SCD_ALARM_STATES.SHAPE_ID];
+    this.SCD_ALARM_STATES_OPTIONSForm_1Config.masterKeyNameArr =  ["STATE_ID","SHAPE_ID"];
   
     this.saveTriggerOutput.emit(form_SCD_ALARM_STATES);
   } 

@@ -1,7 +1,7 @@
 <div>
     <legend *ngIf="componentConfig.showToolBar"  class="k-form-legend">{{
       componentConfig.title ? componentConfig.title :
-       this.starServices.getNLS([],"SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.component_title","Alarm Sort") }}</legend>
+       this.starServices.getNLS([],"SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.component_title","SCD ALARM SORT") }}</legend>
 <div class="form-toolbar"> </div>
 
 <kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
@@ -37,22 +37,36 @@
 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSORT_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSORT_ID >
-		<kendo-label *ngIf="(!labelSORT_IDTop && !isPhonePortrait) && labelSORT_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_ID','Sort Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelSORT_IDTop || isPhonePortrait) && labelSORT_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_ID','Sort Id') + ' *'}}</label>
+		<kendo-label *ngIf="(!labelSORT_IDTop && !isPhonePortrait) && labelSORT_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_ID','Sort Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSORT_IDTop || isPhonePortrait) && labelSORT_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_ID','Sort Id') + ' *'}}</label>
 		<input   formControlName="SORT_ID"
  kendoTextBox  #SORT_ID 
-		[readonly]="primarKeyReadOnlyArr.isSORT_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_ID_Hint','Please enter Sort Id.')"
+		[readonly]="primarKeyReadOnlyArr.isSORT_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_ID_Hint','Please enter Sort Id.')"
 		(click)="ON_CLICK_SORT_ID($event)"
-[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SORT_ID($event)"    class="HIGHEST"  adaptiveMode="auto"  />
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SORT_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
+		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
+		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SHAPE_ID','Shape Id') + ' *'}}</label>
+		<input   formControlName="SHAPE_ID"
+ kendoTextBox  #SHAPE_ID
+		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
+		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SHAPE_ID_Hint','Please enter Shape Id.')"
+		(click)="ON_CLICK_SHAPE_ID($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHAPE_ID($event)"      adaptiveMode="auto"  />
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSORT_BY_FIELDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSORT_BY_FIELD >
-		<kendo-label *ngIf="(!labelSORT_BY_FIELDTop && !isPhonePortrait) && labelSORT_BY_FIELDVisible" class="form-label" [for]="SORT_BY_FIELD" [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_BY_FIELD','Sort By Field')"></kendo-label>
-		<label *ngIf="(labelSORT_BY_FIELDTop || isPhonePortrait) && labelSORT_BY_FIELDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_BY_FIELD','Sort By Field')}}</label>
+		<kendo-label *ngIf="(!labelSORT_BY_FIELDTop && !isPhonePortrait) && labelSORT_BY_FIELDVisible" class="form-label" [for]="SORT_BY_FIELD" [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_BY_FIELD','Sort By Field')"></kendo-label>
+		<label *ngIf="(labelSORT_BY_FIELDTop || isPhonePortrait) && labelSORT_BY_FIELDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_BY_FIELD','Sort By Field')}}</label>
 		<kendo-combobox  #SORT_BY_FIELD class="form-field-combobox"  [formControlName]="'SORT_BY_FIELD'"
 		[data]="lkpArrSORT_BY_FIELD" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_BY_FIELD_Hint','Please enter Sort By Field.')"		(click)="ON_CLICK_SORT_BY_FIELD($event)"
- (valueChange)="onValueChange_SORT_BY_FIELD($event)"    class="MEDIUM"  adaptiveMode="auto" 
+  [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_BY_FIELD_Hint','Please enter Sort By Field.')"		(click)="ON_CLICK_SORT_BY_FIELD($event)"
+ (valueChange)="onValueChange_SORT_BY_FIELD($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -66,12 +80,12 @@
 	</kendo-formfield>
 
 	<div class="form-field"  [ngClass]="(labelSORT_BY_FIELD_ASC_DESCTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSORT_BY_FIELD_ASC_DESC >
-		<kendo-label *ngIf="(!labelSORT_BY_FIELD_ASC_DESCTop && !isPhonePortrait) && labelSORT_BY_FIELD_ASC_DESCVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_BY_FIELD_ASC_DESC','Sort By Field Asc Desc')"></kendo-label>
-		<label *ngIf="(labelSORT_BY_FIELD_ASC_DESCTop || isPhonePortrait) && labelSORT_BY_FIELD_ASC_DESCVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SORT_BY_FIELD_ASC_DESC','Sort By Field Asc Desc')}}</label>
+		<kendo-label *ngIf="(!labelSORT_BY_FIELD_ASC_DESCTop && !isPhonePortrait) && labelSORT_BY_FIELD_ASC_DESCVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_BY_FIELD_ASC_DESC','Sort By Field Asc Desc')"></kendo-label>
+		<label *ngIf="(labelSORT_BY_FIELD_ASC_DESCTop || isPhonePortrait) && labelSORT_BY_FIELD_ASC_DESCVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.SORT_BY_FIELD_ASC_DESC','Sort By Field Asc Desc')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_SORT_BY_FIELD_ASC_DESC($event)"
  (change)="onChange_SORT_BY_FIELD_ASC_DESC($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrSORT_BY_FIELD_ASC_DESC"   class="MEDIUM"  adaptiveMode="auto" >
+			<li class="k-radio-item" *ngFor="let item of lkpArrSORT_BY_FIELD_ASC_DESC"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'SORT_BY_FIELD_ASC_DESC'"
 					#SORT_BY_FIELD_ASC_DESC ></kendo-radiobutton> 
@@ -84,37 +98,13 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
-		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
-		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SHAPE_ID','Shape Id') + ' *'}}</label>
-		<kendo-combobox  #SHAPE_ID class="form-field-combobox"  [formControlName]="'SHAPE_ID'"
-		[data]="lkpArrSHAPE_ID" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-
-		[ngClass]="{ 'ng-invalid-required  ng-touched': submitted && f.SHAPE_ID.errors }"  required 
-		[readonly]="primarKeyReadOnlyArr.isSHAPE_IDreadOnly" [placeholder]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.SHAPE_ID_Hint','Please enter Shape Id.')"		(click)="ON_CLICK_SHAPE_ID($event)"
- (valueChange)="onValueChange_SHAPE_ID($event)"      adaptiveMode="auto" 
-		 (filterChange)="starServices.handleFilterCode(this, $event)" 
-		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
-		 <ng-template kendoDropDownListNoDataTemplate>
-		 <div> 
-		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'SHAPE_ID')"> 
-		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
-		 	</button> 
-		 </div> 
-		 </ng-template> 
-		</kendo-combobox>
-	</kendo-formfield>
-
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHEN_BYTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHEN_BY >
-		<kendo-label *ngIf="(!labelTHEN_BYTop && !isPhonePortrait) && labelTHEN_BYVisible" class="form-label" [for]="THEN_BY" [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY','Then By')"></kendo-label>
-		<label *ngIf="(labelTHEN_BYTop || isPhonePortrait) && labelTHEN_BYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY','Then By')}}</label>
+		<kendo-label *ngIf="(!labelTHEN_BYTop && !isPhonePortrait) && labelTHEN_BYVisible" class="form-label" [for]="THEN_BY" [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY','Then By')"></kendo-label>
+		<label *ngIf="(labelTHEN_BYTop || isPhonePortrait) && labelTHEN_BYVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY','Then By')}}</label>
 		<kendo-combobox  #THEN_BY class="form-field-combobox"  [formControlName]="'THEN_BY'"
 		[data]="lkpArrTHEN_BY" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_Hint','Please enter Then By.')"		(click)="ON_CLICK_THEN_BY($event)"
- (valueChange)="onValueChange_THEN_BY($event)"    class="MEDIUM"  adaptiveMode="auto" 
+  [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_Hint','Please enter Then By.')"		(click)="ON_CLICK_THEN_BY($event)"
+ (valueChange)="onValueChange_THEN_BY($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -128,12 +118,12 @@
 	</kendo-formfield>
 
 	<div class="form-field"  [ngClass]="(labelTHEN_BY_FIELD_ASC_DESCTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHEN_BY_FIELD_ASC_DESC >
-		<kendo-label *ngIf="(!labelTHEN_BY_FIELD_ASC_DESCTop && !isPhonePortrait) && labelTHEN_BY_FIELD_ASC_DESCVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_FIELD_ASC_DESC','Then By Field Asc Desc')"></kendo-label>
-		<label *ngIf="(labelTHEN_BY_FIELD_ASC_DESCTop || isPhonePortrait) && labelTHEN_BY_FIELD_ASC_DESCVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_FIELD_ASC_DESC','Then By Field Asc Desc')}}</label>
+		<kendo-label *ngIf="(!labelTHEN_BY_FIELD_ASC_DESCTop && !isPhonePortrait) && labelTHEN_BY_FIELD_ASC_DESCVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_FIELD_ASC_DESC','Then By Field Asc Desc')"></kendo-label>
+		<label *ngIf="(labelTHEN_BY_FIELD_ASC_DESCTop || isPhonePortrait) && labelTHEN_BY_FIELD_ASC_DESCVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_FIELD_ASC_DESC','Then By Field Asc Desc')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_THEN_BY_FIELD_ASC_DESC($event)"
  (change)="onChange_THEN_BY_FIELD_ASC_DESC($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrTHEN_BY_FIELD_ASC_DESC"   class="MEDIUM"  adaptiveMode="auto" >
+			<li class="k-radio-item" *ngFor="let item of lkpArrTHEN_BY_FIELD_ASC_DESC"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'THEN_BY_FIELD_ASC_DESC'"
 					#THEN_BY_FIELD_ASC_DESC ></kendo-radiobutton> 
@@ -147,12 +137,12 @@
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTHEN_BY_2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHEN_BY_2 >
-		<kendo-label *ngIf="(!labelTHEN_BY_2Top && !isPhonePortrait) && labelTHEN_BY_2Visible" class="form-label" [for]="THEN_BY_2" [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_2','Then By 2')"></kendo-label>
-		<label *ngIf="(labelTHEN_BY_2Top || isPhonePortrait) && labelTHEN_BY_2Visible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_2','Then By 2')}}</label>
+		<kendo-label *ngIf="(!labelTHEN_BY_2Top && !isPhonePortrait) && labelTHEN_BY_2Visible" class="form-label" [for]="THEN_BY_2" [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_2','Then By 2')"></kendo-label>
+		<label *ngIf="(labelTHEN_BY_2Top || isPhonePortrait) && labelTHEN_BY_2Visible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_2','Then By 2')}}</label>
 		<kendo-combobox  #THEN_BY_2 class="form-field-combobox"  [formControlName]="'THEN_BY_2'"
 		[data]="lkpArrTHEN_BY_2" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
-  [placeholder]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_2_Hint','Please enter Then By 2.')"		(click)="ON_CLICK_THEN_BY_2($event)"
- (valueChange)="onValueChange_THEN_BY_2($event)"    class="MEDIUM"  adaptiveMode="auto" 
+  [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_2_Hint','Please enter Then By 2.')"		(click)="ON_CLICK_THEN_BY_2($event)"
+ (valueChange)="onValueChange_THEN_BY_2($event)"      adaptiveMode="auto" 
 		 (filterChange)="starServices.handleFilterCode(this, $event)" 
 		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
 		 <ng-template kendoDropDownListNoDataTemplate>
@@ -166,12 +156,12 @@
 	</kendo-formfield>
 
 	<div class="form-field"  [ngClass]="(labelTHEN_BY_2_FIELD_ASC_DESCTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTHEN_BY_2_FIELD_ASC_DESC >
-		<kendo-label *ngIf="(!labelTHEN_BY_2_FIELD_ASC_DESCTop && !isPhonePortrait) && labelTHEN_BY_2_FIELD_ASC_DESCVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_2_FIELD_ASC_DESC','Then By 2 Field Asc Desc')"></kendo-label>
-		<label *ngIf="(labelTHEN_BY_2_FIELD_ASC_DESCTop || isPhonePortrait) && labelTHEN_BY_2_FIELD_ASC_DESCVisible" class="form-label"  >{{starServices.getNLS([],'SCD_AAESP_ALARM_SORT.scdalarmSortScdAaespAlarmSort.THEN_BY_2_FIELD_ASC_DESC','Then By 2 Field Asc Desc')}}</label>
+		<kendo-label *ngIf="(!labelTHEN_BY_2_FIELD_ASC_DESCTop && !isPhonePortrait) && labelTHEN_BY_2_FIELD_ASC_DESCVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_2_FIELD_ASC_DESC','Then By 2 Field Asc Desc')"></kendo-label>
+		<label *ngIf="(labelTHEN_BY_2_FIELD_ASC_DESCTop || isPhonePortrait) && labelTHEN_BY_2_FIELD_ASC_DESCVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_SORT.scdalarmSortScdScdAlarmSort.THEN_BY_2_FIELD_ASC_DESC','Then By 2 Field Asc Desc')}}</label>
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_THEN_BY_2_FIELD_ASC_DESC($event)"
  (change)="onChange_THEN_BY_2_FIELD_ASC_DESC($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrTHEN_BY_2_FIELD_ASC_DESC"   class="MEDIUM"  adaptiveMode="auto" >
+			<li class="k-radio-item" *ngFor="let item of lkpArrTHEN_BY_2_FIELD_ASC_DESC"     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
  [formControlName]="'THEN_BY_2_FIELD_ASC_DESC'"
 					#THEN_BY_2_FIELD_ASC_DESC ></kendo-radiobutton> 

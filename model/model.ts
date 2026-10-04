@@ -1,3 +1,70 @@
+ export class scdalarmSortScdScdAlarmSortForm{
+	public SORT_ID = '';
+	public SHAPE_ID = '';
+	public SORT_BY_FIELD = '';
+	public SORT_BY_FIELD_ASC_DESC = '';
+	public THEN_BY = '';
+	public THEN_BY_FIELD_ASC_DESC = '';
+	public THEN_BY_2_FIELD_ASC_DESC = '';
+	public THEN_BY_2 = '';
+
+}
+
+ export class scdalarmSortScdScdAlarmSort{
+	public SORT_ID = '';
+	public SHAPE_ID = '';
+	public SORT_BY_FIELD = '';
+	public SORT_BY_FIELD_ASC_DESC = '';
+	public THEN_BY = '';
+	public THEN_BY_FIELD_ASC_DESC = '';
+	public THEN_BY_2 = '';
+	public THEN_BY_2_FIELD_ASC_DESC = '';
+
+}
+
+
+ export class scdalarmStatesOptionsScdScdAlarmStatesOptions{
+	public STATE_OPTION_ID = '';
+	public SHAPE_ID = '';
+	public TEST_RATES = '';
+	public BLINK_RATE = '';
+	public CONFIGURE_SOUND = '';
+
+}
+
+ export class scdalarmScdAlarmStatesProperties{
+}
+ export class scdalarmStatesScdScdAlarmStatesForm{
+	public STATE_ID = '';
+	public SHAPE_ID = '';
+	public SHOW_EVENT_TYPE = '';
+	public PRIORITY = '';
+	public TEXT_COLOR = '';
+	public BACKGROUND_COLOR = '';
+	public BLINK = '';
+	public SAMPLE = '';
+	public SOUND = '';
+	public IMAGE_ICON = '';
+	public EVENT_TYPE = '';
+
+}
+
+ export class scdalarmStatesScdScdAlarmStates{
+	public STATE_ID = '';
+	public SHAPE_ID = '';
+	public SHOW_EVENT_TYPE = '';
+	public PRIORITY = '';
+	public TEXT_COLOR = '';
+	public BACKGROUND_COLOR = '';
+	public BLINK = '';
+	public SAMPLE = '';
+	public SOUND = '';
+	public IMAGE_ICON = '';
+	public EVENT_TYPE = '';
+
+}
+
+
  export class scdalarmEventSubscriptionsScdScdAlarmEventSubscriptionsForm{
 	public EVENT_ID = '';
 	public SHAPE_ID = '';
@@ -186,8 +253,12 @@
 	public BACKGROUND_COLOR = '';
 	public BLINK = '';
 	public SAMPLE = '';
+	public SOUND = '';
+	public IMAGE_ICON = '';
+	public EVENT_TYPE = '';
 
 }
+
 
 
  export class scdalarmSortScdAssAlarmSortResults{
@@ -197,10 +268,11 @@
 	public SORT_BY_FIELD_ASC_DESC = '';
 	public THEN_BY = '';
 	public THEN_BY_FIELD_ASC_DESC = '';
-	public THEN_BY_2 = '';
 	public THEN_BY_2_FIELD_ASC_DESC = '';
+	public THEN_BY_2 = '';
 
 }
+
 
 
  export class scdalarmStatesOptionsScdAsoAlarmStatesOptions1{
@@ -208,8 +280,10 @@
 	public SHAPE_ID = '';
 	public TEST_RATES = '';
 	public BLINK_RATE = '';
+	public CONFIGURE_SOUND = '';
 
 }
+
 
 
  export class scdalarmStatesOptionsScdAsoAlarmStatesOptions{
@@ -230,8 +304,12 @@
 	public BACKGROUND_COLOR = '';
 	public BLINK = '';
 	public SAMPLE = '';
+	public SOUND = '';
+	public IMAGE_ICON = '';
+	public EVENT_TYPE = '';
 
 }
+
 
 
  export class scdalarmStatesScdAslAlarmStates4{
@@ -243,8 +321,12 @@
 	public BACKGROUND_COLOR = '';
 	public BLINK = '';
 	public SAMPLE = '';
+	public SOUND = '';
+	public IMAGE_ICON = '';
+	public EVENT_TYPE = '';
 
 }
+
 
 
  export class scdalarmStatesScdAslAlarmStates2{
@@ -256,8 +338,12 @@
 	public BACKGROUND_COLOR = '';
 	public BLINK = '';
 	public SAMPLE = '';
+	public SOUND = '';
+	public IMAGE_ICON = '';
+	public EVENT_TYPE = '';
 
 }
+
 
 
  export class scdalarmStatesScdAslAlarmStates0{
@@ -269,8 +355,12 @@
 	public BACKGROUND_COLOR = '';
 	public BLINK = '';
 	public SAMPLE = '';
+	public SOUND = '';
+	public IMAGE_ICON = '';
+	public EVENT_TYPE = '';
 
 }
+
 
 
  export class scdalarmStatesScdAslAlarmStates{
@@ -686,10 +776,11 @@
 	public SORT_BY_FIELD_ASC_DESC = '';
 	public THEN_BY = '';
 	public THEN_BY_FIELD_ASC_DESC = '';
-	public THEN_BY_2 = '';
 	public THEN_BY_2_FIELD_ASC_DESC = '';
+	public THEN_BY_2 = '';
 
 }
+
 
 
  export class scdalarmSortScdAaespAlarmSort{
@@ -699,10 +790,11 @@
 	public SORT_BY_FIELD_ASC_DESC = '';
 	public THEN_BY = '';
 	public THEN_BY_FIELD_ASC_DESC = '';
-	public THEN_BY_2 = '';
 	public THEN_BY_2_FIELD_ASC_DESC = '';
+	public THEN_BY_2 = '';
 
 }
+
 
 
  export class scdalarmAppearanceScdAadAlarmAppearance1{

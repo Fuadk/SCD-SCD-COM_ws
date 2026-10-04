@@ -312,8 +312,8 @@ import { ScdApplicationScdScdApplicationFormFormComponent } from '../components/
 import { ScdAppTreeViewScdScdAppTreeViewTreeComponent } from '../components/SCD/scd-scd-app-tree-view/scd-scd-app-tree-view.component';
 import { ScdAlarmAppearanceScdAadAlarmAppearanceFormdivsComponent } from '../components/SCD/scd-aad-alarm-appearance/scd-aad-alarm-appearance.component';
 import { ScdAlarmAppearanceScdAadAlarmAppearance1FormdivsComponent } from '../components/SCD/scd-aad-alarm-appearance-1/scd-aad-alarm-appearance-1.component';
-import { ScdAlarmSortScdAaespAlarmSortFormComponent } from '../components/SCD/scd-aaesp-alarm-sort/scd-aaesp-alarm-sort.component';
-import { ScdAlarmSortScdAaespAlarmSort0FormComponent } from '../components/SCD/scd-aaesp-alarm-sort-0/scd-aaesp-alarm-sort-0.component';
+
+
 
 import { ScdAlarmColumnsScdAclAlarmColumnsGridComponent } from '../components/SCD/scd-acl-alarm-columns/scd-acl-alarm-columns.component';
 import { ScdAlarmColumnsScdAclAlarmColumns0GridComponent } from '../components/SCD/scd-acl-alarm-columns-0/scd-acl-alarm-columns-0.component';
@@ -338,15 +338,15 @@ import { ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsList3GridCompon
 
 
 import { ScdAlarmSortScdAsdAlarmSortFormdivsComponent } from '../components/SCD/scd-asd-alarm-sort/scd-asd-alarm-sort.component';
-import { ScdAlarmStatesScdAslAlarmStatesGridComponent } from '../components/SCD/scd-asl-alarm-states/scd-asl-alarm-states.component';
+
 import { ScdAlarmStatesScdAslAlarmStates0GridComponent } from '../components/SCD/scd-asl-alarm-states-0/scd-asl-alarm-states-0.component';
 import { ScdAlarmStatesScdAslAlarmStates2GridComponent } from '../components/SCD/scd-asl-alarm-states-2/scd-asl-alarm-states-2.component';
 import { ScdAlarmStatesScdAslAlarmStates4GridComponent } from '../components/SCD/scd-asl-alarm-states-4/scd-asl-alarm-states-4.component';
 import { ScdAlarmStatesScdAslAlarmStates5GridComponent } from '../components/SCD/scd-asl-alarm-states-5/scd-asl-alarm-states-5.component';
-import { ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent } from '../components/SCD/scd-aso-alarm-states-options/scd-aso-alarm-states-options.component';
-import { ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1FormComponent } from '../components/SCD/scd-aso-alarm-states-options-1/scd-aso-alarm-states-options-1.component';
-import { ScdAlarmSortScdAssAlarmSortResultsGridComponent } from '../components/SCD/scd-ass-alarm-sort-results/scd-ass-alarm-sort-results.component';
-import { ScdAlarmStatesScdAssSearchAlarmStatesListComponent } from '../components/SCD/scd-ass-search-alarm-states/scd-ass-search-alarm-states.component';
+
+
+
+
 import { ScdShapeExpressionScdScdShapeExpressionGridGridComponent } from '../components/SCD/scd-scd-shape-expression-grid/scd-scd-shape-expression-grid.component';
 
 
@@ -364,7 +364,7 @@ import { ScdAlarmDisplayFiltersPropertiesComponent } from '../components/SCD/scd
 
 
 
-import { ScdAlarmStatesListComponent } from '../components/SCD/scd-alarm-states-list/scd-alarm-states-list.component';
+
 
 import { ScdAlarmStatesPropertiesComponent } from '../components/SCD/scd-alarm-states-properties/scd-alarm-states-properties.component';
 
@@ -389,6 +389,11 @@ import { ScdAlarmEventSubscriptionsScdAeslAlarmEventSubscriptionsListGridCompone
 import { ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGridComponent } from '../components/SCD/scd-scd-alarm-event-subscriptions-grid/scd-scd-alarm-event-subscriptions-grid.component';
 
 import { ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivsComponent } from '../components/SCD/scd-scd-alarm-event-subscriptions-form/scd-scd-alarm-event-subscriptions-form.component';
+import { ScdAlarmStatesScdScdAlarmStatesGridComponent } from '../components/SCD/scd-scd-alarm-states/scd-scd-alarm-states.component';
+import { ScdAlarmStatesScdScdAlarmStatesFormFormComponent } from '../components/SCD/scd-scd-alarm-states-form/scd-scd-alarm-states-form.component';
+import { ScdAlarmStatesOptionsScdScdAlarmStatesOptionsFormComponent } from '../components/SCD/scd-scd-alarm-states-options/scd-scd-alarm-states-options.component';
+import { ScdAlarmSortScdScdAlarmSortFormComponent } from '../components/SCD/scd-scd-alarm-sort/scd-scd-alarm-sort.component';
+
 const scdRoutes: Routes = [
  
 
@@ -623,8 +628,8 @@ const scdRoutes: Routes = [
 		{ path: 'scd_scd_app_tree_view', component: ScdAppTreeViewScdScdAppTreeViewTreeComponent },
 		{ path: 'scd_aad_alarm_appearance', component: ScdAlarmAppearanceScdAadAlarmAppearanceFormdivsComponent },
 		{ path: 'scd_aad_alarm_appearance_1', component: ScdAlarmAppearanceScdAadAlarmAppearance1FormdivsComponent },
-		{ path: 'scd_aaesp_alarm_sort', component: ScdAlarmSortScdAaespAlarmSortFormComponent },
-		{ path: 'scd_aaesp_alarm_sort_0', component: ScdAlarmSortScdAaespAlarmSort0FormComponent },
+
+
 
 		{ path: 'scd_acl_alarm_columns', component: ScdAlarmColumnsScdAclAlarmColumnsGridComponent },
 		{ path: 'scd_acl_alarm_columns_0', component: ScdAlarmColumnsScdAclAlarmColumns0GridComponent },
@@ -649,15 +654,15 @@ const scdRoutes: Routes = [
 
 
 		{ path: 'scd_asd_alarm_sort', component: ScdAlarmSortScdAsdAlarmSortFormdivsComponent },
-		{ path: 'scd_asl_alarm_states', component: ScdAlarmStatesScdAslAlarmStatesGridComponent },
+
 		{ path: 'scd_asl_alarm_states_0', component: ScdAlarmStatesScdAslAlarmStates0GridComponent },
 		{ path: 'scd_asl_alarm_states_2', component: ScdAlarmStatesScdAslAlarmStates2GridComponent },
 		{ path: 'scd_asl_alarm_states_4', component: ScdAlarmStatesScdAslAlarmStates4GridComponent },
 		{ path: 'scd_asl_alarm_states_5', component: ScdAlarmStatesScdAslAlarmStates5GridComponent },
-		{ path: 'scd_aso_alarm_states_options', component: ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent },
-		{ path: 'scd_aso_alarm_states_options_1', component: ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1FormComponent },
-		{ path: 'scd_ass_alarm_sort_results', component: ScdAlarmSortScdAssAlarmSortResultsGridComponent },
-		{ path: 'scd_ass_search_alarm_states', component: ScdAlarmStatesScdAssSearchAlarmStatesListComponent },
+
+
+
+
 		{ path: 'scd_scd_shape_expression_grid', component: ScdShapeExpressionScdScdShapeExpressionGridGridComponent },
 		
 		
@@ -676,7 +681,7 @@ const scdRoutes: Routes = [
 		
 		
 
-		{ path: 'scd_alarm_states_list', component: ScdAlarmStatesListComponent },
+		
 		
 		{ path: 'scd_alarm_states_properties', component: ScdAlarmStatesPropertiesComponent },
 		
@@ -701,6 +706,11 @@ const scdRoutes: Routes = [
 		{ path: 'scd_scd_alarm_event_subscriptions_grid', component: ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGridComponent },
 
 		{ path: 'scd_scd_alarm_event_subscriptions_form', component: ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivsComponent },
+		{ path: 'scd_scd_alarm_states', component: ScdAlarmStatesScdScdAlarmStatesGridComponent },
+		{ path: 'scd_scd_alarm_states_form', component: ScdAlarmStatesScdScdAlarmStatesFormFormComponent },
+		{ path: 'scd_scd_alarm_states_options', component: ScdAlarmStatesOptionsScdScdAlarmStatesOptionsFormComponent },
+		{ path: 'scd_scd_alarm_sort', component: ScdAlarmSortScdScdAlarmSortFormComponent },
+
 ];
 
 
@@ -939,8 +949,8 @@ const scdRoutes: Routes = [
 		ScdAppTreeViewScdScdAppTreeViewTreeComponent,
 		ScdAlarmAppearanceScdAadAlarmAppearanceFormdivsComponent,
 		ScdAlarmAppearanceScdAadAlarmAppearance1FormdivsComponent,
-		ScdAlarmSortScdAaespAlarmSortFormComponent,
-		ScdAlarmSortScdAaespAlarmSort0FormComponent,
+
+
 
 		ScdAlarmColumnsScdAclAlarmColumnsGridComponent,
 		ScdAlarmColumnsScdAclAlarmColumns0GridComponent,
@@ -965,15 +975,15 @@ const scdRoutes: Routes = [
 
 
 		ScdAlarmSortScdAsdAlarmSortFormdivsComponent,
-		ScdAlarmStatesScdAslAlarmStatesGridComponent,
+
 		ScdAlarmStatesScdAslAlarmStates0GridComponent,
 		ScdAlarmStatesScdAslAlarmStates2GridComponent,
 		ScdAlarmStatesScdAslAlarmStates4GridComponent,
 		ScdAlarmStatesScdAslAlarmStates5GridComponent,
-		ScdAlarmStatesOptionsScdAsoAlarmStatesOptionsFormComponent,
-		ScdAlarmStatesOptionsScdAsoAlarmStatesOptions1FormComponent,
-		ScdAlarmSortScdAssAlarmSortResultsGridComponent,
-		ScdAlarmStatesScdAssSearchAlarmStatesListComponent,
+
+
+
+
 		ScdShapeExpressionScdScdShapeExpressionGridGridComponent,
 		
 		
@@ -992,7 +1002,7 @@ const scdRoutes: Routes = [
 	
 		
 		
-		ScdAlarmStatesListComponent,
+		
 		
 		ScdAlarmStatesPropertiesComponent,
 		
@@ -1017,6 +1027,11 @@ const scdRoutes: Routes = [
 		ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsGridGridComponent,
 
 		ScdAlarmEventSubscriptionsScdScdAlarmEventSubscriptionsFormFormdivsComponent,
+		ScdAlarmStatesScdScdAlarmStatesGridComponent,
+		ScdAlarmStatesScdScdAlarmStatesFormFormComponent,
+		ScdAlarmStatesOptionsScdScdAlarmStatesOptionsFormComponent,
+		ScdAlarmSortScdScdAlarmSortFormComponent,
+
   ],
   
   imports: [
