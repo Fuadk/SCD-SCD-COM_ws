@@ -1976,7 +1976,7 @@ async  prepareShapes(){
       }
     ]
   let shapesTpDelete = await this.starServices.execSQLBody(this, body_shapes, "");
-  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesTpDelete:", shapesTpDelete[0].data);
+  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesTpDelete:", shapesTpDelete[0].data, "this.form.value.DISPLAY_ID:", this.form.value.DISPLAY_ID, "statement_shapesTpDelete:",statement_shapesTpDelete);
   let shapeIDsToDelete = "";
   if (shapesTpDelete[0].data.length > 0){
      shapeIDsToDelete = shapesTpDelete[0].data.map(item => item.SHAPE_ID).join(',');
@@ -2024,6 +2024,12 @@ async  prepareShapes(){
         "_QUERY": "EXECSQL",
         "_STMT": `DELETE from ${table} where shape_id in (${shapeIDsToDelete})`
       }));
+      let statement = "DELETE from scd_shape where shape_id  in (" + shapeIDsToDelete + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+      let newVal:any ={
+            "_QUERY": "EXECSQL",
+            "_STMT": statement
+          };
+      body_defs.push(newVal)    
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
       let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
     }
@@ -2032,7 +2038,7 @@ async  prepareShapes(){
 
 
 
-  let statement = "DELETE from scd_shape where shape_id  in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+  
   let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
   let statement_expressions = "SELECT A.SHAPE_ID, B.EXPRESSION_DATA , A.SHAPE_TYPE "
                               +"    FROM SCD_SHAPE A, SCD_SHAPE_DISPLAY_GENERAL B "
@@ -2040,11 +2046,9 @@ async  prepareShapes(){
                               +"    AND A.DISPLAY_ID = " + this.form.value.DISPLAY_ID
                               +"    AND (B.EXPRESSION_DATA != '' or B.EXPRESSION_DATA is not null) ";
 
-    let body = [
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement
-      },
+    let body = [];
+
+      body = [
       {
       "_QUERY": "GET_SCD_SHAPE_QUERY",
       "_WHERE": whereClause
@@ -2052,16 +2056,19 @@ async  prepareShapes(){
       {
         "_QUERY": "EXECSQL",
         "_STMT": statement_expressions
-      },
-    ];
+      }
+      ]
+      
+    
+    
     if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:body:", body);
     let data = await this.starServices.execSQLBody(this, body, "");
-    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:data[1].data:", data[1].data);
-    if (typeof data[1].data != "undefined"){
-      this.scdShapes = data[1].data;
+    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:data[0].data:", data[0].data);
+    if (typeof data[0].data != "undefined"){
+      this.scdShapes = data[0].data;
     } 
-    if (typeof data[2].data != "undefined"){
-      let expData = data[2].data;
+    if (typeof data[1].data != "undefined"){
+      let expData = data[1].data;
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", JSON.stringify(expData));
       
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData.length, expData, JSON.stringify(expData));
@@ -2108,7 +2115,7 @@ async  prepareShapes(){
       
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:this.expData:", this.expData);
     } 
-} 
+}  
 ////
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
@@ -2845,7 +2852,7 @@ public valueChange_del(value: any): void {
   public propertyDialogDefinition: any = null;
   public componentToRender: any = null;
   public winState;
-  public dialogProperties = [{"Id":"41","Component":"Alarm_Status_Explorer","Width":"800","Height":"800","Maximize":null},{"Id":"40","Component":"Alarm_and_Event_Log_Viewer_Properties","Width":"800","Height":"800","Maximize":null},{"Id":"39","Component":"Alarm_and_Event_Summary_Properties","Width":"800","Height":"880","Maximize":null},{"Id":"38","Component":"Alarm_and_Event_Banner_Properties","Width":"800","Height":"880","Maximize":null},{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"1000","Height":"800","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"800","Maximize":"Y"},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"34","Component":"Arrow_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"35","Component":"Navigation_Button_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"36","Component":"Ramp_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"37","Component":"Local_Message_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""}]
+  public dialogProperties = [{"Id":"41","Component":"Alarm_Status_Explorer","Width":"1000","Height":"800","Maximize":null},{"Id":"40","Component":"Alarm_and_Event_Log_Viewer_Properties","Width":"1000","Height":"800","Maximize":null},{"Id":"39","Component":"Alarm_and_Event_Summary_Properties","Width":"1000","Height":"880","Maximize":null},{"Id":"38","Component":"Alarm_and_Event_Banner_Properties","Width":"1000","Height":"880","Maximize":null},{"Id":"","Component":"","Width":"","Height":"","Maximize":""},{"Id":"1","Component":"Push_Button_Properties","Width":"1000","Height":"800","Maximize":""},{"Id":"10","Component":"Symbol_States_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"11","Component":"Symbol_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"12","Component":"List_Indicator_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"13","Component":"List_Indicator_States_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"14","Component":"Bar_Graph_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"15","Component":"Gauge_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"16","Component":"Scale_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"17","Component":"Arrow_Button_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"18","Component":"Arrow_Timing_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"19","Component":"Arrow_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"2","Component":"Text_Properties","Width":"900","Height":"900","Maximize":""},{"Id":"20","Component":"Control_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"21","Component":"Display_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"22","Component":"Message_Date_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"23","Component":"Tag_Label_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"24","Component":"Browser_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"25","Component":"Piloted_List_Selector_Properties","Width":"700","Height":"700","Maximize":""},{"Id":"27","Component":"Numeric_Input_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"28","Component":"Display_Settings_Screen","Width":"700","Height":"700","Maximize":""},{"Id":"29","Component":"SymbolFactoryPlus","Width":"700","Height":"800","Maximize":"Y"},{"Id":"3","Component":"Shape_Properties","Width":"700","Height":"500","Maximize":""},{"Id":"30","Component":"Display_Keys_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"31","Component":"Javascript_Code_Screen","Width":"700","Height":"700","Maximize":null},{"Id":"32","Component":"Grid_Properties_Settings","Width":"500","Height":"350","Maximize":null},{"Id":"33","Component":"All_Alarms","Width":"700","Height":"700","Maximize":null},{"Id":"34","Component":"Arrow_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"35","Component":"Navigation_Button_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"36","Component":"Ramp_Button_Timing","Width":"700","Height":"800","Maximize":null},{"Id":"37","Component":"Local_Message_Properties","Width":"700","Height":"800","Maximize":null},{"Id":"4","Component":"Button_Properties","Width":"800","Height":"800","Maximize":""},{"Id":"5","Component":"Numeric_Display_Properties","Width":"1000","Height":"700","Maximize":""},{"Id":"7","Component":"String_Display_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"8","Component":"String_Input_Properties","Width":"700","Height":"800","Maximize":""},{"Id":"9","Component":"Multistate_Indicator_Properties","Width":"800","Height":"800","Maximize":""}]
   dialog_getComponentToRender(shapeType: string,Maximize): any {
     this.winState = null;
     if (Maximize == 'Y'){
@@ -3551,6 +3558,7 @@ public getShapeInfo(){
         if ( (tables[i] == "INSERT_SCD_ALARM_COLUMNS") && (shapeType == "Summary") ) {
             useshapeType = shapeType;
         }
+
         let TableDefauls = await this.starlib1.setShapeDefaults(tables[i], useshapeType);
         console.log("insertSCDShapeTables:TableDefauls:", JSON.stringify(TableDefauls));
         let TableDefaulsArr = groupByFieldName(TableDefauls);

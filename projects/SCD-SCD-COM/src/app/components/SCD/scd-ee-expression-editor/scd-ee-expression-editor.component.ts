@@ -422,13 +422,12 @@ public variableOPEN_AI;
       this.FormStepsArr.forEach(item => {
       (item as any).visible = true;
     });
-      //this.starServices.callltransformForTreeView(this);
+      this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
 
  this.lkpArrTAGS_KEY= this.starlib1.tagsDefinition;
  this.lkpArrALARMS_KEY= this.starlib1.alarmsDefinition;
- console.log("this.lkpArrALARMS_KEY:", JSON.stringify(this.lkpArrALARMS_KEY))
    }
 
   public onNew(e:any): void {
@@ -1595,6 +1594,7 @@ this.toggleAIPanel()
     let expression = this.form.value['EXPRESSION'];
     expression = expression + ' ' + value;
     this.form.patchValue({ 'EXPRESSION': expression });
+    this.valueChange.emit(expression);
   }
 
 

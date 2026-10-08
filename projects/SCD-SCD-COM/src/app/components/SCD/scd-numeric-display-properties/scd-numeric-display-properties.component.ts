@@ -197,6 +197,7 @@ export class ScdNumericDisplayPropertiesComponent implements OnInit {
   }
   public onComponentConfig_Output(ComponentConfig)
   {
+    console.log("onComponentConfig_Output:", ComponentConfig)
   if (typeof ComponentConfig !== 'undefined'){
     this.setComponentConfig_Output.emit(ComponentConfig);
     if (ComponentConfig.hideComponents != null) { 

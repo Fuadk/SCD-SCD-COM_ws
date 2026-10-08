@@ -1747,9 +1747,10 @@ class starServices {
                     if (object.paramConfig.DEBUG_FLAG)
                         console.log("here2");
                     for (let i = 0; i < object.masterKeyNameArr.length; i++) {
+                        let exists = object.masterKeyNameArr[i] in object.gridInitialValues;
+                        //let exists = object.gridInitialValues[object.masterKeyNameArr[i]]
                         if (object.paramConfig.DEBUG_FLAG)
-                            console.log("here3", object.gridInitialValues, object.masterKeyNameArr[i]);
-                        let exists = object.gridInitialValues[object.masterKeyNameArr[i]];
+                            console.log("here3", exists, object.gridInitialValues, object.masterKeyNameArr[i], object.masterKeyArr[i]);
                         if (typeof exists !== "undefined") {
                             if (object.paramConfig.DEBUG_FLAG)
                                 console.log("here4");
@@ -4146,12 +4147,14 @@ class starServices {
             }
             //console.log("img_gallery:", object.img_gallery)
         }
-        for (let i = 0; i < object.svg_arr.length; i++) {
-            let svgVal = formGroup[object.svg_arr[i]];
-            console.log("svg_arr[i]:", object.svg_arr[i], svgVal);
-            svgVal = this.convertSvgToKendoSVGIcon(this, svgVal, null, object.svg_arr[i]);
-            console.log("svg_arr[i]:new:", svgVal);
-            formGroup[object.svg_arr[i] + "_SVG"] = svgVal;
+        if (typeof object.svg_arr != "undefined") {
+            for (let i = 0; i < object.svg_arr.length; i++) {
+                let svgVal = formGroup[object.svg_arr[i]];
+                console.log("svg_arr[i]:", object.svg_arr[i], svgVal);
+                svgVal = this.convertSvgToKendoSVGIcon(this, svgVal, null, object.svg_arr[i]);
+                console.log("svg_arr[i]:new:", svgVal);
+                formGroup[object.svg_arr[i] + "_SVG"] = svgVal;
+            }
         }
     }
     convToString(val) {

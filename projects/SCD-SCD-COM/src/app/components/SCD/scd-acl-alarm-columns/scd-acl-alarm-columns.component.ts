@@ -319,7 +319,8 @@ public compSelector = 'app-scd-acl-alarm-columns';
 
     if (!this.uploadimage && this.formGroup && this.formGroup.valid &&
         !matches(e.target, '#grid tbody *, #grid .k-grid-toolbar .k-button, .k-link') &&
-        !isTimePickerPopup && !isTimePickerSetButton) {
+        !isTimePickerPopup && !isTimePickerSetButton 
+        && (this.editedRowIndex != null && typeof this.editedRowIndex != "undefined" ) ) {
         this.saveCurrent();
     }
     else if (typeof this.formGroup !== "undefined") {
@@ -330,6 +331,8 @@ public compSelector = 'app-scd-acl-alarm-columns';
   
 
   public addHandler(): void {
+    if (this.paramConfig.DEBUG_FLAG) console.log("addHandler:this.gridInitialValues:", 
+        {...this.gridInitialValues});
     this.isNew = true;
     if (this.isSearch != true){
       this.setInitialValues();
@@ -341,9 +344,9 @@ public compSelector = 'app-scd-acl-alarm-columns';
 
   if (this.formGroup.valid == false) {
         this.formGroup.markAllAsTouched()
-        setTimeout(() => {
+        //setTimeout(() => {
           this.formValidationChangedOutput.emit(this.formGroup.valid)
-        }, 100)
+        //}, 100)
       }
   }
    public setInitialValues() {
@@ -480,6 +483,8 @@ public compSelector = 'app-scd-acl-alarm-columns';
     if ( (typeof grid !== "undefined") && (typeof grid.autoSize == "undefined") )
       this.starServices.removeNonValidColumns(newGrid,formGroup.value);
     this.starServices.executeQuery_grid( newGrid,this);
+    if (this.paramConfig.DEBUG_FLAG) console.log("this.gridInitialValues:executeQuery:2:", 
+        {...this.gridInitialValues});
     this.editableMode = false;
   } 
 

@@ -1783,8 +1783,11 @@ public delete(Page: string): Observable<GridDataResult> {
         if ((typeof object.masterKeyNameArr != "undefined") && (object.masterKeyNameArr.length != 0)) {
           if (object.paramConfig.DEBUG_FLAG) console.log("here2");
           for (let i = 0; i < object.masterKeyNameArr.length; i++) {
-            if (object.paramConfig.DEBUG_FLAG) console.log("here3", object.gridInitialValues, object.masterKeyNameArr[i]);
-              let exists = object.gridInitialValues[object.masterKeyNameArr[i]]
+            
+            let exists = object.masterKeyNameArr[i] in object.gridInitialValues;
+            //let exists = object.gridInitialValues[object.masterKeyNameArr[i]]
+            if (object.paramConfig.DEBUG_FLAG) console.log("here3", exists,object.gridInitialValues, object.masterKeyNameArr[i], object.masterKeyArr[i]);
+              
               if (typeof exists !== "undefined"){
                 if (object.paramConfig.DEBUG_FLAG) console.log("here4");
               object.gridInitialValues[object.masterKeyNameArr[i]] = object.masterKeyArr[i];
@@ -4442,6 +4445,7 @@ public att_img_populateArrs(formGroup:any,object:any){
     }
     //console.log("img_gallery:", object.img_gallery)
   }
+  if (typeof object.svg_arr != "undefined"){
    for (let i = 0; i < object.svg_arr.length; i++){
       
       let svgVal = formGroup[object.svg_arr[i]];
@@ -4451,6 +4455,7 @@ public att_img_populateArrs(formGroup:any,object:any){
       formGroup[object.svg_arr[i] + "_SVG"] = svgVal;
        
     }
+  }
 }
 public convToString(val){
   return String(val)

@@ -128,6 +128,12 @@
               "input": "projects/SCD-SCD-COM/src/assets/svgrepo-icons",
               "output": "/assets/svgrepo-icons"
             },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min/vs",
+                "output": "/assets/monaco/vs"
+              }
+            ,
               "projects/SCD-SCD-COM/src/manifest.json"
             ],
             "styles": [
@@ -181,7 +187,6 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "aot": false,
                "namedChunks": true
             }
           },
@@ -217,6 +222,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/SCD-SCD-COM/public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min/vs",
+                "output": "/assets/monaco/vs"
               }
             ],
             "styles": [

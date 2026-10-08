@@ -157,13 +157,15 @@
 		<ul class="k-radio-list" 		(click)="ON_CLICK_DECIMAL_PLACES($event)"
  (change)="onChange_DECIMAL_PLACES($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrDECIMAL_PLACES"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrDECIMAL_PLACES" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'DECIMAL_PLACES'"
+		 		 [formControlName]="'DECIMAL_PLACES'"
 					#DECIMAL_PLACES ></kendo-radiobutton> 
 				<kendo-label  [for]="DECIMAL_PLACES " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -197,13 +199,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_JUSTIFICATION($event)"
  (change)="onChange_JUSTIFICATION($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrJUSTIFICATION"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrJUSTIFICATION" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'JUSTIFICATION'"
+		 		 [formControlName]="'JUSTIFICATION'"
 					#JUSTIFICATION ></kendo-radiobutton> 
 				<kendo-label  [for]="JUSTIFICATION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -218,13 +222,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_LEADING_CHARACTER($event)"
  (change)="onChange_LEADING_CHARACTER($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrLEADING_CHARACTER"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrLEADING_CHARACTER" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'LEADING_CHARACTER'"
+		 		 [formControlName]="'LEADING_CHARACTER'"
 					#LEADING_CHARACTER ></kendo-radiobutton> 
 				<kendo-label  [for]="LEADING_CHARACTER " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 

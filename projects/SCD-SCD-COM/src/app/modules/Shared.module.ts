@@ -134,7 +134,7 @@ import {AdmAiLogDetailAdmAdmAiLogDetailFormFormComponent} from '../components/ai
      CodeEditorModule.forRoot(
       {
       // Configure editor options here if needed, e.g., baseUrl, editorVersion
-      // baseUrl: 'assets/monaco',
+       baseUrl: 'assets/monaco',
       // editorVersion: '0.46.0',
       }
     ),
@@ -203,7 +203,7 @@ WindowModule,
     
   ],
    providers: [
-    [provideCodeEditor()],
+    [provideCodeEditor({ baseUrl: '/assets/monaco' })],
    ],
   exports: [
     //SafeHtmlPipe,
