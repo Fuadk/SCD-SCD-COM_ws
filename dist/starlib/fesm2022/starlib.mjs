@@ -1421,7 +1421,7 @@ class starServices {
             }
         }
         if (object.paramConfig.DEBUG_FLAG)
-            console.log("test41:object.gridInitialValues:", object.gridInitialValues);
+            console.log("test41:object.gridInitialValues:", object.gridInitialValues, object.masterKeyNameArr, object.masterKeyArr, "editedRowIndex:", object.editedRowIndex, "isChild:", object.isChild);
         object.saveCurrent();
         this.setPrimarKeyNameArr(object, false);
         /* object.gridInitialValues.MODULE = object.masterKey;*/
@@ -1434,6 +1434,8 @@ class starServices {
                         object.primarKeyReadOnlyArr[readOnly] = true;
                     }
                     let exists = object.gridInitialValues[object.masterKeyNameArr[i]];
+                    if (object.paramConfig.DEBUG_FLAG)
+                        console.log("test42:object.gridInitialValues:exists:", exists, object.gridInitialValues);
                     if (typeof exists !== "undefined") {
                         object.gridInitialValues[object.masterKeyNameArr[i]] = object.masterKeyArr[i];
                     }
@@ -1733,16 +1735,24 @@ class starServices {
         };
         setParamConfig(paramConfig);
         if (object.paramConfig.DEBUG_FLAG)
-            console.log("object.masterKeyName:" + object.masterKeyName, object.masterKeyArr);
+            console.log("  " + object.masterKeyName, object.masterKeyArr);
         if (object.paramConfig.DEBUG_FLAG)
             console.log("object.isChild:", object.isChild, " object.isSearch :", object.isSearch);
         if (object.isChild == true) {
             if (object.isSearch != true) {
                 grid = object.gridInitialValues;
+                if (object.paramConfig.DEBUG_FLAG)
+                    console.log("here1");
                 if ((typeof object.masterKeyNameArr != "undefined") && (object.masterKeyNameArr.length != 0)) {
+                    if (object.paramConfig.DEBUG_FLAG)
+                        console.log("here2");
                     for (let i = 0; i < object.masterKeyNameArr.length; i++) {
+                        if (object.paramConfig.DEBUG_FLAG)
+                            console.log("here3", object.gridInitialValues, object.masterKeyNameArr[i]);
                         let exists = object.gridInitialValues[object.masterKeyNameArr[i]];
                         if (typeof exists !== "undefined") {
+                            if (object.paramConfig.DEBUG_FLAG)
+                                console.log("here4");
                             object.gridInitialValues[object.masterKeyNameArr[i]] = object.masterKeyArr[i];
                         }
                     }
@@ -3246,7 +3256,7 @@ class starServices {
                             }
                             //if (this.paramConfig.DEBUG_FLAG) console.log("emptyRec:",emptyRec)
                             //console.log("emptyRec:",emptyRec);
-                            //result.data[i].data.splice(0,0,emptyRec); //add empty record at begining of the array for the LOV for insert new record in a grid work properly
+                            result.data[i].data.splice(0, 0, emptyRec); //Fuad:add empty record at begining of the array for the LOV for insert new record in a grid work properly
                         }
                     }
                     object[lookupArrDef[i].lkpArrName] = result.data[i].data;
@@ -4136,6 +4146,13 @@ class starServices {
             }
             //console.log("img_gallery:", object.img_gallery)
         }
+        for (let i = 0; i < object.svg_arr.length; i++) {
+            let svgVal = formGroup[object.svg_arr[i]];
+            console.log("svg_arr[i]:", object.svg_arr[i], svgVal);
+            svgVal = this.convertSvgToKendoSVGIcon(this, svgVal, null, object.svg_arr[i]);
+            console.log("svg_arr[i]:new:", svgVal);
+            formGroup[object.svg_arr[i] + "_SVG"] = svgVal;
+        }
     }
     convToString(val) {
         return String(val);
@@ -4663,7 +4680,7 @@ class starServices {
         }
     }
     convertSvgToKendoIcon(object, svgContent, iconName, column) {
-        if (typeof iconName == "undefined")
+        if ((typeof iconName === 'undefined') || iconName === null)
             iconName = column;
         console.log("convertSvgToKendoIcon:svgContent:", svgContent, "iconName:", iconName, "column:", column);
         try {
@@ -4825,7 +4842,7 @@ class starServices {
             // If still no paths, return null or throw error
             if (paths.length === 0) {
                 console.error(`No paths found in SVG for icon: ${iconName}`);
-                //  return null;
+                return null;
             }
             // Build the content string with proper formatting
             const content = paths.join('');

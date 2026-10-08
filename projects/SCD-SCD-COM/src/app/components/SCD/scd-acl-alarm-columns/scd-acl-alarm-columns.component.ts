@@ -31,6 +31,7 @@ import {   scdalarmColumnsScdAclAlarmColumns , componentConfigDef } from '@model
 'ALIGN' : new FormControl(dataItem.ALIGN  , ) ,
 'FORMAT' : new FormControl(dataItem.FORMAT  , ) ,
 'IMAGE_ICON' : new FormControl(dataItem.IMAGE_ICON  , ) ,
+'CAPTION' : new FormControl(dataItem.CAPTION  , ) ,
 'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) ,
 'TOOLTIP' : new FormControl(dataItem.TOOLTIP  , ) 
 });
@@ -87,8 +88,8 @@ public  isSHAPE_IDEnable : boolean = true;
   public  isColumnMenu : boolean = false;
   public  gridHeight = "";
 
-  private masterKeyArr = [];
-  private masterKeyNameArr = [];
+  public masterKeyArr = [];
+  public masterKeyNameArr = [];
   private masterKey ="";
   private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_ALARM_COLUMNS";
@@ -132,6 +133,7 @@ public visibleWIDTH = true;
 public visibleALIGN = true;
 public visibleFORMAT = true;
 public visibleIMAGE_ICON = true;
+public visibleCAPTION = false;
 public visibleSAMPLE = true;
 public visibleTOOLTIP = false;
 
@@ -406,16 +408,15 @@ public compSelector = 'app-scd-acl-alarm-columns';
 
       let GridData:any;
       GridData = Object.assign([], this.grid.data);
-      for (let i = 0; i < GridData.data.length; i++){
-        this.POST_QUERY(GridData.data[i], i);
-        if (this.att_arr.length != 0 || this.img_arr.length != 0){
-          await this.starServices.callGetSaveAttachemts("fetch", GridData.data[i],this); 
-          await this.starServices.sleep(100);
-          this.starServices.att_img_populateArrs(GridData.data[i],this);
-          await this.starServices.sleep(100);
+      setTimeout(() => {
+        for (let i = 0; i < GridData.data.length; i++) {
+          this.POST_QUERY(GridData.data[i], i);
+          if (this.att_arr.length != 0 || this.img_arr.length != 0 || this.svg_arr.length != 0) {
+            this.starServices.callGetSaveAttachemts("fetch", GridData.data[i], this);
+            this.starServices.att_img_populateArrs(GridData.data[i], this);
+          }
         }
-
-      }
+      }, 100)
       if (this.img_arr.length != 0){
         this.grid.data = [];
         await this.starServices.sleep(10);
@@ -745,6 +746,11 @@ if (ComponentConfig.masterSelector != null) {
       if (ComponentConfig.masterSelector.toUpperCase().includes("BANNER"))
             this.appMode = "Banner";
 }
+if (ComponentConfig.masterSelector != null) {
+      console.log("WHEN_NOTIFY:masterSelector:", ComponentConfig.masterSelector)
+      if (ComponentConfig.masterSelector.toUpperCase().includes("VIEWER"))
+            this.appMode = "Log Viewer";
+}
 if (ComponentConfig.title != null) {
       console.log("WHEN_NOTIFY:title:", ComponentConfig.title)
       if (ComponentConfig.title.toUpperCase().startsWith("STATUS BAR PANEL"))
@@ -754,6 +760,11 @@ if (ComponentConfig.title != null) {
       console.log("WHEN_NOTIFY:title:", ComponentConfig.title)
       if (ComponentConfig.title.toUpperCase().startsWith("STATUS BAR BUTTON"))
             this.appMode = "Status Bar Button";
+}
+if (ComponentConfig.title != null) {
+      console.log("WHEN_NOTIFY:title:", ComponentConfig.title)
+      if (ComponentConfig.title.toUpperCase().startsWith("TOOLBAR"))
+            this.appMode = "Toolbar";
 }
 if (ComponentConfig.masterKeyNameArr != null) {
       console.log("WHEN_NOTIFY:this.appMode:", this.appMode)
@@ -771,6 +782,18 @@ if ( (this.appMode == "Status Bar Panel") || (this.appMode == "Status Bar Button
       this.visibleWIDTH = false;
       this.visibleALIGN = false;
       this.visibleFORMAT = false;
+
+}
+if ( (this.appMode == "Log Viewer") ) {
+      this.visibleHEADING_TEXT = true;
+
+}
+if ( (this.appMode == "Toolbar") ) {
+      this.visibleCAPTION = true;
+
+      this.visibleSAMPLE = false;
+      this.visibleWIDTH = false;
+      this.visibleALIGN = false;
 
 }
 }
@@ -1065,6 +1088,26 @@ async WHEN_VALIDATE_ITEM_IMAGE_ICON(formGroup) {
 
 }
 
+async WHEN_VALIDATE_ITEM_CAPTION(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['CAPTION'] != "undefined" ) 
+      this.formGroup.controls['CAPTION'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['CAPTION'] != "undefined" ) 
+     this.formGroup.get('CAPTION').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CAPTION(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_SAMPLE(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1141,6 +1184,9 @@ async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
  async valueChangeIMAGE_ICON(value: any) { 
  await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
+ async onBlur_CAPTION() { 
+  await this.WHEN_VALIDATE_ITEM_CAPTION(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
  async onBlur_SAMPLE() { 
   await this.WHEN_VALIDATE_ITEM_SAMPLE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
@@ -1163,6 +1209,7 @@ public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
 public AttDwnUrl = "";
+public svg_arr = ["IMAGE_ICON"];
 public uploadimage = false;
 
 

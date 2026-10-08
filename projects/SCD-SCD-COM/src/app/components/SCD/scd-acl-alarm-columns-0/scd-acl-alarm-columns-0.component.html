@@ -54,140 +54,130 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="COLUMN_ID"
  *ngIf=visibleCOLUMN_ID  [editable]=" !(disabledColumns.indexOf('COLUMN_ID') > -1)  && !primarKeyReadOnlyArr.isCOLUMN_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('COLUMN_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.COLUMN_ID','Column Id') + ' *'}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="HIGH" >{{dataItem.COLUMN_ID}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('COLUMN_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.COLUMN_ID','') + ' *'}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.COLUMN_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_COLUMN_ID()"    class="HIGH"  [formControl]="formGroup.get('COLUMN_ID')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.COLUMN_ID_Hint','Please enter Column Id.')" />
+		<input  (blur)="onBlur_COLUMN_ID()"      [formControl]="formGroup.get('COLUMN_ID')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALARM_TYPE" title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ALARM_TYPE','Alarm Type')}}" [width]="100"   *ngIf=visibleALARM_TYPE  [editable]=" !(disabledColumns.indexOf('ALARM_TYPE') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID"
+ *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('ALARM_TYPE') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" > {{lkpArrGetALARM_TYPE(dataItem.ALARM_TYPE)?.CODETEXT_LANG}}</span> </ng-template>
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SHAPE_ID','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrALARM_TYPE"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeALARM_TYPE($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('ALARM_TYPE')">
-		</kendo-dropdownlist>
+		<input  (blur)="onBlur_SHAPE_ID()"      [formControl]="formGroup.get('SHAPE_ID')" [placeholder]="" />
 		</ng-template>
-	</kendo-grid-column>
+		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ROW_TYPE"
- *ngIf=visibleROW_TYPE  [editable]=" !(disabledColumns.indexOf('ROW_TYPE') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALARM_TYPE"
+ *ngIf=visibleALARM_TYPE  [editable]=" !(disabledColumns.indexOf('ALARM_TYPE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('ROW_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ROW_TYPE','Row Type')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" >{{dataItem.ROW_TYPE}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('ALARM_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ALARM_TYPE','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.ALARM_TYPE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_ROW_TYPE()"    class="MEDIUM"  [formControl]="formGroup.get('ROW_TYPE')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ROW_TYPE_Hint','Please enter Row Type.')" />
+		<input  (blur)="onBlur_ALARM_TYPE()"      [formControl]="formGroup.get('ALARM_TYPE')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ROW_ORDER"
  *ngIf=visibleROW_ORDER  [editable]=" !(disabledColumns.indexOf('ROW_ORDER') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('ROW_ORDER') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ROW_ORDER','Row Order')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="LOW" >{{dataItem.ROW_ORDER}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('ROW_ORDER') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ROW_ORDER','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.ROW_ORDER}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_ROW_ORDER()"    class="LOW"  [formControl]="formGroup.get('ROW_ORDER')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ROW_ORDER_Hint','Please enter Row Order.')" />
+		<input  (blur)="onBlur_ROW_ORDER()"      [formControl]="formGroup.get('ROW_ORDER')" [placeholder]="" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ROW_TYPE"
+ *ngIf=visibleROW_TYPE  [editable]=" !(disabledColumns.indexOf('ROW_TYPE') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('ROW_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ROW_TYPE','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.ROW_TYPE}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_ROW_TYPE()"      [formControl]="formGroup.get('ROW_TYPE')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHOW_COLUMN_BUTTON_PANEL"
- *ngIf=visibleSHOW_COLUMN_BUTTON_PANEL    class="LOW"  [editable]=" !(disabledColumns.indexOf('SHOW_COLUMN_BUTTON_PANEL') > -1)  "
+ *ngIf=visibleSHOW_COLUMN_BUTTON_PANEL  [editable]=" !(disabledColumns.indexOf('SHOW_COLUMN_BUTTON_PANEL') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SHOW_COLUMN_BUTTON_PANEL') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SHOW_COLUMN_BUTTON_PANEL','Show Column Button Panel')}}"  editor="boolean" [width]="100">
-		<ng-template kendoGridCellTemplate let-dataItem> <span    class="LOW" > 
-		 {{dataItem.SHOW_COLUMN_BUTTON_PANEL}} 
- 		 </span>	</ng-template>
-	</kendo-grid-column>
+ [hidden]="hiddenColumns.indexOf('SHOW_COLUMN_BUTTON_PANEL') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SHOW_COLUMN_BUTTON_PANEL','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHOW_COLUMN_BUTTON_PANEL}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SHOW_COLUMN_BUTTON_PANEL()"      [formControl]="formGroup.get('SHOW_COLUMN_BUTTON_PANEL')" [placeholder]="" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_ICON"
+ *ngIf=visibleIMAGE_ICON  [editable]=" !(disabledColumns.indexOf('IMAGE_ICON') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('IMAGE_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.IMAGE_ICON','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.IMAGE_ICON}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_IMAGE_ICON()"      [formControl]="formGroup.get('IMAGE_ICON')" [placeholder]="" />
+		</ng-template>
+		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="HEADING_TEXT"
  *ngIf=visibleHEADING_TEXT  [editable]=" !(disabledColumns.indexOf('HEADING_TEXT') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('HEADING_TEXT') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.HEADING_TEXT','Heading Text')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="HIGH" >{{dataItem.HEADING_TEXT}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('HEADING_TEXT') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.HEADING_TEXT','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.HEADING_TEXT}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_HEADING_TEXT()"    class="HIGH"  [formControl]="formGroup.get('HEADING_TEXT')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.HEADING_TEXT_Hint','Please enter Heading Text.')" />
+		<input  (blur)="onBlur_HEADING_TEXT()"      [formControl]="formGroup.get('HEADING_TEXT')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
-
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
-
- [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetSHAPE_ID(dataItem.SHAPE_ID)?.CODETEXT_LANG}}</span> </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrSHAPE_ID"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeSHAPE_ID($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('SHAPE_ID')">
-		</kendo-dropdownlist>
-		</ng-template>
-	</kendo-grid-column>
-
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="IMAGE_ICON" 
- *ngIf=visibleIMAGE_ICON  [editable]=" !(disabledColumns.indexOf('IMAGE_ICON') > -1)  "
-
- [hidden]="hiddenColumns.indexOf('IMAGE_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.IMAGE_ICON','Image Icon')}}"   [width]="50">
-		 <ng-template kendoGridCellTemplate let-dataItem>
-		 <kendo-avatar [imageSrc]="dataItem.IMAGE_ICON"  width="50px" height="50px"  ></kendo-avatar>
-		 </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<textarea kendoTextArea  style="resize: both;"  [formControl]="formGroup.get('IMAGE_ICON')"  
-		kendoTextBox #IMAGE_ICON></textarea>
-		 </ng-template>
-</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="WIDTH"
  *ngIf=visibleWIDTH  [editable]=" !(disabledColumns.indexOf('WIDTH') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('WIDTH') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.WIDTH','Width')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" >{{dataItem.WIDTH}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('WIDTH') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.WIDTH','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.WIDTH}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_WIDTH()"    class="MEDIUM"  [formControl]="formGroup.get('WIDTH')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.WIDTH_Hint','Please enter Width.')" />
+		<input  (blur)="onBlur_WIDTH()"      [formControl]="formGroup.get('WIDTH')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FORMAT" title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.FORMAT','Format')}}" [width]="100"   *ngIf=visibleFORMAT  [editable]=" !(disabledColumns.indexOf('FORMAT') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALIGN"
+ *ngIf=visibleALIGN  [editable]=" !(disabledColumns.indexOf('ALIGN') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('FORMAT') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" > {{lkpArrGetFORMAT(dataItem.FORMAT)?.CODETEXT_LANG}}</span> </ng-template>
+ [hidden]="hiddenColumns.indexOf('ALIGN') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ALIGN','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.ALIGN}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrFORMAT"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeFORMAT($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('FORMAT')">
-		</kendo-dropdownlist>
+		<input  (blur)="onBlur_ALIGN()"      [formControl]="formGroup.get('ALIGN')" [placeholder]="" />
 		</ng-template>
-	</kendo-grid-column>
+		</kendo-grid-column>
 
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALIGN" title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.ALIGN','Align')}}" [width]="100"   *ngIf=visibleALIGN  [editable]=" !(disabledColumns.indexOf('ALIGN') > -1)  "
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FORMAT"
+ *ngIf=visibleFORMAT  [editable]=" !(disabledColumns.indexOf('FORMAT') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('ALIGN') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" > {{lkpArrGetALIGN(dataItem.ALIGN)?.CODETEXT_LANG}}</span> </ng-template>
+ [hidden]="hiddenColumns.indexOf('FORMAT') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.FORMAT','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.FORMAT}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrALIGN"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeALIGN($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('ALIGN')">
-		</kendo-dropdownlist>
+		<input  (blur)="onBlur_FORMAT()"      [formControl]="formGroup.get('FORMAT')" [placeholder]="" />
 		</ng-template>
-	</kendo-grid-column>
+		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SAMPLE"
  *ngIf=visibleSAMPLE  [editable]=" !(disabledColumns.indexOf('SAMPLE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SAMPLE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SAMPLE','Sample')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="LOW" >{{dataItem.SAMPLE}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('SAMPLE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SAMPLE','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SAMPLE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_SAMPLE()"    class="LOW"  [formControl]="formGroup.get('SAMPLE')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SAMPLE_Hint','Please enter Sample.')" />
+		<input  (blur)="onBlur_SAMPLE()"      [formControl]="formGroup.get('SAMPLE')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="TOOLTIP"
  *ngIf=visibleTOOLTIP  [editable]=" !(disabledColumns.indexOf('TOOLTIP') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('TOOLTIP') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.TOOLTIP','Tooltip')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="LOW" >{{dataItem.TOOLTIP}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('TOOLTIP') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.TOOLTIP','')}}"  [width]="400">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.TOOLTIP}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_TOOLTIP()"    class="LOW"  [formControl]="formGroup.get('TOOLTIP')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.TOOLTIP_Hint','Please enter Tooltip.')" />
+		<input  (blur)="onBlur_TOOLTIP()"      [formControl]="formGroup.get('TOOLTIP')" [placeholder]="" />
 		</ng-template>
 		</kendo-grid-column>
 
@@ -198,6 +188,16 @@
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHOW_COLUMN_FIELD}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_SHOW_COLUMN_FIELD()"      [formControl]="formGroup.get('SHOW_COLUMN_FIELD')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.SHOW_COLUMN_FIELD_Hint','Please enter Show column field.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION"
+ *ngIf=visibleCAPTION  [editable]=" !(disabledColumns.indexOf('CAPTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.CAPTION','Caption')}}"  [width]="50">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION()"      [formControl]="formGroup.get('CAPTION')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS_0.scdalarmColumnsScdAclAlarmColumns0.CAPTION_Hint','Please enter Caption.')" />
 		</ng-template>
 		</kendo-grid-column>
 

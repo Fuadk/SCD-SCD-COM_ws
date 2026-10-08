@@ -3956,17 +3956,17 @@ import { ScdAlarmAppearanceScdAadAlarmAppearance1FormdivsComponent } from '../co
 
 import { ScdAlarmColumnsScdAclAlarmColumnsGridComponent } from '../components/SCD/scd-acl-alarm-columns/scd-acl-alarm-columns.component';
 import { ScdAlarmColumnsScdAclAlarmColumns0GridComponent } from '../components/SCD/scd-acl-alarm-columns-0/scd-acl-alarm-columns-0.component';
-import { ScdAlarmColumnsScdAclAlarmColumns2GridComponent } from '../components/SCD/scd-acl-alarm-columns-2/scd-acl-alarm-columns-2.component';
+
 import { ScdAlarmColumnsOptionsScdAcoAlarmColumnsOptionsFormComponent } from '../components/SCD/scd-aco-alarm-columns-options/scd-aco-alarm-columns-options.component';
 import { ScdAlarmColumnsOptionsScdAcoAlarmColumnsOptions1FormComponent } from '../components/SCD/scd-aco-alarm-columns-options-1/scd-aco-alarm-columns-options-1.component';
-import { ScdAlarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditionsGridComponent } from '../components/SCD/scd-adfc-alarm-display-filters-conditions/scd-adfc-alarm-display-filters-conditions.component';
-import { ScdAlarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1GridComponent } from '../components/SCD/scd-adfc-alarm-display-filters-conditions-1/scd-adfc-alarm-display-filters-conditions-1.component';
-import { ScdAlarmDisplayFiltersScdAdflAlarmDisplayFiltersGridComponent } from '../components/SCD/scd-adfl-alarm-display-filters/scd-adfl-alarm-display-filters.component';
-import { ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters0GridComponent } from '../components/SCD/scd-adfl-alarm-display-filters-0/scd-adfl-alarm-display-filters-0.component';
-import { ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters3GridComponent } from '../components/SCD/scd-adfl-alarm-display-filters-3/scd-adfl-alarm-display-filters-3.component';
-import { ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters4GridComponent } from '../components/SCD/scd-adfl-alarm-display-filters-4/scd-adfl-alarm-display-filters-4.component';
-import { ScdAlarmDisplayFiltersScdAdfsAlarmDisplayFiltersListComponent } from '../components/SCD/scd-adfs-alarm-display-filters/scd-adfs-alarm-display-filters.component';
-import { ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent } from '../components/SCD/scd-adfs-search-alarm-display-filters/scd-adfs-search-alarm-display-filters.component';
+
+
+
+
+
+
+
+
 import { ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptionsFormdivsComponent } from '../components/SCD/scd-aesd-alarm-event-subscriptions/scd-aesd-alarm-event-subscriptions.component';
 import { ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions1FormdivsComponent } from '../components/SCD/scd-aesd-alarm-event-subscriptions-1/scd-aesd-alarm-event-subscriptions-1.component';
 import { ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions3FormdivsComponent } from '../components/SCD/scd-aesd-alarm-event-subscriptions-3/scd-aesd-alarm-event-subscriptions-3.component';
@@ -4011,7 +4011,7 @@ import { ScdAlarmAndEventBannerPropertiesComponent } from '../components/SCD/scd
 import { ScdAlarmAndEventLogViewerPropertiesComponent } from '../components/SCD/scd-alarm-and-event-log-viewer-properties/scd-alarm-and-event-log-viewer-properties.component';
 import { ScdAlarmAndEventSummaryPropertiesComponent } from '../components/SCD/scd-alarm-and-event-summary-properties/scd-alarm-and-event-summary-properties.component';
 import { ScdAlarmEventSubscriptionsPropertiesComponent } from '../components/SCD/scd-alarm-event-subscriptions-properties/scd-alarm-event-subscriptions-properties.component';
-import { ScdAlarmBehaviorScdAbdAlarmBehaviorFormComponent } from '../components/SCD/scd-abd-alarm-behavior/scd-abd-alarm-behavior.component';
+
 import { ScdAlarmStatusExplorerComponent } from '../components/SCD/scd-alarm-status-explorer/scd-alarm-status-explorer.component';
 
 
@@ -4033,6 +4033,10 @@ import { ScdAlarmStatesScdScdAlarmStatesFormFormComponent } from '../components/
 import { ScdAlarmStatesOptionsScdScdAlarmStatesOptionsFormComponent } from '../components/SCD/scd-scd-alarm-states-options/scd-scd-alarm-states-options.component';
 import { ScdAlarmSortScdScdAlarmSortFormComponent } from '../components/SCD/scd-scd-alarm-sort/scd-scd-alarm-sort.component';
 
+import { ScdAlarmDisplayFiltersScdScdAlarmDisplayFiltersGridComponent } from '../components/SCD/scd-scd-alarm-display-filters/scd-scd-alarm-display-filters.component';
+import { ScdAlarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditionsGridComponent } from '../components/SCD/scd-scd-alarm-display-filters-conditions/scd-scd-alarm-display-filters-conditions.component';
+import { ScdAlarmAppearanceScdScdAlarmAppearanceFormdivsComponent } from '../components/SCD/scd-scd-alarm-appearance/scd-scd-alarm-appearance.component';
+import { ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent } from '../components/SCD/scd-scd-alarm-behavior/scd-scd-alarm-behavior.component';
 //point1
 
 export const PanelbarRoutes: Routes = [
@@ -8075,17 +8079,17 @@ export const PanelbarRoutes: Routes = [
 
 	{ path: 'scd_acl_alarm_columns', component: ScdAlarmColumnsScdAclAlarmColumnsGridComponent },
 	{ path: 'scd_acl_alarm_columns_0', component: ScdAlarmColumnsScdAclAlarmColumns0GridComponent },
-	{ path: 'scd_acl_alarm_columns_2', component: ScdAlarmColumnsScdAclAlarmColumns2GridComponent },
+
 	{ path: 'scd_aco_alarm_columns_options', component: ScdAlarmColumnsOptionsScdAcoAlarmColumnsOptionsFormComponent },
 	{ path: 'scd_aco_alarm_columns_options_1', component: ScdAlarmColumnsOptionsScdAcoAlarmColumnsOptions1FormComponent },
-	{ path: 'scd_adfc_alarm_display_filters_conditions', component: ScdAlarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditionsGridComponent },
-	{ path: 'scd_adfc_alarm_display_filters_conditions_1', component: ScdAlarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1GridComponent },
-	{ path: 'scd_adfl_alarm_display_filters', component: ScdAlarmDisplayFiltersScdAdflAlarmDisplayFiltersGridComponent },
-	{ path: 'scd_adfl_alarm_display_filters_0', component: ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters0GridComponent },
-	{ path: 'scd_adfl_alarm_display_filters_3', component: ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters3GridComponent },
-	{ path: 'scd_adfl_alarm_display_filters_4', component: ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters4GridComponent },
-	{ path: 'scd_adfs_alarm_display_filters', component: ScdAlarmDisplayFiltersScdAdfsAlarmDisplayFiltersListComponent },
-	{ path: 'scd_adfs_search_alarm_display_filters', component: ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent },
+
+
+
+
+
+
+
+
 	{ path: 'scd_aesd_alarm_event_subscriptions', component: ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptionsFormdivsComponent },
 	{ path: 'scd_aesd_alarm_event_subscriptions_1', component: ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions1FormdivsComponent },
 	{ path: 'scd_aesd_alarm_event_subscriptions_3', component: ScdAlarmEventSubscriptionsScdAesdAlarmEventSubscriptions3FormdivsComponent },
@@ -8130,7 +8134,7 @@ export const PanelbarRoutes: Routes = [
 	{ path: 'scd_alarm_and_event_log_viewer_properties', component: ScdAlarmAndEventLogViewerPropertiesComponent },
 	{ path: 'scd_alarm_and_event_summary_properties', component: ScdAlarmAndEventSummaryPropertiesComponent },
 	{ path: 'scd_alarm_event_subscriptions_properties', component: ScdAlarmEventSubscriptionsPropertiesComponent },
-	{ path: 'scd_abd_alarm_behavior', component: ScdAlarmBehaviorScdAbdAlarmBehaviorFormComponent },
+
 	{ path: 'scd_alarm_status_explorer', component: ScdAlarmStatusExplorerComponent },
 
 
@@ -8152,6 +8156,10 @@ export const PanelbarRoutes: Routes = [
 	{ path: 'scd_scd_alarm_states_options', component: ScdAlarmStatesOptionsScdScdAlarmStatesOptionsFormComponent },
 	{ path: 'scd_scd_alarm_sort', component: ScdAlarmSortScdScdAlarmSortFormComponent },
 
+	{ path: 'scd_scd_alarm_display_filters', component: ScdAlarmDisplayFiltersScdScdAlarmDisplayFiltersGridComponent },
+	{ path: 'scd_scd_alarm_display_filters_conditions', component: ScdAlarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditionsGridComponent },
+	{ path: 'scd_scd_alarm_appearance', component: ScdAlarmAppearanceScdScdAlarmAppearanceFormdivsComponent },
+	{ path: 'scd_scd_alarm_behavior', component: ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent },
   //point2
 
 ];

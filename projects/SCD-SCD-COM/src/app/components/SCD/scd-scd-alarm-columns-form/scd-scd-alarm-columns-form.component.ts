@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener,ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -17,6 +17,7 @@ import { scdalarmColumnsScdScdAlarmColumnsForm , componentConfigDef} from '@mode
  const createFormGroup = (dataItem:any) => new FormGroup({
 'COLUMN_ID' : new FormControl(dataItem.COLUMN_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'CAPTION' : new FormControl(dataItem.CAPTION  , ) ,
 'ALARM_TYPE' : new FormControl(dataItem.ALARM_TYPE  , ) ,
 'ROW_ORDER' : new FormControl(dataItem.ROW_ORDER  , ) ,
 'ROW_TYPE' : new FormControl(dataItem.ROW_TYPE  , ) ,
@@ -37,7 +38,8 @@ declare function getParamConfig():any;
   encapsulation: ViewEncapsulation.None,
   templateUrl: './scd-scd-alarm-columns-form.component.html',
   styleUrls: ['./scd-scd-alarm-columns-form.component.scss'],
-  standalone: false
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
@@ -98,6 +100,8 @@ public labelCOLUMN_IDTop=true;
 public labelCOLUMN_IDVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
+public labelCAPTIONTop=true;
+public labelCAPTIONVisible=true;
 public labelALARM_TYPETop=true;
 public labelALARM_TYPEVisible=true;
 public labelROW_ORDERTop=true;
@@ -125,6 +129,7 @@ public labelSHOW_COLUMN_FIELDVisible=true;
 
 public visibleCOLUMN_ID = true;
 public visibleSHAPE_ID = true;
+public visibleCAPTION = true;
 public visibleALARM_TYPE = true;
 public visibleROW_ORDER = true;
 public visibleROW_TYPE = true;
@@ -140,6 +145,7 @@ public visibleSHOW_COLUMN_FIELD = true;
 
 public disableCOLUMN_ID = false;
 public disableSHAPE_ID = false;
+public disableCAPTION = false;
 public disableALARM_TYPE = false;
 public disableROW_ORDER = false;
 public disableROW_TYPE = false;
@@ -585,6 +591,8 @@ return rec;
 onChanges(): void {
 this.form.get('COLUMN_ID').valueChanges.subscribe(val => {
 });
+this.form.get('CAPTION').valueChanges.subscribe(val => {
+});
 this.form.get('ALARM_TYPE').valueChanges.subscribe(val => {
 });
 this.form.get('ROW_ORDER').valueChanges.subscribe(val => {
@@ -825,6 +833,26 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  }
 
  async ON_CLICK_SHAPE_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_CAPTION(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['CAPTION'] != "undefined" ) 
+      this.form.controls['CAPTION'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['CAPTION'] != "undefined" ) 
+     this.form.get('CAPTION').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CAPTION(event){
 
 }
 
@@ -1083,6 +1111,15 @@ async WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onChange_CAPTION(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_CAPTION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
  async onChange_ALARM_TYPE(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1210,6 +1247,7 @@ public uploadimage = false;
 public showIcon=true;
 public svg_arr = ["IMAGE_ICON"];
 public svg_data = [];
+
 
 
 

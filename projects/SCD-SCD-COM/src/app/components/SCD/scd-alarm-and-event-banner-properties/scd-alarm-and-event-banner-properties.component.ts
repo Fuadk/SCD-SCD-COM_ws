@@ -306,19 +306,19 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_COLUMNSGrid_2Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_COLUMNSGrid_4Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARMFormtabs_6Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_SORTForm_7Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];

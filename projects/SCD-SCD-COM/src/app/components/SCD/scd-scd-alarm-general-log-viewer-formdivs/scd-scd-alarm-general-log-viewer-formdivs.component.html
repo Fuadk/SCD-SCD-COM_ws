@@ -261,9 +261,6 @@
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.BACKGROUND_COLOR_DP, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
 	</kendo-formfield>
 
-
-</div>
-<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelHEIGHT_PERCENTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleHEIGHT_PERCENT >
 		<kendo-label *ngIf="(!labelHEIGHT_PERCENTTop && !isPhonePortrait) && labelHEIGHT_PERCENTVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.HEIGHT_PERCENT','Height Percent')"></kendo-label>
 		<label *ngIf="(labelHEIGHT_PERCENTTop || isPhonePortrait) && labelHEIGHT_PERCENTVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.HEIGHT_PERCENT','Height Percent')}}</label>
@@ -279,15 +276,19 @@
 		<legend *ngIf="FormStepsArr[7].visible" class="divTitle">{{FormStepsArr[7].CODETEXT_LANG}}</legend>
 		<div *ngIf="FormStepsArr[7].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDETAIL_POINT_FONTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDETAIL_POINT_FONT >
 		<button  (valueChange)="onValueChange_DETAIL_POINT_FONT($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.DETAIL_POINT_FONT_Hint','Please enter Detail Point Font.')" 
  iconClass="fas fa-"  *ngIf=visibleDETAIL_POINT_FONT 		(click)="ON_CLICK_DETAIL_POINT_FONT($event)"
  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.DETAIL_POINT_FONT','Detail Point Font')}}</button>
+	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTEXT_FONTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTEXT_FONT >
 		<button  (valueChange)="onValueChange_TEXT_FONT($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TEXT_FONT_Hint','Please enter Text Font.')" 
  iconClass="fas fa-"  *ngIf=visibleTEXT_FONT 		(click)="ON_CLICK_TEXT_FONT($event)"
  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TEXT_FONT','Text Font')}}</button>
+	</kendo-formfield>
 
 
 </div>
@@ -352,18 +353,6 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTOOLBARTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTOOLBAR >
-		<kendo-label *ngIf="(!labelTOOLBARTop && !isPhonePortrait) && labelTOOLBARVisible" class="form-label" [for]="TOOLBAR" [text]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR','Toolbar')"></kendo-label>
-		<label *ngIf="(labelTOOLBARTop || isPhonePortrait) && labelTOOLBARVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR','Toolbar')}}</label>
-		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="TOOLBAR"
-  #TOOLBAR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR_Hint','Please enter Toolbar.')"		(click)="ON_CLICK_TOOLBAR($event)"
- (change)="onChange_TOOLBAR($event)"      adaptiveMode="auto" 
-	 name="TOOLBAR"  ToggleValue  [true]= "'1'" [false]= "'0'" 
- kendoTooltip 
- [title]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR_Hint','Please enter Toolbar.')" 
- />
-	</kendo-formfield>
-
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDETAIL_PANSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDETAIL_PANS >
 		<kendo-label *ngIf="(!labelDETAIL_PANSTop && !isPhonePortrait) && labelDETAIL_PANSVisible" class="form-label" [for]="DETAIL_PANS" [text]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.DETAIL_PANS','Detail Pans')"></kendo-label>
 		<label *ngIf="(labelDETAIL_PANSTop || isPhonePortrait) && labelDETAIL_PANSVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.DETAIL_PANS','Detail Pans')}}</label>
@@ -373,6 +362,18 @@
 	 name="DETAIL_PANS"  ToggleValue  [true]= "'1'" [false]= "'0'" 
  kendoTooltip 
  [title]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.DETAIL_PANS_Hint','Please enter Detail Pans.')" 
+ />
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTOOLBARTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTOOLBAR >
+		<kendo-label *ngIf="(!labelTOOLBARTop && !isPhonePortrait) && labelTOOLBARVisible" class="form-label" [for]="TOOLBAR" [text]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR','Toolbar')"></kendo-label>
+		<label *ngIf="(labelTOOLBARTop || isPhonePortrait) && labelTOOLBARVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR','Toolbar')}}</label>
+		<input [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="TOOLBAR"
+  #TOOLBAR kendoCheckBox type="checkbox"   [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR_Hint','Please enter Toolbar.')"		(click)="ON_CLICK_TOOLBAR($event)"
+ (change)="onChange_TOOLBAR($event)"      adaptiveMode="auto" 
+	 name="TOOLBAR"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+ kendoTooltip 
+ [title]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.TOOLBAR_Hint','Please enter Toolbar.')" 
  />
 	</kendo-formfield>
 

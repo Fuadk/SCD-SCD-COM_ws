@@ -15,14 +15,20 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import {   scdalarmDisplayFiltersScdAdflAlarmDisplayFilters3 , componentConfigDef } from '@modeldir/model';
+import {   scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions , componentConfigDef } from '@modeldir/model';
 
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
-'FILTER_ID' : new FormControl(dataItem.FILTER_ID  , ) ,
-'FILTER_NAME' : new FormControl(dataItem.FILTER_NAME  , ) ,
-'WHERE_CLAUSE' : new FormControl(dataItem.WHERE_CLAUSE  , ) ,
-'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) 
+'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'FILTER_ID' : new FormControl(dataItem.FILTER_ID  ,   Validators.required ) ,
+'CONDITION_ID' : new FormControl(dataItem.CONDITION_ID  , ) ,
+'CONDITION_ORDER' : new FormControl(dataItem.CONDITION_ORDER  , ) ,
+'CONDITION' : new FormControl(dataItem.CONDITION  , ) ,
+'BRACKET_OPEN' : new FormControl(dataItem.BRACKET_OPEN  , ) ,
+'EVENT_FIELD' : new FormControl(dataItem.EVENT_FIELD  , ) ,
+'WHERE_FIELD' : new FormControl(dataItem.WHERE_FIELD  , ) ,
+'VALUE' : new FormControl(dataItem.VALUE  , ) ,
+'BRACKET_CLOSE' : new FormControl(dataItem.BRACKET_CLOSE  , ) 
 });
 
 
@@ -31,11 +37,11 @@ const matches = (el:any, selector:any) => (el.matches || el.msMatchesSelector).c
 declare function getParamConfig():any;
 declare function setParamConfig(var1:any):any;
 @Component({
-  selector: 'app-scd-adfl-alarm-display-filters-3',
+  selector: 'app-scd-scd-alarm-display-filters-conditions',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-adfl-alarm-display-filters-3.component.html',
+  templateUrl: './scd-scd-alarm-display-filters-conditions.component.html',
   standalone: false,
-  styleUrls: ['./scd-adfl-alarm-display-filters-3.component.scss'
+  styleUrls: ['./scd-scd-alarm-display-filters-conditions.component.scss'
 ],
   
   styles: [
@@ -52,7 +58,7 @@ declare function setParamConfig(var1:any):any;
     ]
 })
 
-export class ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters3GridComponent implements OnInit,OnDestroy {
+export class ScdAlarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditionsGridComponent implements OnInit,OnDestroy {
   @ViewChild(GridComponent) 
  
  public grid!: GridComponent;
@@ -70,36 +76,37 @@ export class ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters3GridComponent impl
   public isChild: boolean = false;
   public isMaster: boolean = false;
   
-  		public  isFILTER_IDEnable : boolean = true; 
-public  isSHAPE_IDEnable : boolean = true; 
+  			public  isSHAPE_IDEnable : boolean = true; 
+public  isFILTER_IDEnable : boolean = true; 
+public  isCONDITION_IDEnable : boolean = true; 
 
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
   public  gridHeight = "";
 
-  private masterKeyArr = [];
-  private masterKeyNameArr = [];
+  public masterKeyArr = [];
+  public masterKeyNameArr = [];
   private masterKey ="";
   private masterKeyName ="SHAPE_ID";
-  private insertCMD = "INSERT_SCD_ALARM_DISPLAY_FILTERS";
-  private updateCMD = "UPDATE_SCD_ALARM_DISPLAY_FILTERS";
-  private deleteCMD =   "DELETE_SCD_ALARM_DISPLAY_FILTERS";
-  private getCMD = "GET_SCD_ALARM_DISPLAY_FILTERS_QUERY";
+  private insertCMD = "INSERT_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS";
+  private updateCMD = "UPDATE_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS";
+  private deleteCMD =   "DELETE_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS";
+  private getCMD = "GET_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS_QUERY";
 
   public  executeQueryresult:any;
-  public title =  this.starServices.getNLS([],"SCD_ADFL_ALARM_DISPLAY_FILTERS_3.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters3.component_title","Alarm Display Filters");
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS.scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions.component_title","SCD ALARM DISPLAY FILTERS CONDITIONS");
   public PDFfileName = this.title + ".PDF";
   public ExcelfileName = this.title + ".xlsx";
   public componentConfig: componentConfigDef;
   public componentConfig_output: componentConfigDef;
-  public compTitleMsg =  "SCD_ADFL_ALARM_DISPLAY_FILTERS_3.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters3";
+  public compTitleMsg =  "SCD_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS.scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions";
   public editableMode = false;
   
   public WhereClause = "";
   public OrderByClause = "";
 
   public formattedWhere:any = null;
-  public primarKeyReadOnlyArr = {isFILTER_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isSHAPE_IDreadOnly : false , isFILTER_IDreadOnly : false , isCONDITION_IDreadOnly : false};  
   public paramConfig;
   public createFormGroupGrid = createFormGroup;
 
@@ -110,12 +117,18 @@ public  isSHAPE_IDEnable : boolean = true;
   public children = ["any"];
   public masterParams:any;
 public isPhonePortrait = false;
+public visibleSHAPE_ID = true;
 public visibleFILTER_ID = true;
-public visibleFILTER_NAME = true;
-public visibleWHERE_CLAUSE = true;
-public visibleSHAPE_ID = false;
+public visibleCONDITION_ID = true;
+public visibleCONDITION_ORDER = true;
+public visibleCONDITION = true;
+public visibleBRACKET_OPEN = true;
+public visibleEVENT_FIELD = true;
+public visibleWHERE_FIELD = true;
+public visibleVALUE = true;
+public visibleBRACKET_CLOSE = true;
 
-public compSelector = 'app-scd-adfl-alarm-display-filters-3';
+public compSelector = 'app-scd-scd-alarm-display-filters-conditions';
 
   private Body:any =[];
   @Output() readCompletedOutput: EventEmitter<any> = new EventEmitter();
@@ -137,7 +150,7 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
       this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
       this.componentConfig.enabled = true;
-      this.title = this.componentConfig.title ? this.componentConfig.title :this.starServices.getNLS([],"SCD_ADFL_ALARM_DISPLAY_FILTERS_3.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters3.component_title","Alarm Display Filters");
+      this.title = this.componentConfig.title ? this.componentConfig.title :this.starServices.getNLS([],"SCD_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS.scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions.component_title","SCD ALARM DISPLAY FILTERS CONDITIONS");
   }
   private componentConfigChangeEvent!: Subscription;
   public ngAfterViewInit() {
@@ -283,7 +296,7 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
   }
 
   
-  private gridInitialValues:any = new scdalarmDisplayFiltersScdAdflAlarmDisplayFilters3();   
+  private gridInitialValues:any = new scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions();   
 
   private addToBody(NewVal:any){
     this.Body.push(NewVal);
@@ -297,7 +310,8 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
 
     if (!this.uploadimage && this.formGroup && this.formGroup.valid &&
         !matches(e.target, '#grid tbody *, #grid .k-grid-toolbar .k-button, .k-link') &&
-        !isTimePickerPopup && !isTimePickerSetButton) {
+        !isTimePickerPopup && !isTimePickerSetButton 
+        && (this.editedRowIndex != null && typeof this.editedRowIndex != "undefined" ) ) {
         this.saveCurrent();
     }
     else if (typeof this.formGroup !== "undefined") {
@@ -308,6 +322,8 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
   
 
   public addHandler(): void {
+    if (this.paramConfig.DEBUG_FLAG) console.log("addHandler:this.gridInitialValues:", 
+        {...this.gridInitialValues});
     this.isNew = true;
     if (this.isSearch != true){
       this.setInitialValues();
@@ -319,9 +335,9 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
 
   if (this.formGroup.valid == false) {
         this.formGroup.markAllAsTouched()
-        setTimeout(() => {
+        //setTimeout(() => {
           this.formValidationChangedOutput.emit(this.formGroup.valid)
-        }, 100)
+        //}, 100)
       }
   }
    public setInitialValues() {
@@ -386,16 +402,15 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
 
       let GridData:any;
       GridData = Object.assign([], this.grid.data);
-      for (let i = 0; i < GridData.data.length; i++){
-        this.POST_QUERY(GridData.data[i], i);
-        if (this.att_arr.length != 0 || this.img_arr.length != 0){
-          await this.starServices.callGetSaveAttachemts("fetch", GridData.data[i],this); 
-          await this.starServices.sleep(100);
-          this.starServices.att_img_populateArrs(GridData.data[i],this);
-          await this.starServices.sleep(100);
+      setTimeout(() => {
+        for (let i = 0; i < GridData.data.length; i++) {
+          this.POST_QUERY(GridData.data[i], i);
+          if (this.att_arr.length != 0 || this.img_arr.length != 0 || this.svg_arr.length != 0) {
+            this.starServices.callGetSaveAttachemts("fetch", GridData.data[i], this);
+            this.starServices.att_img_populateArrs(GridData.data[i], this);
+          }
         }
-
-      }
+      }, 100)
       if (this.img_arr.length != 0){
         this.grid.data = [];
         await this.starServices.sleep(10);
@@ -429,8 +444,8 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
       data: this.masterKeyArr
     }
 
-       let masterKeyArr = [data['SHAPE_ID'],data['FILTER_ID']];
-      let masterKeyNameArr = ['SHAPE_ID','FILTER_ID'];
+       let masterKeyArr = [data['SHAPE_ID'],data['FILTER_ID'],data['CONDITION_ID']];
+      let masterKeyNameArr = ['SHAPE_ID','FILTER_ID','CONDITION_ID'];
       //for (let i = 0; i < masterKeyNameArr.length; i++) {
       //  componentConfig.[masterKeyNameArr[i]] = masterKeyArr[i];
       //}
@@ -459,6 +474,8 @@ public compSelector = 'app-scd-adfl-alarm-display-filters-3';
     if ( (typeof grid !== "undefined") && (typeof grid.autoSize == "undefined") )
       this.starServices.removeNonValidColumns(newGrid,formGroup.value);
     this.starServices.executeQuery_grid( newGrid,this);
+    if (this.paramConfig.DEBUG_FLAG) console.log("this.gridInitialValues:executeQuery:2:", 
+        {...this.gridInitialValues});
     this.editableMode = false;
   } 
 
@@ -605,16 +622,52 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"CONDITION_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrCONDITION"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BRACKET_OPEN\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrBRACKET_OPEN"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"EVENT_FIELD\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrEVENT_FIELD"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"RELATIONAL_KEY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrWHERE_FIELD"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BRACKET_CLOSE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrBRACKET_CLOSE"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrSHAPE_ID = [];
+public lkpArrCONDITION = [];
 
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
+public lkpArrBRACKET_OPEN = [];
+
+public lkpArrEVENT_FIELD = [];
+
+public lkpArrWHERE_FIELD = [];
+
+public lkpArrBRACKET_CLOSE = [];
+
+public lkpArrGetCONDITION(CODE: any): any {
+var rec = this.lkpArrCONDITION.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetBRACKET_OPEN(CODE: any): any {
+var rec = this.lkpArrBRACKET_OPEN.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetEVENT_FIELD(CODE: any): any {
+var rec = this.lkpArrEVENT_FIELD.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetWHERE_FIELD(CODE: any): any {
+var rec = this.lkpArrWHERE_FIELD.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetBRACKET_CLOSE(CODE: any): any {
+var rec = this.lkpArrBRACKET_CLOSE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -625,7 +678,7 @@ public printScreen(){
    public handleComponentConfig(ComponentConfig:any) {
 
       if (typeof ComponentConfig !== "undefined") {
-         if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmDisplayFiltersScdAdflAlarmDisplayFilters3Grid ComponentConfig:", ComponentConfig);
+         if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditionsGrid ComponentConfig:", ComponentConfig);
          this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
          this.WHEN_NOTIFY(ComponentConfig);
          if (ComponentConfig.gridHeight != null)
@@ -711,11 +764,24 @@ public hiddenColumns: string[] = [];
 public disabledColumns: string[] = [];
 async WHEN_NOTIFY(ComponentConfig){
     
+if (ComponentConfig.masterSaved != null) {
+    this.componentConfig.insertable = true;
+}
 }
 async WHEN_NEW_FORM_INSTANCE(){
-   	if (!this.isChild){
-this.executeQuery(this.grid);
-	}
+   // 	if (!this.isChild){
+// this.executeQuery(this.grid);
+// 	}
+
+setTimeout(() => {
+    this.componentConfig.showToolBar = true;
+}, 500)
+
+// setTimeout(() => {
+//           if (this.isChild == true && this.masterKeyArr.length == 0){
+//                 this.componentConfig.insertable = false;
+//             }
+//         }, 500)
 
 
 }
@@ -753,7 +819,7 @@ async PRE_QUERY(formGroup:any){
  
 }
 async POST_QUERY(formGroup:any, P_INDEX:any){
- 
+ this.componentConfig.insertable = true;
 }
  public ROW_CLASS = (context: RowClassArgs) => {
     
@@ -762,71 +828,6 @@ async POST_QUERY(formGroup:any, P_INDEX:any){
 
 
 
-
-async WHEN_VALIDATE_ITEM_FILTER_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['FILTER_ID'] != "undefined" ) 
-      this.formGroup.controls['FILTER_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['FILTER_ID'] != "undefined" ) 
-     this.formGroup.get('FILTER_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_FILTER_ID(event){
-await this.starServices.sleep(200);
-this.starServices.sessionParams['NAVIGATE_DATA'] = this.formGroup;
-console.log ('NAVIGATE:NAVIGATE_DATA', this.starServices.sessionParams['NAVIGATE_DATA'] );
-let routerLink =  ' SCD_alarm_display_filters_properties';
-this.router.navigate(['/' + routerLink] , { skipLocationChange: true });
-
-}
-
-async WHEN_VALIDATE_ITEM_FILTER_NAME(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['FILTER_NAME'] != "undefined" ) 
-      this.formGroup.controls['FILTER_NAME'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['FILTER_NAME'] != "undefined" ) 
-     this.formGroup.get('FILTER_NAME').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_FILTER_NAME(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_WHERE_CLAUSE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['WHERE_CLAUSE'] != "undefined" ) 
-      this.formGroup.controls['WHERE_CLAUSE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['WHERE_CLAUSE'] != "undefined" ) 
-     this.formGroup.get('WHERE_CLAUSE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_WHERE_CLAUSE(event){
-
-}
 
 async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
 
@@ -847,18 +848,216 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
  async ON_CLICK_SHAPE_ID(event){
 
 }
+
+async WHEN_VALIDATE_ITEM_FILTER_ID(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['FILTER_ID'] != "undefined" ) 
+      this.formGroup.controls['FILTER_ID'].setErrors({invalid: true}); 
+ // Code goes here 
  
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['FILTER_ID'] != "undefined" ) 
+     this.formGroup.get('FILTER_ID').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_FILTER_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_CONDITION_ID(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['CONDITION_ID'] != "undefined" ) 
+      this.formGroup.controls['CONDITION_ID'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['CONDITION_ID'] != "undefined" ) 
+     this.formGroup.get('CONDITION_ID').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CONDITION_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_CONDITION_ORDER(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['CONDITION_ORDER'] != "undefined" ) 
+      this.formGroup.controls['CONDITION_ORDER'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['CONDITION_ORDER'] != "undefined" ) 
+     this.formGroup.get('CONDITION_ORDER').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CONDITION_ORDER(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_CONDITION(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['CONDITION'] != "undefined" ) 
+      this.formGroup.controls['CONDITION'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['CONDITION'] != "undefined" ) 
+     this.formGroup.get('CONDITION').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CONDITION(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BRACKET_OPEN(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['BRACKET_OPEN'] != "undefined" ) 
+      this.formGroup.controls['BRACKET_OPEN'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['BRACKET_OPEN'] != "undefined" ) 
+     this.formGroup.get('BRACKET_OPEN').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BRACKET_OPEN(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_EVENT_FIELD(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['EVENT_FIELD'] != "undefined" ) 
+      this.formGroup.controls['EVENT_FIELD'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['EVENT_FIELD'] != "undefined" ) 
+     this.formGroup.get('EVENT_FIELD').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_EVENT_FIELD(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_WHERE_FIELD(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['WHERE_FIELD'] != "undefined" ) 
+      this.formGroup.controls['WHERE_FIELD'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['WHERE_FIELD'] != "undefined" ) 
+     this.formGroup.get('WHERE_FIELD').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_WHERE_FIELD(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_VALUE(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['VALUE'] != "undefined" ) 
+      this.formGroup.controls['VALUE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['VALUE'] != "undefined" ) 
+     this.formGroup.get('VALUE').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_VALUE(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BRACKET_CLOSE(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['BRACKET_CLOSE'] != "undefined" ) 
+      this.formGroup.controls['BRACKET_CLOSE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['BRACKET_CLOSE'] != "undefined" ) 
+     this.formGroup.get('BRACKET_CLOSE').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BRACKET_CLOSE(event){
+
+}
+ 
+ async onBlur_SHAPE_ID() { 
+  await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
  async onBlur_FILTER_ID() { 
   await this.WHEN_VALIDATE_ITEM_FILTER_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async onBlur_FILTER_NAME() { 
-  await this.WHEN_VALIDATE_ITEM_FILTER_NAME(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_CONDITION_ID() { 
+  await this.WHEN_VALIDATE_ITEM_CONDITION_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeWHERE_CLAUSE(value: any) { 
- await this.WHEN_VALIDATE_ITEM_WHERE_CLAUSE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_CONDITION_ORDER() { 
+  await this.WHEN_VALIDATE_ITEM_CONDITION_ORDER(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeSHAPE_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async valueChangeCONDITION(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_CONDITION(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async valueChangeBRACKET_OPEN(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_BRACKET_OPEN(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async valueChangeEVENT_FIELD(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_EVENT_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async valueChangeWHERE_FIELD(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_WHERE_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_VALUE() { 
+  await this.WHEN_VALIDATE_ITEM_VALUE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async valueChangeBRACKET_CLOSE(value: any) { 
+ await this.WHEN_VALIDATE_ITEM_BRACKET_CLOSE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
 
 // For Adding new CODE
@@ -876,6 +1075,7 @@ public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
 public AttDwnUrl = "";
+public svg_arr = [];
 public uploadimage = false;
 
 

@@ -180,7 +180,9 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "aot": false,
+               "namedChunks": true
             }
           },
           "defaultConfiguration": "production"

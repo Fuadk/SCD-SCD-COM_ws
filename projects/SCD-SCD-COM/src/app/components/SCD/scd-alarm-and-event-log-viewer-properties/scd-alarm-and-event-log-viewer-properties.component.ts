@@ -135,7 +135,7 @@ export class ScdAlarmAndEventLogViewerPropertiesComponent implements OnInit {
      //this.SCD_ALARM_COLUMNSGrid_2Config.removeable = true;
    }
    this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
-   this.SCD_ALARM_COLUMNSGrid_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID4","Toolvar");
+   this.SCD_ALARM_COLUMNSGrid_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID4","Toolbar");
    this.SCD_ALARM_COLUMNSGrid_3Config.isChild = true;
    this.SCD_ALARM_COLUMNSGrid_3Config.masterSelector = 'app-scd-alarm-and-event-log-viewer-properties';
    this.SCD_ALARM_COLUMNSGrid_3Config.showToolBar = !this.visibleOK_BTNS; 
@@ -278,17 +278,17 @@ export class ScdAlarmAndEventLogViewerPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_GENERAL_LOG_VIEWERFormdivs_1Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_COLUMNSGrid_2Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARMFormtabs_5Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_SORTForm_6Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
@@ -441,7 +441,7 @@ export class ScdAlarmAndEventLogViewerPropertiesComponent implements OnInit {
              this.SCD_ALARM_COLUMNSGrid_2Config.title = this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID3","Columns");
              this.SCD_ALARM_COLUMNSGrid_3Config = new componentConfigDef();
              this.SCD_ALARM_COLUMNSGrid_3Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARM_COLUMNSGrid_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID4","Toolvar");
+             this.SCD_ALARM_COLUMNSGrid_3Config.title = this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID4","Toolbar");
              this.SCD_ALARMFormtabs_4Config = new componentConfigDef();
              this.SCD_ALARMFormtabs_4Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARMFormtabs_4Config.title = this.starServices.getNLS([],"scd_alarm_and_event_log_viewer_properties.scd_alarm_and_event_log_viewer_properties.compsTitleID5","Display Filters");

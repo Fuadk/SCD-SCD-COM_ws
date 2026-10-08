@@ -4,7 +4,7 @@
        this.starServices.getNLS([],"SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.component_title","SCD ALARM COLUMNS FORM") }}</legend>
 <div class="form-toolbar"> </div>
 
-<kendo-toolbar class="form-toolbar" *ngIf="componentConfig?.showToolBar == null ? true : componentConfig.showToolBar">
+<kendo-toolbar class="form-toolbar" *ngIf="componentConfig.showToolBar">
 
  
     <kendo-toolbar-button [icon]="'sliders'" [disabled]="isSearch"  text="{{isPhonePortrait ? null : starServices.getNLS([],'ENTER_QUERY','Filter')}}" title="{{starServices.getNLS([],'ENTER_QUERY','Filter')}}" (click)="enterQuery( form);" *ngIf="componentConfig.queryable"></kendo-toolbar-button>
@@ -20,7 +20,7 @@
 
     <kendo-toolbar-button [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}" (click)="onNew($event);" *ngIf="componentConfig.insertable && !isSearch"></kendo-toolbar-button>
 
-    <kendo-toolbar-button [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
+    <kendo-toolbar-button kendoButton [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges( form)" *ngIf="(starServices.dataExits(this)|| isNew) && !isChild && componentConfig.updateable && !isSearch"></kendo-toolbar-button>
     <kendo-toolbar-button [icon]="'trash'" title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}" (click)="onRemove( form);" *ngIf=" starServices.dataExits(this) && componentConfig.removeable && !isSearch">Remove</kendo-toolbar-button>
 
     <kendo-toolbar-button kendoButton  *ngIf="starServices.helpMsg !=='' "  text="{{starServices.helpMsg}}"    ></kendo-toolbar-button>     
@@ -65,6 +65,15 @@
 		 </div> 
 		 </ng-template> 
 		</kendo-combobox>
+	</kendo-formfield>
+
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCAPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION >
+		<kendo-label *ngIf="(!labelCAPTIONTop && !isPhonePortrait) && labelCAPTIONVisible" class="form-label"  [text]="starServices.getNLS([],'SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.CAPTION','Caption')"></kendo-label>
+		<label *ngIf="(labelCAPTIONTop || isPhonePortrait) && labelCAPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.CAPTION','Caption')}}</label>
+		<input   formControlName="CAPTION"
+ kendoTextBox  #CAPTION  [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.CAPTION_Hint','Please enter Caption.')"
+		(click)="ON_CLICK_CAPTION($event)"
+[ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_CAPTION($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
 
@@ -116,8 +125,7 @@
 		<kendo-label *ngIf="(!labelIMAGE_ICONTop && !isPhonePortrait) && labelIMAGE_ICONVisible" class="form-label" [text]="starServices.getNLS([],'SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.IMAGE_ICON','Image Icon')"></kendo-label>
 		<label *ngIf="(labelIMAGE_ICONTop || isPhonePortrait) && labelIMAGE_ICONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.IMAGE_ICON','Image Icon')}}</label>
 		<kendo-svg-icon *ngIf="showIcon" #IMAGE_ICON     adaptiveMode="auto" 		(click)="ON_CLICK_IMAGE_ICON($event)"
-		[icon]="starServices.convertSvgToKendoSVGIcon(this,form.value.IMAGE_ICON, null, 'IMAGE_ICON')" >
-		</kendo-svg-icon> 
+ [icon]="svg_data['IMAGE_ICON']"  ></kendo-svg-icon> 
 		<input *ngIf="form.touched&&componentConfig.enabled" [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="IMAGE_ICON"
  kendoTextBox #IMAGE_ICON  [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_COLUMNS_FORM.scdalarmColumnsScdScdAlarmColumnsForm.IMAGE_ICON_Hint','Please enter Image Icon.')"
  (valueChange)="onValueChange_IMAGE_ICON($event)"  />

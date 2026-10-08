@@ -1967,217 +1967,72 @@ async  prepareShapes(){
     }
   }
   if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesIDs:", shapesIDs);
-  //removeUnusedShapes
-  let statement_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SHAPE_DISPLAY_GENERAL = "DELETE from SCD_SHAPE_DISPLAY_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_SHAPE_INPUT_GENERAL = "DELETE from SCD_SHAPE_INPUT_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_SHAPE_INPUT_APPEARANCE = "DELETE from SCD_SHAPE_INPUT_APPEARANCE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_SHAPE_CONNECTION = "DELETE from SCD_SHAPE_CONNECTION where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
-  let statement_SCD_SHAPE_GENERAL = "DELETE from SCD_SHAPE_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_BUTTON_GENERAL = "DELETE from SCD_BUTTON_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_BUTTON_ACTION = "DELETE from SCD_BUTTON_ACTION where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
-  let statement_SCD_BUTTON_APPEARANCE = "DELETE from SCD_BUTTON_APPEARANCE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_BUTTON_PUSH_GENERAL = "DELETE from SCD_BUTTON_PUSH_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
-  let statement_SCD_SHAPE_STATE = "DELETE from SCD_SHAPE_STATE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                    
-  let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
-  let statement_SCD_MESSAGE_GENERAL = "DELETE from SCD_MESSAGE_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
-  let statement_SCD_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_GRAPH_GENERAL = "DELETE from SCD_GRAPH_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
-  let statement_SCD_MULTISTATE_INDICATOR_GENERAL = "DELETE from SCD_MULTISTATE_INDICATOR_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
-  let statement_SCD_LIST_INDICATOR_GENERAL = "DELETE from SCD_LIST_INDICATOR_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
-  let statement_SCD_LIST_INDICATOR_STATE = "DELETE from SCD_LIST_INDICATOR_STATE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_ARROW_BUTTON_GENERAL = "DELETE from SCD_ARROW_BUTTON_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_ARROW_BUTTON_LABEL = "DELETE from SCD_ARROW_BUTTON_LABEL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  
-  let statement_SCD_ALARM_APPEARANCE = "DELETE from SCD_ALARM_APPEARANCE where shape_id in "
-  + "(SELECT shape_id from scd_shape where shape_id not in ("
-  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-
-  let statement_SCD_ALARM_BEHAVIOR = "DELETE from SCD_ALARM_BEHAVIOR where shape_id in "
-    + "(SELECT shape_id from scd_shape where shape_id not in ("
-    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-
-  let statement_SCD_ALARM_COLUMNS = "DELETE from SCD_ALARM_COLUMNS where shape_id in "
-    + "(SELECT shape_id from scd_shape where shape_id not in ("
-    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-
-  let statement_SCD_ALARM_EVENT_SUBSCRIPTIONS = "DELETE from SCD_ALARM_EVENT_SUBSCRIPTIONS where shape_id in "
-    + "(SELECT shape_id from scd_shape where shape_id not in ("
-    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-
-  let statement_SCD_ALARM_GENERAL_BANNER = "DELETE from SCD_ALARM_GENERAL_BANNER where shape_id in "
-    + "(SELECT shape_id from scd_shape where shape_id not in ("
-    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-
-  let statement_SCD_ALARM_GENERAL_LOG_VIEWER = "DELETE from SCD_ALARM_GENERAL_LOG_VIEWER where shape_id in "
-    + "(SELECT shape_id from scd_shape where shape_id not in ("
-    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-
-  let statement_SCD_ALARM_SORT = "DELETE from SCD_ALARM_SORT where shape_id in "
-    + "(SELECT shape_id from scd_shape where shape_id not in ("
-    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-
-  let statement_SCD_ALARM_STATES = "DELETE from SCD_ALARM_STATES where shape_id in "
-    + "(SELECT shape_id from scd_shape where shape_id not in ("
-    + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-                                                                                                                                  
-                
-  let body_defs = [
+  //
+  let statement_shapesTpDelete = "SELECT SHAPE_ID from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+  let body_shapes = [
      {
         "_QUERY": "EXECSQL",
-        "_STMT": statement_TEXT_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SHAPE_DISPLAY_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_INPUT_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_INPUT_APPEARANCE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_CONNECTION
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_ACTION
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_APPEARANCE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_PUSH_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_STATE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_TIMING
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_MESSAGE_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_TEXT_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_GRAPH_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_MULTISTATE_INDICATOR_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_LIST_INDICATOR_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_LIST_INDICATOR_STATE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_LABEL
-      },
-       
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ALARM_BEHAVIOR
-      },
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ALARM_COLUMNS
-      },
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ALARM_EVENT_SUBSCRIPTIONS
-      },
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ALARM_GENERAL_BANNER
-      },
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ALARM_GENERAL_LOG_VIEWER
-      },
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ALARM_SORT
-      },
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ALARM_STATES
+        "_STMT": statement_shapesTpDelete
       }
+    ]
+  let shapesTpDelete = await this.starServices.execSQLBody(this, body_shapes, "");
+  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesTpDelete:", shapesTpDelete[0].data);
+  let shapeIDsToDelete = "";
+  if (shapesTpDelete[0].data.length > 0){
+     shapeIDsToDelete = shapesTpDelete[0].data.map(item => item.SHAPE_ID).join(',');
+    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapeIDsToDelete:", shapeIDsToDelete);
+  }
 
+  //
+
+  //removeUnusedShapes
+  if (shapeIDsToDelete != ""){
+
+    const tables = [
+      "SCD_TEXT_GENERAL",
+      "SCD_SHAPE_DISPLAY_GENERAL",
+      "SCD_SHAPE_INPUT_GENERAL",
+      "SCD_SHAPE_INPUT_APPEARANCE",
+      "SCD_SHAPE_CONNECTION",
+      "SCD_SHAPE_GENERAL",
+      "SCD_BUTTON_GENERAL",
+      "SCD_BUTTON_ACTION",
+      "SCD_BUTTON_APPEARANCE",
+      "SCD_BUTTON_PUSH_GENERAL",
+      "SCD_SHAPE_STATE",
+      "SCD_ARROW_BUTTON_TIMING",
+      "SCD_MESSAGE_GENERAL",
+      "SCD_TEXT_GENERAL",
+      "SCD_GRAPH_GENERAL",
+      "SCD_MULTISTATE_INDICATOR_GENERAL",
+      "SCD_LIST_INDICATOR_GENERAL",
+      "SCD_LIST_INDICATOR_STATE",
+      "SCD_ARROW_BUTTON_GENERAL",
+      "SCD_ARROW_BUTTON_LABEL",
+      "SCD_ALARM_BEHAVIOR",
+      "SCD_ALARM_COLUMNS",
+      "SCD_ALARM_EVENT_SUBSCRIPTIONS",
+      "SCD_ALARM_GENERAL_BANNER",
+      "SCD_ALARM_GENERAL_LOG_VIEWER",
+      "SCD_ALARM_SORT",
+      "SCD_ALARM_STATES",
+      "SCD_ALARM_DISPLAY_FILTERS_CONDITIONS",
+      "SCD_ALARM_DISPLAY_FILTERS",
     ];
-  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
-  let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
 
-  let statement = "DELETE from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+      let body_defs = tables.map(table => ({
+        "_QUERY": "EXECSQL",
+        "_STMT": `DELETE from ${table} where shape_id in (${shapeIDsToDelete})`
+      }));
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
+      let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
+    }
+                                                                                                                                  
+                
+
+
+
+  let statement = "DELETE from scd_shape where shape_id  in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
   let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
   let statement_expressions = "SELECT A.SHAPE_ID, B.EXPRESSION_DATA , A.SHAPE_TYPE "
                               +"    FROM SCD_SHAPE A, SCD_SHAPE_DISPLAY_GENERAL B "
@@ -3682,6 +3537,19 @@ public getShapeInfo(){
           if (ALARM_COLUMNS == 2)
             useshapeType = "Status Bar Button";
             ALARM_COLUMNS++;
+        }
+        if ( (tables[i] == "INSERT_SCD_ALARM_COLUMNS") && (shapeType == "Log Viewer") ) {
+          if (ALARM_COLUMNS == 0)
+            useshapeType = shapeType;
+          if (ALARM_COLUMNS == 1)
+            useshapeType = "Toolbar";
+            ALARM_COLUMNS++;
+        }
+        if  (tables[i] == "INSERT_SCD_ALARM_STATES"){
+            useshapeType = shapeType;
+        }
+        if ( (tables[i] == "INSERT_SCD_ALARM_COLUMNS") && (shapeType == "Summary") ) {
+            useshapeType = shapeType;
         }
         let TableDefauls = await this.starlib1.setShapeDefaults(tables[i], useshapeType);
         console.log("insertSCDShapeTables:TableDefauls:", JSON.stringify(TableDefauls));

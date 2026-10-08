@@ -84,7 +84,7 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="ALARM_TYPE"
  *ngIf=visibleALARM_TYPE  [editable]=" false &&  !(disabledColumns.indexOf('ALARM_TYPE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('ALARM_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.ALARM_TYPE','Alarm Type')}}"  [width]="80">
+ [hidden]="hiddenColumns.indexOf('ALARM_TYPE') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.ALARM_TYPE','Alarm Type')}}"  [width]="120">
 		 <ng-template kendoGridCellTemplate let-dataItem><span    class="MEDIUM" >{{dataItem.ALARM_TYPE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_ALARM_TYPE()"    class="MEDIUM"  [formControl]="formGroup.get('ALARM_TYPE')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.ALARM_TYPE_Hint','Please enter Alarm Type.')" />
@@ -104,10 +104,19 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHOW_COLUMN_BUTTON_PANEL"
  *ngIf=visibleSHOW_COLUMN_BUTTON_PANEL    class="MEDIUM"  [editable]=" !(disabledColumns.indexOf('SHOW_COLUMN_BUTTON_PANEL') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SHOW_COLUMN_BUTTON_PANEL') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.SHOW_COLUMN_BUTTON_PANEL','Show')}}"  editor="boolean" [width]="50">
+ [hidden]="hiddenColumns.indexOf('SHOW_COLUMN_BUTTON_PANEL') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.SHOW_COLUMN_BUTTON_PANEL','Show')}}"  [width]="50">
 		<ng-template kendoGridCellTemplate let-dataItem> <span    class="MEDIUM" > 
 		 {{dataItem.SHOW_COLUMN_BUTTON_PANEL}} 
  		 </span>	</ng-template>
+		 <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		 	<input kendoCheckBox type="checkbox" [formControl]="formGroup.get('SHOW_COLUMN_BUTTON_PANEL')" 
+		 	
+	 name="SHOW_COLUMN_BUTTON_PANEL"  ToggleValue  [true]= "'Y'" [false]= "'N'" 
+		 		 (click)="ON_CLICK_SHOW_COLUMN_BUTTON_PANEL($event)"
+		 		[placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHOW_COLUMN_BUTTON_PANEL_Hint','Please enter SHOW_COLUMN_BUTTON_PANEL.')"
+		 		kendoTooltip
+		 		[title]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHOW_COLUMN_BUTTON_PANEL_Hint','Please enter SHOW_COLUMN_BUTTON_PANEL.')" />
+		 </ng-template>
 	</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHOW_COLUMN_FIELD"
@@ -170,10 +179,20 @@
  [hidden]="hiddenColumns.indexOf('IMAGE_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.IMAGE_ICON','')}}"  [width]="40">
 		 <ng-template kendoGridCellTemplate let-dataItem><span 
 > 		 <kendo-svg-icon 
-		 [icon]="starServices.convertSvgToKendoSVGIcon(this,dataItem.IMAGE_ICON, null, 'IMAGE_ICON')"
- style="width: 1.5em;height: 1.5em;"  class="LOW"  ></kendo-svg-icon> </span></ng-template>
+		 [icon]="dataItem.IMAGE_ICON_SVG"
+ style="width: 2em;height: 2em;"  class="LOW"  ></kendo-svg-icon> </span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (valueChange)="valueChangeIMAGE_ICON($event)"  style="width: 1.5em;height: 1.5em;"  class="LOW"  [formControl]="formGroup.get('IMAGE_ICON')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.IMAGE_ICON_Hint','Please enter Image Icon.')" />
+		<input  (valueChange)="valueChangeIMAGE_ICON($event)"  style="width: 2em;height: 2em;"  class="LOW"  [formControl]="formGroup.get('IMAGE_ICON')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.IMAGE_ICON_Hint','Please enter Image Icon.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION"
+ *ngIf=visibleCAPTION  [editable]=" !(disabledColumns.indexOf('CAPTION') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CAPTION') > -1" 		 title="{{starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.CAPTION','Caption')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CAPTION}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CAPTION()"      [formControl]="formGroup.get('CAPTION')" [placeholder]="starServices.getNLS([],'SCD_ACL_ALARM_COLUMNS.scdalarmColumnsScdAclAlarmColumns.CAPTION_Hint','Please enter Caption.')" />
 		</ng-template>
 		</kendo-grid-column>
 

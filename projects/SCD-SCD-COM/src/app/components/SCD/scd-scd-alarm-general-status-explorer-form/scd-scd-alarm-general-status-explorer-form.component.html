@@ -46,6 +46,9 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_GENERAL_ID($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelSHAPE_IDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHAPE_ID >
 		<kendo-label *ngIf="(!labelSHAPE_IDTop && !isPhonePortrait) && labelSHAPE_IDVisible" class="form-label" [for]="SHAPE_ID" [text]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.SHAPE_ID','Shape Id') + ' *'"></kendo-label>
 		<label *ngIf="(labelSHAPE_IDTop || isPhonePortrait) && labelSHAPE_IDVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.SHAPE_ID','Shape Id') + ' *'}}</label>
@@ -112,10 +115,12 @@
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.LIST_BACKGROUD_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT >
 		<button  (valueChange)="onValueChange_FONT($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.FONT_Hint','Please enter Font.')" 
  iconClass="fas fa-"  *ngIf=visibleFONT 		(click)="ON_CLICK_FONT($event)"
  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.FONT','Font')}}</button>
+	</kendo-formfield>
 
 
 </div>
@@ -265,6 +270,16 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_PANEL_WIDTH($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labellabel_percentTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblelabel_percent >
+		<kendo-label *ngIf="(!labellabel_percentTop && !isPhonePortrait) && labellabel_percentVisible" class="form-label"      adaptiveMode="auto" 		(click)="ON_CLICK_label_percent($event)"
+ [text]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.label_percent','(percent of total width)')"></kendo-label>
+		<label *ngIf="(labellabel_percentTop || isPhonePortrait) && labellabel_percentVisible" class="form-label"      adaptiveMode="auto" 		(click)="ON_CLICK_label_percent($event)"
+ >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.label_percent','(percent of total width)')}}</label>
+	</kendo-formfield>
+
+
+</div>
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelDISPLAY_ERRORS_IN_DIALOGTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleDISPLAY_ERRORS_IN_DIALOG >
 		<kendo-label *ngIf="(!labelDISPLAY_ERRORS_IN_DIALOGTop && !isPhonePortrait) && labelDISPLAY_ERRORS_IN_DIALOGVisible" class="form-label" [for]="DISPLAY_ERRORS_IN_DIALOG" [text]="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.DISPLAY_ERRORS_IN_DIALOG','Display Errors In Dialog')"></kendo-label>
 		<label *ngIf="(labelDISPLAY_ERRORS_IN_DIALOGTop || isPhonePortrait) && labelDISPLAY_ERRORS_IN_DIALOGVisible" class="form-label"  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_STATUS_EXPLORER_FORM.scdalarmGeneralStatusExplorerScdScdAlarmGeneralStatusExplorerForm.DISPLAY_ERRORS_IN_DIALOG','Display Errors In Dialog')}}</label>

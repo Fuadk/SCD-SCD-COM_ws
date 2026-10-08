@@ -1463,7 +1463,8 @@ public delete(Page: string): Observable<GridDataResult> {
         }
       }
   
-      if (object.paramConfig.DEBUG_FLAG) console.log("test41:object.gridInitialValues:", object.gridInitialValues);
+      if (object.paramConfig.DEBUG_FLAG) console.log("test41:object.gridInitialValues:", 
+        object.gridInitialValues, object.masterKeyNameArr, object.masterKeyArr, "editedRowIndex:", object.editedRowIndex, "isChild:", object.isChild);
       object.saveCurrent();
       this.setPrimarKeyNameArr(object, false);
       /* object.gridInitialValues.MODULE = object.masterKey;*/
@@ -1477,6 +1478,7 @@ public delete(Page: string): Observable<GridDataResult> {
               object.primarKeyReadOnlyArr[readOnly] = true;
             }
             let exists = object.gridInitialValues[object.masterKeyNameArr[i]]
+            if (object.paramConfig.DEBUG_FLAG) console.log("test42:object.gridInitialValues:exists:",exists, object.gridInitialValues);
               if (typeof exists !== "undefined"){
               object.gridInitialValues[object.masterKeyNameArr[i]] = object.masterKeyArr[i];
               }
@@ -1772,16 +1774,19 @@ public delete(Page: string): Observable<GridDataResult> {
         "Val": 0
       };
       setParamConfig(paramConfig);
-      if (object.paramConfig.DEBUG_FLAG) console.log("object.masterKeyName:" + object.masterKeyName, object.masterKeyArr);
+      if (object.paramConfig.DEBUG_FLAG) console.log("  " + object.masterKeyName, object.masterKeyArr);
     if (object.paramConfig.DEBUG_FLAG) console.log("object.isChild:", object.isChild, " object.isSearch :", object.isSearch)
     if (object.isChild == true) {
       if (object.isSearch != true) {
           grid = object.gridInitialValues;
-
+        if (object.paramConfig.DEBUG_FLAG) console.log("here1");
         if ((typeof object.masterKeyNameArr != "undefined") && (object.masterKeyNameArr.length != 0)) {
+          if (object.paramConfig.DEBUG_FLAG) console.log("here2");
           for (let i = 0; i < object.masterKeyNameArr.length; i++) {
+            if (object.paramConfig.DEBUG_FLAG) console.log("here3", object.gridInitialValues, object.masterKeyNameArr[i]);
               let exists = object.gridInitialValues[object.masterKeyNameArr[i]]
               if (typeof exists !== "undefined"){
+                if (object.paramConfig.DEBUG_FLAG) console.log("here4");
               object.gridInitialValues[object.masterKeyNameArr[i]] = object.masterKeyArr[i];
               }
             }
@@ -3454,7 +3459,7 @@ err => {
               }
             //if (this.paramConfig.DEBUG_FLAG) console.log("emptyRec:",emptyRec)
             //console.log("emptyRec:",emptyRec);
-            //result.data[i].data.splice(0,0,emptyRec); //add empty record at begining of the array for the LOV for insert new record in a grid work properly
+            result.data[i].data.splice(0,0,emptyRec); //Fuad:add empty record at begining of the array for the LOV for insert new record in a grid work properly
             }
           }
           object[lookupArrDef[i].lkpArrName] = result.data[i].data;
@@ -4437,6 +4442,15 @@ public att_img_populateArrs(formGroup:any,object:any){
     }
     //console.log("img_gallery:", object.img_gallery)
   }
+   for (let i = 0; i < object.svg_arr.length; i++){
+      
+      let svgVal = formGroup[object.svg_arr[i]];
+      console.log("svg_arr[i]:", object.svg_arr[i], svgVal)
+      svgVal = this.convertSvgToKendoSVGIcon (this, svgVal, null,object.svg_arr[i])
+      console.log("svg_arr[i]:new:",  svgVal)
+      formGroup[object.svg_arr[i] + "_SVG"] = svgVal;
+       
+    }
 }
 public convToString(val){
   return String(val)
@@ -4483,7 +4497,9 @@ public att_img_populateArrsList(formGroupArr:any,object:any){
     }
   }
     //console.log("att_img_populateArrs:img_gallery:", object.img_gallery)
+   
   }
+ 
 }
 public att_webcam_form_openUploadimage(field_id:any,object:any) {
   //object.uploadimage = true;
@@ -5001,6 +5017,7 @@ convertSvgToKendoSVGIcon(
     // --- 6. Store on the caller's object (same pattern as before) ---
     if (!object.svg_data) object.svg_data = {};
     object.svg_data[column] = icon;
+
 
     console.log('convertSvgToKendoIcon:', icon);
     return icon;

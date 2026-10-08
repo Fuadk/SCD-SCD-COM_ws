@@ -20,19 +20,20 @@ import {   scdalarmColumnsScdAclAlarmColumns0 , componentConfigDef } from '@mode
 // must invalidate table KEY by adding Validators.required otherwise add new as detail in master/detail screen won't work
  const createFormGroup = (dataItem:any) => new FormGroup({
 'COLUMN_ID' : new FormControl(dataItem.COLUMN_ID  , ) ,
-'ALARM_TYPE' : new FormControl(dataItem.ALARM_TYPE  , ) ,
-'ROW_TYPE' : new FormControl(dataItem.ROW_TYPE  , ) ,
-'ROW_ORDER' : new FormControl(dataItem.ROW_ORDER  , ) ,
-'SHOW_COLUMN_BUTTON_PANEL' : new FormControl(dataItem.SHOW_COLUMN_BUTTON_PANEL  , ) ,
-'HEADING_TEXT' : new FormControl(dataItem.HEADING_TEXT  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'ALARM_TYPE' : new FormControl(dataItem.ALARM_TYPE  , ) ,
+'ROW_ORDER' : new FormControl(dataItem.ROW_ORDER  , ) ,
+'ROW_TYPE' : new FormControl(dataItem.ROW_TYPE  , ) ,
+'SHOW_COLUMN_BUTTON_PANEL' : new FormControl(dataItem.SHOW_COLUMN_BUTTON_PANEL  , ) ,
 'IMAGE_ICON' : new FormControl(dataItem.IMAGE_ICON  , ) ,
+'HEADING_TEXT' : new FormControl(dataItem.HEADING_TEXT  , ) ,
 'WIDTH' : new FormControl(dataItem.WIDTH  , ) ,
-'FORMAT' : new FormControl(dataItem.FORMAT  , ) ,
 'ALIGN' : new FormControl(dataItem.ALIGN  , ) ,
+'FORMAT' : new FormControl(dataItem.FORMAT  , ) ,
 'SAMPLE' : new FormControl(dataItem.SAMPLE  , ) ,
 'TOOLTIP' : new FormControl(dataItem.TOOLTIP  , ) ,
-'SHOW_COLUMN_FIELD' : new FormControl(dataItem.SHOW_COLUMN_FIELD  , ) 
+'SHOW_COLUMN_FIELD' : new FormControl(dataItem.SHOW_COLUMN_FIELD  , ) ,
+'CAPTION' : new FormControl(dataItem.CAPTION  , ) 
 });
 
 
@@ -120,20 +121,21 @@ public  isSHAPE_IDEnable : boolean = true;
   public children = ["any"];
   public masterParams:any;
 public isPhonePortrait = false;
-public visibleCOLUMN_ID = true;
-public visibleALARM_TYPE = true;
-public visibleROW_TYPE = true;
-public visibleROW_ORDER = true;
-public visibleSHOW_COLUMN_BUTTON_PANEL = true;
-public visibleHEADING_TEXT = true;
-public visibleSHAPE_ID = false;
-public visibleIMAGE_ICON = true;
-public visibleWIDTH = true;
-public visibleFORMAT = true;
-public visibleALIGN = true;
-public visibleSAMPLE = true;
-public visibleTOOLTIP = true;
+public visibleCOLUMN_ID = undefined;
+public visibleSHAPE_ID = undefined;
+public visibleALARM_TYPE = undefined;
+public visibleROW_ORDER = undefined;
+public visibleROW_TYPE = undefined;
+public visibleSHOW_COLUMN_BUTTON_PANEL = undefined;
+public visibleIMAGE_ICON = undefined;
+public visibleHEADING_TEXT = undefined;
+public visibleWIDTH = undefined;
+public visibleALIGN = undefined;
+public visibleFORMAT = undefined;
+public visibleSAMPLE = undefined;
+public visibleTOOLTIP = undefined;
 public visibleSHOW_COLUMN_FIELD = true;
+public visibleCAPTION = true;
 
 public compSelector = 'app-scd-acl-alarm-columns-0';
 
@@ -625,44 +627,9 @@ public saveCurrent() {
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALARM_TYPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrALARM_TYPE"},
-	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FORMAT\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrFORMAT"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ALIGN\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrALIGN"}];
+this.lookupArrDef =[];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
-}
-
-public lkpArrALARM_TYPE = [];
-
-public lkpArrSHAPE_ID = [];
-
-public lkpArrFORMAT = [];
-
-public lkpArrALIGN = [];
-
-public lkpArrGetALARM_TYPE(CODE: any): any {
-var rec = this.lkpArrALARM_TYPE.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetFORMAT(CODE: any): any {
-var rec = this.lkpArrFORMAT.find((x:any) => x.CODE === CODE);
-return rec;
-}
-
-public lkpArrGetALIGN(CODE: any): any {
-var rec = this.lkpArrALIGN.find((x:any) => x.CODE === CODE);
-return rec;
 }
 
 
@@ -810,271 +777,6 @@ async POST_QUERY(formGroup:any, P_INDEX:any){
 
 
 
-async WHEN_VALIDATE_ITEM_COLUMN_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['COLUMN_ID'] != "undefined" ) 
-      this.formGroup.controls['COLUMN_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['COLUMN_ID'] != "undefined" ) 
-     this.formGroup.get('COLUMN_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_COLUMN_ID(event){
-await this.starServices.sleep(200);
-this.starServices.sessionParams['NAVIGATE_DATA'] = this.formGroup;
-console.log ('NAVIGATE:NAVIGATE_DATA', this.starServices.sessionParams['NAVIGATE_DATA'] );
-let routerLink =  ' SCD_alarm_columns_properties';
-this.router.navigate(['/' + routerLink] , { skipLocationChange: true });
-
-}
-
-async WHEN_VALIDATE_ITEM_ALARM_TYPE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['ALARM_TYPE'] != "undefined" ) 
-      this.formGroup.controls['ALARM_TYPE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['ALARM_TYPE'] != "undefined" ) 
-     this.formGroup.get('ALARM_TYPE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_ALARM_TYPE(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_ROW_TYPE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['ROW_TYPE'] != "undefined" ) 
-      this.formGroup.controls['ROW_TYPE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['ROW_TYPE'] != "undefined" ) 
-     this.formGroup.get('ROW_TYPE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_ROW_TYPE(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_ROW_ORDER(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['ROW_ORDER'] != "undefined" ) 
-      this.formGroup.controls['ROW_ORDER'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['ROW_ORDER'] != "undefined" ) 
-     this.formGroup.get('ROW_ORDER').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_ROW_ORDER(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SHOW_COLUMN_BUTTON_PANEL(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SHOW_COLUMN_BUTTON_PANEL'] != "undefined" ) 
-      this.formGroup.controls['SHOW_COLUMN_BUTTON_PANEL'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['SHOW_COLUMN_BUTTON_PANEL'] != "undefined" ) 
-     this.formGroup.get('SHOW_COLUMN_BUTTON_PANEL').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SHOW_COLUMN_BUTTON_PANEL(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_HEADING_TEXT(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['HEADING_TEXT'] != "undefined" ) 
-      this.formGroup.controls['HEADING_TEXT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['HEADING_TEXT'] != "undefined" ) 
-     this.formGroup.get('HEADING_TEXT').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_HEADING_TEXT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SHAPE_ID(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SHAPE_ID'] != "undefined" ) 
-      this.formGroup.controls['SHAPE_ID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['SHAPE_ID'] != "undefined" ) 
-     this.formGroup.get('SHAPE_ID').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SHAPE_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_IMAGE_ICON(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
-      this.formGroup.controls['IMAGE_ICON'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['IMAGE_ICON'] != "undefined" ) 
-     this.formGroup.get('IMAGE_ICON').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_IMAGE_ICON(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_WIDTH(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['WIDTH'] != "undefined" ) 
-      this.formGroup.controls['WIDTH'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['WIDTH'] != "undefined" ) 
-     this.formGroup.get('WIDTH').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_WIDTH(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_FORMAT(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['FORMAT'] != "undefined" ) 
-      this.formGroup.controls['FORMAT'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['FORMAT'] != "undefined" ) 
-     this.formGroup.get('FORMAT').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_FORMAT(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_ALIGN(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['ALIGN'] != "undefined" ) 
-      this.formGroup.controls['ALIGN'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['ALIGN'] != "undefined" ) 
-     this.formGroup.get('ALIGN').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_ALIGN(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_SAMPLE(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['SAMPLE'] != "undefined" ) 
-      this.formGroup.controls['SAMPLE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['SAMPLE'] != "undefined" ) 
-     this.formGroup.get('SAMPLE').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_SAMPLE(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TOOLTIP(formGroup) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.formGroup.controls['TOOLTIP'] != "undefined" ) 
-      this.formGroup.controls['TOOLTIP'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.formGroup.controls['TOOLTIP'] != "undefined" ) 
-     this.formGroup.get('TOOLTIP').updateValueAndValidity();
- this.formGroup.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TOOLTIP(event){
-
-}
-
 async WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(formGroup) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1094,48 +796,58 @@ async WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(formGroup) {
  async ON_CLICK_SHOW_COLUMN_FIELD(event){
 
 }
+
+async WHEN_VALIDATE_ITEM_CAPTION(formGroup) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.formGroup.controls['CAPTION'] != "undefined" ) 
+      this.formGroup.controls['CAPTION'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.formGroup.controls['CAPTION'] != "undefined" ) 
+     this.formGroup.get('CAPTION').updateValueAndValidity();
+ this.formGroup.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_CAPTION(event){
+
+}
  
  async onBlur_COLUMN_ID() { 
-  await this.WHEN_VALIDATE_ITEM_COLUMN_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeALARM_TYPE(value: any) { 
- await this.WHEN_VALIDATE_ITEM_ALARM_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_SHAPE_ID() { 
  } 
- async onBlur_ROW_TYPE() { 
-  await this.WHEN_VALIDATE_ITEM_ROW_TYPE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_ALARM_TYPE() { 
  } 
  async onBlur_ROW_ORDER() { 
-  await this.WHEN_VALIDATE_ITEM_ROW_ORDER(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_ROW_TYPE() { 
  } 
  async onBlur_SHOW_COLUMN_BUTTON_PANEL() { 
-  await this.WHEN_VALIDATE_ITEM_SHOW_COLUMN_BUTTON_PANEL(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_IMAGE_ICON() { 
  } 
  async onBlur_HEADING_TEXT() { 
-  await this.WHEN_VALIDATE_ITEM_HEADING_TEXT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeSHAPE_ID(value: any) { 
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
- } 
- async valueChangeIMAGE_ICON(value: any) { 
- await this.WHEN_VALIDATE_ITEM_IMAGE_ICON(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_WIDTH() { 
-  await this.WHEN_VALIDATE_ITEM_WIDTH(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
- async valueChangeFORMAT(value: any) { 
- await this.WHEN_VALIDATE_ITEM_FORMAT(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_ALIGN() { 
  } 
- async valueChangeALIGN(value: any) { 
- await this.WHEN_VALIDATE_ITEM_ALIGN(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ async onBlur_FORMAT() { 
  } 
  async onBlur_SAMPLE() { 
-  await this.WHEN_VALIDATE_ITEM_SAMPLE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_TOOLTIP() { 
-  await this.WHEN_VALIDATE_ITEM_TOOLTIP(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  } 
  async onBlur_SHOW_COLUMN_FIELD() { 
   await this.WHEN_VALIDATE_ITEM_SHOW_COLUMN_FIELD(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
+ } 
+ async onBlur_CAPTION() { 
+  await this.WHEN_VALIDATE_ITEM_CAPTION(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
 
 // For Adding new CODE
@@ -1154,7 +866,6 @@ public att_arr = [];
 public img_arr = [];
 public AttDwnUrl = "";
 public uploadimage = false;
-public IMAGE_ICON_show = false;
 
 
 // 1. In Component

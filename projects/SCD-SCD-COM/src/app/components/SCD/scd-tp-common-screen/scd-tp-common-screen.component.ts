@@ -1356,7 +1356,11 @@ public svg_data = [];
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

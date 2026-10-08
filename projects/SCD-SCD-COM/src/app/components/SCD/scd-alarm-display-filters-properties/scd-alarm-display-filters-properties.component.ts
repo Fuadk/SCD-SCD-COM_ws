@@ -1,5 +1,5 @@
 import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
-import {  scdalarmDisplayFiltersScdAdflAlarmDisplayFilters0  ,scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1  , componentConfigDef} from '@modeldir/model';
+import {  scdalarmDisplayFiltersScdScdAlarmDisplayFilters  ,scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
@@ -42,8 +42,8 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
 
   public componentConfig: componentConfigDef;
 
-  public grid_0_SCD_ALARM_DISPLAY_FILTERS : scdalarmDisplayFiltersScdAdflAlarmDisplayFilters0;
-  public grid_1_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS : scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1;
+  public grid_0_SCD_ALARM_DISPLAY_FILTERS : scdalarmDisplayFiltersScdScdAlarmDisplayFilters;
+  public grid_1_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS : scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions;
   public  SCD_ALARM_DISPLAY_FILTERSGrid_0Config : componentConfigDef;
   public  hide_comp_1 = false
   public  SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config : componentConfigDef;
@@ -56,7 +56,7 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
   }
   private componentConfigChangeEvent!: Subscription;
   public compSelector = 'app-scd-alarm-display-filters-properties';
-  public masterKeyNameArr = ["FILTER_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+  public masterKeyNameArr = ["FILTER_ID","SHAPE_ID"];
 
   public masterINSERT = 'INSERT_SCD_ALARM_DISPLAY_FILTERS';
   public masterDataSource = 'SCD_ALARM_DISPLAY_FILTERS';
@@ -87,7 +87,7 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
     await this.starServices.sleep(200);
     // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
    this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config = new componentConfigDef();
-   this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID1","Alarm Display Filters");
+   this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID1","Filters");
    this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.isMaster = true;
    this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.isSearchScreen = this.isSearchScreen;
 	if (this.visibleOK_BTNS) 
@@ -100,7 +100,7 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
      this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.insertable = false;
    }
    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config = new componentConfigDef();
-   this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID2","Alarm Display Filters Conditions");
+   this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID2","Conditions");
    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.isChild = true;
    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterSelector = 'app-scd-alarm-display-filters-properties';
    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.showToolBar = !this.visibleOK_BTNS; 
@@ -115,21 +115,21 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
      if (typeof this.componentConfigChangeEvent !== 'undefined') this.componentConfigChangeEvent.unsubscribe();
   }
   public readCompletedHandler( form_SCD_ALARM_DISPLAY_FILTERS) {
-    let masterKeyArr = [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.APP_ID,form_SCD_ALARM_DISPLAY_FILTERS.DISPLAY_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID];
-    let masterKeyNameArr = ["FILTER_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    let masterKeyArr = [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID];
+    let masterKeyNameArr = ["FILTER_ID","SHAPE_ID"];
      if (this.isSearchScreen == true) 
 	  {
     	this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config = new componentConfigDef();
     	this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.formattedWhere  = form_SCD_ALARM_DISPLAY_FILTERS;
     	return;
 	  }
-    //this.grid_1_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS = new scdalarmDisplayFiltersConditionsScdAdfcAlarmDisplayFiltersConditions1();
+    //this.grid_1_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS = new scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
     //   this.grid_1_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
     this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config = new componentConfigDef();
-    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyArr =  [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.APP_ID,form_SCD_ALARM_DISPLAY_FILTERS.DISPLAY_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID];
-    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyNameArr =  ["FILTER_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyArr =  [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID];
+    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyNameArr =  ["FILTER_ID","SHAPE_ID"];
     this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
      this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.queryable = false;
@@ -138,10 +138,10 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_ALARM_DISPLAY_FILTERS) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config = new componentConfigDef();
   }
-  public keyNameArr = ["FILTER_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+  public keyNameArr = ["FILTER_ID","SHAPE_ID"];
 
   public callreadSavedMaster( ) {
     let masterTable = 'SCD_ALARM_DISPLAY_FILTERS' 
@@ -164,12 +164,12 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
    }
  } 
   public saveCompletedHandler( form_SCD_ALARM_DISPLAY_FILTERS) {
- let key:any = [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.APP_ID,form_SCD_ALARM_DISPLAY_FILTERS.DISPLAY_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID]; 
+ let key:any = [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID]; 
  if ( key != '') { 
     this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config = new componentConfigDef();
     this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterSaved = form_SCD_ALARM_DISPLAY_FILTERS;
-    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyArr =  [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.APP_ID,form_SCD_ALARM_DISPLAY_FILTERS.DISPLAY_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID];
-    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyNameArr =  ["FILTER_ID","APP_ID","DISPLAY_ID","SHAPE_ID"];
+    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyArr =  [form_SCD_ALARM_DISPLAY_FILTERS.FILTER_ID,form_SCD_ALARM_DISPLAY_FILTERS.SHAPE_ID];
+    this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterKeyNameArr =  ["FILTER_ID","SHAPE_ID"];
   
     this.saveTriggerOutput.emit(form_SCD_ALARM_DISPLAY_FILTERS);
   } 
@@ -237,10 +237,10 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
            setTimeout(() => {
              this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config = new componentConfigDef();
              this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID1","Alarm Display Filters");
+             this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID1","Filters");
              this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config = new componentConfigDef();
              this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID2","Alarm Display Filters Conditions");
+             this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.title = this.starServices.getNLS([],"scd_alarm_display_filters_properties.scd_alarm_display_filters_properties.compsTitleID2","Conditions");
            this.setSteps(this);
            }, 500);
        }
@@ -256,6 +256,10 @@ export class ScdAlarmDisplayFiltersPropertiesComponent implements OnInit {
        if (ComponentConfig.showToolBar != null) {
               this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_ALARM_DISPLAY_FILTERSGrid_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARM_DISPLAY_FILTERS_CONDITIONSGrid_1Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

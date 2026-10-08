@@ -85,13 +85,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_SORT_BY_FIELD_ASC_DESC($event)"
  (change)="onChange_SORT_BY_FIELD_ASC_DESC($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrSORT_BY_FIELD_ASC_DESC"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrSORT_BY_FIELD_ASC_DESC" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'SORT_BY_FIELD_ASC_DESC'"
+		 		 [formControlName]="'SORT_BY_FIELD_ASC_DESC'"
 					#SORT_BY_FIELD_ASC_DESC ></kendo-radiobutton> 
 				<kendo-label  [for]="SORT_BY_FIELD_ASC_DESC " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -123,13 +125,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_THEN_BY_FIELD_ASC_DESC($event)"
  (change)="onChange_THEN_BY_FIELD_ASC_DESC($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrTHEN_BY_FIELD_ASC_DESC"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrTHEN_BY_FIELD_ASC_DESC" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'THEN_BY_FIELD_ASC_DESC'"
+		 		 [formControlName]="'THEN_BY_FIELD_ASC_DESC'"
 					#THEN_BY_FIELD_ASC_DESC ></kendo-radiobutton> 
 				<kendo-label  [for]="THEN_BY_FIELD_ASC_DESC " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -161,13 +165,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_THEN_BY_2_FIELD_ASC_DESC($event)"
  (change)="onChange_THEN_BY_2_FIELD_ASC_DESC($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrTHEN_BY_2_FIELD_ASC_DESC"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrTHEN_BY_2_FIELD_ASC_DESC" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'THEN_BY_2_FIELD_ASC_DESC'"
+		 		 [formControlName]="'THEN_BY_2_FIELD_ASC_DESC'"
 					#THEN_BY_2_FIELD_ASC_DESC ></kendo-radiobutton> 
 				<kendo-label  [for]="THEN_BY_2_FIELD_ASC_DESC " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 </div>

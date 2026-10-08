@@ -1,3 +1,82 @@
+ export class scdalarmBehaviorScdScdAlarmBehavior{
+	public BEHAVIOR_ID = '';
+	public SHAPE_ID = '';
+	public ALLOW_COLUMNS_RESIZED = '';
+	public ALLOW_SORTING_CLICK_HEADINGS = '';
+	public DISPLAY_CONTEXT_MENU = '';
+	public ROW_DOUBLE_CLICK_ACTION = '';
+	public ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED = '';
+	public DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG = '';
+	public SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = '';
+
+}
+
+ export class scdalarmAppearanceScdScdAlarmAppearance{
+	public GENERAL_ID = '';
+	public SHAPE_ID = '';
+	public COLUMN_HEADINGS_DISPLAYED = '';
+	public HORIZONTAL_GRID_LINES_DISPLAYED = '';
+	public VERTICAL_GRID_LINES_DISPLAYED = '';
+	public HORIZONTAL_SCROLL_BAR = '';
+	public VERTICAL_SCROLL_BAR = '';
+	public DETAILS_PANE_DISPLAYED = '';
+	public TOOLBAR_DISPLAYED = '';
+	public STATUS_BAR_DISPLAYED = '';
+	public TOOLTIPS_DISPLAYED = '';
+	public ICON_STYLE = '';
+	public TEXT_COLOR_CH = '';
+	public BKG_COLOR_CH = '';
+	public FONT_CH = '';
+	public SELECTION_FOREGROUND_COLOR = '';
+	public SELECTION_BACKGROUND_COLOR = '';
+	public FONT_RT = '';
+	public LINE_COLOR = '';
+	public BKG_COLOR_GRID = '';
+	public TEXT_COLOR_DP = '';
+	public BKG_COLOR_DP = '';
+	public FONT_DP = '';
+	public HEIGHT_PERCENT = '';
+	public CONFIG_ALARM_STATUS_EXPLORER = '';
+	public DEFAULT_POINT_FONT = '';
+	public TEXT_COLOR_TOOLBAR = '';
+	public BKG_COLOR_TOOLBAR = '';
+	public FONT_TOOLBAR = '';
+	public ICON_SIZE_TOOLBAR = '';
+	public POSITION = '';
+	public ICON_SIZE_STATUS_BAR = '';
+	public FONT_STATUS_BAR = '';
+
+}
+
+
+
+
+
+
+ export class scdalarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditions{
+	public CONDITION_ID = '';
+	public SHAPE_ID = '';
+	public FILTER_ID = '';
+	public CONDITION_ORDER = '';
+	public CONDITION = '';
+	public BRACKET_OPEN = '';
+	public EVENT_FIELD = '';
+	public WHERE_FIELD = '';
+	public VALUE = '';
+	public BRACKET_CLOSE = '';
+
+}
+
+
+
+ export class scdalarmDisplayFiltersScdScdAlarmDisplayFilters{
+	public FILTER_ID = '';
+	public SHAPE_ID = '';
+	public FILTER_NAME = '';
+	public WHERE_CLAUSE = '';
+
+}
+
  export class scdalarmSortScdScdAlarmSortForm{
 	public SORT_ID = '';
 	public SHAPE_ID = '';
@@ -114,8 +193,10 @@
 	public SAMPLE = '';
 	public TOOLTIP = '';
 	public SHOW_COLUMN_FIELD = '';
+	public CAPTION = '';
 
 }
+
 
  export class scdAclAlarmColumns{
 
@@ -668,13 +749,14 @@
 	public FILTER_ID = '';
 	public CONDITION_ORDER = '';
 	public CONDITION = '';
-	public BRACKET_OPEN = '';
 	public EVENT_FIELD = '';
 	public WHERE_FIELD = '';
 	public VALUE = '';
 	public BRACKET_CLOSE = '';
+	public BRACKET_OPEN = '';
 
 }
+
 
 
  export class scdalarmColumnsOptionsScdAcoAlarmColumnsOptions1{
@@ -710,8 +792,10 @@
 	public SAMPLE = '';
 	public TOOLTIP = '';
 	public SHOW_COLUMN_FIELD = '';
+	public CAPTION = '';
 
 }
+
 
 
 
@@ -730,8 +814,10 @@
 	public SAMPLE = '';
 	public TOOLTIP = '';
 	public SHOW_COLUMN_FIELD = '';
+	public CAPTION = '';
 
 }
+
 
 
 
@@ -750,8 +836,10 @@
 	public SAMPLE = '';
 	public TOOLTIP = '';
 	public SHOW_COLUMN_FIELD = '';
+	public CAPTION = '';
 
 }
+
 
 
 

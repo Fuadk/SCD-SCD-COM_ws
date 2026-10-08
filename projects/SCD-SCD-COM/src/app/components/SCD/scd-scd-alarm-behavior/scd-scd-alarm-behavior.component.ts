@@ -11,34 +11,39 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters , componentConfigDef} from '@modeldir/model';
+import { scdalarmBehaviorScdScdAlarmBehavior , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
-'FILTER_ID' : new FormControl(dataItem.FILTER_ID  , ) ,
-'FILTER_NAME' : new FormControl(dataItem.FILTER_NAME  , ) ,
-'WHERE_CLAUSE' : new FormControl(dataItem.WHERE_CLAUSE  , ) ,
-'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) 
+'BEHAVIOR_ID' : new FormControl(dataItem.BEHAVIOR_ID  , ) ,
+'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'ALLOW_COLUMNS_RESIZED' : new FormControl(dataItem.ALLOW_COLUMNS_RESIZED  , ) ,
+'ALLOW_SORTING_CLICK_HEADINGS' : new FormControl(dataItem.ALLOW_SORTING_CLICK_HEADINGS  , ) ,
+'DISPLAY_CONTEXT_MENU' : new FormControl(dataItem.DISPLAY_CONTEXT_MENU  , ) ,
+'ROW_DOUBLE_CLICK_ACTION' : new FormControl(dataItem.ROW_DOUBLE_CLICK_ACTION  , ) ,
+'ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED' : new FormControl(dataItem.ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED  , ) ,
+'DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG' : new FormControl(dataItem.DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG  , ) ,
+'SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE' : new FormControl(dataItem.SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-adfs-search-alarm-display-filters',
+  selector: 'app-scd-scd-alarm-behavior',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-adfs-search-alarm-display-filters.component.html',
-  styleUrls: ['./scd-adfs-search-alarm-display-filters.component.scss'],
+  templateUrl: './scd-scd-alarm-behavior.component.html',
+  styleUrls: ['./scd-scd-alarm-behavior.component.scss'],
   standalone: false
 })
 
 
-export class ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent {
-  public title =  this.starServices.getNLS([],"SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters.component_title","Search Alarm Display Filters");
-  public compTitleMsg =  "SCD_ADFS_SEARCH_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters";
-  public routineName = "ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersForm";
-  private insertCMD = "INSERT_SCD_ALARM_DISPLAY_FILTERS";
-  private updateCMD = "UPDATE_SCD_ALARM_DISPLAY_FILTERS";
-  private deleteCMD =   "DELETE_SCD_ALARM_DISPLAY_FILTERS";
-  private getCMD = "GET_SCD_ALARM_DISPLAY_FILTERS_QUERY";
+export class ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent {
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_BEHAVIOR.scdalarmBehaviorScdScdAlarmBehavior.component_title","SCD ALARM BEHAVIOR");
+  public compTitleMsg =  "SCD_SCD_ALARM_BEHAVIOR.scdalarmBehaviorScdScdAlarmBehavior";
+  public routineName = "ScdAlarmBehaviorScdScdAlarmBehaviorForm";
+  private insertCMD = "INSERT_SCD_ALARM_BEHAVIOR";
+  private updateCMD = "UPDATE_SCD_ALARM_BEHAVIOR";
+  private deleteCMD =   "DELETE_SCD_ALARM_BEHAVIOR";
+  private getCMD = "GET_SCD_ALARM_BEHAVIOR_QUERY";
 
   public value: Date = new Date(2019, 5, 1, 22);
   public format: string = 'MM/dd/yyyy HH:mm';
@@ -66,7 +71,7 @@ export class ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent
   public action = "";
   private Body:any =[];
   public isNew!: boolean;
-  public primarKeyReadOnlyArr = {isFILTER_IDreadOnly : false};  
+  public primarKeyReadOnlyArr = {isBEHAVIOR_IDreadOnly : false , isSHAPE_IDreadOnly : false};  
   public paramConfig;
   private masterKeyArr = [];
   private masterKeyNameArr = [];
@@ -80,28 +85,48 @@ export class ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersFormComponent
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-adfs-search-alarm-display-filters';
-  public PK_AUTO = 'FILTER_ID';
+  public compSelector = 'app-scd-scd-alarm-behavior';
+  public PK_AUTO = 'BEHAVIOR_ID';
   public customerFacing = false;
   public FormStepsArr = [] ;
-public labelFILTER_IDTop=true;
-public labelFILTER_IDVisible=true;
-public labelFILTER_NAMETop=true;
-public labelFILTER_NAMEVisible=true;
-public labelWHERE_CLAUSETop=true;
-public labelWHERE_CLAUSEVisible=true;
+public labelBEHAVIOR_IDTop=true;
+public labelBEHAVIOR_IDVisible=true;
 public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
+public labelALLOW_COLUMNS_RESIZEDTop=true;
+public labelALLOW_COLUMNS_RESIZEDVisible=true;
+public labelALLOW_SORTING_CLICK_HEADINGSTop=true;
+public labelALLOW_SORTING_CLICK_HEADINGSVisible=true;
+public labelDISPLAY_CONTEXT_MENUTop=true;
+public labelDISPLAY_CONTEXT_MENUVisible=true;
+public labelROW_DOUBLE_CLICK_ACTIONTop=true;
+public labelROW_DOUBLE_CLICK_ACTIONVisible=true;
+public labelALLOW_DETAIL_PANE_HEIGHT_ADJUSTEDTop=true;
+public labelALLOW_DETAIL_PANE_HEIGHT_ADJUSTEDVisible=true;
+public labelDISPLAY_ERRORS_OPERATOR_ACTION_DIALOGTop=true;
+public labelDISPLAY_ERRORS_OPERATOR_ACTION_DIALOGVisible=true;
+public labelSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCETop=true;
+public labelSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCEVisible=true;
 
-public visibleFILTER_ID = false;
-public visibleFILTER_NAME = true;
-public visibleWHERE_CLAUSE = true;
-public visibleSHAPE_ID = false;
+public visibleBEHAVIOR_ID = true;
+public visibleSHAPE_ID = true;
+public visibleALLOW_COLUMNS_RESIZED = true;
+public visibleALLOW_SORTING_CLICK_HEADINGS = true;
+public visibleDISPLAY_CONTEXT_MENU = true;
+public visibleROW_DOUBLE_CLICK_ACTION = true;
+public visibleALLOW_DETAIL_PANE_HEIGHT_ADJUSTED = true;
+public visibleDISPLAY_ERRORS_OPERATOR_ACTION_DIALOG = true;
+public visibleSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = true;
 
-public disableFILTER_ID = false;
-public disableFILTER_NAME = false;
-public disableWHERE_CLAUSE = false;
+public disableBEHAVIOR_ID = false;
 public disableSHAPE_ID = false;
+public disableALLOW_COLUMNS_RESIZED = false;
+public disableALLOW_SORTING_CLICK_HEADINGS = false;
+public disableDISPLAY_CONTEXT_MENU = false;
+public disableROW_DOUBLE_CLICK_ACTION = false;
+public disableALLOW_DETAIL_PANE_HEIGHT_ADJUSTED = false;
+public disableDISPLAY_ERRORS_OPERATOR_ACTION_DIALOG = false;
+public disableSHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE = false;
 
 
   
@@ -121,15 +146,16 @@ public disableSHAPE_ID = false;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
       this.componentConfig.navigable = true;
-      this.componentConfig.insertable = false;
-      this.componentConfig.removeable = false;
-      this.componentConfig.updateable = false;       
+      this.componentConfig.insertable = true;
+      this.componentConfig.removeable = true;
+      this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
-    //  this.componentConfig.enabled = false;
+    //  this.componentConfig.enabled = true;
 
   }
   private componentConfigChangeEvent!: Subscription;
@@ -192,26 +218,26 @@ public disableSHAPE_ID = false;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -224,7 +250,7 @@ public disableSHAPE_ID = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdalarmDisplayFiltersScdAdfsSearchAlarmDisplayFilters();   
+  private formInitialValues:any =   new scdalarmBehaviorScdScdAlarmBehavior();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -232,7 +258,7 @@ public disableSHAPE_ID = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersForm form.SHAPE_ID :' + form.SHAPE_ID);
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmBehaviorScdScdAlarmBehaviorForm form.SHAPE_ID :' + form.SHAPE_ID);
     if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
       this.masterKey = form.SHAPE_ID;
@@ -416,8 +442,8 @@ public disableSHAPE_ID = false;
       }
       this.Comp_Config = new componentConfigDef();
       this.Comp_Config.masterSaved = NewVal;
-      this.Comp_Config.masterKeyArr =  [NewVal['FILTER_ID']];
-      this.Comp_Config.masterKeyNameArr =  ["FILTER_ID"];
+      this.Comp_Config.masterKeyArr =  [NewVal['BEHAVIOR_ID']];
+      this.Comp_Config.masterKeyNameArr =  ["BEHAVIOR_ID"];
          
        await this.POST_INSERT(NewVal);
       if (this.FORM_TRIGGER_FAILURE) 
@@ -518,25 +544,30 @@ public disableSHAPE_ID = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM  SCD_SHAPE  order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrSHAPE_ID"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ROW_DOUBLE_CLICK_ACTION\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrROW_DOUBLE_CLICK_ACTION"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
 public lkpArrSHAPE_ID = [];
 
+public lkpArrROW_DOUBLE_CLICK_ACTION = [];
+
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
+public lkpArrGetROW_DOUBLE_CLICK_ACTION(CODE: any): any {
+var rec = this.lkpArrROW_DOUBLE_CLICK_ACTION.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
 onChanges(): void {
-this.form.get('FILTER_ID').valueChanges.subscribe(val => {
-});
-this.form.get('FILTER_NAME').valueChanges.subscribe(val => {
-});
-this.form.get('WHERE_CLAUSE').valueChanges.subscribe(val => {
+this.form.get('BEHAVIOR_ID').valueChanges.subscribe(val => {
 });
 }
 
@@ -570,7 +601,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmDisplayFiltersScdAdfsSearchAlarmDisplayFiltersForm ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmBehaviorScdScdAlarmBehaviorForm ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -719,63 +750,23 @@ public printScreen(){
 
 
 
-async WHEN_VALIDATE_ITEM_FILTER_ID(value) {
+async WHEN_VALIDATE_ITEM_BEHAVIOR_ID(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['FILTER_ID'] != "undefined" ) 
-      this.form.controls['FILTER_ID'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['BEHAVIOR_ID'] != "undefined" ) 
+      this.form.controls['BEHAVIOR_ID'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['FILTER_ID'] != "undefined" ) 
-     this.form.get('FILTER_ID').updateValueAndValidity();
+ if (typeof this.form.controls['BEHAVIOR_ID'] != "undefined" ) 
+     this.form.get('BEHAVIOR_ID').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_FILTER_ID(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_FILTER_NAME(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['FILTER_NAME'] != "undefined" ) 
-      this.form.controls['FILTER_NAME'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['FILTER_NAME'] != "undefined" ) 
-     this.form.get('FILTER_NAME').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_FILTER_NAME(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_WHERE_CLAUSE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['WHERE_CLAUSE'] != "undefined" ) 
-      this.form.controls['WHERE_CLAUSE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['WHERE_CLAUSE'] != "undefined" ) 
-     this.form.get('WHERE_CLAUSE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_WHERE_CLAUSE(event){
+ async ON_CLICK_BEHAVIOR_ID(event){
 
 }
 
@@ -798,31 +789,153 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  async ON_CLICK_SHAPE_ID(event){
 
 }
+
+async WHEN_VALIDATE_ITEM_ALLOW_COLUMNS_RESIZED(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['ALLOW_COLUMNS_RESIZED'] != "undefined" ) 
+      this.form.controls['ALLOW_COLUMNS_RESIZED'].setErrors({invalid: true}); 
+ // Code goes here 
  
- async onChange_FILTER_ID(event:any) { 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['ALLOW_COLUMNS_RESIZED'] != "undefined" ) 
+     this.form.get('ALLOW_COLUMNS_RESIZED').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_ALLOW_COLUMNS_RESIZED(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_ALLOW_SORTING_CLICK_HEADINGS(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['ALLOW_SORTING_CLICK_HEADINGS'] != "undefined" ) 
+      this.form.controls['ALLOW_SORTING_CLICK_HEADINGS'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['ALLOW_SORTING_CLICK_HEADINGS'] != "undefined" ) 
+     this.form.get('ALLOW_SORTING_CLICK_HEADINGS').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_ALLOW_SORTING_CLICK_HEADINGS(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_DISPLAY_CONTEXT_MENU(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['DISPLAY_CONTEXT_MENU'] != "undefined" ) 
+      this.form.controls['DISPLAY_CONTEXT_MENU'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['DISPLAY_CONTEXT_MENU'] != "undefined" ) 
+     this.form.get('DISPLAY_CONTEXT_MENU').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_DISPLAY_CONTEXT_MENU(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_ROW_DOUBLE_CLICK_ACTION(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['ROW_DOUBLE_CLICK_ACTION'] != "undefined" ) 
+      this.form.controls['ROW_DOUBLE_CLICK_ACTION'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['ROW_DOUBLE_CLICK_ACTION'] != "undefined" ) 
+     this.form.get('ROW_DOUBLE_CLICK_ACTION').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_ROW_DOUBLE_CLICK_ACTION(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED'] != "undefined" ) 
+      this.form.controls['ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED'] != "undefined" ) 
+     this.form.get('ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG'] != "undefined" ) 
+      this.form.controls['DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG'] != "undefined" ) 
+     this.form.get('DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE'] != "undefined" ) 
+      this.form.controls['SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE'] != "undefined" ) 
+     this.form.get('SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(event){
+
+}
+ 
+ async onChange_BEHAVIOR_ID(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
  	return;  
     this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_FILTER_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_FILTER_NAME(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_FILTER_NAME(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_WHERE_CLAUSE(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_WHERE_CLAUSE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await   this.WHEN_VALIDATE_ITEM_BEHAVIOR_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
@@ -831,7 +944,67 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  }
+  } 
+ async onChange_ALLOW_COLUMNS_RESIZED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_ALLOW_COLUMNS_RESIZED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_ALLOW_SORTING_CLICK_HEADINGS(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_ALLOW_SORTING_CLICK_HEADINGS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_DISPLAY_CONTEXT_MENU(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_DISPLAY_CONTEXT_MENU(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_ROW_DOUBLE_CLICK_ACTION(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_ROW_DOUBLE_CLICK_ACTION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onChange_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_ALLOW_DETAIL_PANE_HEIGHT_ADJUSTED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_DISPLAY_ERRORS_OPERATOR_ACTION_DIALOG(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHOW_OUT_OF_SCOPE_ALARM_OCCURRENCE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ }
 
 // For Adding new CODE
   public  grid_som_tabs_codes={};
@@ -856,10 +1029,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

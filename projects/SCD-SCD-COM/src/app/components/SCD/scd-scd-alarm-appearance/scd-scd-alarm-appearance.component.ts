@@ -11,55 +11,63 @@ import { IntlService } from "@progress/kendo-angular-intl";
 import {  ViewEncapsulation } from "@angular/core";
 import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
-import { scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs , componentConfigDef} from '@modeldir/model';
+import { scdalarmAppearanceScdScdAlarmAppearance , componentConfigDef} from '@modeldir/model';
 
 
  const createFormGroup = (dataItem:any) => new FormGroup({
 'GENERAL_ID' : new FormControl(dataItem.GENERAL_ID  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
-'SELECT_LOG' : new FormControl(dataItem.SELECT_LOG  , ) ,
-'TEXT_COLOR' : new FormControl(dataItem.TEXT_COLOR  , ) ,
-'BACKGROUND_COLOR' : new FormControl(dataItem.BACKGROUND_COLOR  , ) ,
+'COLUMN_HEADINGS_DISPLAYED' : new FormControl(dataItem.COLUMN_HEADINGS_DISPLAYED  , ) ,
+'HORIZONTAL_GRID_LINES_DISPLAYED' : new FormControl(dataItem.HORIZONTAL_GRID_LINES_DISPLAYED  , ) ,
+'VERTICAL_GRID_LINES_DISPLAYED' : new FormControl(dataItem.VERTICAL_GRID_LINES_DISPLAYED  , ) ,
+'HORIZONTAL_SCROLL_BAR' : new FormControl(dataItem.HORIZONTAL_SCROLL_BAR  , ) ,
+'VERTICAL_SCROLL_BAR' : new FormControl(dataItem.VERTICAL_SCROLL_BAR  , ) ,
+'DETAILS_PANE_DISPLAYED' : new FormControl(dataItem.DETAILS_PANE_DISPLAYED  , ) ,
+'TOOLBAR_DISPLAYED' : new FormControl(dataItem.TOOLBAR_DISPLAYED  , ) ,
+'STATUS_BAR_DISPLAYED' : new FormControl(dataItem.STATUS_BAR_DISPLAYED  , ) ,
+'TOOLTIPS_DISPLAYED' : new FormControl(dataItem.TOOLTIPS_DISPLAYED  , ) ,
+'ICON_STYLE' : new FormControl(dataItem.ICON_STYLE  , ) ,
 'TEXT_COLOR_CH' : new FormControl(dataItem.TEXT_COLOR_CH  , ) ,
-'BACKGROUND_COLOR_CH' : new FormControl(dataItem.BACKGROUND_COLOR_CH  , ) ,
+'BKG_COLOR_CH' : new FormControl(dataItem.BKG_COLOR_CH  , ) ,
+'FONT_CH' : new FormControl(dataItem.FONT_CH  , ) ,
 'SELECTION_FOREGROUND_COLOR' : new FormControl(dataItem.SELECTION_FOREGROUND_COLOR  , ) ,
 'SELECTION_BACKGROUND_COLOR' : new FormControl(dataItem.SELECTION_BACKGROUND_COLOR  , ) ,
+'FONT_RT' : new FormControl(dataItem.FONT_RT  , ) ,
+'BKG_COLOR_GRID' : new FormControl(dataItem.BKG_COLOR_GRID  , ) ,
 'LINE_COLOR' : new FormControl(dataItem.LINE_COLOR  , ) ,
-'BACKGROUND_COLOR_GRID' : new FormControl(dataItem.BACKGROUND_COLOR_GRID  , ) ,
 'TEXT_COLOR_DP' : new FormControl(dataItem.TEXT_COLOR_DP  , ) ,
-'BACKGROUND_COLOR_DP' : new FormControl(dataItem.BACKGROUND_COLOR_DP  , ) ,
+'BKG_COLOR_DP' : new FormControl(dataItem.BKG_COLOR_DP  , ) ,
+'FONT_DP' : new FormControl(dataItem.FONT_DP  , ) ,
 'HEIGHT_PERCENT' : new FormControl(dataItem.HEIGHT_PERCENT  , ) ,
-'DETAIL_POINT_FONT' : new FormControl(dataItem.DETAIL_POINT_FONT  , ) ,
-'TEXT_FONT' : new FormControl(dataItem.TEXT_FONT  , ) ,
-'DISPLAY_REPORT_ON_STARTUP' : new FormControl(dataItem.DISPLAY_REPORT_ON_STARTUP  , ) ,
-'ALLOW_DETAILS_APNE_TO_BE_ADJUSTED' : new FormControl(dataItem.ALLOW_DETAILS_APNE_TO_BE_ADJUSTED  , ) ,
-'HORIZONTAL_GRID_LINES' : new FormControl(dataItem.HORIZONTAL_GRID_LINES  , ) ,
-'VERTICA_GRIDLINES' : new FormControl(dataItem.VERTICA_GRIDLINES  , ) ,
-'DETAIL_PANS' : new FormControl(dataItem.DETAIL_PANS  , ) ,
-'TOOLBAR' : new FormControl(dataItem.TOOLBAR  , ) ,
-'STATUS_BAR' : new FormControl(dataItem.STATUS_BAR  , ) ,
-'TOOLTIPS' : new FormControl(dataItem.TOOLTIPS  , ) ,
-'ICON_STYLE' : new FormControl(dataItem.ICON_STYLE  , ) 
+'CONFIG_ALARM_STATUS_EXPLORER' : new FormControl(dataItem.CONFIG_ALARM_STATUS_EXPLORER  , ) ,
+'DEFAULT_POINT_FONT' : new FormControl(dataItem.DEFAULT_POINT_FONT  , ) ,
+'TEXT_COLOR_TOOLBAR' : new FormControl(dataItem.TEXT_COLOR_TOOLBAR  , ) ,
+'BKG_COLOR_TOOLBAR' : new FormControl(dataItem.BKG_COLOR_TOOLBAR  , ) ,
+'FONT_TOOLBAR' : new FormControl(dataItem.FONT_TOOLBAR  , ) ,
+'ICON_SIZE_TOOLBAR' : new FormControl(dataItem.ICON_SIZE_TOOLBAR  , ) ,
+'POSITION' : new FormControl(dataItem.POSITION  , ) ,
+'ICON_SIZE_STATUS_BAR' : new FormControl(dataItem.ICON_SIZE_STATUS_BAR  , ) ,
+'FONT_STATUS_BAR' : new FormControl(dataItem.FONT_STATUS_BAR  , ) 
 });
 
 declare function getParamConfig():any;
 @Component({
-  selector: 'app-scd-scd-alarm-general-log-viewer-formdivs',
+  selector: 'app-scd-scd-alarm-appearance',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './scd-scd-alarm-general-log-viewer-formdivs.component.html',
-  styleUrls: ['./scd-scd-alarm-general-log-viewer-formdivs.component.scss'],
+  templateUrl: './scd-scd-alarm-appearance.component.html',
+  styleUrls: ['./scd-scd-alarm-appearance.component.scss'],
   standalone: false
 })
 
 
-export class ScdAlarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivsFormdivsComponent {
-  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs.component_title","SCD ALARM GENERAL LOG VIEWER FORMDIVS");
-  public compTitleMsg =  "SCD_SCD_ALARM_GENERAL_LOG_VIEWER_FORMDIVS.scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs";
-  public routineName = "ScdAlarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivsFormdivs";
-  private insertCMD = "INSERT_SCD_ALARM_GENERAL_LOG_VIEWER";
-  private updateCMD = "UPDATE_SCD_ALARM_GENERAL_LOG_VIEWER";
-  private deleteCMD =   "DELETE_SCD_ALARM_GENERAL_LOG_VIEWER";
-  private getCMD = "GET_SCD_ALARM_GENERAL_LOG_VIEWER_QUERY";
+export class ScdAlarmAppearanceScdScdAlarmAppearanceFormdivsComponent {
+  public title =  this.starServices.getNLS([],"SCD_SCD_ALARM_APPEARANCE.scdalarmAppearanceScdScdAlarmAppearance.component_title","SCD ALARM APPEARANCE");
+  public compTitleMsg =  "SCD_SCD_ALARM_APPEARANCE.scdalarmAppearanceScdScdAlarmAppearance";
+  public routineName = "ScdAlarmAppearanceScdScdAlarmAppearanceFormdivs";
+  private insertCMD = "INSERT_SCD_ALARM_APPEARANCE";
+  private updateCMD = "UPDATE_SCD_ALARM_APPEARANCE";
+  private deleteCMD =   "DELETE_SCD_ALARM_APPEARANCE";
+  private getCMD = "GET_SCD_ALARM_APPEARANCE_QUERY";
 
   public value: Date = new Date(2019, 5, 1, 22);
   public format: string = 'MM/dd/yyyy HH:mm';
@@ -101,113 +109,150 @@ export class ScdAlarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivsFormdivs
   public masterParams:any;
   public alignment: TabAlignment = 'start';
   public isPhonePortrait = false;
-  public compSelector = 'app-scd-scd-alarm-general-log-viewer-formdivs';
+  public compSelector = 'app-scd-scd-alarm-appearance';
   public PK_AUTO = 'GENERAL_ID';
   public customerFacing = false;
-  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"Alarm and event log","visible":true},{"CODE":"2","CODETEXT_LANG":"Toolbar","visible":true},{"CODE":"3","CODETEXT_LANG":"Column headings","visible":true},{"CODE":"4","CODETEXT_LANG":"Row text","visible":true},{"CODE":"5","CODETEXT_LANG":"Grid","visible":true},{"CODE":"6","CODETEXT_LANG":"Details pane","visible":true},{"CODE":"7","CODETEXT_LANG":"Fonts","visible":true},{"CODE":"8","CODETEXT_LANG":"Behavior","visible":true},{"CODE":"9","CODETEXT_LANG":"Show","visible":true}] ;
-public labelGENERAL_IDTop=false;
+  public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"Show","visible":true},{"CODE":"2","CODETEXT_LANG":"Column headings","visible":true},{"CODE":"3","CODETEXT_LANG":"Row text","visible":true},{"CODE":"4","CODETEXT_LANG":"Grid","visible":true},{"CODE":"5","CODETEXT_LANG":"Details PAne","visible":true},{"CODE":"6","CODETEXT_LANG":"Toolbar","visible":true},{"CODE":"7","CODETEXT_LANG":"Text color","visible":true},{"CODE":"8","CODETEXT_LANG":"Background color","visible":true},{"CODE":"9","CODETEXT_LANG":"Status Bar","visible":true}] ;
+public labelGENERAL_IDTop=true;
 public labelGENERAL_IDVisible=true;
-public labelSHAPE_IDTop=false;
+public labelSHAPE_IDTop=true;
 public labelSHAPE_IDVisible=true;
-public labelSELECT_LOGTop=false;
-public labelSELECT_LOGVisible=true;
-public labelTEXT_COLORTop=false;
-public labelTEXT_COLORVisible=true;
-public labelBACKGROUND_COLORTop=false;
-public labelBACKGROUND_COLORVisible=true;
-public labelTEXT_COLOR_CHTop=false;
-public labelTEXT_COLOR_CHVisible=true;
-public labelBACKGROUND_COLOR_CHTop=false;
-public labelBACKGROUND_COLOR_CHVisible=true;
-public labelSELECTION_FOREGROUND_COLORTop=false;
-public labelSELECTION_FOREGROUND_COLORVisible=true;
-public labelSELECTION_BACKGROUND_COLORTop=false;
-public labelSELECTION_BACKGROUND_COLORVisible=true;
-public labelLINE_COLORTop=false;
-public labelLINE_COLORVisible=true;
-public labelBACKGROUND_COLOR_GRIDTop=false;
-public labelBACKGROUND_COLOR_GRIDVisible=true;
-public labelTEXT_COLOR_DPTop=false;
-public labelTEXT_COLOR_DPVisible=true;
-public labelBACKGROUND_COLOR_DPTop=false;
-public labelBACKGROUND_COLOR_DPVisible=true;
-public labelHEIGHT_PERCENTTop=false;
-public labelHEIGHT_PERCENTVisible=true;
-public labelDETAIL_POINT_FONTTop=false;
-public labelDETAIL_POINT_FONTVisible=true;
-public labelTEXT_FONTTop=false;
-public labelTEXT_FONTVisible=true;
-public labelDISPLAY_REPORT_ON_STARTUPTop=false;
-public labelDISPLAY_REPORT_ON_STARTUPVisible=true;
-public labelALLOW_DETAILS_APNE_TO_BE_ADJUSTEDTop=false;
-public labelALLOW_DETAILS_APNE_TO_BE_ADJUSTEDVisible=true;
-public labelHORIZONTAL_GRID_LINESTop=false;
-public labelHORIZONTAL_GRID_LINESVisible=true;
-public labelVERTICA_GRIDLINESTop=false;
-public labelVERTICA_GRIDLINESVisible=true;
-public labelDETAIL_PANSTop=false;
-public labelDETAIL_PANSVisible=true;
-public labelTOOLBARTop=false;
-public labelTOOLBARVisible=true;
-public labelSTATUS_BARTop=false;
-public labelSTATUS_BARVisible=true;
-public labelTOOLTIPSTop=false;
-public labelTOOLTIPSVisible=true;
-public labelICON_STYLETop=false;
+public labelCOLUMN_HEADINGS_DISPLAYEDTop=true;
+public labelCOLUMN_HEADINGS_DISPLAYEDVisible=true;
+public labelHORIZONTAL_GRID_LINES_DISPLAYEDTop=true;
+public labelHORIZONTAL_GRID_LINES_DISPLAYEDVisible=true;
+public labelVERTICAL_GRID_LINES_DISPLAYEDTop=true;
+public labelVERTICAL_GRID_LINES_DISPLAYEDVisible=true;
+public labelHORIZONTAL_SCROLL_BARTop=true;
+public labelHORIZONTAL_SCROLL_BARVisible=true;
+public labelVERTICAL_SCROLL_BARTop=true;
+public labelVERTICAL_SCROLL_BARVisible=true;
+public labelDETAILS_PANE_DISPLAYEDTop=true;
+public labelDETAILS_PANE_DISPLAYEDVisible=true;
+public labelTOOLBAR_DISPLAYEDTop=true;
+public labelTOOLBAR_DISPLAYEDVisible=true;
+public labelSTATUS_BAR_DISPLAYEDTop=true;
+public labelSTATUS_BAR_DISPLAYEDVisible=true;
+public labelTOOLTIPS_DISPLAYEDTop=true;
+public labelTOOLTIPS_DISPLAYEDVisible=true;
+public labelICON_STYLETop=true;
 public labelICON_STYLEVisible=true;
+public labelTEXT_COLOR_CHTop=true;
+public labelTEXT_COLOR_CHVisible=true;
+public labelBKG_COLOR_CHTop=true;
+public labelBKG_COLOR_CHVisible=true;
+public labelFONT_CHTop=true;
+public labelFONT_CHVisible=true;
+public labelFONT_LABEL_CHTop=true;
+public labelFONT_LABEL_CHVisible=true;
+public labelSELECTION_FOREGROUND_COLORTop=true;
+public labelSELECTION_FOREGROUND_COLORVisible=true;
+public labelSELECTION_BACKGROUND_COLORTop=true;
+public labelSELECTION_BACKGROUND_COLORVisible=true;
+public labelFONT_RTTop=true;
+public labelFONT_RTVisible=true;
+public labelBKG_COLOR_GRIDTop=true;
+public labelBKG_COLOR_GRIDVisible=true;
+public labelLINE_COLORTop=true;
+public labelLINE_COLORVisible=true;
+public labelTEXT_COLOR_DPTop=true;
+public labelTEXT_COLOR_DPVisible=true;
+public labelBKG_COLOR_DPTop=true;
+public labelBKG_COLOR_DPVisible=true;
+public labelFONT_DPTop=true;
+public labelFONT_DPVisible=true;
+public labelHEIGHT_PERCENTTop=true;
+public labelHEIGHT_PERCENTVisible=true;
+public labelCONFIG_ALARM_STATUS_EXPLORERTop=true;
+public labelCONFIG_ALARM_STATUS_EXPLORERVisible=true;
+public labelDEFAULT_POINT_FONTTop=true;
+public labelDEFAULT_POINT_FONTVisible=true;
+public labelTEXT_COLOR_TOOLBARTop=true;
+public labelTEXT_COLOR_TOOLBARVisible=true;
+public labelBKG_COLOR_TOOLBARTop=true;
+public labelBKG_COLOR_TOOLBARVisible=true;
+public labelFONT_TOOLBARTop=true;
+public labelFONT_TOOLBARVisible=true;
+public labelICON_SIZE_TOOLBARTop=true;
+public labelICON_SIZE_TOOLBARVisible=true;
+public labelPOSITIONTop=true;
+public labelPOSITIONVisible=true;
+public labelICON_SIZE_STATUS_BARTop=true;
+public labelICON_SIZE_STATUS_BARVisible=true;
+public labelFONT_STATUS_BARTop=true;
+public labelFONT_STATUS_BARVisible=true;
 
 public visibleGENERAL_ID = true;
 public visibleSHAPE_ID = true;
-public visibleSELECT_LOG = true;
-public visibleTEXT_COLOR = true;
-public visibleBACKGROUND_COLOR = true;
+public visibleCOLUMN_HEADINGS_DISPLAYED = true;
+public visibleHORIZONTAL_GRID_LINES_DISPLAYED = true;
+public visibleVERTICAL_GRID_LINES_DISPLAYED = true;
+public visibleHORIZONTAL_SCROLL_BAR = true;
+public visibleVERTICAL_SCROLL_BAR = true;
+public visibleDETAILS_PANE_DISPLAYED = true;
+public visibleTOOLBAR_DISPLAYED = true;
+public visibleSTATUS_BAR_DISPLAYED = true;
+public visibleTOOLTIPS_DISPLAYED = true;
+public visibleICON_STYLE = true;
 public visibleTEXT_COLOR_CH = true;
-public visibleBACKGROUND_COLOR_CH = true;
+public visibleBKG_COLOR_CH = true;
+public visibleFONT_CH = true;
+public visibleFONT_LABEL_CH = false;
 public visibleSELECTION_FOREGROUND_COLOR = true;
 public visibleSELECTION_BACKGROUND_COLOR = true;
+public visibleFONT_RT = true;
+public visibleBKG_COLOR_GRID = true;
 public visibleLINE_COLOR = true;
-public visibleBACKGROUND_COLOR_GRID = true;
 public visibleTEXT_COLOR_DP = true;
-public visibleBACKGROUND_COLOR_DP = true;
+public visibleBKG_COLOR_DP = true;
+public visibleFONT_DP = true;
 public visibleHEIGHT_PERCENT = true;
-public visibleDETAIL_POINT_FONT = true;
-public visibleTEXT_FONT = true;
-public visibleDISPLAY_REPORT_ON_STARTUP = true;
-public visibleALLOW_DETAILS_APNE_TO_BE_ADJUSTED = true;
-public visibleHORIZONTAL_GRID_LINES = true;
-public visibleVERTICA_GRIDLINES = true;
-public visibleDETAIL_PANS = true;
-public visibleTOOLBAR = true;
-public visibleSTATUS_BAR = true;
-public visibleTOOLTIPS = true;
-public visibleICON_STYLE = true;
+public visibleCONFIG_ALARM_STATUS_EXPLORER = true;
+public visibleDEFAULT_POINT_FONT = true;
+public visibleTEXT_COLOR_TOOLBAR = true;
+public visibleBKG_COLOR_TOOLBAR = true;
+public visibleFONT_TOOLBAR = true;
+public visibleICON_SIZE_TOOLBAR = true;
+public visiblePOSITION = true;
+public visibleICON_SIZE_STATUS_BAR = true;
+public visibleFONT_STATUS_BAR = true;
 
 public disableGENERAL_ID = false;
 public disableSHAPE_ID = false;
-public disableSELECT_LOG = false;
-public disableTEXT_COLOR = false;
-public disableBACKGROUND_COLOR = false;
+public disableCOLUMN_HEADINGS_DISPLAYED = false;
+public disableHORIZONTAL_GRID_LINES_DISPLAYED = false;
+public disableVERTICAL_GRID_LINES_DISPLAYED = false;
+public disableHORIZONTAL_SCROLL_BAR = false;
+public disableVERTICAL_SCROLL_BAR = false;
+public disableDETAILS_PANE_DISPLAYED = false;
+public disableTOOLBAR_DISPLAYED = false;
+public disableSTATUS_BAR_DISPLAYED = false;
+public disableTOOLTIPS_DISPLAYED = false;
+public disableICON_STYLE = false;
 public disableTEXT_COLOR_CH = false;
-public disableBACKGROUND_COLOR_CH = false;
+public disableBKG_COLOR_CH = false;
+public disableFONT_CH = false;
+public disableFONT_LABEL_CH = false;
 public disableSELECTION_FOREGROUND_COLOR = false;
 public disableSELECTION_BACKGROUND_COLOR = false;
+public disableFONT_RT = false;
+public disableBKG_COLOR_GRID = false;
 public disableLINE_COLOR = false;
-public disableBACKGROUND_COLOR_GRID = false;
 public disableTEXT_COLOR_DP = false;
-public disableBACKGROUND_COLOR_DP = false;
+public disableBKG_COLOR_DP = false;
+public disableFONT_DP = false;
 public disableHEIGHT_PERCENT = false;
-public disableDETAIL_POINT_FONT = false;
-public disableTEXT_FONT = false;
-public disableDISPLAY_REPORT_ON_STARTUP = false;
-public disableALLOW_DETAILS_APNE_TO_BE_ADJUSTED = false;
-public disableHORIZONTAL_GRID_LINES = false;
-public disableVERTICA_GRIDLINES = false;
-public disableDETAIL_PANS = false;
-public disableTOOLBAR = false;
-public disableSTATUS_BAR = false;
-public disableTOOLTIPS = false;
-public disableICON_STYLE = false;
+public disableCONFIG_ALARM_STATUS_EXPLORER = false;
+public disableDEFAULT_POINT_FONT = false;
+public disableTEXT_COLOR_TOOLBAR = false;
+public disableBKG_COLOR_TOOLBAR = false;
+public disableFONT_TOOLBAR = false;
+public disableICON_SIZE_TOOLBAR = false;
+public disablePOSITION = false;
+public disableICON_SIZE_STATUS_BAR = false;
+public disableFONT_STATUS_BAR = false;
 
+public variableFONT_LABEL_CH;
 
   
   //@Input()  
@@ -330,7 +375,7 @@ public disableICON_STYLE = false;
     this.starNotify.sendEvent<componentConfigDef>('componentConfigDef', componentConfig);
   }
 
-  private formInitialValues:any =   new scdalarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivs();   
+  private formInitialValues:any =   new scdalarmAppearanceScdScdAlarmAppearance();   
     @Input() public set detail_Input(form: any) {
        if (typeof form != "undefined"){
         this.isSearch = true;
@@ -338,7 +383,7 @@ public disableICON_STYLE = false;
         this.isChild = true;
       }
       /*
-    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivsFormdivs form.SHAPE_ID :' + form.SHAPE_ID);
+    if (this.paramConfig.DEBUG_FLAG) console.log('detail_Input ScdAlarmAppearanceScdScdAlarmAppearanceFormdivs form.SHAPE_ID :' + form.SHAPE_ID);
     if ( (form.SHAPE_ID != "") &&   (typeof form.SHAPE_ID != "undefined"))
     {
       this.masterKey = form.SHAPE_ID;
@@ -624,39 +669,68 @@ public disableICON_STYLE = false;
 public userLang = "EN" ; 
 public lookupArrDef:any =[];
 public setlookupArrDef(){
-this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='SHAPE_ID' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
-			"lkpArrName":"lkpArrSHAPE_ID"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SELECT_LOG\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrSELECT_LOG"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
-			"lkpArrName":"lkpArrICON_STYLE"}];
+this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrICON_STYLE"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FONT_TOOLBAR\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrFONT_TOOLBAR"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_SIZE_TOOLBAR\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrICON_SIZE_TOOLBAR"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"POSITION\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrPOSITION"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"ICON_SIZE_STATUS_BAR\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrICON_SIZE_STATUS_BAR"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"FONT_STATUS_BAR\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrFONT_STATUS_BAR"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
 }
 
-public lkpArrSHAPE_ID = [];
-
-public lkpArrSELECT_LOG = [];
-
 public lkpArrICON_STYLE = [];
 
-public lkpArrGetSHAPE_ID(CODE: any): any {
-var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
-return rec;
-}
+public lkpArrFONT_TOOLBAR = [];
 
-public lkpArrGetSELECT_LOG(CODE: any): any {
-var rec = this.lkpArrSELECT_LOG.find((x:any) => x.CODE === CODE);
-return rec;
-}
+public lkpArrICON_SIZE_TOOLBAR = [];
+
+public lkpArrPOSITION = [];
+
+public lkpArrICON_SIZE_STATUS_BAR = [];
+
+public lkpArrFONT_STATUS_BAR = [];
 
 public lkpArrGetICON_STYLE(CODE: any): any {
 var rec = this.lkpArrICON_STYLE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
+public lkpArrGetFONT_TOOLBAR(CODE: any): any {
+var rec = this.lkpArrFONT_TOOLBAR.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetICON_SIZE_TOOLBAR(CODE: any): any {
+var rec = this.lkpArrICON_SIZE_TOOLBAR.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetPOSITION(CODE: any): any {
+var rec = this.lkpArrPOSITION.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetICON_SIZE_STATUS_BAR(CODE: any): any {
+var rec = this.lkpArrICON_SIZE_STATUS_BAR.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetFONT_STATUS_BAR(CODE: any): any {
+var rec = this.lkpArrFONT_STATUS_BAR.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
 onChanges(): void {
 this.form.get('GENERAL_ID').valueChanges.subscribe(val => {
+});
+this.form.get('SHAPE_ID').valueChanges.subscribe(val => {
 });
 this.form.get('HEIGHT_PERCENT').valueChanges.subscribe(val => {
 });
@@ -692,7 +766,7 @@ public printScreen(){
   }
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmGeneralLogViewerScdScdAlarmGeneralLogViewerFormdivsFormdivs ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("ScdAlarmAppearanceScdScdAlarmAppearanceFormdivs ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -881,63 +955,203 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_SELECT_LOG(value) {
+async WHEN_VALIDATE_ITEM_COLUMN_HEADINGS_DISPLAYED(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['SELECT_LOG'] != "undefined" ) 
-      this.form.controls['SELECT_LOG'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['COLUMN_HEADINGS_DISPLAYED'] != "undefined" ) 
+      this.form.controls['COLUMN_HEADINGS_DISPLAYED'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['SELECT_LOG'] != "undefined" ) 
-     this.form.get('SELECT_LOG').updateValueAndValidity();
+ if (typeof this.form.controls['COLUMN_HEADINGS_DISPLAYED'] != "undefined" ) 
+     this.form.get('COLUMN_HEADINGS_DISPLAYED').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_SELECT_LOG(event){
+ async ON_CLICK_COLUMN_HEADINGS_DISPLAYED(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_TEXT_COLOR(value) {
+async WHEN_VALIDATE_ITEM_HORIZONTAL_GRID_LINES_DISPLAYED(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TEXT_COLOR'] != "undefined" ) 
-      this.form.controls['TEXT_COLOR'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['HORIZONTAL_GRID_LINES_DISPLAYED'] != "undefined" ) 
+      this.form.controls['HORIZONTAL_GRID_LINES_DISPLAYED'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['TEXT_COLOR'] != "undefined" ) 
-     this.form.get('TEXT_COLOR').updateValueAndValidity();
+ if (typeof this.form.controls['HORIZONTAL_GRID_LINES_DISPLAYED'] != "undefined" ) 
+     this.form.get('HORIZONTAL_GRID_LINES_DISPLAYED').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_TEXT_COLOR(event){
+ async ON_CLICK_HORIZONTAL_GRID_LINES_DISPLAYED(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(value) {
+async WHEN_VALIDATE_ITEM_VERTICAL_GRID_LINES_DISPLAYED(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BACKGROUND_COLOR'] != "undefined" ) 
-      this.form.controls['BACKGROUND_COLOR'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['VERTICAL_GRID_LINES_DISPLAYED'] != "undefined" ) 
+      this.form.controls['VERTICAL_GRID_LINES_DISPLAYED'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['BACKGROUND_COLOR'] != "undefined" ) 
-     this.form.get('BACKGROUND_COLOR').updateValueAndValidity();
+ if (typeof this.form.controls['VERTICAL_GRID_LINES_DISPLAYED'] != "undefined" ) 
+     this.form.get('VERTICAL_GRID_LINES_DISPLAYED').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_BACKGROUND_COLOR(event){
+ async ON_CLICK_VERTICAL_GRID_LINES_DISPLAYED(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_HORIZONTAL_SCROLL_BAR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['HORIZONTAL_SCROLL_BAR'] != "undefined" ) 
+      this.form.controls['HORIZONTAL_SCROLL_BAR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['HORIZONTAL_SCROLL_BAR'] != "undefined" ) 
+     this.form.get('HORIZONTAL_SCROLL_BAR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_HORIZONTAL_SCROLL_BAR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_VERTICAL_SCROLL_BAR(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['VERTICAL_SCROLL_BAR'] != "undefined" ) 
+      this.form.controls['VERTICAL_SCROLL_BAR'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['VERTICAL_SCROLL_BAR'] != "undefined" ) 
+     this.form.get('VERTICAL_SCROLL_BAR').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_VERTICAL_SCROLL_BAR(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_DETAILS_PANE_DISPLAYED(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['DETAILS_PANE_DISPLAYED'] != "undefined" ) 
+      this.form.controls['DETAILS_PANE_DISPLAYED'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['DETAILS_PANE_DISPLAYED'] != "undefined" ) 
+     this.form.get('DETAILS_PANE_DISPLAYED').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_DETAILS_PANE_DISPLAYED(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_TOOLBAR_DISPLAYED(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['TOOLBAR_DISPLAYED'] != "undefined" ) 
+      this.form.controls['TOOLBAR_DISPLAYED'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['TOOLBAR_DISPLAYED'] != "undefined" ) 
+     this.form.get('TOOLBAR_DISPLAYED').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_TOOLBAR_DISPLAYED(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_STATUS_BAR_DISPLAYED(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['STATUS_BAR_DISPLAYED'] != "undefined" ) 
+      this.form.controls['STATUS_BAR_DISPLAYED'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['STATUS_BAR_DISPLAYED'] != "undefined" ) 
+     this.form.get('STATUS_BAR_DISPLAYED').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_STATUS_BAR_DISPLAYED(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_TOOLTIPS_DISPLAYED(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['TOOLTIPS_DISPLAYED'] != "undefined" ) 
+      this.form.controls['TOOLTIPS_DISPLAYED'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['TOOLTIPS_DISPLAYED'] != "undefined" ) 
+     this.form.get('TOOLTIPS_DISPLAYED').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_TOOLTIPS_DISPLAYED(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['ICON_STYLE'] != "undefined" ) 
+      this.form.controls['ICON_STYLE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['ICON_STYLE'] != "undefined" ) 
+     this.form.get('ICON_STYLE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_ICON_STYLE(event){
 
 }
 
@@ -961,23 +1175,63 @@ async WHEN_VALIDATE_ITEM_TEXT_COLOR_CH(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_BACKGROUND_COLOR_CH(value) {
+async WHEN_VALIDATE_ITEM_BKG_COLOR_CH(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BACKGROUND_COLOR_CH'] != "undefined" ) 
-      this.form.controls['BACKGROUND_COLOR_CH'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['BKG_COLOR_CH'] != "undefined" ) 
+      this.form.controls['BKG_COLOR_CH'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['BACKGROUND_COLOR_CH'] != "undefined" ) 
-     this.form.get('BACKGROUND_COLOR_CH').updateValueAndValidity();
+ if (typeof this.form.controls['BKG_COLOR_CH'] != "undefined" ) 
+     this.form.get('BKG_COLOR_CH').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_BACKGROUND_COLOR_CH(event){
+ async ON_CLICK_BKG_COLOR_CH(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_FONT_CH(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['FONT_CH'] != "undefined" ) 
+      this.form.controls['FONT_CH'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['FONT_CH'] != "undefined" ) 
+     this.form.get('FONT_CH').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_FONT_CH(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_FONT_LABEL_CH(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['FONT_LABEL_CH'] != "undefined" ) 
+      this.form.controls['FONT_LABEL_CH'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['FONT_LABEL_CH'] != "undefined" ) 
+     this.form.get('FONT_LABEL_CH').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_FONT_LABEL_CH(event){
 
 }
 
@@ -1021,6 +1275,46 @@ async WHEN_VALIDATE_ITEM_SELECTION_BACKGROUND_COLOR(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_FONT_RT(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['FONT_RT'] != "undefined" ) 
+      this.form.controls['FONT_RT'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['FONT_RT'] != "undefined" ) 
+     this.form.get('FONT_RT').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_FONT_RT(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_BKG_COLOR_GRID(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['BKG_COLOR_GRID'] != "undefined" ) 
+      this.form.controls['BKG_COLOR_GRID'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['BKG_COLOR_GRID'] != "undefined" ) 
+     this.form.get('BKG_COLOR_GRID').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_BKG_COLOR_GRID(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_LINE_COLOR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1038,26 +1332,6 @@ async WHEN_VALIDATE_ITEM_LINE_COLOR(value) {
  }
 
  async ON_CLICK_LINE_COLOR(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_BACKGROUND_COLOR_GRID(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BACKGROUND_COLOR_GRID'] != "undefined" ) 
-      this.form.controls['BACKGROUND_COLOR_GRID'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['BACKGROUND_COLOR_GRID'] != "undefined" ) 
-     this.form.get('BACKGROUND_COLOR_GRID').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_BACKGROUND_COLOR_GRID(event){
 
 }
 
@@ -1081,23 +1355,43 @@ async WHEN_VALIDATE_ITEM_TEXT_COLOR_DP(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_BACKGROUND_COLOR_DP(value) {
+async WHEN_VALIDATE_ITEM_BKG_COLOR_DP(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['BACKGROUND_COLOR_DP'] != "undefined" ) 
-      this.form.controls['BACKGROUND_COLOR_DP'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['BKG_COLOR_DP'] != "undefined" ) 
+      this.form.controls['BKG_COLOR_DP'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['BACKGROUND_COLOR_DP'] != "undefined" ) 
-     this.form.get('BACKGROUND_COLOR_DP').updateValueAndValidity();
+ if (typeof this.form.controls['BKG_COLOR_DP'] != "undefined" ) 
+     this.form.get('BKG_COLOR_DP').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_BACKGROUND_COLOR_DP(event){
+ async ON_CLICK_BKG_COLOR_DP(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_FONT_DP(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['FONT_DP'] != "undefined" ) 
+      this.form.controls['FONT_DP'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['FONT_DP'] != "undefined" ) 
+     this.form.get('FONT_DP').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_FONT_DP(event){
 
 }
 
@@ -1121,223 +1415,183 @@ async WHEN_VALIDATE_ITEM_HEIGHT_PERCENT(value) {
 
 }
 
-async WHEN_VALIDATE_ITEM_DETAIL_POINT_FONT(value) {
+async WHEN_VALIDATE_ITEM_CONFIG_ALARM_STATUS_EXPLORER(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DETAIL_POINT_FONT'] != "undefined" ) 
-      this.form.controls['DETAIL_POINT_FONT'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['CONFIG_ALARM_STATUS_EXPLORER'] != "undefined" ) 
+      this.form.controls['CONFIG_ALARM_STATUS_EXPLORER'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DETAIL_POINT_FONT'] != "undefined" ) 
-     this.form.get('DETAIL_POINT_FONT').updateValueAndValidity();
+ if (typeof this.form.controls['CONFIG_ALARM_STATUS_EXPLORER'] != "undefined" ) 
+     this.form.get('CONFIG_ALARM_STATUS_EXPLORER').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DETAIL_POINT_FONT(event){
+ async ON_CLICK_CONFIG_ALARM_STATUS_EXPLORER(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_TEXT_FONT(value) {
+async WHEN_VALIDATE_ITEM_DEFAULT_POINT_FONT(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TEXT_FONT'] != "undefined" ) 
-      this.form.controls['TEXT_FONT'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['DEFAULT_POINT_FONT'] != "undefined" ) 
+      this.form.controls['DEFAULT_POINT_FONT'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['TEXT_FONT'] != "undefined" ) 
-     this.form.get('TEXT_FONT').updateValueAndValidity();
+ if (typeof this.form.controls['DEFAULT_POINT_FONT'] != "undefined" ) 
+     this.form.get('DEFAULT_POINT_FONT').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_TEXT_FONT(event){
+ async ON_CLICK_DEFAULT_POINT_FONT(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_DISPLAY_REPORT_ON_STARTUP(value) {
+async WHEN_VALIDATE_ITEM_TEXT_COLOR_TOOLBAR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DISPLAY_REPORT_ON_STARTUP'] != "undefined" ) 
-      this.form.controls['DISPLAY_REPORT_ON_STARTUP'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['TEXT_COLOR_TOOLBAR'] != "undefined" ) 
+      this.form.controls['TEXT_COLOR_TOOLBAR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DISPLAY_REPORT_ON_STARTUP'] != "undefined" ) 
-     this.form.get('DISPLAY_REPORT_ON_STARTUP').updateValueAndValidity();
+ if (typeof this.form.controls['TEXT_COLOR_TOOLBAR'] != "undefined" ) 
+     this.form.get('TEXT_COLOR_TOOLBAR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DISPLAY_REPORT_ON_STARTUP(event){
+ async ON_CLICK_TEXT_COLOR_TOOLBAR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_ALLOW_DETAILS_APNE_TO_BE_ADJUSTED(value) {
+async WHEN_VALIDATE_ITEM_BKG_COLOR_TOOLBAR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ALLOW_DETAILS_APNE_TO_BE_ADJUSTED'] != "undefined" ) 
-      this.form.controls['ALLOW_DETAILS_APNE_TO_BE_ADJUSTED'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['BKG_COLOR_TOOLBAR'] != "undefined" ) 
+      this.form.controls['BKG_COLOR_TOOLBAR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['ALLOW_DETAILS_APNE_TO_BE_ADJUSTED'] != "undefined" ) 
-     this.form.get('ALLOW_DETAILS_APNE_TO_BE_ADJUSTED').updateValueAndValidity();
+ if (typeof this.form.controls['BKG_COLOR_TOOLBAR'] != "undefined" ) 
+     this.form.get('BKG_COLOR_TOOLBAR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_ALLOW_DETAILS_APNE_TO_BE_ADJUSTED(event){
+ async ON_CLICK_BKG_COLOR_TOOLBAR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_HORIZONTAL_GRID_LINES(value) {
+async WHEN_VALIDATE_ITEM_FONT_TOOLBAR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['HORIZONTAL_GRID_LINES'] != "undefined" ) 
-      this.form.controls['HORIZONTAL_GRID_LINES'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['FONT_TOOLBAR'] != "undefined" ) 
+      this.form.controls['FONT_TOOLBAR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['HORIZONTAL_GRID_LINES'] != "undefined" ) 
-     this.form.get('HORIZONTAL_GRID_LINES').updateValueAndValidity();
+ if (typeof this.form.controls['FONT_TOOLBAR'] != "undefined" ) 
+     this.form.get('FONT_TOOLBAR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_HORIZONTAL_GRID_LINES(event){
+ async ON_CLICK_FONT_TOOLBAR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_VERTICA_GRIDLINES(value) {
+async WHEN_VALIDATE_ITEM_ICON_SIZE_TOOLBAR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['VERTICA_GRIDLINES'] != "undefined" ) 
-      this.form.controls['VERTICA_GRIDLINES'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['ICON_SIZE_TOOLBAR'] != "undefined" ) 
+      this.form.controls['ICON_SIZE_TOOLBAR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['VERTICA_GRIDLINES'] != "undefined" ) 
-     this.form.get('VERTICA_GRIDLINES').updateValueAndValidity();
+ if (typeof this.form.controls['ICON_SIZE_TOOLBAR'] != "undefined" ) 
+     this.form.get('ICON_SIZE_TOOLBAR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_VERTICA_GRIDLINES(event){
+ async ON_CLICK_ICON_SIZE_TOOLBAR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_DETAIL_PANS(value) {
+async WHEN_VALIDATE_ITEM_POSITION(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['DETAIL_PANS'] != "undefined" ) 
-      this.form.controls['DETAIL_PANS'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['POSITION'] != "undefined" ) 
+      this.form.controls['POSITION'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['DETAIL_PANS'] != "undefined" ) 
-     this.form.get('DETAIL_PANS').updateValueAndValidity();
+ if (typeof this.form.controls['POSITION'] != "undefined" ) 
+     this.form.get('POSITION').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_DETAIL_PANS(event){
+ async ON_CLICK_POSITION(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_TOOLBAR(value) {
+async WHEN_VALIDATE_ITEM_ICON_SIZE_STATUS_BAR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TOOLBAR'] != "undefined" ) 
-      this.form.controls['TOOLBAR'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['ICON_SIZE_STATUS_BAR'] != "undefined" ) 
+      this.form.controls['ICON_SIZE_STATUS_BAR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['TOOLBAR'] != "undefined" ) 
-     this.form.get('TOOLBAR').updateValueAndValidity();
+ if (typeof this.form.controls['ICON_SIZE_STATUS_BAR'] != "undefined" ) 
+     this.form.get('ICON_SIZE_STATUS_BAR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_TOOLBAR(event){
+ async ON_CLICK_ICON_SIZE_STATUS_BAR(event){
 
 }
 
-async WHEN_VALIDATE_ITEM_STATUS_BAR(value) {
+async WHEN_VALIDATE_ITEM_FONT_STATUS_BAR(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['STATUS_BAR'] != "undefined" ) 
-      this.form.controls['STATUS_BAR'].setErrors({invalid: true}); 
+ if (typeof this.form.controls['FONT_STATUS_BAR'] != "undefined" ) 
+      this.form.controls['FONT_STATUS_BAR'].setErrors({invalid: true}); 
  // Code goes here 
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
  
- if (typeof this.form.controls['STATUS_BAR'] != "undefined" ) 
-     this.form.get('STATUS_BAR').updateValueAndValidity();
+ if (typeof this.form.controls['FONT_STATUS_BAR'] != "undefined" ) 
+     this.form.get('FONT_STATUS_BAR').updateValueAndValidity();
  this.form.updateValueAndValidity(); 
  }
 
- async ON_CLICK_STATUS_BAR(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_TOOLTIPS(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['TOOLTIPS'] != "undefined" ) 
-      this.form.controls['TOOLTIPS'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['TOOLTIPS'] != "undefined" ) 
-     this.form.get('TOOLTIPS').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_TOOLTIPS(event){
-
-}
-
-async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
-
- this.FORM_TRIGGER_FAILURE = false ; 
- if (typeof this.form.controls['ICON_STYLE'] != "undefined" ) 
-      this.form.controls['ICON_STYLE'].setErrors({invalid: true}); 
- // Code goes here 
- 
-
- if ( this.FORM_TRIGGER_FAILURE == true) 
- return; 
- 
- if (typeof this.form.controls['ICON_STYLE'] != "undefined" ) 
-     this.form.get('ICON_STYLE').updateValueAndValidity();
- this.form.updateValueAndValidity(); 
- }
-
- async ON_CLICK_ICON_STYLE(event){
+ async ON_CLICK_FONT_STATUS_BAR(event){
 
 }
  
@@ -1350,27 +1604,99 @@ async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_SHAPE_ID(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ async onChange_SHAPE_ID(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_SHAPE_ID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  } 
- async onValueChange_SELECT_LOG(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_SELECT_LOG(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ } 
+ async onChange_COLUMN_HEADINGS_DISPLAYED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_COLUMN_HEADINGS_DISPLAYED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  } 
- async onValueChange_TEXT_COLOR(value) { 
-  this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_TEXT_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ } 
+ async onChange_HORIZONTAL_GRID_LINES_DISPLAYED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_HORIZONTAL_GRID_LINES_DISPLAYED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
-  } 
- async onValueChange_BACKGROUND_COLOR(value) { 
+ } 
+ async onChange_VERTICAL_GRID_LINES_DISPLAYED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_VERTICAL_GRID_LINES_DISPLAYED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_HORIZONTAL_SCROLL_BAR(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_HORIZONTAL_SCROLL_BAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_VERTICAL_SCROLL_BAR(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_VERTICAL_SCROLL_BAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_DETAILS_PANE_DISPLAYED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_DETAILS_PANE_DISPLAYED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_TOOLBAR_DISPLAYED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_TOOLBAR_DISPLAYED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_STATUS_BAR_DISPLAYED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_STATUS_BAR_DISPLAYED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onChange_TOOLTIPS_DISPLAYED(event:any) { 
+ var value = event.target.value; 
+ if ((value == null) || (value == '')) 	
+ 	return;  
+    this.FORM_TRIGGER_FAILURE = false;	
+ await   this.WHEN_VALIDATE_ITEM_TOOLTIPS_DISPLAYED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+ } 
+ async onValueChange_ICON_STYLE(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_ICON_STYLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
@@ -1380,9 +1706,21 @@ async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_BACKGROUND_COLOR_CH(value) { 
+ async onValueChange_BKG_COLOR_CH(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR_CH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_BKG_COLOR_CH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_FONT_CH(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FONT_CH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_FONT_LABEL_CH(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FONT_LABEL_CH(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
@@ -1398,15 +1736,21 @@ async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_LINE_COLOR(value) { 
+ async onValueChange_FONT_RT(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_LINE_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_FONT_RT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_BACKGROUND_COLOR_GRID(value) { 
+ async onValueChange_BKG_COLOR_GRID(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR_GRID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_BKG_COLOR_GRID(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_LINE_COLOR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_LINE_COLOR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
@@ -1416,9 +1760,15 @@ async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_BACKGROUND_COLOR_DP(value) { 
+ async onValueChange_BKG_COLOR_DP(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_BACKGROUND_COLOR_DP(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_BKG_COLOR_DP(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_FONT_DP(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FONT_DP(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
@@ -1431,93 +1781,57 @@ async WHEN_VALIDATE_ITEM_ICON_STYLE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
- async onValueChange_DETAIL_POINT_FONT(value) { 
+ async onValueChange_CONFIG_ALARM_STATUS_EXPLORER(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_DETAIL_POINT_FONT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_CONFIG_ALARM_STATUS_EXPLORER(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onValueChange_TEXT_FONT(value) { 
+ async onValueChange_DEFAULT_POINT_FONT(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_TEXT_FONT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_DEFAULT_POINT_FONT(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
- async onChange_DISPLAY_REPORT_ON_STARTUP(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DISPLAY_REPORT_ON_STARTUP(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_ALLOW_DETAILS_APNE_TO_BE_ADJUSTED(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_ALLOW_DETAILS_APNE_TO_BE_ADJUSTED(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_HORIZONTAL_GRID_LINES(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_HORIZONTAL_GRID_LINES(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_VERTICA_GRIDLINES(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_VERTICA_GRIDLINES(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_DETAIL_PANS(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_DETAIL_PANS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_TOOLBAR(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TOOLBAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_STATUS_BAR(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_STATUS_BAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onChange_TOOLTIPS(event:any) { 
- var value = event.target.value; 
- if ((value == null) || (value == '')) 	
- 	return;  
-    this.FORM_TRIGGER_FAILURE = false;	
- await   this.WHEN_VALIDATE_ITEM_TOOLTIPS(value); if ( this.FORM_TRIGGER_FAILURE) return; 
- this.formValidationChangedOutput.emit(this.form.valid); 
-  
- } 
- async onValueChange_ICON_STYLE(value) { 
+ async onValueChange_TEXT_COLOR_TOOLBAR(value) { 
   this.FORM_TRIGGER_FAILURE = false;	
- await this.WHEN_VALIDATE_ITEM_ICON_STYLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ await this.WHEN_VALIDATE_ITEM_TEXT_COLOR_TOOLBAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_BKG_COLOR_TOOLBAR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_BKG_COLOR_TOOLBAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_FONT_TOOLBAR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FONT_TOOLBAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_ICON_SIZE_TOOLBAR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_ICON_SIZE_TOOLBAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_POSITION(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_POSITION(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_ICON_SIZE_STATUS_BAR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_ICON_SIZE_STATUS_BAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
+ async onValueChange_FONT_STATUS_BAR(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_FONT_STATUS_BAR(value); if ( this.FORM_TRIGGER_FAILURE) return; 
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }
@@ -1536,7 +1850,7 @@ public DSP_UPLOADConfig!: componentConfigDef;
 public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
-public multiselect_arr = ["SELECT_LOG"];
+public multiselect_arr = [];
 public multiselect_tree_arr = [];
 public AttDwnUrl = "";
 public uploadimage = false;

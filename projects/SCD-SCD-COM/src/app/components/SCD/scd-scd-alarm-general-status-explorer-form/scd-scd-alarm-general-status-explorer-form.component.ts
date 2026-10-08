@@ -134,6 +134,8 @@ public labelSHOW_AREA_TREETop=true;
 public labelSHOW_AREA_TREEVisible=true;
 public labelPANEL_WIDTHTop=true;
 public labelPANEL_WIDTHVisible=true;
+public labellabel_percentTop=true;
+public labellabel_percentVisible=true;
 public labelDISPLAY_ERRORS_IN_DIALOGTop=true;
 public labelDISPLAY_ERRORS_IN_DIALOGVisible=true;
 public labelICON_STYLETop=true;
@@ -158,6 +160,7 @@ public visibleSHOW_DETAILS_BUTTON = true;
 public visibleSHOW_HELP_BUTTON = true;
 public visibleSHOW_AREA_TREE = true;
 public visiblePANEL_WIDTH = true;
+public visiblelabel_percent = true;
 public visibleDISPLAY_ERRORS_IN_DIALOG = true;
 public visibleICON_STYLE = true;
 public visibleSHOW_TIME_STAMPE = true;
@@ -179,10 +182,12 @@ public disableSHOW_DETAILS_BUTTON = false;
 public disableSHOW_HELP_BUTTON = false;
 public disableSHOW_AREA_TREE = false;
 public disablePANEL_WIDTH = false;
+public disablelabel_percent = false;
 public disableDISPLAY_ERRORS_IN_DIALOG = false;
 public disableICON_STYLE = false;
 public disableSHOW_TIME_STAMPE = false;
 
+public variablelabel_percent;
 
   
   //@Input()  
@@ -201,6 +206,7 @@ public disableSHOW_TIME_STAMPE = false;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
@@ -272,26 +278,26 @@ public disableSHOW_TIME_STAMPE = false;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -1168,6 +1174,26 @@ async WHEN_VALIDATE_ITEM_PANEL_WIDTH(value) {
 
 }
 
+async WHEN_VALIDATE_ITEM_label_percent(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['label_percent'] != "undefined" ) 
+      this.form.controls['label_percent'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['label_percent'] != "undefined" ) 
+     this.form.get('label_percent').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_label_percent(event){
+
+}
+
 async WHEN_VALIDATE_ITEM_DISPLAY_ERRORS_IN_DIALOG(value) {
 
  this.FORM_TRIGGER_FAILURE = false ; 
@@ -1363,6 +1389,12 @@ async WHEN_VALIDATE_ITEM_SHOW_TIME_STAMPE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
  } 
+ async onValueChange_label_percent(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_label_percent(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_DISPLAY_ERRORS_IN_DIALOG(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1408,10 +1440,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

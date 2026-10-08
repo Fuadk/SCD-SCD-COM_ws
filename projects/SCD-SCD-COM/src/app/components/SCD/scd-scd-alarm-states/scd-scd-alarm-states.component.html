@@ -64,7 +64,7 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID"
  *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHAPE_ID','Shape Id') + ' *'}}"  [width]="30">
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHAPE_ID','Shape Id') + ' *'}}"  [width]="50">
 		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (blur)="onBlur_SHAPE_ID()"      [formControl]="formGroup.get('SHAPE_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SHAPE_ID_Hint','Please enter Shape Id.')" />
@@ -95,7 +95,7 @@
  [hidden]="hiddenColumns.indexOf('IMAGE_ICON') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.IMAGE_ICON','')}}"  [width]="40">
 		 <ng-template kendoGridCellTemplate let-dataItem><span 
 > 		 <kendo-svg-icon 
-		 [icon]="starServices.convertSvgToKendoSVGIcon(this,dataItem.IMAGE_ICON, null, 'IMAGE_ICON')"
+		 [icon]="dataItem.IMAGE_ICON_SVG"
  style="width: 1.5em;height: 1.5em;"    ></kendo-svg-icon> </span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
 		<input  (valueChange)="valueChangeIMAGE_ICON($event)"  style="width: 1.5em;height: 1.5em;"    [formControl]="formGroup.get('IMAGE_ICON')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.IMAGE_ICON_Hint','Please enter Image Icon.')" />

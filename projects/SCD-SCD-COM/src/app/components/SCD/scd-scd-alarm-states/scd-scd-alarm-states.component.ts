@@ -84,8 +84,8 @@ public  isSHAPE_IDEnable : boolean = true;
   public  isColumnMenu : boolean = false;
   public  gridHeight = "";
 
-  private masterKeyArr = [];
-  private masterKeyNameArr = [];
+  public masterKeyArr = [];
+  public masterKeyNameArr = [];
   private masterKey ="";
   private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_ALARM_STATES";
@@ -119,7 +119,7 @@ public  isSHAPE_IDEnable : boolean = true;
 public isPhonePortrait = false;
 public visibleSTATE_ID = true;
 public visibleSHAPE_ID = true;
-public visibleSHOW_EVENT_TYPE = true;
+public visibleSHOW_EVENT_TYPE = false;
 public visibleIMAGE_ICON = true;
 public visibleEVENT_TYPE = true;
 public visiblePRIORITY = true;
@@ -311,7 +311,7 @@ public compSelector = 'app-scd-scd-alarm-states';
 
     if (!this.uploadimage && this.formGroup && this.formGroup.valid &&
         !matches(e.target, '#grid tbody *, #grid .k-grid-toolbar .k-button, .k-link') &&
-        !isTimePickerPopup && !isTimePickerSetButton) {
+        !isTimePickerPopup && !isTimePickerSetButton && this.editedRowIndex != null) {
         this.saveCurrent();
     }
     else if (typeof this.formGroup !== "undefined") {
@@ -333,9 +333,9 @@ public compSelector = 'app-scd-scd-alarm-states';
 
   if (this.formGroup.valid == false) {
         this.formGroup.markAllAsTouched()
-        setTimeout(() => {
+        //setTimeout(() => {
           this.formValidationChangedOutput.emit(this.formGroup.valid)
-        }, 100)
+        //}, 100)
       }
   }
    public setInitialValues() {
@@ -400,16 +400,15 @@ public compSelector = 'app-scd-scd-alarm-states';
 
       let GridData:any;
       GridData = Object.assign([], this.grid.data);
-      for (let i = 0; i < GridData.data.length; i++){
-        this.POST_QUERY(GridData.data[i], i);
-        if (this.att_arr.length != 0 || this.img_arr.length != 0){
-          await this.starServices.callGetSaveAttachemts("fetch", GridData.data[i],this); 
-          await this.starServices.sleep(100);
-          this.starServices.att_img_populateArrs(GridData.data[i],this);
-          await this.starServices.sleep(100);
+      setTimeout(() => {
+        for (let i = 0; i < GridData.data.length; i++) {
+          this.POST_QUERY(GridData.data[i], i);
+          if (this.att_arr.length != 0 || this.img_arr.length != 0 || this.svg_arr.length != 0) {
+            this.starServices.callGetSaveAttachemts("fetch", GridData.data[i], this);
+            this.starServices.att_img_populateArrs(GridData.data[i], this);
+          }
         }
-
-      }
+      }, 100)
       if (this.img_arr.length != 0){
         this.grid.data = [];
         await this.starServices.sleep(10);
@@ -716,7 +715,36 @@ public printScreen(){
 public hiddenColumns: string[] = [];
 public disabledColumns: string[] = [];
 async WHEN_NOTIFY(ComponentConfig){
-    
+    if (ComponentConfig.masterSelector != null) {
+      console.log("WHEN_NOTIFY:masterSelector:", ComponentConfig.masterSelector)
+      if (ComponentConfig.masterSelector.toUpperCase().includes("BANNER"))
+            this.appMode = "Banner";
+}
+if (ComponentConfig.masterSelector != null) {
+      console.log("WHEN_NOTIFY:masterSelector:", ComponentConfig.masterSelector)
+      if (ComponentConfig.masterSelector.toUpperCase().includes("VIEWER"))
+            this.appMode = "Log Viewer";
+}
+if (ComponentConfig.masterSelector != null) {
+      console.log("WHEN_NOTIFY:masterSelector:", ComponentConfig.masterSelector)
+      if (ComponentConfig.masterSelector.toUpperCase().includes("SUMMARY"))
+            this.appMode = "Summary";
+}
+
+console.log("masterSelector:", ComponentConfig.masterSelector,
+ComponentConfig.title, this.appMode,  ComponentConfig.masterKeyArr)
+
+if ( (this.appMode == "Log Viewer") ) {
+      this.visibleBLINK = false;
+      this.visibleSOUND = false;
+
+}
+if ( (this.appMode == "Banner") ) {
+      this.visibleSHOW_EVENT_TYPE = true;
+}
+if ( (this.appMode == "Summary") ) {
+      this.visibleSOUND = false;
+}
 }
 async WHEN_NEW_FORM_INSTANCE(){
    // 	if (!this.isChild){
@@ -1036,7 +1064,7 @@ async WHEN_VALIDATE_ITEM_SAMPLE(formGroup) {
  async onBlur_SAMPLE() { 
   await this.WHEN_VALIDATE_ITEM_SAMPLE(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
-
+public appMode ="";
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1052,6 +1080,7 @@ public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
 public AttDwnUrl = "";
+public svg_arr = ["IMAGE_ICON"];
 public uploadimage = false;
 
 

@@ -1,7 +1,7 @@
 <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
 <legend class="k-form-legend" *ngIf="componentConfig.showToolBar">{{
       componentConfig.title ? componentConfig.title :
-       this.starServices.getNLS([],"SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.component_title","Alarm Display Filters") }}</legend>
+       this.starServices.getNLS([],"SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.component_title","") }}</legend>
 	
     <kendo-grid [rowClass]="ROW_CLASS" (excelExport)="onExcelExport($event)"
     
@@ -51,47 +51,45 @@
     </ng-template>
 
 
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID"
+ *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
+
+ [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.SHAPE_ID','Shape Id') + ' *'}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SHAPE_ID}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SHAPE_ID()"      [formControl]="formGroup.get('SHAPE_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.SHAPE_ID_Hint','Please enter Shape Id.')" />
+		</ng-template>
+		</kendo-grid-column>
+
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FILTER_ID"
  *ngIf=visibleFILTER_ID  [editable]=" !(disabledColumns.indexOf('FILTER_ID') > -1)  && !primarKeyReadOnlyArr.isFILTER_IDreadOnly  "
 
- [hidden]="hiddenColumns.indexOf('FILTER_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.FILTER_ID','Filter Id') + ' *'}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="HIGHEST" >{{dataItem.FILTER_ID}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('FILTER_ID') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.FILTER_ID','Filter Id') + ' *'}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.FILTER_ID}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_FILTER_ID()"    class="HIGHEST"  [formControl]="formGroup.get('FILTER_ID')" [placeholder]="starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.FILTER_ID_Hint','Please enter Filter Id.')" />
+		<input  (blur)="onBlur_FILTER_ID()"      [formControl]="formGroup.get('FILTER_ID')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.FILTER_ID_Hint','Please enter Filter Id.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="FILTER_NAME"
  *ngIf=visibleFILTER_NAME  [editable]=" !(disabledColumns.indexOf('FILTER_NAME') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('FILTER_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.FILTER_NAME','Filter Name')}}"  [width]="100">
-		 <ng-template kendoGridCellTemplate let-dataItem><span    class="HIGH" >{{dataItem.FILTER_NAME}}</span></ng-template>
+ [hidden]="hiddenColumns.indexOf('FILTER_NAME') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.FILTER_NAME','Filter Name')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.FILTER_NAME}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<input  (blur)="onBlur_FILTER_NAME()"    class="HIGH"  [formControl]="formGroup.get('FILTER_NAME')" [placeholder]="starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.FILTER_NAME_Hint','Please enter Filter Name.')" />
+		<input  (blur)="onBlur_FILTER_NAME()"      [formControl]="formGroup.get('FILTER_NAME')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.FILTER_NAME_Hint','Please enter Filter Name.')" />
 		</ng-template>
 		</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="WHERE_CLAUSE"
  *ngIf=visibleWHERE_CLAUSE  [editable]=" !(disabledColumns.indexOf('WHERE_CLAUSE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('WHERE_CLAUSE') > -1" 		 title="{{starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.WHERE_CLAUSE','Where Clause')}}"  [width]="15">
-		 <ng-template kendoGridCellTemplate let-dataItem> {{dataItem.WHERE_CLAUSE}}</ng-template>
+ [hidden]="hiddenColumns.indexOf('WHERE_CLAUSE') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.WHERE_CLAUSE','Where Clause')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.WHERE_CLAUSE}}</span></ng-template>
 		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<textarea  style="resize: both;width: auto;"  [rows]="5" [cols]="3.75"  (valueChange)="valueChangeWHERE_CLAUSE($event)"    class="MEDIUM"  [formControl]="formGroup.get('WHERE_CLAUSE')"  [placeholder]="starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.WHERE_CLAUSE_Hint','Please enter Where Clause.')" ></textarea>
+		<input  (blur)="onBlur_WHERE_CLAUSE()"      [formControl]="formGroup.get('WHERE_CLAUSE')" [placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_DISPLAY_FILTERS.scdalarmDisplayFiltersScdScdAlarmDisplayFilters.WHERE_CLAUSE_Hint','Please enter Where Clause.')" />
 		</ng-template>
 		</kendo-grid-column>
-
-	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SHAPE_ID" title="{{starServices.getNLS([],'SCD_ADFL_ALARM_DISPLAY_FILTERS_4.scdalarmDisplayFiltersScdAdflAlarmDisplayFilters4.SHAPE_ID','Shape Id') + ' *'}}" [width]="100"   *ngIf=visibleSHAPE_ID  [editable]=" !(disabledColumns.indexOf('SHAPE_ID') > -1)  && !primarKeyReadOnlyArr.isSHAPE_IDreadOnly  "
-
- [hidden]="hiddenColumns.indexOf('SHAPE_ID') > -1" >
-		<ng-template kendoGridCellTemplate let-dataItem><span     > {{lkpArrGetSHAPE_ID(dataItem.SHAPE_ID)?.CODETEXT_LANG}}</span> </ng-template>
-		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
-		<kendo-dropdownlist  [data]="lkpArrSHAPE_ID"  textField="CODETEXT_LANG" valueField="CODE"
-		 (valueChange)="valueChangeSHAPE_ID($event)" 
-		[valuePrimitive]="true" [formControl]="formGroup.get('SHAPE_ID')">
-		</kendo-dropdownlist>
-		</ng-template>
-	</kendo-grid-column>
 
 
 

@@ -114,10 +114,12 @@
 		     adaptiveMode="auto"  width="100" [ngClass]="customerFacing ?  'summaryClass' : 'form-field-date' " > 		{{starServices.formatthisDate(form.value.SELECTED_ITEM_BACKGROUND_COLOR, paramConfig.DateTimeFormat,paramConfig.dateLocale)}} 	</p>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_ALTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_AL >
 		<button  (valueChange)="onValueChange_FONT_AL($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_BANNER.scdalarmGeneralBannerScdScdAlarmGeneralBanner.FONT_AL_Hint','Please enter Font Al.')" 
  iconClass="fas fa-"  *ngIf=visibleFONT_AL 		(click)="ON_CLICK_FONT_AL($event)"
  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_BANNER.scdalarmGeneralBannerScdScdAlarmGeneralBanner.FONT_AL','Font Al')}}</button>
+	</kendo-formfield>
 
 
 </div>
@@ -264,10 +266,12 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_COMMAND($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelCOMMAND_BUTTONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCOMMAND_BUTTON >
 		<button  (valueChange)="onValueChange_COMMAND_BUTTON($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
 		 title="starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_BANNER.scdalarmGeneralBannerScdScdAlarmGeneralBanner.COMMAND_BUTTON_Hint','Please enter Command Button.')" 
  iconClass="fas fa-"  *ngIf=visibleCOMMAND_BUTTON 		(click)="ON_CLICK_COMMAND_BUTTON($event)"
  >{{starServices.getNLS([],'SCD_SCD_ALARM_GENERAL_BANNER.scdalarmGeneralBannerScdScdAlarmGeneralBanner.COMMAND_BUTTON','Command Button')}}</button>
+	</kendo-formfield>
 
 
 </div>
