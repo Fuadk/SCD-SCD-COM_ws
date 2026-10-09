@@ -830,9 +830,9 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    // if (!this.isChild) {
-//   this.executeQuery(this.form.value);
-// }
+    if (!this.isChild) {
+  this.executeQuery(this.form.value);
+}
 
 console.log("WHEN_NEW_FORM_INSTANCE");
 var href = window.location.href;
@@ -1122,8 +1122,144 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
-  if (!this.isEditMode)
-    return;
+   // ============================================================
+// BUTTON RUNTIME INTERACTION
+// These events must work in both Edit Mode and Runtime Mode.
+// ============================================================
+
+if (
+  type === "mouseEnter" ||
+  type === "mouseLeave" ||
+  type === "mouseDown" ||
+  type === "mouseUp"
+) {
+  const shape = event.item;
+
+  if (shape) {
+    if (shape.id) {
+      this.currentShapeId = shape.id;
+    }
+
+    const dataItem =
+      shape.dataItem?.dataItem ??
+      shape.dataItem ??
+      {};
+    const isCustomButton =
+    dataItem?.visual === 'button3DVisual' ||
+    dataItem?.visual === 'raisedButtonVisual'||
+    dataItem?.visual === 'beveledButtonVisual'||
+    dataItem?.visual === 'recessedButtonVisual';
+    
+    
+    
+    if (isCustomButton) {
+
+      // Disabled buttons don't react
+      if (dataItem?.disabled === true) {
+        return;
+      }
+
+      // -------------------------
+      // Mouse enters button
+      // -------------------------
+      if (type === "mouseEnter") {
+
+        dataItem.buttonState = 'hover';
+
+        this.refreshCustomShape(shape);
+
+        console.log(
+          `🖱️ Button hover: ${shape.id}`
+        );
+
+        return;
+      }
+
+      // -------------------------
+      // Mouse leaves button
+      // -------------------------
+      if (type === "mouseLeave") {
+
+        let buttonShape = shape;
+
+        if (!buttonShape && this.currentShapeId) {
+          buttonShape =
+            this.diagram?.getShapeById(
+              this.currentShapeId
+            );
+        }
+
+        if (!buttonShape) {
+          return;
+        }
+
+        const buttonData =
+          buttonShape.dataItem?.dataItem ??
+          buttonShape.dataItem ??
+          {};
+
+        if (
+          isCustomButton &&
+          buttonData?.disabled !== true
+        ) {
+
+          buttonData.buttonState = 'normal';
+
+          this.refreshCustomShape(buttonShape);
+
+          console.log(
+            `🖱️ Button normal: ${buttonShape.id}`
+          );
+        }
+
+        return;
+      }
+
+      // -------------------------
+      // Mouse button pressed
+      // -------------------------
+      if (type === "mouseDown") {
+
+        dataItem.buttonState = 'pressed';
+
+        this.refreshCustomShape(shape);
+
+        console.log(
+          `🖱️ Button pressed: ${shape.id}`
+        );
+
+        return;
+      }
+
+      // -------------------------
+      // Mouse button released
+      // -------------------------
+      if (type === "mouseUp") {
+
+        // Mouse is still over the button,
+        // so return to hover.
+        dataItem.buttonState = 'hover';
+
+        this.refreshCustomShape(shape);
+
+        console.log(
+          `🖱️ Button released: ${shape.id}`
+        );
+
+        return;
+      }
+    }
+  }
+}
+
+
+// ============================================================
+// EDITOR-ONLY EVENTS
+// ============================================================
+
+if (!this.isEditMode)
+  return;
+
   if (type === "select" || type === "shapeBoundsChange" || type === "change") {
       setTimeout(() => this.syncInspectorFromSelection());
     }
@@ -1739,6 +1875,17 @@ public visualTemplate = (options: any): Group => {
   if (!dataItem) {
     return new Group();
   }
+  const visualMap = {
+      button3DVisual: 'button3DVisual',
+      raisedButtonVisual: 'raisedButtonVisual',
+      beveledButtonVisual: 'beveledButtonVisual',
+      recessedButtonVisual: 'recessedButtonVisual',
+    };
+
+    const method = visualMap[dataItem?.visual];
+    if (method) {
+      return this[method](options);
+    }
 
   let group: Group;
 
@@ -2148,6 +2295,10 @@ public mapSampleData() {
         });
     });
     this.prepareShapes();
+
+    setTimeout(() => {
+        //  this.disableButton1023(); //Fuad testing disable a button
+    }, 100);
     
 }
 
@@ -2334,6 +2485,7 @@ public lastClickY: number = 0;
             fillColor: "transparent",
             x: this.lastClickX,
             y: this.lastClickY,
+            
           };
         if ((shapeType == "Button") || (shapeType == "Momentry") 
           || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
@@ -6182,5 +6334,1461 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       break;
   }
 }
+
+//////////// Visual for buttons /////////
+private darken(hex: string, amount: number): string {
+  const c = hex.replace('#', '');
+
+  const num = parseInt(c, 16);
+
+  let r = (num >> 16) & 255;
+  let g = (num >> 8) & 255;
+  let b = num & 255;
+
+  r = Math.max(0, Math.round(r * (1 - amount)));
+  g = Math.max(0, Math.round(g * (1 - amount)));
+  b = Math.max(0, Math.round(b * (1 - amount)));
+
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b)
+    .toString(16)
+    .slice(1)}`;
+}
+private getButtonVisualStyle(dataItem: any): {
+  state: 'normal' | 'hover' | 'pressed' | 'disabled';
+  disabled: boolean;
+  actualFillTop: string;
+  actualFillBase: string;
+  actualTextColor: string;
+} {
+  const disabled = dataItem?.disabled === true;
+
+  const requestedState = dataItem?.buttonState || 'normal';
+
+  // Disabled takes precedence. Ignore unsupported states.
+  const state = disabled
+    ? 'disabled'
+    : ['normal', 'hover', 'pressed'].includes(requestedState)
+      ? requestedState
+      : 'normal';
+
+  const fillTop = dataItem?.fillColor || '#2196f3';
+  const fillBase = dataItem?.strokeColor || '#0d47a1';
+  const textColor = dataItem?.textColor || '#ffffff';
+
+  let actualFillTop = fillTop;
+  let actualFillBase = fillBase;
+  let actualTextColor = textColor;
+
+  switch (state) {
+    case 'hover':
+      actualFillTop = this.lighten(fillTop, 0.12);
+      actualFillBase = this.lighten(fillBase, 0.08);
+      break;
+
+    case 'pressed':
+      actualFillTop = this.darken(fillTop, 0.10);
+      actualFillBase = this.darken(fillBase, 0.05);
+      break;
+
+    case 'disabled':
+      actualFillTop = '#D0D0D0';
+      actualFillBase = '#A0A0A0';
+      actualTextColor = '#777777';
+      break;
+  }
+
+  return {
+    state,
+    disabled,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  };
+}
+  /**
+   * 3D button visual.
+   * Renders a raised, rounded, glossy button in ~3 DOM nodes per shape:
+   *   1) dark "base" rect (the raised bottom layer)
+   *   2) top face rect with vertical gradient + rounded corners
+   *   3) label text
+   
+   * Kept allocation-light so 100+ shapes still render smoothly.
+   */
+
+public button3DVisual(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  // Resolve button state and colors centrally.
+  const {
+    state,
+    disabled,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+  const radius = Math.min(14, h / 3);
+
+  // Normal/hover: visible depth.
+  // Pressed: reduced depth.
+  const depth = state === 'pressed' ? 1 : 4;
+  const topH = h - depth;
+
+  const label = String(dataItem?.text ?? '');
+
+  // -----------------------------------------
+  // Main button group
+  // -----------------------------------------
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // 1. Dark base / raised bottom layer
+  // -----------------------------------------
+
+  const base = new Rectangle({
+    x: 1,
+    y: depth,
+    width: w - 2,
+    height: topH,
+    cornerRadius: radius,
+    fill: {
+      color: actualFillBase
+    },
+    stroke: null
+  } as any);
+
+  group.append(base);
+
+  // -----------------------------------------
+  // 2. Top face
+  // -----------------------------------------
+
+  const topY = state === 'pressed' ? 1 : 0;
+
+  const top = new Rectangle({
+    x: 0,
+    y: topY,
+    width: w,
+    height: topH,
+    cornerRadius: radius,
+
+    fill: {
+      color: actualFillTop,
+      gradient: {
+        type: 'linear',
+        start: [0, 0],
+        end: [0, topH],
+        stops: [
+          {
+            offset: 0,
+            color: state === 'disabled'
+              ? actualFillTop
+              : this.lighten(actualFillTop, 0.35)
+          },
+          {
+            offset: 1,
+            color: actualFillTop
+          }
+        ]
+      }
+    },
+
+    stroke: {
+      color: actualFillBase,
+      width: 1
+    }
+  } as any);
+
+  group.append(top);
+
+  // -----------------------------------------
+  // 3. Label
+  // -----------------------------------------
+
+  if (label) {
+
+    const text = new TextBlock({
+      text: label,
+      x: w / 2,
+      y: topY + topH / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'bold';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily || 'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+
+  /** Small helper: lighten a hex color by ratio (0..1). */
+  private lighten(hex: string, ratio: number): string {
+    const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
+    if (!m) return hex;
+    let h = m[1];
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const num = parseInt(h, 16);
+    const r = Math.min(255, Math.round(((num >> 16) & 0xff) + (255 - ((num >> 16) & 0xff)) * ratio));
+    const g = Math.min(255, Math.round(((num >> 8)  & 0xff) + (255 - ((num >> 8)  & 0xff)) * ratio));
+    const b = Math.min(255, Math.round(( num        & 0xff) + (255 - ( num        & 0xff)) * ratio));
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+/**
+ * Raised button visual.
+ * Same 3-node allocation strategy as button3DVisual, plus one gloss rect
+ * for the curved-surface look. Total: 4 nodes per shape (3 while pressed).
+ *
+ * Layers:
+ *   1) dark base (the visible "wall" of the raised button)
+ *   2) top face with vertical gradient
+ *   3) gloss pill across the top half
+ *   4) label
+ */
+/**
+ * Raised glossy button.
+ *
+ * Based directly on the SVG design:
+ *
+ *   1. Dark base / wall shifted downward
+ *   2. Gradient top face
+ *   3. Gloss highlight
+ *   4. Thin inner rim
+ *   5. Label + text shadow
+ *
+ * States:
+ *   normal   - standard raised appearance
+ *   hover    - slightly brighter
+ *   pressed  - top face moves down toward the base
+ *   disabled - greyed out, no interaction
+ */
+
+public raisedButtonVisual(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  // -----------------------------------------
+  // Shared button state and colors
+  // -----------------------------------------
+
+  const {
+    state,
+    disabled,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+  const radius = Math.min(14, h / 3);
+
+  // Normal/hover: visible depth.
+  // Pressed: reduced depth.
+  const depth = state === 'pressed' ? 1 : 4;
+  const topH = h - depth;
+
+  const label = String(dataItem?.text ?? '');
+
+  // -----------------------------------------
+  // Main button group
+  // -----------------------------------------
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // 1. Dark base / raised bottom layer
+  // -----------------------------------------
+
+  const base = new Rectangle({
+    x: 1,
+    y: depth,
+    width: w - 2,
+    height: topH,
+    cornerRadius: radius,
+    fill: {
+      color: actualFillBase
+    },
+    stroke: null
+  } as any);
+
+  group.append(base);
+
+  // -----------------------------------------
+  // 2. Main inset face
+  // -----------------------------------------
+
+  const topY = state === 'pressed' ? 1 : 0;
+
+  const topHeight = Math.max(1, topH - 10);
+
+  const top = new Rectangle({
+    x: 5,
+    y: topY + 10,
+    width: w - 10,
+    height: topHeight,
+    cornerRadius: radius,
+
+    fill: {
+      color: actualFillTop,
+      gradient: {
+        type: 'linear',
+        start: [0, 0],
+        end: [0, topHeight],
+        stops: [
+          {
+            offset: 0,
+            color: state === 'disabled'
+              ? actualFillTop
+              : this.lighten(actualFillTop, 0.35)
+          },
+          {
+            offset: 1,
+            color: actualFillTop
+          }
+        ]
+      }
+    },
+
+    // White outline creates the raised rim.
+    stroke: {
+      color: '#FFFFFF',
+      width: 1
+    }
+  } as any);
+
+  group.append(top);
+
+  // -----------------------------------------
+  // 2b. Upper gloss / lighter overlay
+  // -----------------------------------------
+
+  const top2Height = Math.max(1, topH - 40);
+
+  const top2 = new Rectangle({
+    x: 5,
+    y: topY + 10,
+    width: w - 10,
+    height: top2Height,
+    cornerRadius: radius,
+
+    fill: {
+      color: this.lighten(actualFillTop, 0.35),
+      gradient: {
+        type: 'linear',
+        start: [0, 0],
+        end: [0, top2Height],
+        stops: [
+          {
+            offset: 0,
+            color: this.lighten(actualFillTop, 0.55)
+          },
+          {
+            offset: 1,
+            color: this.lighten(actualFillTop, 0.15)
+          }
+        ]
+      }
+    },
+
+    // No outline around the gloss overlay.
+    stroke: {
+      width: 0
+    }
+  } as any);
+
+  group.append(top2);
+
+  // -----------------------------------------
+  // 3. Label
+  // -----------------------------------------
+
+  if (label) {
+
+    const text = new TextBlock({
+      text: label,
+      x: w / 2,
+      y: topY + topH / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'bold';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily ||
+      'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+public raisedButtonVisual_org(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  const buttonState =
+    dataItem?.buttonState || 'normal';
+
+  const disabled =
+    dataItem?.disabled === true;
+
+  const state =
+    disabled ? 'disabled' : buttonState;
+
+  const shape =
+    options?.dataItem ?? {};
+
+
+  // ============================================================
+  // DIMENSIONS
+  // ============================================================
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+
+  // ============================================================
+  // SVG ORIGINAL
+  //
+  // viewBox = 220 x 90
+  //
+  // face:
+  //   x=10
+  //   y=10
+  //   width=200
+  //   height=60
+  //
+  // base:
+  //   x=10
+  //   y=18
+  //   width=200
+  //   height=60
+  //
+  // Therefore:
+  //
+  // horizontal margin = 10 / 220
+  // vertical face margin = 10 / 90
+  // base offset = 8 / 90
+  //
+  // We scale those values to the actual Kendo shape size.
+  // ============================================================
+
+  const scaleX = w / 220;
+  const scaleY = h / 90;
+
+  const faceX = 10 * scaleX;
+  const faceY = 10 * scaleY;
+
+  const faceW = 200 * scaleX;
+  const faceH = 60 * scaleY;
+
+  const baseY = 18 * scaleY;
+
+  const radius = 14 * Math.min(scaleX, scaleY);
+
+
+  // ============================================================
+  // COLORS
+  // ============================================================
+
+  let baseColor =
+    dataItem?.strokeColor || '#0d47a1';
+
+  let topColor =
+    dataItem?.fillColor || '#2196f3';
+
+  let textColor =
+    dataItem?.textColor || '#ffffff';
+
+
+  // ============================================================
+  // STATE COLORS
+  // ============================================================
+
+  if (state === 'hover') {
+
+    topColor =
+      this.lighten(topColor, 0.10);
+
+    baseColor =
+      this.lighten(baseColor, 0.05);
+  }
+
+
+  if (state === 'pressed') {
+
+    topColor =
+      this.darken(topColor, 0.10);
+
+    baseColor =
+      this.darken(baseColor, 0.05);
+  }
+
+
+  if (state === 'disabled') {
+
+    baseColor = '#8A8A8A';
+    topColor = '#C8C8C8';
+    textColor = '#707070';
+  }
+
+
+  // ============================================================
+  // GROUP
+  // ============================================================
+
+  const group = new Group({
+    cursor:
+      disabled
+        ? 'default'
+        : 'pointer'
+  } as any);
+
+
+  // ============================================================
+  // PRESSED POSITION
+  //
+  // Normal:
+  //
+  //   BASE
+  //     ↓
+  //   ┌─────────────┐
+  //   │ TOP FACE    │
+  //   └─────────────┘
+  //
+  // Pressed:
+  //
+  //   ┌─────────────┐
+  //   │ TOP FACE    │
+  //   └─────────────┘
+  //     ↓
+  //   BASE
+  //
+  // ============================================================
+
+  let actualFaceY = faceY;
+
+  if (state === 'pressed') {
+    actualFaceY = baseY;
+  }
+
+
+  // ============================================================
+  // 1. DARK BASE
+  //
+  // SVG:
+  //
+  // <rect x="10" y="18"
+  //       width="200" height="60"
+  //       rx="14"
+  //       fill="#0d47a1"/>
+  //
+  // ============================================================
+
+  const base = new Rectangle({
+
+    x: faceX,
+    y: baseY,
+
+    width: faceW,
+    height: faceH,
+
+    cornerRadius: radius,
+
+    fill: {
+      color: baseColor
+    },
+
+    stroke: null
+
+  } as any);
+
+  group.append(base);
+
+
+  // ============================================================
+  // 2. TOP FACE
+  //
+  // SVG:
+  //
+  // <linearGradient>
+  //   #7fd0ff
+  //   #2196f3
+  //   #1565c0
+  // </linearGradient>
+  //
+  // ============================================================
+
+  let gradientTop = this.lighten(topColor, 0.35);
+
+  let gradientMiddle = topColor;
+
+  let gradientBottom = this.darken(topColor, 0.15);
+
+
+  // Disabled button gets a flat grey appearance.
+  if (state === 'disabled') {
+
+    gradientTop = '#D8D8D8';
+    gradientMiddle = '#C8C8C8';
+    gradientBottom = '#B8B8B8';
+  }
+
+
+  const top = new Rectangle({
+
+    x: faceX,
+    y: actualFaceY,
+
+    width: faceW,
+    height: faceH,
+
+    cornerRadius: radius,
+
+    fill:
+      state === 'disabled'
+
+        ? {
+            color: gradientMiddle
+          }
+
+        : {
+            color: gradientMiddle,
+
+            gradient: {
+
+              type: 'linear',
+
+              start: [0, 0],
+
+              end: [0, faceH],
+
+              stops: [
+
+                {
+                  offset: 0,
+                  color: gradientTop
+                },
+
+                {
+                  offset: 0.45,
+                  color: gradientMiddle
+                },
+
+                {
+                  offset: 1,
+                  color: gradientBottom
+                }
+
+              ]
+
+            }
+          },
+
+    stroke: null
+
+  } as any);
+
+  group.append(top);
+
+
+  // ============================================================
+  // 3. GLOSS
+  //
+  // SVG:
+  //
+  // <rect x="20" y="16"
+  //       width="180" height="24"
+  //       rx="12"
+  //       fill="url(#raisedGloss)"/>
+  //
+  // The gloss is white at the top and fades to transparent.
+  // ============================================================
+
+  if (state !== 'disabled') {
+
+    const gloss = new Rectangle({
+
+      x: faceX + (10 * scaleX),
+
+      y: actualFaceY + (6 * scaleY),
+
+      width: faceW - (20 * scaleX),
+
+      height: 24 * scaleY,
+
+      cornerRadius: 12 * Math.min(scaleX, scaleY),
+
+      fill: {
+
+        color: '#ffffff',
+
+        gradient: {
+
+          type: 'linear',
+
+          start: [0, 0],
+
+          end: [0, 1],
+
+          stops: [
+
+            {
+              offset: 0,
+              color: '#ffffff',
+              opacity: 0.55
+            },
+
+            {
+              offset: 1,
+              color: '#ffffff',
+              opacity: 0
+            }
+
+          ]
+
+        }
+
+      },
+
+      stroke: null
+
+    } as any);
+
+    group.append(gloss);
+  }
+
+
+  // ============================================================
+  // 4. INNER TOP EDGE HIGHLIGHT
+  //
+  // SVG:
+  //
+  // <rect x="12" y="12"
+  //       width="196" height="56"
+  //       rx="12"
+  //       fill="none"
+  //       stroke="#ffffff"
+  //       opacity="0.35"/>
+  //
+  // ============================================================
+
+  const rim = new Rectangle({
+
+    x: faceX + (2 * scaleX),
+
+    y: actualFaceY + (2 * scaleY),
+
+    width: faceW - (4 * scaleX),
+
+    height: faceH - (4 * scaleY),
+
+    cornerRadius:
+      12 * Math.min(scaleX, scaleY),
+
+    fill: null,
+
+    stroke: {
+
+      color:
+        state === 'disabled'
+          ? '#E0E0E0'
+          : '#ffffff',
+
+      width: 1,
+
+      opacity:
+        state === 'disabled'
+          ? 0.20
+          : 0.35
+
+    }
+
+  } as any);
+
+  group.append(rim);
+
+
+  // ============================================================
+  // 5. LABEL
+  // ============================================================
+
+  const label =
+    String(dataItem?.text ?? '');
+
+  if (label) {
+
+    const fontSize =
+      Number(dataItem?.fontSize) || 20;
+
+
+    // ----------------------------------------------------------
+    // Text shadow
+    //
+    // SVG:
+    //
+    // text-shadow:
+    //   0 2px 2px rgba(0,0,0,0.35)
+    //
+    // Kendo Drawing doesn't need a CSS text-shadow here.
+    // We create a second TextBlock underneath.
+    // ----------------------------------------------------------
+
+    if (state !== 'disabled') {
+
+      const shadow = new TextBlock({
+
+        text: label,
+
+        x: w / 2,
+
+        y: actualFaceY +
+          (faceH / 2) +
+          (fontSize * 0.35) +
+          (2 * scaleY),
+
+        fill: '#000000'
+
+      });
+
+      (shadow.options as any).fontSize =
+        fontSize;
+
+      (shadow.options as any).fontWeight =
+        dataItem?.fontWeight || '700';
+
+      (shadow.options as any).fontFamily =
+        dataItem?.fontFamily ||
+        "'Segoe UI', Arial, sans-serif";
+
+      (shadow.options as any).textAnchor =
+        'middle';
+
+      (shadow.options as any).opacity =
+        0.35;
+
+      group.append(shadow);
+    }
+
+
+    // ----------------------------------------------------------
+    // Actual label
+    // ----------------------------------------------------------
+
+    const text = new TextBlock({
+
+      text: label,
+
+      x: w / 2,
+
+      y:
+        actualFaceY +
+        (faceH / 2) +
+        (fontSize * 0.35),
+
+      fill: textColor
+
+    });
+
+    (text.options as any).fontSize =
+      fontSize;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || '700';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily ||
+      "'Segoe UI', Arial, sans-serif";
+
+    (text.options as any).textAnchor =
+      'middle';
+
+    group.append(text);
+  }
+
+
+  return group;
+}
+
+
+public beveledButtonVisual(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  // -----------------------------------------
+  // Shared button state and colors
+  // -----------------------------------------
+
+  const {
+    state,
+    disabled,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+  const label = String(dataItem?.text ?? '');
+
+  // -----------------------------------------
+  // Geometry
+  // -----------------------------------------
+
+  const radius = Math.min(14, h / 3) - 10;
+
+  const bevel = Math.max(
+    2,
+    Math.min(5, Math.min(w, h) * 0.08)
+  );
+
+  const b = state === 'pressed'
+    ? Math.max(1, bevel * 0.5)
+    : bevel;
+
+  const faceRadius = Math.max(0, radius - b);
+
+  // -----------------------------------------
+  // Bevel colors
+  // -----------------------------------------
+
+  const faceColor = actualFillTop;
+  const baseColor = actualFillBase;
+
+  // Normal: light from top-left, shadow on bottom-right.
+  let topEdgeColor = this.lighten(faceColor, 0.65);
+  let leftEdgeColor = this.lighten(faceColor, 0.35);
+
+  let rightEdgeColor = this.darken(baseColor, 0.05);
+  let bottomEdgeColor = this.darken(baseColor, 0.25);
+
+  if (state === 'hover') {
+
+    // Slightly brighter overall, preserving bevel direction.
+    topEdgeColor = this.lighten(faceColor, 0.75);
+    leftEdgeColor = this.lighten(faceColor, 0.45);
+
+    rightEdgeColor = this.darken(baseColor, 0.02);
+    bottomEdgeColor = this.darken(baseColor, 0.15);
+  }
+
+  if (state === 'pressed') {
+
+    // Invert the light and shadow to simulate a pressed button.
+    topEdgeColor = this.darken(faceColor, 0.20);
+    leftEdgeColor = this.darken(faceColor, 0.10);
+
+    rightEdgeColor = this.lighten(baseColor, 0.15);
+    bottomEdgeColor = this.lighten(baseColor, 0.25);
+  }
+
+  if (state === 'disabled') {
+
+    // Desaturated grey appearance.
+    topEdgeColor = '#E2E2E2';
+    leftEdgeColor = '#D8D8D8';
+
+    rightEdgeColor = '#A0A0A0';
+    bottomEdgeColor = '#909090';
+  }
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // 1. Outer rounded base
+  // -----------------------------------------
+
+  const base = new Rectangle({
+    x: 0,
+    y: 0,
+    width: w,
+    height: h,
+    cornerRadius: radius,
+    fill: {
+      color: baseColor
+    },
+    stroke: {
+      color: leftEdgeColor,
+      width: 0
+    }
+  } as any);
+
+  group.append(base);
+
+  // -----------------------------------------
+  // 2. Rounded button face
+  // -----------------------------------------
+
+  // const face = new Rectangle({
+  //   x: b,
+  //   y: b,
+  //   width: Math.max(1, w - 2 * b),
+  //   height: Math.max(1, h - 2 * b),
+  //   cornerRadius: faceRadius,
+  //   fill: {
+  //     color: faceColor
+  //   },
+  //   stroke: {
+  //     color: faceColor,
+  //     width: 0
+  //   }
+  // } as any);
+
+  // group.append(face);
+
+  
+// -----------------------------------------
+// 3. Top highlight — overlaps both corners
+// -----------------------------------------
+const top = new Rectangle({
+  x: 0,
+  y: 0,
+  width: w,
+  height: b,
+  cornerRadius: radius,
+  fill: { color: topEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(top);
+
+// -----------------------------------------
+// 4. Left highlight — overlaps top/bottom
+// -----------------------------------------
+const left = new Rectangle({
+  x: 0,
+  y: 0,
+  width: b,
+  height: h,
+  cornerRadius: radius,
+  fill: { color: topEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(left);
+
+// -----------------------------------------
+// 5. Right dark bevel — overlaps top/bottom
+// -----------------------------------------
+const right = new Rectangle({
+  x: w - b ,
+  y: 0,
+  width: b,
+  height: h,
+  cornerRadius: radius,
+  fill: { color: rightEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(right);
+
+// -----------------------------------------
+// 6. Bottom dark bevel — overlaps both corners
+// -----------------------------------------
+const bottom = new Rectangle({
+  x: 0,
+  y: h - b,
+  width: w,
+  height: b,
+  cornerRadius: radius,
+  fill: { color: bottomEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(bottom);
+// 7. Rounded button face — slightly overlaps the bevels.
+const faceOverlap = Math.min(2, b * 0.4);
+const faceInset = b - faceOverlap;
+
+const faceWidth = Math.max(1, w - 2 * faceInset);
+const faceHeight = Math.max(1, h - 2 * faceInset);
+
+// Smaller radius prevents the base showing through at the corners.
+const faceCornerRadius = Math.max(
+  0,
+  Math.min(radius * 0.35, faceHeight / 2, faceWidth / 2)
+);
+
+const face = new Rectangle({
+  x: faceInset,
+  y: faceInset,
+  width: faceWidth,
+  height: faceHeight,
+  cornerRadius: faceCornerRadius,
+  fill: { color: faceColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(face);
+
+  // -----------------------------------------
+  // 7. Label
+  // -----------------------------------------
+
+  if (label) {
+    const text = new TextBlock({
+      text: label,
+      x: w / 2,
+      y: h / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'normal';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily || 'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+public recessedButtonVisual(options: any): Group {
+  const dataItem = options?.dataItem?.dataItem ?? options?.dataItem ?? {};
+
+  const {
+    state,
+    disabled,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(options?.width ?? shape?.width ?? dataItem?.width ?? 181)
+  );
+
+  const h = Math.max(
+    16,
+    Number(options?.height ?? shape?.height ?? dataItem?.height ?? 60)
+  );
+
+  const label = String(dataItem?.text ?? '');
+
+  const radius = Math.min(10, h * 0.18);
+  const bevel = Math.max(3, Math.min(8, Math.min(w, h) * 0.08));
+
+  // The face is inset from the outer edge.
+  const b = state === 'pressed' ? bevel * 0.7 : bevel;
+
+  const faceX = b;
+  const faceY = b;
+  const faceW = Math.max(1, w - 2 * b);
+  const faceH = Math.max(1, h - 2 * b);
+  const faceRadius = Math.max(0, radius - b * 0.5);
+
+  const faceColor = actualFillTop;
+  const baseColor = actualFillBase;
+
+  // Intermediate-tone frame around the recessed button.
+  let borderColor = this.lighten(baseColor, 0.25);
+
+  if (state === 'hover') {
+    borderColor = this.lighten(baseColor, 0.35);
+  }
+
+  if (state === 'pressed') {
+    borderColor = this.lighten(baseColor, 0.15);
+  }
+
+  if (state === 'disabled') {
+    borderColor = '#BDBDBD';
+  }
+
+  // Recessed bevel: dark top/left, light bottom/right.
+  let topColor = this.darken(baseColor, 0.35);
+  let leftColor = this.darken(baseColor, 0.20);
+  let rightColor = this.lighten(faceColor, 0.45);
+  let bottomColor = this.lighten(faceColor, 0.65);
+  let innerShadowColor = this.darken(faceColor, 0.12);
+
+  if (state === 'hover') {
+    topColor = this.darken(baseColor, 0.25);
+    leftColor = this.darken(baseColor, 0.12);
+    rightColor = this.lighten(faceColor, 0.55);
+    bottomColor = this.lighten(faceColor, 0.72);
+    innerShadowColor = this.darken(faceColor, 0.08);
+  }
+
+  if (state === 'pressed') {
+    // A pressed recessed button appears deeper.
+    topColor = this.darken(baseColor, 0.45);
+    leftColor = this.darken(baseColor, 0.30);
+    rightColor = this.lighten(faceColor, 0.30);
+    bottomColor = this.lighten(faceColor, 0.45);
+    innerShadowColor = this.darken(faceColor, 0.20);
+  }
+
+  if (state === 'disabled') {
+    topColor = '#858585';
+    leftColor = '#A0A0A0';
+    rightColor = '#E0E0E0';
+    bottomColor = '#F0F0F0';
+    innerShadowColor = '#C8C8C8';
+  }
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+ 
+// 1. Outer rounded border — make it clearly visible.
+const borderWidth = Math.max(4, bevel * 0.8);
+
+const border = new Rectangle({
+  x: 0,
+  y: 0,
+  width: w,
+  height: h,
+  cornerRadius: radius,
+  fill: { color: borderColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(border);
+const innerX = borderWidth;
+const innerY = borderWidth;
+const innerW = w - 2 * borderWidth;
+const innerH = h - 2 * borderWidth;
+const innerRadius = Math.max(0, radius - borderWidth);
+
+
+// 2. Dark top bevel — extends across both corners.
+const top = new Rectangle({
+  x: innerX,
+  y: innerY,
+  width: innerW,
+  height: b,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: topColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(top);
+
+// 3. Dark left bevel — overlaps top and bottom.
+const left = new Rectangle({
+  x: innerX,
+  y: innerY,
+  width: b,
+  height: innerH,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: leftColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(left);
+
+// 4. Light right bevel — overlaps top and bottom.
+const right = new Rectangle({
+  x: innerX + innerW - b,
+  y: innerY,
+  width: b,
+  height: innerH,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: rightColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(right);
+
+// 5. Light bottom bevel — extends across both corners.
+const bottom = new Rectangle({
+  x: innerX,
+  y: innerY + innerH - b,
+  width: innerW,
+  height: b,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: bottomColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(bottom);
+
+// 6. Rounded recessed face.
+const face = new Rectangle({
+  x: innerX + b,
+  y: innerY + b,
+  width: Math.max(1, innerW - 2 * b),
+  height: Math.max(1, innerH - 2 * b),
+  cornerRadius: Math.max(0, innerRadius - b * 0.5),
+  fill: { color: faceColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(face);
+
+
+  // 8. Label.
+  if (label) {
+    const text = new TextBlock({
+      text: label,
+      x: w / 2,
+      y: h / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'normal';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily || 'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+
+
+  public disableButton1023(){
+    const shape = this.diagram?.getShapeById("Button:1023");
+
+    if (shape) {
+
+      const dataItem =
+        shape.dataItem?.dataItem ??
+        shape.dataItem ??
+        {};
+
+      dataItem.disabled = true;
+
+      this.refreshCustomShape(shape);
+    }
+  }
+
 }
 
