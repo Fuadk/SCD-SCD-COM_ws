@@ -1151,7 +1151,8 @@ if (
     dataItem?.visual === 'button3DVisual' ||
     dataItem?.visual === 'raisedButtonVisual'||
     dataItem?.visual === 'beveledButtonVisual'||
-    dataItem?.visual === 'recessedButtonVisual';
+    dataItem?.visual === 'recessedButtonVisual'||
+    dataItem?.visual === 'noneButtonVisual';
     
     
     
@@ -1875,6 +1876,7 @@ public visualTemplate = (options: any): Group => {
       raisedButtonVisual: 'raisedButtonVisual',
       beveledButtonVisual: 'beveledButtonVisual',
       recessedButtonVisual: 'recessedButtonVisual',
+      noneButtonVisual: 'noneButtonVisual'
     };
 
     const method = visualMap[dataItem?.visual];
@@ -6565,6 +6567,248 @@ private getButtonVisualStyle(dataItem: any): {
     actualTextColor
   };
 }
+ /** Small helper: lighten a hex color by ratio (0..1). */
+  private lighten(hex: string, ratio: number): string {
+    const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
+    if (!m) return hex;
+    let h = m[1];
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const num = parseInt(h, 16);
+    const r = Math.min(255, Math.round(((num >> 16) & 0xff) + (255 - ((num >> 16) & 0xff)) * ratio));
+    const g = Math.min(255, Math.round(((num >> 8)  & 0xff) + (255 - ((num >> 8)  & 0xff)) * ratio));
+    const b = Math.min(255, Math.round(( num        & 0xff) + (255 - ( num        & 0xff)) * ratio));
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+
+  public noneButtonVisual(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  // Resolve button state and colors centrally.
+  const {
+    state,
+    disabled,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+  const radius = Math.min(14, h / 3);
+
+  const label = String(dataItem?.text ?? '');
+
+  // -----------------------------------------
+  // Main button group
+  // -----------------------------------------
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // 1. Flat face (no base, no depth)
+  //
+  //    topY is always 0 and topH is always h
+  //    because there is no raised layer.
+  // -----------------------------------------
+
+  const topY = 0;
+  const topH = h;
+
+  // Border is optional. By default it is invisible so the shape
+  // looks like a plain rectangle. Set dataItem.borderWidth > 0
+  // (or dataItem.borderColor) to draw an outline.
+  const borderWidth = Number(dataItem?.borderWidth) || 0;
+  const borderColor =
+    dataItem?.borderColor ??
+    (borderWidth > 0 ? actualFillBase : null);
+
+  const top = new Rectangle({
+    x: 0,
+    y: topY,
+    width: w,
+    height: topH,
+    cornerRadius: radius,
+
+    fill: {
+      color: actualFillTop,
+      gradient: {
+        type: 'linear',
+        start: [0, 0],
+        end: [0, topH],
+        stops: [
+          {
+            offset: 0,
+            color: state === 'disabled'
+              ? actualFillTop
+              : this.lighten(actualFillTop, 0.15)
+          },
+          {
+            offset: 1,
+            color: actualFillTop
+          }
+        ]
+      }
+    },
+
+    stroke: {
+      width: 0
+    }
+  } as any);
+
+  group.append(top);
+
+  // -----------------------------------------
+  // 2. Pattern overlay
+  // -----------------------------------------
+
+  this.drawPattern(
+    group,
+    dataItem,
+    0,
+    topY,
+    w,
+    topH,
+    radius
+  );
+
+  // -----------------------------------------
+  // 3. Optional image
+  // -----------------------------------------
+
+  const imageSource = dataItem?.imageSource;
+  let textX = w / 2;
+
+  if (imageSource) {
+    const baseWidth  = Number(dataItem.imageWidth)  || 32;
+    const baseHeight = Number(dataItem.imageHeight) || 32;
+    const scaleImage = !['false', '0']
+      .includes(String(dataItem.imageScale).toLowerCase());
+
+    let imageWidth: number;
+    let imageHeight: number;
+    let padding: number;
+    let gap: number;
+
+    if (scaleImage) {
+      // Scales with the button: height is a fraction of the button face.
+      const aspect = baseWidth / baseHeight;
+      const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+      imageHeight = topH * heightRatio;
+      imageWidth  = imageHeight * aspect;
+
+      const maxWidth = w * 0.4;
+      if (imageWidth > maxWidth) {
+        imageWidth  = maxWidth;
+        imageHeight = imageWidth / aspect;
+      }
+
+      padding = Math.max(6, topH * 0.15);
+      gap     = Math.max(6, topH * 0.12);
+    } else {
+      // Fixed size: exactly imageWidth x imageHeight pixels.
+      imageWidth  = baseWidth;
+      imageHeight = baseHeight;
+      padding = 10;
+      gap = 8;
+    }
+
+    const position = String(
+      dataItem.imagePosition || 'left'
+    ).toLowerCase();
+
+    let imageX: number;
+    if (position === 'right') {
+      imageX = w - padding - imageWidth;
+    } else if (position === 'center') {
+      imageX = (w - imageWidth) / 2;
+    } else {
+      imageX = padding;
+    }
+
+    const imageY = topY + (topH - imageHeight) / 2;
+
+    group.append(new DiagramImage({
+      source: imageSource,
+      x: imageX,
+      y: imageY,
+      width: imageWidth,
+      height: imageHeight
+    }));
+
+    // Keep the label centred; shift it only if it would overlap the image.
+    const fontSize = Number(dataItem?.fontSize) || 14;
+    const halfText = (label.length * fontSize * 0.6) / 2;
+
+    if (position === 'left') {
+      textX = Math.max(
+        w / 2,
+        padding + imageWidth + gap + halfText
+      );
+    } else if (position === 'right') {
+      textX = Math.min(
+        w / 2,
+        w - padding - imageWidth - gap - halfText
+      );
+    }
+  }
+
+  // -----------------------------------------
+  // 4. Label
+  // -----------------------------------------
+
+  if (label) {
+
+    const text = new TextBlock({
+      text: label,
+      x: textX,
+      y: topY + topH / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'bold';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily || 'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
   /**
    * 3D button visual.
    * Renders a raised, rounded, glossy button in ~3 DOM nodes per shape:
@@ -6700,42 +6944,73 @@ public button3DVisual(options: any): Group {
     radius
   );
 
+  const imageSource = dataItem?.imageSource;
+let textX = w / 2;
 
- const imageSource = dataItem?.imageSource;
-  const padding = 10;
-  const gap = 8;
-  let textX = w / 2;
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
+  const scaleImage = !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
 
-  if (imageSource) {
-    const imageWidth  = Number(dataItem.imageWidth)  || 32;
-    const imageHeight = Number(dataItem.imageHeight) || 32;
-    const position = String(dataItem.imagePosition || 'left').toLowerCase();
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
 
-    let imageX: number;
-    if (position === 'right') {
-      imageX = w - padding - imageWidth;
-    } else if (position === 'center') {
-      imageX = (w - imageWidth) / 2;
-    } else {
-      imageX = padding;
+  if (scaleImage) {
+    // Scales with the button: height is a fraction of the button face.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = topH * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    const maxWidth = w * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
     }
-    const imageY = topY + (topH - imageHeight) / 2;
 
-    group.append(new DiagramImage({
-      source: imageSource,
-      x: imageX,
-      y: imageY,
-      width: imageWidth,
-      height: imageHeight
-    }));
-
-    // Centre the label in the space the image leaves free.
-    if (position === 'left') {
-      textX = (w + imageWidth + gap) / 2;
-    } else if (position === 'right') {
-      textX = (w - imageWidth - gap) / 2;
-    }
+    padding = Math.max(6, topH * 0.15);
+    gap     = Math.max(6, topH * 0.12);
+  } else {
+    // Fixed size: exactly imageWidth x imageHeight pixels, fixed spacing.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
   }
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = w - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = (w - imageWidth) / 2;
+  } else {
+    imageX = padding;
+  }
+  const imageY = topY + (topH - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  // Keep the label centred; shift it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (label.length * fontSize * 0.6) / 2;   // or your measureText() version
+
+  if (position === 'left') {
+    textX = Math.max(w / 2, padding + imageWidth + gap + halfText);
+  } else if (position === 'right') {
+    textX = Math.min(w / 2, w - padding - imageWidth - gap - halfText);
+  }
+}
   // -----------------------------------------
   // 3. Label
   // -----------------------------------------
@@ -6743,11 +7018,11 @@ public button3DVisual(options: any): Group {
   if (label) {
 
     const text = new TextBlock({
-    text: label,
-    x: textX,
-    y: topY + topH / 2 + 5,
-    fill: actualTextColor
-  });
+      text: label,
+      x: textX,
+      y: topY + topH / 2 + 5,
+      fill: actualTextColor
+    });
 
     (text.options as any).fontSize =
       Number(dataItem?.fontSize) || 14;
@@ -6767,18 +7042,7 @@ public button3DVisual(options: any): Group {
 }
 
 
-  /** Small helper: lighten a hex color by ratio (0..1). */
-  private lighten(hex: string, ratio: number): string {
-    const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
-    if (!m) return hex;
-    let h = m[1];
-    if (h.length === 3) h = h.split('').map(c => c + c).join('');
-    const num = parseInt(h, 16);
-    const r = Math.min(255, Math.round(((num >> 16) & 0xff) + (255 - ((num >> 16) & 0xff)) * ratio));
-    const g = Math.min(255, Math.round(((num >> 8)  & 0xff) + (255 - ((num >> 8)  & 0xff)) * ratio));
-    const b = Math.min(255, Math.round(( num        & 0xff) + (255 - ( num        & 0xff)) * ratio));
-    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
-  }
+ 
 /**
  * Raised button visual.
  * Same 3-node allocation strategy as button3DVisual, plus one gloss rect
@@ -6968,7 +7232,7 @@ public raisedButtonVisual(options: any): Group {
   } as any);
 
   group.append(top2);
-//
+
   this.drawPattern(
     group,
     dataItem,
@@ -6981,41 +7245,73 @@ public raisedButtonVisual(options: any): Group {
 
 
  const imageSource = dataItem?.imageSource;
-  const padding = 10;
-  const gap = 8;
-  let textX = w / 2;
+let textX = w / 2;
 
-  if (imageSource) {
-    const imageWidth  = Number(dataItem.imageWidth)  || 32;
-    const imageHeight = Number(dataItem.imageHeight) || 32;
-    const position = String(dataItem.imagePosition || 'left').toLowerCase();
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
+  const scaleImage = !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
 
-    let imageX: number;
-    if (position === 'right') {
-      imageX = w - padding - imageWidth;
-    } else if (position === 'center') {
-      imageX = (w - imageWidth) / 2;
-    } else {
-      imageX = padding;
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
+
+  if (scaleImage) {
+    // Scales with the button: height is a fraction of the button face.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = topH * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    const maxWidth = w * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
     }
-    const imageY = topY + (topH - imageHeight) / 2;
 
-    group.append(new DiagramImage({
-      source: imageSource,
-      x: imageX,
-      y: imageY,
-      width: imageWidth,
-      height: imageHeight
-    }));
-
-    // Centre the label in the space the image leaves free.
-    if (position === 'left') {
-      textX = (w + imageWidth + gap) / 2;
-    } else if (position === 'right') {
-      textX = (w - imageWidth - gap) / 2;
-    }
+    padding = Math.max(6, topH * 0.15);
+    gap     = Math.max(6, topH * 0.12);
+  } else {
+    // Fixed size: exactly imageWidth x imageHeight pixels, fixed spacing.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
   }
-  //
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = w - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = (w - imageWidth) / 2;
+  } else {
+    imageX = padding;
+  }
+  const imageY = topY + (topH - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  // Keep the label centred; shift it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (label.length * fontSize * 0.6) / 2;   // or your measureText() version
+
+  if (position === 'left') {
+    textX = Math.max(w / 2, padding + imageWidth + gap + halfText);
+  } else if (position === 'right') {
+    textX = Math.min(w / 2, w - padding - imageWidth - gap - halfText);
+  }
+}
+
   // -----------------------------------------
   // 3. Label
   // -----------------------------------------
@@ -7046,6 +7342,8 @@ public raisedButtonVisual(options: any): Group {
 
   return group;
 }
+
+
 
 
 public beveledButtonVisual(options: any): Group {
@@ -7299,41 +7597,78 @@ this.drawPattern(
 
 
  const imageSource = dataItem?.imageSource;
-  const padding = 10;
-  const gap = 8;
-  let textX = w / 2;
+const labelText = String(dataItem?.text ?? '');
+let textX = w / 2;
 
-  if (imageSource) {
-    const imageWidth  = Number(dataItem.imageWidth)  || 32;
-    const imageHeight = Number(dataItem.imageHeight) || 32;
-    const position = String(dataItem.imagePosition || 'left').toLowerCase();
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
 
-    let imageX: number;
-    if (position === 'right') {
-      imageX = faceX + faceWidth - padding - imageWidth;
-    } else if (position === 'center') {
-      imageX = faceX + (faceWidth - imageWidth) / 2;
-    } else {
-      imageX = faceX + padding;
+  // false only for false / 0 / "false" / "0"; a missing value keeps scaling on.
+  const scaleImage =
+    !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
+
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
+
+  if (scaleImage) {
+    // Scales with the button face: height is a fraction of the face height.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = faceHeight * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    // Never let a wide image take more than 40% of the face.
+    const maxWidth = faceWidth * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
     }
-    const imageY = faceY + (faceHeight - imageHeight) / 2;
 
-    group.append(new DiagramImage({
-      source: imageSource,
-      x: imageX,
-      y: imageY,
-      width: imageWidth,
-      height: imageHeight
-    }));
-
-    // Centre the label in the space the image leaves free.
-    if (position === 'left') {
-      textX = (w + imageWidth + gap) / 2;
-    } else if (position === 'right') {
-      textX = (w - imageWidth - gap) / 2;
-    }
+    padding = Math.max(6, faceHeight * 0.15);
+    gap     = Math.max(6, faceHeight * 0.12);
+  } else {
+    // Fixed size, exactly imageWidth x imageHeight pixels.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
   }
-  
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = faceX + faceWidth - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = faceX + (faceWidth - imageWidth) / 2;
+  } else {
+    imageX = faceX + padding;
+  }
+  const imageY = faceY + (faceHeight - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  // Keep the label where it was (w / 2) and move it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (labelText.length * fontSize * 0.6) / 2;   // or your measureText() version
+
+  if (position === 'left') {
+    textX = Math.max(w / 2, faceX + padding + imageWidth + gap + halfText);
+  } else if (position === 'right') {
+    textX = Math.min(w / 2, faceX + faceWidth - padding - imageWidth - gap - halfText);
+  }
+}
+
   // -----------------------------------------
   // 7. Label
   // -----------------------------------------
@@ -7575,6 +7910,59 @@ if (imageSource) {
     imageX = faceX + padding;
   }
 
+  const imageSource = dataItem?.imageSource;
+const labelText = String(dataItem?.text ?? '');
+const centerX = faceX + faceW / 2;
+let textX = centerX;
+
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
+
+  // false only for false / 0 / "false" / "0"; a missing value keeps scaling on.
+  const scaleImage =
+    !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
+
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
+
+  if (scaleImage) {
+    // Scales with the button face: height is a fraction of the face height.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = faceH * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    // Never let a wide image take more than 40% of the face.
+    const maxWidth = faceW * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
+    }
+
+    padding = Math.max(6, faceH * 0.15);
+    gap     = Math.max(6, faceH * 0.12);
+  } else {
+    // Fixed size, exactly imageWidth x imageHeight pixels.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
+  }
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = faceX + faceW - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = faceX + (faceW - imageWidth) / 2;
+  } else {
+    imageX = faceX + padding;
+  }
   const imageY = faceY + (faceH - imageHeight) / 2;
 
   group.append(new DiagramImage({
@@ -7585,12 +7973,17 @@ if (imageSource) {
     height: imageHeight
   }));
 
+  // Keep the label centred on the face; move it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (labelText.length * fontSize * 0.6) / 2;   // or your measureText() version
+
   if (position === 'left') {
-    textX = faceX + (faceW + imageWidth + gap) / 2;
+    textX = Math.max(centerX, faceX + padding + imageWidth + gap + halfText);
   } else if (position === 'right') {
-    textX = faceX + (faceW - imageWidth - gap) / 2;
+    textX = Math.min(centerX, faceX + faceW - padding - imageWidth - gap - halfText);
   }
 }
+
   // 8. Label.
   if (label) {
     const text = new TextBlock({
@@ -7617,7 +8010,7 @@ if (imageSource) {
   return group;
 }
 
-
+}
 
   public disableButton1023(){
     const shape = this.diagram?.getShapeById("Button:1023");
