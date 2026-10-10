@@ -924,6 +924,9 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
         if (event.text == "FreeHand") {
           this.toggleFreehandMode();
         }
+        if (event.text == "Line") {
+          this.addLine();
+        }
         this.event = event;
         this.menuType = menuType;
         this.insertShapeFlag = true;
@@ -1812,59 +1815,51 @@ public snapDistance = 6;
         group.append(textBlock);
       });
     }
-    // ------------------------------------------------------------
-// Resize the ENTIRE rendered visual if Kendo supplied
-// targetWidth / targetHeight.
-//
-// The definition itself remains at its natural/original size.
-// We scale the Drawing Group only.
-// ------------------------------------------------------------
-
-if (
-  targetWidth !== undefined &&
-  targetHeight !== undefined &&
-  targetWidth > 0 &&
-  targetHeight > 0
-) {
-  const drawingGroup: any = group.drawingElement;
-
-  if (drawingGroup) {
-    const naturalBounds = drawingGroup.bbox();
-
-    if (
-      naturalBounds &&
-      naturalBounds.size &&
-      naturalBounds.origin &&
-      naturalBounds.size.width > 0 &&
-      naturalBounds.size.height > 0
-    ) {
-      const naturalWidth = naturalBounds.size.width;
-      const naturalHeight = naturalBounds.size.height;
-
-      const naturalX = naturalBounds.origin.x;
-      const naturalY = naturalBounds.origin.y;
-
-      const scaleX = targetWidth / naturalWidth;
-      const scaleY = targetHeight / naturalHeight;
-
-      const transform = geometry
-        .transform()
-        .translate(
-          -naturalX,
-          -naturalY
-        )
-        .scale(
-          scaleX,
-          scaleY,
-          [0, 0]
-        );
-
-      drawingGroup.transform(transform);
-    }
-  }
-}
+    // Resize the whole rendered visual when Kendo supplies the shape's current
+    // width/height. The definition stays at its natural size; only the drawing
+    // group is scaled, so a resized compound shape keeps its size when it is
+    // redrawn or restored from saved state.
+    this.fitGroupToSize(group, targetWidth, targetHeight);
 
     return group;
+  }
+  private fitGroupToSize(group: Group, width?: number, height?: number): void {
+    const targetWidth = Number(width);
+    const targetHeight = Number(height);
+    if (!(targetWidth > 0) || !(targetHeight > 0)) {
+      return;
+    }
+    const drawingGroup: any = group.drawingElement;
+    const natural = drawingGroup?.bbox?.();
+    if (!(natural?.origin && natural?.size && natural.size.width > 0 && natural.size.height > 0)) {
+      return;
+    }
+
+    let scaleX = targetWidth / natural.size.width;
+    let scaleY = targetHeight / natural.size.height;
+    // Stroke widths do not scale with the geometry, so one pass lands a pixel
+    // or so off. Measure and correct a couple of times so the size is exact and
+    // does not drift on every reload.
+    for (let pass = 0; pass < 6; pass++) {
+      // Matrices apply right-to-left: move the visual to the origin, then scale.
+      drawingGroup.transform(
+        geometry.transform().scale(scaleX, scaleY).translate(-natural.origin.x, -natural.origin.y)
+      );
+      const fitted = drawingGroup.bbox?.();
+      if (!fitted?.size || fitted.size.width <= 0 || fitted.size.height <= 0) {
+        return;
+      }
+      const errorX = targetWidth / fitted.size.width;
+      const errorY = targetHeight / fitted.size.height;
+      if (Math.abs(errorX - 1) < 0.0005 && Math.abs(errorY - 1) < 0.0005) {
+        return;
+      }
+      scaleX *= errorX;
+      scaleY *= errorY;
+    }
+    drawingGroup.transform(
+      geometry.transform().scale(scaleX, scaleY).translate(-natural.origin.x, -natural.origin.y)
+    );
   }
   // Visual template that uses the diagram definition
 public visualTemplate = (options: any): Group => {
@@ -1902,7 +1897,14 @@ public visualTemplate = (options: any): Group => {
       Number(dataItem.groupOriginalHeight) ||
         Number(dataItem.height) ||
         undefined
-    );
+     );
+    // The children are drawn at their original size inside the original
+      // frame; scale the result to the group's current (resized) size.
+      this.fitGroupToSize(
+        group,
+        options?.width ?? dataItem.width,
+        options?.height ?? dataItem.height
+      );
 
   } else if (dataItem.libraryKind) {
 
@@ -1920,23 +1922,15 @@ public visualTemplate = (options: any): Group => {
     // to these target dimensions.
     // ----------------------------------------------------------
 
-    const shapeWidth =
-      options?.width ??
-      dataItem.width ??
-      undefined;
-
-    const shapeHeight =
-      options?.height ??
-      dataItem.height ??
-      undefined;
+    
 
     group = this.drawDiagramFromDefinition(
       dataItem.definition,
       dataItem.offsetX || 0,
       dataItem.offsetY || 0,
       dataItem.editorStyle,
-      shapeWidth,
-      shapeHeight
+      options?.width ?? dataItem.width,
+      options?.height ?? dataItem.height
     );
 
   } else {
@@ -1996,6 +1990,19 @@ public visualTemplate = (options: any): Group => {
         );
       } else if (dataItem.libraryKind) {
         childGroup = this.drawLibraryShape(dataItem, x, y, parentStyle);
+        if (dataItem.libraryKind === "richText") {
+          // A standalone Rich Text shape gets its text from Kendo's own
+          // model.content renderer, which does not exist for a child inside a
+          // group's single custom visual - so draw the blocks ourselves.
+          const blocks = dataItem.richTextBlocks ?? child?.content?.blocks ?? [];
+          const padding = 10;
+          const frameW = Math.max(20, Number(dataItem.width) || Number(child?.width) || 140);
+          const frameH = Math.max(20, Number(dataItem.height) || Number(child?.height) || 90);
+          this.appendRichTextBlocks(
+            childGroup, blocks, x + padding, y + padding,
+            Math.max(10, frameW - padding * 2), Math.max(10, frameH - padding * 2)
+          );
+        }
       } else if (dataItem.definition) {
         const mergedStyle: ShapeEditorStyle = {
           ...(dataItem.editorStyle || {}),
@@ -2014,10 +2021,43 @@ public visualTemplate = (options: any): Group => {
       // bbox.size.{width,height} - it has no flat .width/.height properties.
       // Reading bbox.width directly silently reads undefined, which is why
       // the >0 checks below always fell through to "no scaling" before.
-      const bboxWidth = bbox?.size?.width;
-      const bboxHeight = bbox?.size?.height;
-
-      if (drawingElement?.transform && bbox) {
+      // A standalone Kendo shape stretches its drawn outline to fill the shape's
+      // box. Open-path library shapes (polyline, arc, freehand, legacy line)
+      // only occupy part of their box, so inside a group they must be fitted
+      // the same way or they look flatter/taller than before grouping.
+      const libraryKind = !Array.isArray(dataItem.groupChildren) ? dataItem.libraryKind : undefined;
+      const fitsOutline = libraryKind === "polyline" || libraryKind === "arc" ||
+        libraryKind === "freehand" || (libraryKind === "line" && !dataItem.lineStart);
+      // Other library shapes (rich text, text, container, ...) are drawn at
+      // their real width/height; their outline bbox can be larger than the box
+      // (e.g. overflowing text), so use the nominal box as the unscaled size.
+      const isNominalChild = Boolean(libraryKind) && !fitsOutline;
+      const bboxWidth = isNominalChild
+        ? Math.max(20, Number(dataItem.width) || 140)
+        : bbox?.size?.width;
+      const bboxHeight = isNominalChild
+        ? Math.max(20, Number(dataItem.height) || 90)
+        : bbox?.size?.height;
+      if (drawingElement?.transform && bbox && fitsOutline && bboxWidth > 0 && bboxHeight > 0) {
+        const fitWidth = Math.max(1, Number(child?.width) || Number(dataItem?.width) || bboxWidth);
+        const fitHeight = Math.max(1, Number(child?.height) || Number(dataItem?.height) || bboxHeight);
+        const fitCenter = [x + fitWidth / 2, y + fitHeight / 2];
+        const fitTx = geometry.transform();
+        // Matrices apply right-to-left: outline -> child box (below), then
+        // rotate, then flip, matching the order used for the other children.
+        if ((childStyle.flipX ?? 1) !== 1 || (childStyle.flipY ?? 1) !== 1) {
+          fitTx.scale(childStyle.flipX ?? 1, childStyle.flipY ?? 1, fitCenter);
+        }
+        const fitAngle = Number(child?.rotation?.angle) || 0;
+        if (fitAngle) {
+          fitTx.rotate(fitAngle, fitCenter);
+        }
+        fitTx
+          .translate(x, y)
+          .scale(fitWidth / bboxWidth, fitHeight / bboxHeight)
+          .translate(-bbox.origin.x, -bbox.origin.y);
+        drawingElement.transform(fitTx);
+      } else if (drawingElement?.transform && bbox) {
         let tx = geometry.transform();
 
         // A normal Kendo Shape scales its custom visual to the shape's stored
@@ -2056,14 +2096,21 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     }
     const drawingGroup = (group as any).drawingElement;
     const bounds = drawingGroup?.bbox?.();
+    // Same bug class as drawGroupedChildren: kendo-drawing's Rect has no flat
+    // .x/.y - position is bounds.origin.{x,y}. Reading bounds.x directly read
+    // undefined, so the flip pivoted around (NaN/0,NaN/0) instead of the
+    // shape's actual center, sending the flipped shape outside its own
+    // selection box (the reported Flip Right/Left bug).
     if (drawingGroup?.transform && bounds?.origin && bounds?.size) {
       const center = [
         bounds.origin.x + bounds.size.width / 2,
         bounds.origin.y + bounds.size.height / 2
       ];
-      drawingGroup.transform(
-        geometry.transform().scale(flipX, flipY, center)
-      );
+      // Compose with any transform already on the group (e.g. the resize
+      // scale from drawDiagramFromDefinition) instead of replacing it.
+      const flip = geometry.transform().scale(flipX, flipY, center);
+      const existing = drawingGroup.transform?.();
+      drawingGroup.transform(existing ? flip.multiply(existing) : flip);
     }
   }
 
@@ -3916,9 +3963,15 @@ async insertShape(shapeType, options) {
 //////////
 public statusMessage = "Select a shape to edit it.";
 public freehandMode = false;
+// Line tool: reuses the FreeHand pointer pipeline, but keeps only the start
+// and the current point so the result is one straight segment.
+private freehandStraight = false;
 private freehandPoints: Array<{ x: number; y: number }> = [];
 private freehandPointerId: number | null = null;
 public freehandPreviewPath = "";
+public get lineMode(): boolean {
+  return this.freehandMode && this.freehandStraight;
+}
 private freehandPreviewPoints: Array<{ x: number; y: number }> = [];
 public richTextEditorOpen = false;
 public richTextHtml = '<p><strong>Rich Text</strong></p>';
@@ -4100,8 +4153,26 @@ private uniqueShapeId(prefix: string): string {
     this.addLibraryShape("ellipse", { width: 150, height: 100, fillColor: "#d9e8f5" });
   }
 
+  /** Line tool: drag on the canvas from the start point to the end point. */
   public addLine(): void {
-    this.addLibraryShape("line", { width: 180, height: 24, fillColor: "transparent" });
+    if (this.lineMode) {
+      this.resetFreehandState(false);
+      this.statusMessage = "Line mode cancelled.";
+      return;
+    }
+    this.resetFreehandState(true);
+    this.freehandStraight = true;
+    this.diagram?.deselect();
+    this.statusMessage = "Line mode ON: press at the start point, drag, and release at the end point.";
+  }
+
+  private resetFreehandState(active: boolean): void {
+    this.freehandMode = active;
+    this.freehandStraight = false;
+    this.freehandPoints = [];
+    this.freehandPreviewPoints = [];
+    this.freehandPreviewPath = "";
+    this.freehandPointerId = null;
   }
 
   public addRectangle(): void {
@@ -4125,18 +4196,18 @@ private uniqueShapeId(prefix: string): string {
   }
  
   public toggleFreehandMode(): void {
-    this.freehandMode = !this.freehandMode;
-    this.freehandPoints = [];
-    this.freehandPreviewPoints = [];
-    this.freehandPreviewPath = "";
-    this.freehandPointerId = null;
-    if (this.freehandMode) {
+    
+    // Pressing FreeHand while Line mode is active switches tools instead of cancelling.
+    const turnOn = !this.freehandMode || this.freehandStraight;
+    this.resetFreehandState(turnOn);
+    if (turnOn) {
       this.diagram?.deselect();
       this.statusMessage = "FreeHand mode ON: drag on the diagram canvas to draw, then release to create the shape.";
     } else {
       this.statusMessage = "FreeHand mode cancelled.";
     }
   }
+
 
   public onFreehandPointerDown(event: PointerEvent): void {
     if (!this.freehandMode || !this.diagram) {
@@ -4166,6 +4237,16 @@ private uniqueShapeId(prefix: string): string {
     if (!point) {
       return;
     }
+    if (this.freehandStraight) {
+      // Straight line: only the start point and the live end point matter.
+      const previewEnd = this.pointerToStage(event);
+      this.freehandPoints = [this.freehandPoints[0], point];
+      if (previewEnd && this.freehandPreviewPoints.length) {
+        this.freehandPreviewPoints = [this.freehandPreviewPoints[0], previewEnd];
+        this.updateFreehandPreviewPath();
+      }
+      return;
+    }
     const last = this.freehandPoints[this.freehandPoints.length - 1];
     const distance = Math.hypot(point.x - last.x, point.y - last.y);
     if (distance >= 2) {
@@ -4187,12 +4268,24 @@ public onFreehandPointerUp(event: PointerEvent): void {
     (event.currentTarget as HTMLElement | null)?.releasePointerCapture?.(event.pointerId);
     this.freehandPointerId = null;
 
-    if (this.freehandPoints.length < 2) {
-      this.freehandMode = false;
-      this.freehandPoints = [];
-      this.freehandPreviewPoints = [];
-      this.freehandPreviewPath = "";
-      this.statusMessage = "FreeHand drawing was too short; nothing was added.";
+    const straight = this.freehandStraight;
+    const tooShort = this.freehandPoints.length < 2 ||
+      (straight && Math.hypot(
+        this.freehandPoints[1].x - this.freehandPoints[0].x,
+        this.freehandPoints[1].y - this.freehandPoints[0].y
+      ) < 5);
+    if (tooShort) {
+      this.resetFreehandState(false);
+      this.statusMessage = straight
+        ? "Line was too short; nothing was added. Press and drag to set both end points."
+        : "FreeHand drawing was too short; nothing was added.";
+      return;
+    }
+
+    if (straight) {
+      const [start, end] = this.freehandPoints;
+      this.resetFreehandState(false);
+      this.addStraightLine(start, end);
       return;
     }
 
@@ -4208,16 +4301,37 @@ public onFreehandPointerUp(event: PointerEvent): void {
     this.freehandPoints = [];
     this.freehandPreviewPoints = [];
     this.freehandPreviewPath = "";
-    if (this.insertShapeFlag == true){
-        let shapeType = this.event.text;
-        let options = { x: minX, y: minY, width, height, points, fillColor: "transparent" };
-        this.insertShape ( shapeType,options);
-        this.insertShapeFlag = false;
-        
-        
-      }
-    
+    this.addLibraryShape("freehand", { x: minX, y: minY, width, height, points, fillColor: "transparent" }, true);
   }
+
+  /**
+   * Create a straight line from `start` to `end` (model coordinates). The
+   * endpoints are stored as 0-1 fractions of the shape box, so resizing the
+   * shape scales the line and it is rebuilt identically after a reload.
+   */
+  private addStraightLine(start: { x: number; y: number }, end: { x: number; y: number }): void {
+    const minSize = 20;
+    const spanX = Math.abs(end.x - start.x);
+    const spanY = Math.abs(end.y - start.y);
+    const width = Math.max(minSize, spanX);
+    const height = Math.max(minSize, spanY);
+    // Horizontal/vertical lines sit in the middle of the minimum-size box.
+    const centerX = (start.x + end.x) / 2;
+    const centerY = (start.y + end.y) / 2;
+    const x = spanX >= minSize ? Math.min(start.x, end.x) : centerX - width / 2;
+    const y = spanY >= minSize ? Math.min(start.y, end.y) : centerY - height / 2;
+    const fraction = (value: number, origin: number, size: number): number =>
+      Math.max(0, Math.min(1, (value - origin) / size));
+
+    this.addLibraryShape("line", {
+      x, y, width, height,
+      fillColor: "transparent",
+      lineStart: { x: fraction(start.x, x, width), y: fraction(start.y, y, height) },
+      lineEnd: { x: fraction(end.x, x, width), y: fraction(end.y, y, height) }
+    }, true);
+  }
+
+
 
   private pointerToStage(event: PointerEvent): { x: number; y: number } | null {
     const target = event.currentTarget as HTMLElement | null;
@@ -4432,16 +4546,35 @@ public onFreehandPointerUp(event: PointerEvent): void {
     }
 
     if ( (kind === "line")||(kind === "arrow") ) {
-      // Render Line using the same lightweight Path approach as Arc.
-      // The Diagram shape model owns the selectable/resizable bounds; the
-      // visible geometry is only the line itself.
-      const centerY = y + height / 2;
-      group.append(new Path({
-        data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
-        stroke: { color: stroke, width: 2 },
-        fill: { color: "transparent" }
-      }));
-      return group;
+      const lineStart = dataItem.lineStart;
+      const lineEnd = dataItem.lineEnd;
+      if (lineStart && lineEnd) {
+        // User-drawn line: the transparent frame keeps the drawing bbox equal
+        // to the full shape box (a horizontal/vertical line has no extent on
+        // one axis), so selection and resizing match the shape bounds.
+        const frame = new Rectangle({
+          x, y, width, height,
+          stroke: { color: "transparent", width: 0 },
+          fill: { color: "transparent" }
+        });
+        frame.options.opacity = 0.001;
+        group.append(frame);
+        group.append(new Path({
+          data: `M ${x + Number(lineStart.x) * width},${y + Number(lineStart.y) * height} `
+            + `L ${x + Number(lineEnd.x) * width},${y + Number(lineEnd.y) * height}`,
+          stroke: { color: stroke, width: 2 },
+          fill: { color: "transparent" }
+        }));
+        return group;
+      }
+      // Legacy line (saved before start/end points existed): horizontal, centered.
+      // const centerY = y + height / 2;
+      // group.append(new Path({
+      //   data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
+      //   stroke: { color: stroke, width: 2 },
+      //   fill: { color: "#D70040" }
+      // }));
+      // return group;
     }
 
     if (kind === "roundedRectangle" || kind === "rectangle") {
@@ -4550,7 +4683,8 @@ public onFreehandPointerUp(event: PointerEvent): void {
 
     if (kind === "arc") {
       group.append(new Path({
-        data: `M ${x + 5},${y + height - 5} Q ${x + width / 2},${y - height * 0.15} ${x + width - 5},${y + height - 5}`,
+        // Peak of this curve is exactly the top of the box (control point at y - height).
+        data: `M ${x},${y + height} Q ${x + width / 2},${y - height} ${x + width},${y + height}`,
         stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
@@ -4559,8 +4693,15 @@ public onFreehandPointerUp(event: PointerEvent): void {
 
     const points = Array.isArray(dataItem.points) ? dataItem.points : [];
     if (kind === "freehand" && points.length >= 2) {
+      // Points are stored in the pixels of the original drawing. Scale them to
+      // the shape's current width/height so a resized FreeHand keeps its size
+      // when it is redrawn, restored from saved state or ungrouped.
+      const extentX = Math.max(...points.map((point: any) => Number(point.x)));
+      const extentY = Math.max(...points.map((point: any) => Number(point.y)));
+      const pointScaleX = extentX > 0 ? width / extentX : 1;
+      const pointScaleY = extentY > 0 ? height / extentY : 1;
       const pathData = points.map((point: any, index: number) =>
-        `${index === 0 ? "M" : "L"} ${x + Number(point.x)},${y + Number(point.y)}`
+        `${index === 0 ? "M" : "L"} ${x + Number(point.x) * pointScaleX},${y + Number(point.y) * pointScaleY}`
       ).join(" ");
       group.append(new Path({
         data: pathData,
@@ -4581,7 +4722,10 @@ public onFreehandPointerUp(event: PointerEvent): void {
 
     if (kind === "polyline") {
       group.append(new Path({
-        data: `M ${x},${y + height * 0.8} L ${x + width * 0.28},${y + height * 0.2} L ${x + width * 0.56},${y + height * 0.72} L ${x + width},${y + height * 0.15}`,
+        // The outline spans the full box top-to-bottom (y fractions 1, 0.08, 0.88,
+        // 0). A path that fills only part of its box makes Kendo shrink the box
+        // to the outline, and the outline shrinks again on every recreate.
+        data: `M ${x},${y + height} L ${x + width * 0.28},${y + height * 0.08} L ${x + width * 0.56},${y + height * 0.88} L ${x + width},${y}`,
         stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
@@ -4707,6 +4851,10 @@ public selectedContainerMax = 100;
     { text: "24px", size: 24 },
     { text: "32px", size: 32 }
   ];
+// Bounds exactly as saved. Kendo re-derives a custom visual's bounds from the
+  // drawn visual when the Diagram is created, which can be a few pixels off the
+  // saved size, so they are re-applied once the Diagram exists.
+  private savedBounds = new Map<string, { x: number; y: number; width: number; height: number }>();
 
 // Add these methods for the toolbar functionality
 
@@ -5229,7 +5377,12 @@ public groupSelected(): void {
       childData.editorStyle.flipY = (childData.editorStyle.flipY ?? 1) * parentFlipY;
 
       (this.shapes as any[]).push(child);
-      restoredRuntime.push(this.diagram.addShape(child, true));
+      const restoredShape = this.diagram.addShape(child, true);
+      // Kendo re-derives bounds from the drawn visual (stroke included), which
+      // grows each shape by a pixel per ungroup. Pin the intended box.
+      restoredShape.bounds(new Rect(child.x, child.y, childWidth, childHeight));
+      restoredShape.updateModel?.(true);
+      restoredRuntime.push(restoredShape);
     }
 
     this.diagram.deselect();
@@ -5669,12 +5822,12 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
             text: piece,
             x: cursorX,
             y: cursorY,
-            fill: color
+            fill: color,
+            fontSize,
+            fontWeight: bold ? "bold" : "normal",
+            fontStyle: italic ? "italic" : "normal",
+            fontFamily
           });
-          textBlock.options.fontSize = fontSize;
-          textBlock.options.fontWeight = bold ? "bold" : "normal";
-          textBlock.options.fontStyle = italic ? "italic" : "normal";
-          textBlock.options.fontFamily = fontFamily;
           group.append(textBlock);
 
           if (underline && !isOnlyWhitespace) {
