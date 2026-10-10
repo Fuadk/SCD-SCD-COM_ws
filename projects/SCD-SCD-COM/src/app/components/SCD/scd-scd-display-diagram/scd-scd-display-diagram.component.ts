@@ -1156,7 +1156,7 @@ if (
 
       // Disabled buttons don't react
       if (dataItem?.disabled === true) {
-        return;
+        //return;
       }
 
       // -------------------------
@@ -1172,7 +1172,7 @@ if (
           `🖱️ Button hover: ${shape.id}`
         );
 
-        return;
+       // return;
       }
 
       // -------------------------
@@ -1190,7 +1190,7 @@ if (
         }
 
         if (!buttonShape) {
-          return;
+         // return;
         }
 
         const buttonData =
@@ -1212,7 +1212,7 @@ if (
           );
         }
 
-        return;
+       // return;
       }
 
       // -------------------------
@@ -1228,7 +1228,7 @@ if (
           `🖱️ Button pressed: ${shape.id}`
         );
 
-        return;
+       // return;
       }
 
       // -------------------------
@@ -1246,7 +1246,7 @@ if (
           `🖱️ Button released: ${shape.id}`
         );
 
-        return;
+       // return;
       }
     }
   }
@@ -2482,24 +2482,24 @@ public lastClickY: number = 0;
             width: 180,
             height: 24,
             text: "",
-            fillColor: "transparent",
+            fillColor: "#D3D3D3",
             x: this.lastClickX,
             y: this.lastClickY,
             
           };
-        if ((shapeType == "Button") || (shapeType == "Momentry") 
-          || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
-          || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
-          || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
-          || (shapeType == "Text") || (shapeType == "Text")  || (shapeType == "Bar") || (shapeType == "Gauge") 
-          || (shapeType == "Scale") || (shapeType == "Multiple") || (shapeType == "List") 
-          || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
-          || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
-          || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
-          || (shapeType == "Banner") || (shapeType == "Summary") || (shapeType == "Log Viewer") || (shapeType == "Status Explorer")
-        ) {
-          options.fillColor = "#D3D3D3"
-        }
+        // if ((shapeType == "Button") || (shapeType == "Momentry") 
+        //   || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
+        //   || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
+        //   || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
+        //   || (shapeType == "Text") || (shapeType == "Text")  || (shapeType == "Bar") || (shapeType == "Gauge") 
+        //   || (shapeType == "Scale") || (shapeType == "Multiple") || (shapeType == "List") 
+        //   || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
+        //   || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
+        //   || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
+        //   || (shapeType == "Banner") || (shapeType == "Summary") || (shapeType == "Log Viewer") || (shapeType == "Status Explorer")
+        // ) {
+        //   options.fillColor = "#D3D3D3"
+        // }
 
         this.insertShape(shapeType, options);
         this.insertShapeFlag = false;
@@ -3902,6 +3902,14 @@ async insertShape(shapeType, options) {
       options['SHAPE_ID'] = kendoui_content.id;
       options['SHAPE_TYPE'] = shapeType;
     }
+    const buttonShapeTypes = [
+    'Button'
+  ];
+  if (buttonShapeTypes.includes(shapeType)) {
+    options.visual       = options.visual       ?? 'button3DVisual'; // default variant
+    options.buttonState  = options.buttonState  ?? 'normal';
+    options.disabled     = options.disabled     ?? false;
+  }
     console.log("kind:",kind,"shapeType:", shapeType, "options:", options);
     this.addLibraryShape(kind, options, true);
   }
@@ -6727,7 +6735,7 @@ public raisedButtonVisual(options: any): Group {
   // 2b. Upper gloss / lighter overlay
   // -----------------------------------------
 
-  const top2Height = Math.max(1, topH - 40);
+  const top2Height = Math.max(1, topHeight * 0.30);
 
   const top2 = new Rectangle({
     x: 5,
@@ -7517,8 +7525,13 @@ group.append(bottom);
 const faceOverlap = Math.min(2, b * 0.4);
 const faceInset = b - faceOverlap;
 
-const faceWidth = Math.max(1, w - 2 * faceInset);
-const faceHeight = Math.max(1, h - 2 * faceInset);
+const faceWidth = w * 0.95;
+const faceHeight = h * 0.90;
+
+const faceX = (w - faceWidth) / 2;
+const faceY = (h - faceHeight) / 2;
+
+
 
 // Smaller radius prevents the base showing through at the corners.
 const faceCornerRadius = Math.max(
@@ -7527,8 +7540,8 @@ const faceCornerRadius = Math.max(
 );
 
 const face = new Rectangle({
-  x: faceInset,
-  y: faceInset,
+  x: faceX,
+  y: faceY,
   width: faceWidth,
   height: faceHeight,
   cornerRadius: faceCornerRadius,

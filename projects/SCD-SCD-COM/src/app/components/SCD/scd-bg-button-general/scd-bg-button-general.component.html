@@ -88,13 +88,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_BUTTON_STYLE($event)"
  (change)="onChange_BUTTON_STYLE($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrBUTTON_STYLE"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrBUTTON_STYLE" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'BUTTON_STYLE'"
+		 		 [formControlName]="'BUTTON_STYLE'"
 					#BUTTON_STYLE ></kendo-radiobutton> 
 				<kendo-label  [for]="BUTTON_STYLE " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
