@@ -6699,6 +6699,43 @@ public button3DVisual(options: any): Group {
     topH,
     radius
   );
+
+
+ const imageSource = dataItem?.imageSource;
+  const padding = 10;
+  const gap = 8;
+  let textX = w / 2;
+
+  if (imageSource) {
+    const imageWidth  = Number(dataItem.imageWidth)  || 32;
+    const imageHeight = Number(dataItem.imageHeight) || 32;
+    const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+    let imageX: number;
+    if (position === 'right') {
+      imageX = w - padding - imageWidth;
+    } else if (position === 'center') {
+      imageX = (w - imageWidth) / 2;
+    } else {
+      imageX = padding;
+    }
+    const imageY = topY + (topH - imageHeight) / 2;
+
+    group.append(new DiagramImage({
+      source: imageSource,
+      x: imageX,
+      y: imageY,
+      width: imageWidth,
+      height: imageHeight
+    }));
+
+    // Centre the label in the space the image leaves free.
+    if (position === 'left') {
+      textX = (w + imageWidth + gap) / 2;
+    } else if (position === 'right') {
+      textX = (w - imageWidth - gap) / 2;
+    }
+  }
   // -----------------------------------------
   // 3. Label
   // -----------------------------------------
@@ -6706,11 +6743,11 @@ public button3DVisual(options: any): Group {
   if (label) {
 
     const text = new TextBlock({
-      text: label,
-      x: w / 2,
-      y: topY + topH / 2 + 5,
-      fill: actualTextColor
-    });
+    text: label,
+    x: textX,
+    y: topY + topH / 2 + 5,
+    fill: actualTextColor
+  });
 
     (text.options as any).fontSize =
       Number(dataItem?.fontSize) || 14;
@@ -6931,7 +6968,54 @@ public raisedButtonVisual(options: any): Group {
   } as any);
 
   group.append(top2);
+//
+  this.drawPattern(
+    group,
+    dataItem,
+    0,
+    topY,
+    w,
+    topH,
+    radius
+  );
 
+
+ const imageSource = dataItem?.imageSource;
+  const padding = 10;
+  const gap = 8;
+  let textX = w / 2;
+
+  if (imageSource) {
+    const imageWidth  = Number(dataItem.imageWidth)  || 32;
+    const imageHeight = Number(dataItem.imageHeight) || 32;
+    const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+    let imageX: number;
+    if (position === 'right') {
+      imageX = w - padding - imageWidth;
+    } else if (position === 'center') {
+      imageX = (w - imageWidth) / 2;
+    } else {
+      imageX = padding;
+    }
+    const imageY = topY + (topH - imageHeight) / 2;
+
+    group.append(new DiagramImage({
+      source: imageSource,
+      x: imageX,
+      y: imageY,
+      width: imageWidth,
+      height: imageHeight
+    }));
+
+    // Centre the label in the space the image leaves free.
+    if (position === 'left') {
+      textX = (w + imageWidth + gap) / 2;
+    } else if (position === 'right') {
+      textX = (w - imageWidth - gap) / 2;
+    }
+  }
+  //
   // -----------------------------------------
   // 3. Label
   // -----------------------------------------
@@ -6940,7 +7024,7 @@ public raisedButtonVisual(options: any): Group {
 
     const text = new TextBlock({
       text: label,
-      x: w / 2,
+      x: textX,
       y: topY + topH / 2 + 5,
       fill: actualTextColor
     });
@@ -6959,514 +7043,6 @@ public raisedButtonVisual(options: any): Group {
 
     group.append(text);
   }
-
-  return group;
-}
-
-public raisedButtonVisual_org(options: any): Group {
-
-  const dataItem =
-    options?.dataItem?.dataItem ??
-    options?.dataItem ??
-    {};
-
-  const buttonState =
-    dataItem?.buttonState || 'normal';
-
-  const disabled =
-    dataItem?.disabled === true;
-
-  const state =
-    disabled ? 'disabled' : buttonState;
-
-  const shape =
-    options?.dataItem ?? {};
-
-
-  // ============================================================
-  // DIMENSIONS
-  // ============================================================
-
-  const w = Math.max(
-    20,
-    Number(
-      options?.width ??
-      shape?.width ??
-      dataItem?.width ??
-      181
-    )
-  );
-
-  const h = Math.max(
-    16,
-    Number(
-      options?.height ??
-      shape?.height ??
-      dataItem?.height ??
-      60
-    )
-  );
-
-
-  // ============================================================
-  // SVG ORIGINAL
-  //
-  // viewBox = 220 x 90
-  //
-  // face:
-  //   x=10
-  //   y=10
-  //   width=200
-  //   height=60
-  //
-  // base:
-  //   x=10
-  //   y=18
-  //   width=200
-  //   height=60
-  //
-  // Therefore:
-  //
-  // horizontal margin = 10 / 220
-  // vertical face margin = 10 / 90
-  // base offset = 8 / 90
-  //
-  // We scale those values to the actual Kendo shape size.
-  // ============================================================
-
-  const scaleX = w / 220;
-  const scaleY = h / 90;
-
-  const faceX = 10 * scaleX;
-  const faceY = 10 * scaleY;
-
-  const faceW = 200 * scaleX;
-  const faceH = 60 * scaleY;
-
-  const baseY = 18 * scaleY;
-
-  const radius = 14 * Math.min(scaleX, scaleY);
-
-
-  // ============================================================
-  // COLORS
-  // ============================================================
-
-  let baseColor =
-    dataItem?.strokeColor || '#0d47a1';
-
-  let topColor =
-    dataItem?.fillColor || '#2196f3';
-
-  let textColor =
-    dataItem?.textColor || '#ffffff';
-
-
-  // ============================================================
-  // STATE COLORS
-  // ============================================================
-
-  if (state === 'hover') {
-
-    topColor =
-      this.lighten(topColor, 0.10);
-
-    baseColor =
-      this.lighten(baseColor, 0.05);
-  }
-
-
-  if (state === 'pressed') {
-
-    topColor =
-      this.darken(topColor, 0.10);
-
-    baseColor =
-      this.darken(baseColor, 0.05);
-  }
-
-
-  if (state === 'disabled') {
-
-    baseColor = '#8A8A8A';
-    topColor = '#C8C8C8';
-    textColor = '#707070';
-  }
-
-
-  // ============================================================
-  // GROUP
-  // ============================================================
-
-  const group = new Group({
-    cursor:
-      disabled
-        ? 'default'
-        : 'pointer'
-  } as any);
-
-
-  // ============================================================
-  // PRESSED POSITION
-  //
-  // Normal:
-  //
-  //   BASE
-  //     ↓
-  //   ┌─────────────┐
-  //   │ TOP FACE    │
-  //   └─────────────┘
-  //
-  // Pressed:
-  //
-  //   ┌─────────────┐
-  //   │ TOP FACE    │
-  //   └─────────────┘
-  //     ↓
-  //   BASE
-  //
-  // ============================================================
-
-  let actualFaceY = faceY;
-
-  if (state === 'pressed') {
-    actualFaceY = baseY;
-  }
-
-
-  // ============================================================
-  // 1. DARK BASE
-  //
-  // SVG:
-  //
-  // <rect x="10" y="18"
-  //       width="200" height="60"
-  //       rx="14"
-  //       fill="#0d47a1"/>
-  //
-  // ============================================================
-
-  const base = new Rectangle({
-
-    x: faceX,
-    y: baseY,
-
-    width: faceW,
-    height: faceH,
-
-    cornerRadius: radius,
-
-    fill: {
-      color: baseColor
-    },
-
-    stroke: null
-
-  } as any);
-
-  group.append(base);
-
-
-  // ============================================================
-  // 2. TOP FACE
-  //
-  // SVG:
-  //
-  // <linearGradient>
-  //   #7fd0ff
-  //   #2196f3
-  //   #1565c0
-  // </linearGradient>
-  //
-  // ============================================================
-
-  let gradientTop = this.lighten(topColor, 0.35);
-
-  let gradientMiddle = topColor;
-
-  let gradientBottom = this.darken(topColor, 0.15);
-
-
-  // Disabled button gets a flat grey appearance.
-  if (state === 'disabled') {
-
-    gradientTop = '#D8D8D8';
-    gradientMiddle = '#C8C8C8';
-    gradientBottom = '#B8B8B8';
-  }
-
-
-  const top = new Rectangle({
-
-    x: faceX,
-    y: actualFaceY,
-
-    width: faceW,
-    height: faceH,
-
-    cornerRadius: radius,
-
-    fill:
-      state === 'disabled'
-
-        ? {
-            color: gradientMiddle
-          }
-
-        : {
-            color: gradientMiddle,
-
-            gradient: {
-
-              type: 'linear',
-
-              start: [0, 0],
-
-              end: [0, faceH],
-
-              stops: [
-
-                {
-                  offset: 0,
-                  color: gradientTop
-                },
-
-                {
-                  offset: 0.45,
-                  color: gradientMiddle
-                },
-
-                {
-                  offset: 1,
-                  color: gradientBottom
-                }
-
-              ]
-
-            }
-          },
-
-    stroke: null
-
-  } as any);
-
-  group.append(top);
-
-
-  // ============================================================
-  // 3. GLOSS
-  //
-  // SVG:
-  //
-  // <rect x="20" y="16"
-  //       width="180" height="24"
-  //       rx="12"
-  //       fill="url(#raisedGloss)"/>
-  //
-  // The gloss is white at the top and fades to transparent.
-  // ============================================================
-
-  if (state !== 'disabled') {
-
-    const gloss = new Rectangle({
-
-      x: faceX + (10 * scaleX),
-
-      y: actualFaceY + (6 * scaleY),
-
-      width: faceW - (20 * scaleX),
-
-      height: 24 * scaleY,
-
-      cornerRadius: 12 * Math.min(scaleX, scaleY),
-
-      fill: {
-
-        color: '#ffffff',
-
-        gradient: {
-
-          type: 'linear',
-
-          start: [0, 0],
-
-          end: [0, 1],
-
-          stops: [
-
-            {
-              offset: 0,
-              color: '#ffffff',
-              opacity: 0.55
-            },
-
-            {
-              offset: 1,
-              color: '#ffffff',
-              opacity: 0
-            }
-
-          ]
-
-        }
-
-      },
-
-      stroke: null
-
-    } as any);
-
-    group.append(gloss);
-  }
-
-
-  // ============================================================
-  // 4. INNER TOP EDGE HIGHLIGHT
-  //
-  // SVG:
-  //
-  // <rect x="12" y="12"
-  //       width="196" height="56"
-  //       rx="12"
-  //       fill="none"
-  //       stroke="#ffffff"
-  //       opacity="0.35"/>
-  //
-  // ============================================================
-
-  const rim = new Rectangle({
-
-    x: faceX + (2 * scaleX),
-
-    y: actualFaceY + (2 * scaleY),
-
-    width: faceW - (4 * scaleX),
-
-    height: faceH - (4 * scaleY),
-
-    cornerRadius:
-      12 * Math.min(scaleX, scaleY),
-
-    fill: null,
-
-    stroke: {
-
-      color:
-        state === 'disabled'
-          ? '#E0E0E0'
-          : '#ffffff',
-
-      width: 1,
-
-      opacity:
-        state === 'disabled'
-          ? 0.20
-          : 0.35
-
-    }
-
-  } as any);
-
-  group.append(rim);
-
-
-  // ============================================================
-  // 5. LABEL
-  // ============================================================
-
-  const label =
-    String(dataItem?.text ?? '');
-
-  if (label) {
-
-    const fontSize =
-      Number(dataItem?.fontSize) || 20;
-
-
-    // ----------------------------------------------------------
-    // Text shadow
-    //
-    // SVG:
-    //
-    // text-shadow:
-    //   0 2px 2px rgba(0,0,0,0.35)
-    //
-    // Kendo Drawing doesn't need a CSS text-shadow here.
-    // We create a second TextBlock underneath.
-    // ----------------------------------------------------------
-
-    if (state !== 'disabled') {
-
-      const shadow = new TextBlock({
-
-        text: label,
-
-        x: w / 2,
-
-        y: actualFaceY +
-          (faceH / 2) +
-          (fontSize * 0.35) +
-          (2 * scaleY),
-
-        fill: '#000000'
-
-      });
-
-      (shadow.options as any).fontSize =
-        fontSize;
-
-      (shadow.options as any).fontWeight =
-        dataItem?.fontWeight || '700';
-
-      (shadow.options as any).fontFamily =
-        dataItem?.fontFamily ||
-        "'Segoe UI', Arial, sans-serif";
-
-      (shadow.options as any).textAnchor =
-        'middle';
-
-      (shadow.options as any).opacity =
-        0.35;
-
-      group.append(shadow);
-    }
-
-
-    // ----------------------------------------------------------
-    // Actual label
-    // ----------------------------------------------------------
-
-    const text = new TextBlock({
-
-      text: label,
-
-      x: w / 2,
-
-      y:
-        actualFaceY +
-        (faceH / 2) +
-        (fontSize * 0.35),
-
-      fill: textColor
-
-    });
-
-    (text.options as any).fontSize =
-      fontSize;
-
-    (text.options as any).fontWeight =
-      dataItem?.fontWeight || '700';
-
-    (text.options as any).fontFamily =
-      dataItem?.fontFamily ||
-      "'Segoe UI', Arial, sans-serif";
-
-    (text.options as any).textAnchor =
-      'middle';
-
-    group.append(text);
-  }
-
 
   return group;
 }
@@ -7711,6 +7287,53 @@ const face = new Rectangle({
 
 group.append(face);
 
+this.drawPattern(
+  group,
+  dataItem,
+  faceX,
+  faceY,
+  faceWidth,
+  faceHeight,
+  faceCornerRadius
+);
+
+
+ const imageSource = dataItem?.imageSource;
+  const padding = 10;
+  const gap = 8;
+  let textX = w / 2;
+
+  if (imageSource) {
+    const imageWidth  = Number(dataItem.imageWidth)  || 32;
+    const imageHeight = Number(dataItem.imageHeight) || 32;
+    const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+    let imageX: number;
+    if (position === 'right') {
+      imageX = faceX + faceWidth - padding - imageWidth;
+    } else if (position === 'center') {
+      imageX = faceX + (faceWidth - imageWidth) / 2;
+    } else {
+      imageX = faceX + padding;
+    }
+    const imageY = faceY + (faceHeight - imageHeight) / 2;
+
+    group.append(new DiagramImage({
+      source: imageSource,
+      x: imageX,
+      y: imageY,
+      width: imageWidth,
+      height: imageHeight
+    }));
+
+    // Centre the label in the space the image leaves free.
+    if (position === 'left') {
+      textX = (w + imageWidth + gap) / 2;
+    } else if (position === 'right') {
+      textX = (w - imageWidth - gap) / 2;
+    }
+  }
+  
   // -----------------------------------------
   // 7. Label
   // -----------------------------------------
@@ -7718,7 +7341,7 @@ group.append(face);
   if (label) {
     const text = new TextBlock({
       text: label,
-      x: w / 2,
+      x: textX,
       y: h / 2 + 5,
       fill: actualTextColor
     });
@@ -7771,11 +7394,7 @@ public recessedButtonVisual(options: any): Group {
   // The face is inset from the outer edge.
   const b = state === 'pressed' ? bevel * 0.7 : bevel;
 
-  const faceX = b;
-  const faceY = b;
-  const faceW = Math.max(1, w - 2 * b);
-  const faceH = Math.max(1, h - 2 * b);
-  const faceRadius = Math.max(0, radius - b * 0.5);
+  
 
   const faceColor = actualFillTop;
   const baseColor = actualFillBase;
@@ -7852,6 +7471,11 @@ const innerW = w - 2 * borderWidth;
 const innerH = h - 2 * borderWidth;
 const innerRadius = Math.max(0, radius - borderWidth);
 
+const faceX = innerX + b;
+const faceY = innerY + b;
+const faceW = Math.max(1, innerW - 2 * b);
+const faceH = Math.max(1, innerH - 2 * b);
+const faceRadius = Math.max(0, innerRadius - b * 0.5);
 
 // 2. Dark top bevel — extends across both corners.
 const top = new Rectangle({
@@ -7907,24 +7531,72 @@ group.append(bottom);
 
 // 6. Rounded recessed face.
 const face = new Rectangle({
-  x: innerX + b,
-  y: innerY + b,
-  width: Math.max(1, innerW - 2 * b),
-  height: Math.max(1, innerH - 2 * b),
-  cornerRadius: Math.max(0, innerRadius - b * 0.5),
+  x: faceX,
+  y: faceY,
+  width: faceW,
+  height: faceH,
+  cornerRadius: faceRadius,
   fill: { color: faceColor },
   stroke: { width: 0 }
 } as any);
 
 group.append(face);
 
+this.drawPattern(
+  group,
+  dataItem,
+  faceX,
+  faceY,
+  faceW,
+  faceH,
+  faceRadius
+);
 
+
+ const imageSource = dataItem?.imageSource;
+const padding = 10;
+const gap = 8;
+let textX = faceX + faceW / 2;
+
+if (imageSource) {
+  const imageWidth = Number(dataItem.imageWidth) || 32;
+  const imageHeight = Number(dataItem.imageHeight) || 32;
+  const position = String(
+    dataItem.imagePosition || 'left'
+  ).toLowerCase();
+
+  let imageX: number;
+
+  if (position === 'right') {
+    imageX = faceX + faceW - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = faceX + (faceW - imageWidth) / 2;
+  } else {
+    imageX = faceX + padding;
+  }
+
+  const imageY = faceY + (faceH - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  if (position === 'left') {
+    textX = faceX + (faceW + imageWidth + gap) / 2;
+  } else if (position === 'right') {
+    textX = faceX + (faceW - imageWidth - gap) / 2;
+  }
+}
   // 8. Label.
   if (label) {
     const text = new TextBlock({
       text: label,
-      x: w / 2,
-      y: h / 2 + 5,
+      x: textX,
+      y: faceY + faceH / 2 + 5,
       fill: actualTextColor
     });
 
