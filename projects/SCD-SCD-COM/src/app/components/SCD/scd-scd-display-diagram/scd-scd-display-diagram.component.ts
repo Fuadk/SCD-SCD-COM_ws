@@ -1172,7 +1172,7 @@ if (
           `🖱️ Button hover: ${shape.id}`
         );
 
-       // return;
+        //return;
       }
 
       // -------------------------
@@ -1190,7 +1190,7 @@ if (
         }
 
         if (!buttonShape) {
-         // return;
+          //return;
         }
 
         const buttonData =
@@ -1212,7 +1212,7 @@ if (
           );
         }
 
-       // return;
+        //return;
       }
 
       // -------------------------
@@ -1228,7 +1228,7 @@ if (
           `🖱️ Button pressed: ${shape.id}`
         );
 
-       // return;
+        //return;
       }
 
       // -------------------------
@@ -1246,7 +1246,7 @@ if (
           `🖱️ Button released: ${shape.id}`
         );
 
-       // return;
+        //return;
       }
     }
   }
@@ -2485,7 +2485,6 @@ public lastClickY: number = 0;
             fillColor: "#D3D3D3",
             x: this.lastClickX,
             y: this.lastClickY,
-            
           };
         // if ((shapeType == "Button") || (shapeType == "Momentry") 
         //   || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
@@ -6537,7 +6536,16 @@ public button3DVisual(options: any): Group {
   } as any);
 
   group.append(top);
-
+  
+  this.drawPattern(
+    group,
+    dataItem,
+    0,
+    topY,
+    w,
+    topH,
+    radius
+  );
   // -----------------------------------------
   // 3. Label
   // -----------------------------------------
@@ -7532,7 +7540,6 @@ const faceX = (w - faceWidth) / 2;
 const faceY = (h - faceHeight) / 2;
 
 
-
 // Smaller radius prevents the base showing through at the corners.
 const faceCornerRadius = Math.max(
   0,
@@ -7802,6 +7809,330 @@ group.append(face);
       this.refreshCustomShape(shape);
     }
   }
+
+////// patterns
+
+
+
+private addPatternPath(
+  group: Group,
+  points: Array<[number, number]>,
+  color: string,
+  width: number = 1
+): void {
+  if (points.length < 2) {
+    return;
+  }
+
+  // Build an SVG path string: "M x0 y0 L x1 y1 L x2 y2 ..."
+  const data = points
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`)
+    .join(' ');
+
+  const path = new Path({
+    data,
+    stroke: { color, width },
+    fill: { color: 'transparent' }
+  });
+
+  group.append(path);
+}
+
+
+private drawDots(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  radius: number, color: string, size: number, spacing: number
+): void {
+  // Use tiny filled rectangles for dots to avoid Circle geometry issues.
+  const d = Math.max(1, size * 0.6);
+
+  for (let cy = y + spacing / 2; cy < y + h; cy += spacing) {
+    for (let cx = x + spacing / 2; cx < x + w; cx += spacing) {
+      const dot = new Rectangle({
+        x: cx - d / 2,
+        y: cy - d / 2,
+        width: d,
+        height: d,
+        cornerRadius: d / 2,
+        fill: { color },
+        stroke: { width: 0 }
+      } as any);
+
+      group.append(dot);
+    }
+  }
+}
+
+private drawChecks(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number
+): void {
+  const cell = Math.max(spacing, size * 2);
+
+  for (let cy = y; cy < y + h; cy += cell) {
+    for (let cx = x; cx < x + w; cx += cell) {
+      const even = (Math.floor((cx - x) / cell) +
+                    Math.floor((cy - y) / cell)) % 2 === 0;
+
+      if (even) {
+        group.append(new Rectangle({
+          x: cx, y: cy,
+          width: Math.min(cell, x + w - cx),
+          height: Math.min(cell, y + h - cy),
+          fill: { color },
+          stroke: { width: 0 }
+        } as any));
+      }
+    }
+  }
+}
+
+private drawBoxes(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const factor = style === 'small boxes' ? 0.6 :
+                 style === 'medium boxes' ? 1.0 : 1.6;
+  const cell = Math.max(3, spacing * factor);
+
+  for (let cy = y; cy < y + h; cy += cell) {
+    for (let cx = x; cx < x + w; cx += cell) {
+      group.append(new Rectangle({
+        x: cx, y: cy,
+        width: Math.min(cell, x + w - cx),
+        height: Math.min(cell, y + h - cy),
+        fill: { color, opacity: 0 },
+        stroke: { color, width: Math.max(1, size / 3) }
+      } as any));
+    }
+  }
+}
+
+private drawStraightLines(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const vertical = style.includes('vertical');
+  const wide = style.includes('wide');
+  const gap = wide ? spacing * 1.8 : spacing;
+  const lineWidth = Math.max(1, wide ? size * 0.65 : size * 0.3);
+
+  if (vertical) {
+    for (let cx = x; cx <= x + w; cx += gap) {
+      this.addPatternPath(group, [[cx, y], [cx, y + h]], color, lineWidth);
+    }
+  } else {
+    for (let cy = y; cy <= y + h; cy += gap) {
+      this.addPatternPath(group, [[x, cy], [x + w, cy]], color, lineWidth);
+    }
+  }
+}
+
+private drawDiagonalPattern(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const wide = style.includes('wide');
+  const gap = wide ? spacing * 1.8 : spacing;
+  const lineWidth = Math.max(1, wide ? size * 0.65 : size * 0.3);
+
+  const drawRight = style === 'right diagonal' ||
+                    style === 'wide right diagonal' ||
+                    style === 'hatch';
+  const drawLeft = style === 'left diagonal' ||
+                   style === 'wide left diagonal' ||
+                   style === 'hatch';
+
+  // Generate diagonal segments spanning the rectangular face.
+  for (let offset = -h; offset <= w; offset += gap) {
+    if (drawRight) {
+      this.addPatternPath(
+        group,
+        [[x + offset, y], [x + offset + h, y + h]],
+        color,
+        lineWidth
+      );
+    }
+
+    if (drawLeft) {
+      this.addPatternPath(
+        group,
+        [[x + offset, y + h], [x + offset + h, y]],
+        color,
+        lineWidth
+      );
+    }
+  }
+}
+
+private drawBricks(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number
+): void {
+  const brickW = Math.max(spacing * 2, size * 3);
+  const brickH = Math.max(spacing, size * 1.5);
+  const lineWidth = Math.max(1, size / 3);
+
+  for (let row = 0, cy = y; cy <= y + h; row++, cy += brickH) {
+    const offset = row % 2 ? brickW / 2 : 0;
+
+    this.addPatternPath(
+      group, [[x, cy], [x + w, cy]], color, lineWidth
+    );
+
+    for (let cx = x + offset; cx <= x + w; cx += brickW) {
+      this.addPatternPath(
+        group,
+        [[cx, cy], [cx, Math.min(cy + brickH, y + h)]],
+        color,
+        lineWidth
+      );
+    }
+  }
+}
+
+private drawDecorativePattern(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const cellW = Math.max(spacing * 1.5, size * 2);
+  const cellH = Math.max(spacing, size * 1.5);
+  const lineWidth = Math.max(1, size / 3);
+
+  for (let cy = y; cy < y + h; cy += cellH) {
+    for (let cx = x; cx < x + w; cx += cellW) {
+      const rw = Math.min(cellW, x + w - cx);
+      const rh = Math.min(cellH, y + h - cy);
+
+      if (style === 'diamonds') {
+        this.addPatternPath(
+          group,
+          [
+            [cx + rw / 2, cy],
+            [cx + rw, cy + rh / 2],
+            [cx + rw / 2, cy + rh],
+            [cx, cy + rh / 2],
+            [cx + rw / 2, cy]
+          ],
+          color, lineWidth
+        );
+      } else if (style === 'ovals') {
+        // Approximate an oval with a closed polygon.
+        const points: Array<[number, number]> = [];
+        for (let i = 0; i <= 16; i++) {
+          const angle = (i / 16) * Math.PI * 2;
+          points.push([
+            cx + rw / 2 + Math.cos(angle) * rw / 2,
+            cy + rh / 2 + Math.sin(angle) * rh / 2
+          ]);
+        }
+        this.addPatternPath(group, points, color, lineWidth);
+      } else if (style === 'scales') {
+        this.addPatternPath(
+          group,
+          [
+            [cx, cy + rh],
+            [cx + rw / 2, cy],
+            [cx + rw, cy + rh]
+          ],
+          color, lineWidth
+        );
+      } else if (style === 'waves') {
+        const points: Array<[number, number]> = [];
+        for (let i = 0; i <= 12; i++) {
+          const px = cx + (i / 12) * rw;
+          const py = cy + rh / 2 +
+            Math.sin((i / 12) * Math.PI * 2) * rh / 2;
+          points.push([px, py]);
+        }
+        this.addPatternPath(group, points, color, lineWidth);
+      }
+    }
+  }
+}
+
+
+private drawPattern(
+  group: Group,
+  dataItem: any,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+): void {
+  const style = String(dataItem?.patternStyle ?? '')
+    .trim()
+    .toLowerCase();
+
+  if (!style || style === 'none') {
+    return;
+  }
+
+  const color = dataItem?.patternColor || '#FFFFFF';
+  const size = Math.max(1, Number(dataItem?.patternSize) || 5);
+  const spacing = Math.max(
+    size + 1,
+    Number(dataItem?.patternSpacing) || 10
+  );
+
+  switch (style) {
+    case 'dots':
+      this.drawDots(group, x, y, width, height, radius, color, size, spacing);
+      break;
+
+    case 'checks':
+      this.drawChecks(group, x, y, width, height, color, size, spacing);
+      break;
+
+    case 'small boxes':
+    case 'medium boxes':
+    case 'large boxes':
+      this.drawBoxes(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+
+    case 'vertical lines':
+    case 'wide vertical lines':
+    case 'horizontal lines':
+    case 'wide horizontal lines':
+      this.drawStraightLines(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+
+    case 'right diagonal':
+    case 'wide right diagonal':
+    case 'left diagonal':
+    case 'wide left diagonal':
+    case 'hatch':
+      this.drawDiagonalPattern(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+
+    case 'bricks':
+      this.drawBricks(group, x, y, width, height, color, size, spacing);
+      break;
+
+    case 'ovals':
+    case 'diamonds':
+    case 'scales':
+    case 'waves':
+      this.drawDecorativePattern(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+  }
+}
 
 }
 
