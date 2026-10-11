@@ -1,6 +1,6 @@
 import { Component, Input, Output,ViewChild, EventEmitter,
    HostListener ,ViewContainerRef, ComponentRef, AfterViewInit, 
-   OnDestroy, ChangeDetectorRef } from '@angular/core';
+   OnDestroy, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { DialogService } from '@progress/kendo-angular-dialog';
 import { geometry } from '@progress/kendo-drawing';
@@ -176,6 +176,10 @@ interface ShapeEditorStyle {
 
 
 export class ScdDisplayScdScdDisplayDiagramDiagramComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('diagramHost', { read: ElementRef })
+  diagramHost!: ElementRef<HTMLElement>;
+  private pressedShapeId: string | null = null;
+
   @ViewChild('diagram')    diagram!: DiagramComponent;
   public title =  this.starServices.getNLS([],"SCD_SCD_DISPLAY_DIAGRAM.scddisplayScdScdDisplayDiagram.component_title","SCD DISPLAY DIAGRAM");
   public compTitleMsg =  "SCD_SCD_DISPLAY_DIAGRAM.scddisplayScdScdDisplayDiagram";
@@ -299,6 +303,10 @@ public disableDISPLAY_DATA = false;
     if (this.propertyDialogData && this.propertyDialogData.isVisible) {
       this.createPropertyDialogComponent();
     }
+    this.diagramHost.nativeElement.addEventListener(
+    'pointerdown',
+    this.onPointerDown
+  );
     
   }
   public Comp_Config!: componentConfigDef;
@@ -395,6 +403,12 @@ public disableDISPLAY_DATA = false;
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
     this.scadaSubscriptions.forEach(sub => sub.unsubscribe());
+
+    this.diagramHost?.nativeElement.removeEventListener(
+      'pointerdown',
+      this.onPointerDown
+    );
+    this.releasePressedButton();
  }
 
   callStarNotify(componentConfig:any) {
@@ -1132,9 +1146,7 @@ async ON_EVENT(type: string, event: any) {
 
 if (
   type === "mouseEnter" ||
-  type === "mouseLeave" ||
-  type === "mouseDown" ||
-  type === "mouseUp"
+  type === "mouseLeave" 
 ) {
   const shape = event.item;
 
@@ -1219,39 +1231,9 @@ if (
         //return;
       }
 
-      // -------------------------
-      // Mouse button pressed
-      // -------------------------
-      if (type === "mouseDown") {
+   
 
-        dataItem.buttonState = 'pressed';
-
-        this.refreshCustomShape(shape);
-
-        console.log(
-          `🖱️ Button pressed: ${shape.id}`
-        );
-
-        //return;
-      }
-
-      // -------------------------
-      // Mouse button released
-      // -------------------------
-      if (type === "mouseUp") {
-
-        // Mouse is still over the button,
-        // so return to hover.
-        dataItem.buttonState = 'hover';
-
-        this.refreshCustomShape(shape);
-
-        console.log(
-          `🖱️ Button released: ${shape.id}`
-        );
-
-        //return;
-      }
+      
     }
   }
 }
@@ -2507,6 +2489,13 @@ public lastClickY: number = 0;
 
 // ===== CLICK HANDLER =====
   public onDiagramClick(event: any): void {
+    let target = event.target.outerHTML;
+    if (target.startsWith("<svg")) {
+      console.log("Clicked on empty space");
+      this.currentShapeId = "";
+      this.currentShapeType = "";
+      // this.showContextMenuAt(event.pageX, event.pageY, null);
+    }
     this.lastClickX = event.offsetX || event.layerX || 0;
     this.lastClickY = event.offsetY || event.layerY || 0;
     //if (this.event.text != "FreeHand") {
@@ -2557,13 +2546,7 @@ public lastClickY: number = 0;
         }, 500);
       }
     //}
-    let target = event.target.outerHTML;
-    if (target.startsWith("<svg")) {
-      console.log("Clicked on empty space");
-      //this.currentShapeId = "";
-      this.currentShapeType = "";
-      // this.showContextMenuAt(event.pageX, event.pageY, null);
-    }
+    
     console.log(`📍 checking:Click: (${this.lastClickX}, ${this.lastClickY})`);
 
     // 🔑 Clear any existing timer
@@ -2573,14 +2556,35 @@ public lastClickY: number = 0;
     }
 
     // 🔑 Set a timer to detect part on already-selected shapes
-    this.clickTimer = setTimeout(() => {
+    //this.clickTimer = setTimeout(() => {
       this.detectPartAtClick(this.lastClickX, this.lastClickY, event);
       this.clickTimer = null;
-    }, 100);
+    //}, 100);
 
     this.ON_CLICK(event);
   }
+public onShapeClick(event: any): void {
+    console.log("Pressing : onShapeClick:",event)
+    this.lastClickX = event.offsetX || event.layerX || 0;
+    this.lastClickY = event.offsetY || event.layerY || 0;
+   
+    this.currentShapeId = event.item.id;
+    this.currentShapeType = event.item.type;
 
+
+    console.log(`📍 checking:Click: (${this.lastClickX}, ${this.lastClickY})`);
+
+    // 🔑 Clear any existing timer
+    if (this.clickTimer) {
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
+    }
+    console.log("Pressing : onShapeClick:this.currentShapeId:",this.currentShapeId)
+    // 🔑 Set a timer to detect part on already-selected shapes
+
+
+   
+  }
 public detectPartAtClick(clickX: number, clickY: number, event): void {
     // 🔑 Use currentShapeId if available
     let foundContainerId: string | null = this.currentShapeId;
@@ -6581,13 +6585,12 @@ private getButtonVisualStyle(dataItem: any): {
   }
 
   public noneButtonVisual(options: any): Group {
-
+  console.log("inside noneButtonVisual")
   const dataItem =
     options?.dataItem?.dataItem ??
     options?.dataItem ??
     {};
 
-  // Resolve button state and colors centrally.
   const {
     state,
     disabled,
@@ -6598,211 +6601,185 @@ private getButtonVisualStyle(dataItem: any): {
 
   const shape = options?.dataItem ?? {};
 
-  const w = Math.max(
-    20,
-    Number(
-      options?.width ??
-      shape?.width ??
-      dataItem?.width ??
-      181
-    )
-  );
-
-  const h = Math.max(
-    16,
-    Number(
-      options?.height ??
-      shape?.height ??
-      dataItem?.height ??
-      60
-    )
-  );
+  const w = Math.max(20, Number(options?.width  ?? shape?.width  ?? dataItem?.width  ?? 181));
+  const h = Math.max(16, Number(options?.height ?? shape?.height ?? dataItem?.height ?? 60));
 
   const radius = Math.min(14, h / 3);
-
-  const label = String(dataItem?.text ?? '');
-
-  // -----------------------------------------
-  // Main button group
-  // -----------------------------------------
+  const label  = String(dataItem?.text ?? '');
 
   const group = new Group({
     cursor: disabled ? 'default' : 'pointer'
   } as any);
 
   // -----------------------------------------
-  // 1. Flat face (no base, no depth)
-  //
-  //    topY is always 0 and topH is always h
-  //    because there is no raised layer.
+  // Pressed geometry: shrink and darken.
+  //   normal / hover : inset = 0, no darken
+  //   pressed        : inset = 2, darken 0.12
   // -----------------------------------------
+  const pressed = state === 'pressed';
+  const inset   = pressed ? Math.min(3, Math.max(1, h * 0.06)) : 0;
 
-  const topY = 0;
-  const topH = h;
+  const faceX = inset;
+  const faceY = inset;
+  const faceW = Math.max(1, w - inset * 2);
+  const faceH = Math.max(1, h - inset * 2);
+  const faceRadius = Math.max(0, radius - inset);
 
-  // Border is optional. By default it is invisible so the shape
-  // looks like a plain rectangle. Set dataItem.borderWidth > 0
-  // (or dataItem.borderColor) to draw an outline.
+  // A flat button reads "pressed" when its fill gets darker.
+  // Hover: slightly lighter. Disabled: leave as resolved by the style helper.
+  let faceColor = actualFillTop;
+  if (pressed) {
+    faceColor = this.darken(actualFillTop, 0.12);
+  } else if (state === 'hover') {
+    faceColor = this.lighten(actualFillTop, 0.10);
+  }
+
+  // Optional explicit border (default invisible).
   const borderWidth = Number(dataItem?.borderWidth) || 0;
   const borderColor =
     dataItem?.borderColor ??
     (borderWidth > 0 ? actualFillBase : null);
 
-  const top = new Rectangle({
-    x: 0,
-    y: topY,
-    width: w,
-    height: topH,
-    cornerRadius: radius,
+  // -----------------------------------------
+  // 1. Flat face — gradient direction flips on press
+  //    normal : light at top    -> dark at bottom (raised look)
+  //    pressed: dark at top     -> light at bottom (sunk look)
+  // -----------------------------------------
+  const stops = state === 'disabled'
+    ? [
+        { offset: 0, color: faceColor },
+        { offset: 1, color: faceColor }
+      ]
+    : pressed
+      ? [
+          { offset: 0, color: this.darken(faceColor, 0.10) },
+          { offset: 1, color: this.lighten(faceColor, 0.06) }
+        ]
+      : [
+          { offset: 0, color: this.lighten(faceColor, 0.15) },
+          { offset: 1, color: faceColor }
+        ];
 
+  const top = new Rectangle({
+    x: faceX,
+    y: faceY,
+    width: faceW,
+    height: faceH,
+    cornerRadius: faceRadius,
     fill: {
-      color: actualFillTop,
+      color: faceColor,
       gradient: {
         type: 'linear',
         start: [0, 0],
-        end: [0, topH],
-        stops: [
-          {
-            offset: 0,
-            color: state === 'disabled'
-              ? actualFillTop
-              : this.lighten(actualFillTop, 0.15)
-          },
-          {
-            offset: 1,
-            color: actualFillTop
-          }
-        ]
+        end: [0, faceH],
+        stops
       }
     },
-
-    stroke: {
-      width: 0
-    }
+    stroke: borderColor
+      ? { color: borderColor, width: borderWidth }
+      : { width: 0 }
   } as any);
 
   group.append(top);
 
   // -----------------------------------------
-  // 2. Pattern overlay
+  // 1b. Inner top shadow line — reads as "sunk"
+  //     Only drawn on press. A short dark line
+  //     just under the top edge sells the depth.
   // -----------------------------------------
+  if (pressed && !disabled) {
+    const shadowY = faceY + 1;
+    const shadow = new Path({
+      data:
+        `M ${faceX + faceRadius},${shadowY} ` +
+        `L ${faceX + faceW - faceRadius},${shadowY}`,
+      stroke: {
+        color: this.darken(faceColor, 0.35),
+        width: 2
+      },
+      fill: { color: 'transparent' }
+    });
+    group.append(shadow);
+  }
 
+  // -----------------------------------------
+  // 2. Pattern — drawn on the (possibly inset) face
+  // -----------------------------------------
   this.drawPattern(
     group,
     dataItem,
-    0,
-    topY,
-    w,
-    topH,
-    radius
+    faceX,
+    faceY,
+    faceW,
+    faceH,
+    faceRadius
   );
 
   // -----------------------------------------
-  // 3. Optional image
+  // 3. Image
   // -----------------------------------------
-
   const imageSource = dataItem?.imageSource;
-  let textX = w / 2;
+  let textX = faceX + faceW / 2;
 
   if (imageSource) {
     const baseWidth  = Number(dataItem.imageWidth)  || 32;
     const baseHeight = Number(dataItem.imageHeight) || 32;
-    const scaleImage = !['false', '0']
-      .includes(String(dataItem.imageScale).toLowerCase());
+    const scaleImage = !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
 
-    let imageWidth: number;
-    let imageHeight: number;
-    let padding: number;
-    let gap: number;
+    let imageWidth: number, imageHeight: number, padding: number, gap: number;
 
     if (scaleImage) {
-      // Scales with the button: height is a fraction of the button face.
       const aspect = baseWidth / baseHeight;
       const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
-
-      imageHeight = topH * heightRatio;
+      imageHeight = faceH * heightRatio;
       imageWidth  = imageHeight * aspect;
-
-      const maxWidth = w * 0.4;
-      if (imageWidth > maxWidth) {
-        imageWidth  = maxWidth;
-        imageHeight = imageWidth / aspect;
-      }
-
-      padding = Math.max(6, topH * 0.15);
-      gap     = Math.max(6, topH * 0.12);
+      const maxWidth = faceW * 0.4;
+      if (imageWidth > maxWidth) { imageWidth = maxWidth; imageHeight = imageWidth / aspect; }
+      padding = Math.max(6, faceH * 0.15);
+      gap     = Math.max(6, faceH * 0.12);
     } else {
-      // Fixed size: exactly imageWidth x imageHeight pixels.
-      imageWidth  = baseWidth;
-      imageHeight = baseHeight;
-      padding = 10;
-      gap = 8;
+      imageWidth = baseWidth; imageHeight = baseHeight;
+      padding = 10; gap = 8;
     }
 
-    const position = String(
-      dataItem.imagePosition || 'left'
-    ).toLowerCase();
-
+    const position = String(dataItem.imagePosition || 'left').toLowerCase();
     let imageX: number;
-    if (position === 'right') {
-      imageX = w - padding - imageWidth;
-    } else if (position === 'center') {
-      imageX = (w - imageWidth) / 2;
-    } else {
-      imageX = padding;
-    }
+    if (position === 'right')      imageX = faceX + faceW - padding - imageWidth;
+    else if (position === 'center') imageX = faceX + (faceW - imageWidth) / 2;
+    else                            imageX = faceX + padding;
 
-    const imageY = topY + (topH - imageHeight) / 2;
+    const imageY = faceY + (faceH - imageHeight) / 2;
 
     group.append(new DiagramImage({
       source: imageSource,
-      x: imageX,
-      y: imageY,
-      width: imageWidth,
-      height: imageHeight
+      x: imageX, y: imageY,
+      width: imageWidth, height: imageHeight
     }));
 
-    // Keep the label centred; shift it only if it would overlap the image.
     const fontSize = Number(dataItem?.fontSize) || 14;
     const halfText = (label.length * fontSize * 0.6) / 2;
-
     if (position === 'left') {
-      textX = Math.max(
-        w / 2,
-        padding + imageWidth + gap + halfText
-      );
+      textX = Math.max(faceX + faceW / 2, faceX + padding + imageWidth + gap + halfText);
     } else if (position === 'right') {
-      textX = Math.min(
-        w / 2,
-        w - padding - imageWidth - gap - halfText
-      );
+      textX = Math.min(faceX + faceW / 2, faceX + faceW - padding - imageWidth - gap - halfText);
     }
   }
 
   // -----------------------------------------
-  // 4. Label
+  // 4. Label — nudges down 1px on press for extra feedback
   // -----------------------------------------
-
   if (label) {
-
+    const pressNudge = pressed ? 1 : 0;
     const text = new TextBlock({
       text: label,
       x: textX,
-      y: topY + topH / 2 + 5,
+      y: faceY + faceH / 2 + 5 + pressNudge,
       fill: actualTextColor
     });
-
-    (text.options as any).fontSize =
-      Number(dataItem?.fontSize) || 14;
-
-    (text.options as any).fontWeight =
-      dataItem?.fontWeight || 'bold';
-
-    (text.options as any).fontFamily =
-      dataItem?.fontFamily || 'Arial, sans-serif';
-
+    (text.options as any).fontSize   = Number(dataItem?.fontSize) || 14;
+    (text.options as any).fontWeight = dataItem?.fontWeight || 'bold';
+    (text.options as any).fontFamily = dataItem?.fontFamily || 'Arial, sans-serif';
     (text.options as any).textAnchor = 'middle';
-
     group.append(text);
   }
 
@@ -8350,6 +8327,137 @@ private drawPattern(
       );
       break;
   }
+}
+
+private isShapeTarget(event: PointerEvent): boolean {
+  const target = event.target;
+
+  if (!(target instanceof Element)) {
+    return false;
+  }
+
+  // The SVG root itself represents the diagram background
+  // in your current test.
+  return target instanceof SVGElement &&
+         target.tagName.toLowerCase() !== 'svg';
+}
+
+@HostListener('document:pointerup')
+onPointerUp(): void {
+  console.log('ButtonSensor: document pointerup');
+  this.releasePressedButton();
+}
+
+@HostListener('document:pointercancel')
+onPointerCancel(): void {
+  console.log('ButtonSensor: document pointercancel');
+  this.releasePressedButton();
+}
+
+@HostListener('window:blur')
+onWindowBlur(): void {
+  if (!this.pressedShapeId) return;
+
+  console.log('ButtonSensor: window blur - releasing button');
+  this.releasePressedButton();
+}
+
+@HostListener('document:pointerdown', ['$event'])
+onPointerDown(event: PointerEvent): void {
+  if (event.button !== 0) return;
+
+  const isShape = this.isShapeTarget(event);
+
+  console.log('ButtonSensor: pointerdown', {
+    isShape,
+    currentShapeId: this.currentShapeId,
+    targetTag: (event.target as Element)?.tagName
+  });
+
+  if (!isShape || !this.currentShapeId) {
+    return;
+  }
+
+  const shapeId = this.currentShapeId;
+
+  // Verify that the current shape is actually a button.
+  const shape = this.diagram?.getShapeById(shapeId);
+  if (!shape) {
+    console.warn('ButtonSensor: shape not found', shapeId);
+    return;
+  }
+
+  const dataItem = this.shapeDataItem(shape);
+  if (!dataItem) return;
+console.log('ButtonSensor: dataItem:', dataItem);
+  const type = String(dataItem.type ?? '').toLowerCase();
+
+  const isButton = [
+    'button',
+    'push button',
+    'momentary',
+    'momentry',
+    'maintained',
+    'latched',
+    'multistate',
+    'interlocked',
+    'ramp button',
+    'navigation button'
+  ].includes(type);
+
+  if (!isButton) {
+    console.log('ButtonSensor: current shape is not a button', type);
+    return;
+  }
+
+  this.pressedShapeId = shapeId;
+  this.setButtonState(shapeId, 'pressed');
+}
+
+private releasePressedButton(): void {
+  if (!this.pressedShapeId) {
+    return;
+  }
+
+  const id = this.pressedShapeId;
+
+  console.log('ButtonSensor: releasing button', id);
+
+  this.pressedShapeId = null;
+  this.setButtonState(id, 'normal');
+}
+
+private setButtonState(
+  shapeId: string,
+  state: 'normal' | 'pressed'
+): void {
+  console.log('ButtonSensor: setButtonState', shapeId);
+  if (!shapeId || !this.diagram) return;
+
+  const shape = this.diagram.getShapeById(shapeId);
+  if (!shape) {
+    console.warn('ButtonSensor: shape not found', shapeId);
+    return;
+  }
+
+  const dataItem = this.shapeDataItem(shape);
+  if (!dataItem) return;
+
+  if (dataItem.disabled === true) {
+    state = 'normal';
+  }
+
+  if (dataItem.buttonState === state) return;
+
+  // Update the state first.
+  dataItem.buttonState = state;
+
+  // Redraw the custom visual.
+  this.refreshCustomShape(shape);
+
+  console.log(
+    `ButtonSensor: refreshed ${shapeId}, state=${state}`
+  );
 }
 
 }

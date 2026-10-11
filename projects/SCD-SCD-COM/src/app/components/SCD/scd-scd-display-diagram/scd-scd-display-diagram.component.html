@@ -194,6 +194,7 @@
       (mouseEnter)="ON_EVENT('mouseEnter', $event)"
       (contextmenu)="onDiagramContextMenu($event)"
       (click)="onDiagramClick($event)"
+      (diagramClick)="onShapeClick($event)"
       (zoomEnd)="ON_EVENT('zoomEnd', $event)"
       (zoomStart)="ON_EVENT('zoomStart', $event)"
       [zoom]="zoomLevel"
@@ -204,8 +205,7 @@
       (change)="ON_EVENT('change', $event)"
       (drag)="ON_EVENT('drag', $event)"
       (mouseLeave)="ON_EVENT('mouseLeave', $event)"
-      (mouseDown)="ON_EVENT('mouseDown', $event)"
-      (mouseUp)="ON_EVENT('mouseUp', $event)"
+   
       >
   </kendo-diagram>
 
