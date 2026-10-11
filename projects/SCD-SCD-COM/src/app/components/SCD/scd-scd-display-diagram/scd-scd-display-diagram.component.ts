@@ -6519,58 +6519,102 @@ private darken(hex: string, amount: number): string {
     .toString(16)
     .slice(1)}`;
 }
-private getButtonVisualStyle(dataItem: any): {
-  state: 'normal' | 'hover' | 'pressed' | 'disabled';
-  disabled: boolean;
-  actualFillTop: string;
-  actualFillBase: string;
-  actualTextColor: string;
-} {
-  const disabled = dataItem?.disabled === true;
 
-  const requestedState = dataItem?.buttonState || 'normal';
+private isDbYes(value: any): boolean {
+  return value === true ||
+    String(value ?? '').trim().toUpperCase() === 'Y';
+}
+private resolveButtonAttributes(
+  dataItem: any,
+  state: 'up' | 'down' | 'disabled'
+): any {
+  const stateStyles = dataItem?.stateStyles ?? {};
+  const upStyle = stateStyles.up ?? {};
+  const selectedStyle = stateStyles[state] ?? {};
 
-  // Disabled takes precedence. Ignore unsupported states.
-  const state = disabled
-    ? 'disabled'
-    : ['normal', 'hover', 'pressed'].includes(requestedState)
-      ? requestedState
-      : 'normal';
+  // UP always uses its own attributes.
+  // DOWN and DISABLED can independently inherit UP.
+  const followsUp =
+    state !== 'up' && this.isDbYes(selectedStyle.followUp);
 
-  const fillTop = dataItem?.fillColor || '#2196f3';
-  const fillBase = dataItem?.strokeColor || '#0d47a1';
-  const textColor = dataItem?.textColor || '#ffffff';
-
-  let actualFillTop = fillTop;
-  let actualFillBase = fillBase;
-  let actualTextColor = textColor;
-
-  switch (state) {
-    case 'hover':
-      actualFillTop = this.lighten(fillTop, 0.12);
-      actualFillBase = this.lighten(fillBase, 0.08);
-      break;
-
-    case 'pressed':
-      actualFillTop = this.darken(fillTop, 0.10);
-      actualFillBase = this.darken(fillBase, 0.05);
-      break;
-
-    case 'disabled':
-      actualFillTop = '#D0D0D0';
-      actualFillBase = '#A0A0A0';
-      actualTextColor = '#777777';
-      break;
-  }
+  const attributes = state === 'up' || followsUp
+    ? upStyle
+    : selectedStyle;
 
   return {
-    state,
-    disabled,
-    actualFillTop,
-    actualFillBase,
-    actualTextColor
+    ...attributes,
+
+    // Normalize database attribute names for the visual functions.
+    backStyle: attributes.BACK_STYLE,
+    fillColor: attributes.BACK_COLOR,
+    strokeColor: dataItem?.strokeColor,
+    color: attributes.FORE_COLOR,
+    patternStyle: attributes.PATTERN_STYLE,
+    patternColor: attributes.PATTERN_COLOR,
+
+    text: attributes.CAPTION,
+    fontFamily: attributes.FONT_NAME,
+    fontSize: attributes.FONT_SIZE,
+    fontWeight: attributes.FONT_BOLD ? 'bold' : 'normal',
+    fontItalic: attributes.FONT_ITALIC === true,
+    fontUnderline: attributes.FONT_UNDERLINE === true,
+
+    imageType: attributes.IMAGE_TYPE,
+    imageSource: attributes.IMAGE_NAME,
+    imageScale: attributes.SCALE_IMAGE
   };
 }
+
+public getButtonVisualStyle(dataItem: any): any {
+  const disabled =
+    dataItem?.disabled === true ||
+    String(dataItem?.buttonState ?? '').toLowerCase() === 'disabled';
+
+  const buttonState = String(
+    dataItem?.buttonState ?? 'normal'
+  ).toLowerCase();
+
+  const state: 'up' | 'down' | 'disabled' = disabled
+    ? 'disabled'
+    : buttonState === 'pressed' || buttonState === 'down'
+      ? 'down'
+      : 'up';
+
+  const attributes = this.resolveButtonAttributes(
+    dataItem,
+    state
+  );
+
+  return {
+    state: disabled
+      ? 'disabled'
+      : state === 'down'
+        ? 'pressed'
+        : 'normal',
+
+    disabled,
+    attributes,
+
+    actualFillTop:
+      attributes.fillColor ??
+      dataItem?.fillColor ??
+      '#2196f3',
+
+    actualFillBase:
+      attributes.strokeColor ??
+      dataItem?.strokeColor ??
+      '#0d47a1',
+
+    actualTextColor:
+      attributes.color ??
+      dataItem?.color ??
+      '#000000'
+  };
+}
+
+
+
+
  /** Small helper: lighten a hex color by ratio (0..1). */
   private lighten(hex: string, ratio: number): string {
     const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
@@ -6585,7 +6629,7 @@ private getButtonVisualStyle(dataItem: any): {
   }
 
   public noneButtonVisual(options: any): Group {
-  console.log("inside noneButtonVisual")
+  
   const dataItem =
     options?.dataItem?.dataItem ??
     options?.dataItem ??
@@ -6594,18 +6638,32 @@ private getButtonVisualStyle(dataItem: any): {
   const {
     state,
     disabled,
+    attributes,
     actualFillTop,
     actualFillBase,
     actualTextColor
   } = this.getButtonVisualStyle(dataItem);
 
+   // Common properties are retained, but state-specific properties
+  // take precedence.
+  const visualData = {
+    ...dataItem,
+    ...attributes
+  };
+
   const shape = options?.dataItem ?? {};
 
-  const w = Math.max(20, Number(options?.width  ?? shape?.width  ?? dataItem?.width  ?? 181));
-  const h = Math.max(16, Number(options?.height ?? shape?.height ?? dataItem?.height ?? 60));
+ const w = Math.max(
+  20,
+  Number(options?.width ?? visualData.width ?? 181)
+);
+  const h = Math.max(
+  16,
+  Number(options?.height ?? visualData.height ?? 60)
+);
 
   const radius = Math.min(14, h / 3);
-  const label  = String(dataItem?.text ?? '');
+  const label = String(visualData.text ?? '');
 
   const group = new Group({
     cursor: disabled ? 'default' : 'pointer'
@@ -6635,9 +6693,9 @@ private getButtonVisualStyle(dataItem: any): {
   }
 
   // Optional explicit border (default invisible).
-  const borderWidth = Number(dataItem?.borderWidth) || 0;
+  const borderWidth = Number(visualData?.borderWidth) || 0;
   const borderColor =
-    dataItem?.borderColor ??
+    visualData?.borderColor ??
     (borderWidth > 0 ? actualFillBase : null);
 
   // -----------------------------------------
@@ -6707,7 +6765,7 @@ private getButtonVisualStyle(dataItem: any): {
   // -----------------------------------------
   this.drawPattern(
     group,
-    dataItem,
+    visualData,
     faceX,
     faceY,
     faceW,
@@ -6718,19 +6776,19 @@ private getButtonVisualStyle(dataItem: any): {
   // -----------------------------------------
   // 3. Image
   // -----------------------------------------
-  const imageSource = dataItem?.imageSource;
+  const imageSource = visualData?.imageSource;
   let textX = faceX + faceW / 2;
 
   if (imageSource) {
-    const baseWidth  = Number(dataItem.imageWidth)  || 32;
-    const baseHeight = Number(dataItem.imageHeight) || 32;
+    const baseWidth  = Number(visualData.imageWidth)  || 32;
+    const baseHeight = Number(visualData.imageHeight) || 32;
     const scaleImage = !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
 
     let imageWidth: number, imageHeight: number, padding: number, gap: number;
 
     if (scaleImage) {
       const aspect = baseWidth / baseHeight;
-      const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+      const heightRatio = Number(visualData.imageScaleRatio) || 0.55;
       imageHeight = faceH * heightRatio;
       imageWidth  = imageHeight * aspect;
       const maxWidth = faceW * 0.4;
@@ -6756,7 +6814,7 @@ private getButtonVisualStyle(dataItem: any): {
       width: imageWidth, height: imageHeight
     }));
 
-    const fontSize = Number(dataItem?.fontSize) || 14;
+    const fontSize = Number(visualData?.fontSize) || 14;
     const halfText = (label.length * fontSize * 0.6) / 2;
     if (position === 'left') {
       textX = Math.max(faceX + faceW / 2, faceX + padding + imageWidth + gap + halfText);
@@ -6776,15 +6834,16 @@ private getButtonVisualStyle(dataItem: any): {
       y: faceY + faceH / 2 + 5 + pressNudge,
       fill: actualTextColor
     });
-    (text.options as any).fontSize   = Number(dataItem?.fontSize) || 14;
-    (text.options as any).fontWeight = dataItem?.fontWeight || 'bold';
-    (text.options as any).fontFamily = dataItem?.fontFamily || 'Arial, sans-serif';
+    (text.options as any).fontSize   = Number(visualData?.fontSize) || 14;
+    (text.options as any).fontWeight = visualData?.fontWeight || 'bold';
+    (text.options as any).fontFamily = visualData?.fontFamily || 'Arial, sans-serif';
     (text.options as any).textAnchor = 'middle';
     group.append(text);
   }
 
   return group;
 }
+
 
   /**
    * 3D button visual.
