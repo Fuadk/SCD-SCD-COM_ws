@@ -4447,9 +4447,9 @@ public onFreehandPointerUp(event: PointerEvent): void {
       id =   options.SHAPE_ID ;
     this.populateshapeAttributes(options, kind,id);
     const dataItem: any = {
-      type: kind,
+      type: "libraryShape",
       title: this.libraryShapeTitle(kind),
-      libraryKind: "libraryShape",
+      libraryKind: kind,
       width,
       height,
       strokeColor: options.strokeColor || "#2f4858",
@@ -8564,7 +8564,7 @@ onPointerDown(event: PointerEvent): void {
   const dataItem = this.shapeDataItem(shape);
   if (!dataItem) return;
 console.log('ButtonSensor: dataItem:', dataItem);
-  const type = String(dataItem.type ?? '').toLowerCase();
+  const type = String(dataItem.libraryKind ?? '').toLowerCase();
 
   const isButton = [
     'button',
