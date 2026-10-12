@@ -1178,57 +1178,28 @@ if (
       // -------------------------
       // Mouse enters button
       // -------------------------
-      if (type === "mouseEnter") {
-
-        dataItem.buttonState = 'hover';
-
-        this.refreshCustomShape(shape);
-
-        console.log(
-          `🖱️ Button hover: ${shape.id}`
-        );
-
-        //return;
+      if (type === 'mouseEnter') {
+        if (!this.isDbYes(dataItem.disabled)) {
+          dataItem.buttonState = 'hover';
+          this.refreshCustomShape(shape);
+        }
       }
 
       // -------------------------
       // Mouse leaves button
       // -------------------------
-      if (type === "mouseLeave") {
-
-        let buttonShape = shape;
-
-        if (!buttonShape && this.currentShapeId) {
-          buttonShape =
-            this.diagram?.getShapeById(
-              this.currentShapeId
-            );
-        }
-
-        if (!buttonShape) {
-          //return;
-        }
-
+      if (type === 'mouseLeave') {
         const buttonData =
-          buttonShape.dataItem?.dataItem ??
-          buttonShape.dataItem ??
+          shape.dataItem?.dataItem ??
+          shape.dataItem ??
           {};
 
-        if (
-          isCustomButton &&
-          buttonData?.disabled !== true
-        ) {
+        if (!this.isDbYes(buttonData.disabled)) {
+          buttonData.buttonState =
+            this.pressedShapeId === shape.id ? 'pressed' : 'normal';
 
-          buttonData.buttonState = 'normal';
-
-          this.refreshCustomShape(buttonShape);
-
-          console.log(
-            `🖱️ Button normal: ${buttonShape.id}`
-          );
+          this.refreshCustomShape(shape);
         }
-
-        //return;
       }
 
    
@@ -3881,14 +3852,74 @@ public getShapeInfo(){
             let body = [];
             body.push(object);
             console.log("insertSCDShapeTables:body:", body)
+            this.saveSahpesInfo(body)
             let data = await this.starServices.execSQLBody(this, body, "");
             if (this.paramConfig.DEBUG_FLAG) console.log("insertSCDShapeTables:", data);
           }
         }
       }
     }
+    console.log ("this.SahpesInfo:",JSON.stringify(this.SahpesInfo));
+    this.SahpesInfoArr = this.groupBodyByShapeId(this.SahpesInfo);
+    console.log ("this.SahpesInfoArr:",this.SahpesInfoArr);
+  }
+public SahpesInfo = [];
+public SahpesInfoArr = {};
+
+public findRowsByTable(
+  grouped,
+  shapeId: number | string,
+  table: string
+) {
+  const bucket = grouped?.[String(shapeId)];
+  if (!Array.isArray(bucket)) return [];
+  return bucket.filter(row => row._TABLE === table);
+}
+
+public groupBodyByShapeId(body: any[]) {
+  const grouped = {};
+
+  for (const entry of body || []) {
+    if (!entry || typeof entry !== "object") {
+      continue;
+    }
+
+    // ── 1. Rename _QUERY -> _TABLE and strip the INSERT_ prefix. ──
+    const clone = { ...entry };
+
+    if (typeof clone._QUERY === "string") {
+      const table = clone._QUERY.startsWith("INSERT_")
+        ? clone._QUERY.slice("INSERT_".length)
+        : clone._QUERY;
+
+      clone._TABLE = table;
+      delete clone._QUERY;
+    }
+
+    // ── 2. Resolve the bucket key. String() normalises 1063 vs "1063". ──
+    const rawId = (entry as any).SHAPE_ID;
+    const key =
+      rawId === undefined || rawId === null || rawId === ""
+        ? "__no_shape__"
+        : String(rawId);
+
+    // ── 3. Append, preserving original order. ──
+    if (!grouped[key]) {
+      grouped[key] = [];
+    }
+    grouped[key].push(clone);
   }
 
+  return grouped;
+}
+
+public saveSahpesInfo(body){
+  for (let i = 0 ; i< body.length;i++){
+    if (body[i]['_QUERY'].startsWith("INSERT")){
+      this.SahpesInfo.push(body[i])
+    }
+  }
+}
 
 public menuType;
 public event;
@@ -3927,6 +3958,8 @@ async insertSCDShape(kendoui_content, shapeType){
         let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
         kendoui_content.id =    kendoui_content.id + ":" + last_insert_rowid;
         kendoui_content.shapeID = last_insert_rowid;
+        body[0]['SHAPE_ID'] = last_insert_rowid;
+        this.saveSahpesInfo(body)
         if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
       }
       return kendoui_content;
@@ -3954,14 +3987,14 @@ async insertShape(shapeType, options) {
       options['SHAPE_ID'] = kendoui_content.id;
       options['SHAPE_TYPE'] = shapeType;
     }
-    const buttonShapeTypes = [
-    'Button'
-  ];
-  if (buttonShapeTypes.includes(shapeType)) {
-    options.visual       = options.visual       ?? 'button3DVisual'; // default variant
-    options.buttonState  = options.buttonState  ?? 'normal';
-    options.disabled     = options.disabled     ?? false;
-  }
+    //   const buttonShapeTypes = [
+  //   'Button'
+  // ];
+  // if (buttonShapeTypes.includes(shapeType)) {
+  //   options.visual       = options.visual       ?? 'button3DVisual'; // default variant
+  //   options.buttonState  = options.buttonState  ?? 'normal';
+  //   options.disabled     = options.disabled     ?? false;
+  // }
     console.log("kind:",kind,"shapeType:", shapeType, "options:", options);
     this.addLibraryShape(kind, options, true);
   }
@@ -4365,6 +4398,40 @@ public onFreehandPointerUp(event: PointerEvent): void {
     }
     return { x: point.x, y: point.y };
   }
+  populateshapeAttributes(options,shapeType,shapeID){
+    let arr = shapeID.split(":");
+      //shapeType = arr[0];
+      let shape_ID = arr[1];
+    console.log ("populateshapeAttributes:shapeType:",shapeType, "shape_ID:",shape_ID);
+  const buttonShapeTypes = [
+      'button'
+    ];
+    if (buttonShapeTypes.includes(shapeType)) {
+      let tablesArr = this.findRowsByTable(this.SahpesInfoArr, shape_ID, "SCD_BUTTON_APPEARANCE" )
+      console.log ("tablesArr:",tablesArr);
+      let stateStyles = {};
+      for (let i=0;i<tablesArr.length;i++){
+        let appearance = tablesArr[i];
+        if (appearance.BUTTON_APPEARANCE == "UP"){
+          stateStyles['up'] = appearance;
+        }
+        else if (appearance.BUTTON_APPEARANCE == "DOWN"){
+          stateStyles['down'] = appearance;
+        }
+        else if (appearance.BUTTON_APPEARANCE == "DISABLED"){
+          stateStyles['disabled'] = appearance;
+        }
+
+      }
+      console.log ("populateshapeAttributes:stateStyles:",stateStyles);
+      options['stateStyles'] = stateStyles;
+
+      options.visual       = options.visual       ?? 'button3DVisual'; // default variant
+      options.buttonState  = options.buttonState  ?? 'normal';
+      options.disabled     = options.disabled     ?? false;
+
+    }
+  }
   private addLibraryShape(kind: string, options: any = {}, exactPosition: boolean = false): void {
     if (!this.diagram) {
       this.statusMessage = "The diagram is not ready yet.";
@@ -4378,10 +4445,11 @@ public onFreehandPointerUp(event: PointerEvent): void {
     let id = this.uniqueShapeId(kind);
     if (typeof options.SHAPE_ID != "undefined" )
       id =   options.SHAPE_ID ;
+    this.populateshapeAttributes(options, kind,id);
     const dataItem: any = {
-      type: "libraryShape",
+      type: kind,
       title: this.libraryShapeTitle(kind),
-      libraryKind: kind,
+      libraryKind: "libraryShape",
       width,
       height,
       strokeColor: options.strokeColor || "#2f4858",
@@ -4391,7 +4459,7 @@ public onFreehandPointerUp(event: PointerEvent): void {
     };
     delete dataItem.x;
     delete dataItem.y;
-
+    console.log("dataItem:", dataItem, options)
     const standardType = kind === "ellipse"
       ? "circle"
       : kind === "image"
@@ -6537,17 +6605,16 @@ private resolveButtonAttributes(
   const followsUp =
     state !== 'up' && this.isDbYes(selectedStyle.followUp);
 
-  const attributes = state === 'up' || followsUp
-    ? upStyle
-    : selectedStyle;
+  const attributes =
+    state === 'up' || followsUp
+      ? upStyle
+      : selectedStyle;
 
   return {
     ...attributes,
 
-    // Normalize database attribute names for the visual functions.
     backStyle: attributes.BACK_STYLE,
     fillColor: attributes.BACK_COLOR,
-    strokeColor: dataItem?.strokeColor,
     color: attributes.FORE_COLOR,
     patternStyle: attributes.PATTERN_STYLE,
     patternColor: attributes.PATTERN_COLOR,
@@ -6555,43 +6622,62 @@ private resolveButtonAttributes(
     text: attributes.CAPTION,
     fontFamily: attributes.FONT_NAME,
     fontSize: attributes.FONT_SIZE,
-    fontWeight: attributes.FONT_BOLD ? 'bold' : 'normal',
-    fontItalic: attributes.FONT_ITALIC === true,
-    fontUnderline: attributes.FONT_UNDERLINE === true,
+    fontWeight: this.isDbYes(attributes.FONT_BOLD) ? 'bold' : 'normal',
+    fontItalic: this.isDbYes(attributes.FONT_ITALIC),
+    fontUnderline: this.isDbYes(attributes.FONT_UNDERLINE),
 
     imageType: attributes.IMAGE_TYPE,
     imageSource: attributes.IMAGE_NAME,
-    imageScale: attributes.SCALE_IMAGE
+    imageScale: this.isDbYes(attributes.SCALE_IMAGE)
   };
 }
+/** Small helper: lighten a hex color by ratio (0..1). */
+  private lighten(hex: string, ratio: number): string {
+    const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
+    if (!m) return hex;
+    let h = m[1];
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const num = parseInt(h, 16);
+    const r = Math.min(255, Math.round(((num >> 16) & 0xff) + (255 - ((num >> 16) & 0xff)) * ratio));
+    const g = Math.min(255, Math.round(((num >> 8)  & 0xff) + (255 - ((num >> 8)  & 0xff)) * ratio));
+    const b = Math.min(255, Math.round(( num        & 0xff) + (255 - ( num        & 0xff)) * ratio));
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
 
 public getButtonVisualStyle(dataItem: any): any {
-  const disabled =
-    dataItem?.disabled === true ||
-    String(dataItem?.buttonState ?? '').toLowerCase() === 'disabled';
-
   const buttonState = String(
     dataItem?.buttonState ?? 'normal'
   ).toLowerCase();
 
-  const state: 'up' | 'down' | 'disabled' = disabled
+  const disabled =
+    this.isDbYes(dataItem?.disabled) ||
+    buttonState === 'disabled';
+
+  // State used for drawing the visual.
+  const visualState = disabled
     ? 'disabled'
-    : buttonState === 'pressed' || buttonState === 'down'
-      ? 'down'
-      : 'up';
+    : buttonState === 'hover'
+      ? 'hover'
+      : buttonState === 'pressed' || buttonState === 'down'
+        ? 'pressed'
+        : 'normal';
+
+  // State used to resolve database attributes.
+  // Hover uses the normal/up attributes.
+  const attributeState: 'up' | 'down' | 'disabled' =
+    disabled
+      ? 'disabled'
+      : visualState === 'pressed'
+        ? 'down'
+        : 'up';
 
   const attributes = this.resolveButtonAttributes(
     dataItem,
-    state
+    attributeState
   );
 
   return {
-    state: disabled
-      ? 'disabled'
-      : state === 'down'
-        ? 'pressed'
-        : 'normal',
-
+    state: visualState,
     disabled,
     attributes,
 
@@ -6601,7 +6687,6 @@ public getButtonVisualStyle(dataItem: any): any {
       '#2196f3',
 
     actualFillBase:
-      attributes.strokeColor ??
       dataItem?.strokeColor ??
       '#0d47a1',
 
@@ -6615,18 +6700,7 @@ public getButtonVisualStyle(dataItem: any): any {
 
 
 
- /** Small helper: lighten a hex color by ratio (0..1). */
-  private lighten(hex: string, ratio: number): string {
-    const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
-    if (!m) return hex;
-    let h = m[1];
-    if (h.length === 3) h = h.split('').map(c => c + c).join('');
-    const num = parseInt(h, 16);
-    const r = Math.min(255, Math.round(((num >> 16) & 0xff) + (255 - ((num >> 16) & 0xff)) * ratio));
-    const g = Math.min(255, Math.round(((num >> 8)  & 0xff) + (255 - ((num >> 8)  & 0xff)) * ratio));
-    const b = Math.min(255, Math.round(( num        & 0xff) + (255 - ( num        & 0xff)) * ratio));
-    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
-  }
+ 
 
   public noneButtonVisual(options: any): Group {
   
@@ -6674,8 +6748,16 @@ public getButtonVisualStyle(dataItem: any): any {
   //   normal / hover : inset = 0, no darken
   //   pressed        : inset = 2, darken 0.12
   // -----------------------------------------
-  const pressed = state === 'pressed';
-  const inset   = pressed ? Math.min(3, Math.max(1, h * 0.06)) : 0;
+  const backStyle = String(
+      visualData.backStyle ?? 'Solid'
+    ).trim().toLowerCase();
+  const isTransparent = backStyle === 'transparent';
+  const pressed =
+  state === 'pressed' && !isTransparent;
+
+  const inset = pressed
+    ? Math.min(3, Math.max(1, h * 0.06))
+    : 0;
 
   const faceX = inset;
   const faceY = inset;
@@ -6688,8 +6770,8 @@ public getButtonVisualStyle(dataItem: any): any {
   let faceColor = actualFillTop;
   if (pressed) {
     faceColor = this.darken(actualFillTop, 0.12);
-  } else if (state === 'hover') {
-    faceColor = this.lighten(actualFillTop, 0.10);
+  } else if (state === 'hover' && !isTransparent && !disabled) {
+    faceColor = this.lighten(actualFillTop, 0.20);
   }
 
   // Optional explicit border (default invisible).
@@ -6724,19 +6806,22 @@ public getButtonVisualStyle(dataItem: any): any {
     width: faceW,
     height: faceH,
     cornerRadius: faceRadius,
-    fill: {
-      color: faceColor,
-      gradient: {
-        type: 'linear',
-        start: [0, 0],
-        end: [0, faceH],
-        stops
-      }
-    },
-    stroke: borderColor
-      ? { color: borderColor, width: borderWidth }
-      : { width: 0 }
-  } as any);
+    fill: isTransparent
+        ? { color: 'transparent' }
+        : {
+            color: faceColor,
+            gradient: {
+              type: 'linear',
+              start: [0, 0],
+              end: [0, faceH],
+              stops
+            }
+          },
+
+      stroke: borderColor
+        ? { color: borderColor, width: borderWidth }
+        : { width: 0 }
+    } as any);
 
   group.append(top);
 
@@ -6782,7 +6867,7 @@ public getButtonVisualStyle(dataItem: any): any {
   if (imageSource) {
     const baseWidth  = Number(visualData.imageWidth)  || 32;
     const baseHeight = Number(visualData.imageHeight) || 32;
-    const scaleImage = !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
+    const scaleImage = visualData.imageScale === true;
 
     let imageWidth: number, imageHeight: number, padding: number, gap: number;
 
@@ -6800,7 +6885,9 @@ public getButtonVisualStyle(dataItem: any): any {
       padding = 10; gap = 8;
     }
 
-    const position = String(dataItem.imagePosition || 'left').toLowerCase();
+    const position = String(
+        visualData.imagePosition ?? 'left'
+      ).toLowerCase();
     let imageX: number;
     if (position === 'right')      imageX = faceX + faceW - padding - imageWidth;
     else if (position === 'center') imageX = faceX + (faceW - imageWidth) / 2;
@@ -6838,6 +6925,12 @@ public getButtonVisualStyle(dataItem: any): any {
     (text.options as any).fontWeight = visualData?.fontWeight || 'bold';
     (text.options as any).fontFamily = visualData?.fontFamily || 'Arial, sans-serif';
     (text.options as any).textAnchor = 'middle';
+    (text.options as any).fontStyle =
+      visualData.fontItalic ? 'italic' : 'normal';
+
+    (text.options as any).textDecoration =
+      visualData.fontUnderline ? 'underline' : 'none';
+      
     group.append(text);
   }
 
@@ -6866,10 +6959,16 @@ public button3DVisual(options: any): Group {
   const {
     state,
     disabled,
+    attributes,
     actualFillTop,
     actualFillBase,
     actualTextColor
   } = this.getButtonVisualStyle(dataItem);
+
+  const faceColor =
+  state === 'hover' && !disabled
+    ? this.lighten(actualFillTop, 0.20)
+    : actualFillTop;
 
   const shape = options?.dataItem ?? {};
 
@@ -6942,7 +7041,7 @@ public button3DVisual(options: any): Group {
     cornerRadius: radius,
 
     fill: {
-      color: actualFillTop,
+      color: faceColor,
       gradient: {
         type: 'linear',
         start: [0, 0],
@@ -6951,12 +7050,12 @@ public button3DVisual(options: any): Group {
           {
             offset: 0,
             color: state === 'disabled'
-              ? actualFillTop
-              : this.lighten(actualFillTop, 0.35)
+              ? faceColor
+              : this.lighten(faceColor, 0.35)
           },
           {
             offset: 1,
-            color: actualFillTop
+            color: faceColor
           }
         ]
       }
@@ -7122,10 +7221,16 @@ public raisedButtonVisual(options: any): Group {
   const {
     state,
     disabled,
+    attributes,
     actualFillTop,
     actualFillBase,
     actualTextColor
   } = this.getButtonVisualStyle(dataItem);
+
+  const faceColor =
+  state === 'hover' && !disabled
+    ? this.lighten(actualFillTop, 0.20)
+    : actualFillTop;
 
   const shape = options?.dataItem ?? {};
 
@@ -7200,7 +7305,7 @@ public raisedButtonVisual(options: any): Group {
     cornerRadius: radius,
 
     fill: {
-      color: actualFillTop,
+      color: faceColor,
       gradient: {
         type: 'linear',
         start: [0, 0],
@@ -7209,12 +7314,12 @@ public raisedButtonVisual(options: any): Group {
           {
             offset: 0,
             color: state === 'disabled'
-              ? actualFillTop
-              : this.lighten(actualFillTop, 0.35)
+              ? faceColor
+              : this.lighten(faceColor, 0.35)
           },
           {
             offset: 1,
-            color: actualFillTop
+            color: faceColor
           }
         ]
       }
@@ -7243,7 +7348,7 @@ public raisedButtonVisual(options: any): Group {
     cornerRadius: radius,
 
     fill: {
-      color: this.lighten(actualFillTop, 0.35),
+      color: this.lighten(faceColor, 0.35),
       gradient: {
         type: 'linear',
         start: [0, 0],
@@ -7251,11 +7356,11 @@ public raisedButtonVisual(options: any): Group {
         stops: [
           {
             offset: 0,
-            color: this.lighten(actualFillTop, 0.55)
+            color: this.lighten(faceColor, 0.55)
           },
           {
             offset: 1,
-            color: this.lighten(actualFillTop, 0.15)
+            color: this.lighten(faceColor, 0.15)
           }
         ]
       }
@@ -7396,6 +7501,7 @@ public beveledButtonVisual(options: any): Group {
   const {
     state,
     disabled,
+    attributes,
     actualFillTop,
     actualFillBase,
     actualTextColor
@@ -7446,8 +7552,12 @@ public beveledButtonVisual(options: any): Group {
   // Bevel colors
   // -----------------------------------------
 
-  const faceColor = actualFillTop;
   const baseColor = actualFillBase;
+
+  const faceColor =
+    state === 'hover' && !disabled
+      ? this.lighten(actualFillTop, 0.20)
+      : actualFillTop;
 
   // Normal: light from top-left, shadow on bottom-right.
   let topEdgeColor = this.lighten(faceColor, 0.65);
@@ -7740,6 +7850,7 @@ public recessedButtonVisual(options: any): Group {
   const {
     state,
     disabled,
+    attributes,
     actualFillTop,
     actualFillBase,
     actualTextColor
@@ -7767,8 +7878,12 @@ public recessedButtonVisual(options: any): Group {
 
   
 
-  const faceColor = actualFillTop;
+  
   const baseColor = actualFillBase;
+  const faceColor =
+  state === 'hover' && !disabled
+    ? this.lighten(actualFillTop, 0.20)
+    : actualFillTop;
 
   // Intermediate-tone frame around the recessed button.
   let borderColor = this.lighten(baseColor, 0.25);
