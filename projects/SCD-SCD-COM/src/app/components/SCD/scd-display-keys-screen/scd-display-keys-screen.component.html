@@ -1,19 +1,21 @@
     <div>   
-        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_display_keys_screen.scd_display_keys_screen.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_display_keys_screen.scd_display_keys_screen.component_title","") }}</legend> 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-dks-keys-list  
+        <app-scd-dks-keys-list  [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_DISPLAY_KEYGrid_0Config">
         </app-scd-dks-keys-list >
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-dks-key-detail  [detail_Input]="form_1_SCD_DISPLAY_KEY"  
+        <app-scd-dks-key-detail  [hidden]="hide_comp_2" [detail_Input]="form_1_SCD_DISPLAY_KEY"  
                       (formValidationChangedOutput)="formValidationChangedMD($event,2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_DISPLAY_KEYForm_1Config">
         </app-scd-dks-key-detail >
 

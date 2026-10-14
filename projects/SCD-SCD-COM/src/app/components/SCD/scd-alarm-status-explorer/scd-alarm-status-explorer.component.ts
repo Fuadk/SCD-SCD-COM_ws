@@ -138,7 +138,7 @@ export class ScdAlarmStatusExplorerComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARM_GENERAL_STATUS_EXPLORERForm_1Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
@@ -256,6 +256,10 @@ export class ScdAlarmStatusExplorerComponent implements OnInit {
        if (ComponentConfig.showToolBar != null) {
               this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARM_GENERAL_STATUS_EXPLORERForm_1Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_SHAPEForm_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARM_GENERAL_STATUS_EXPLORERForm_1Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

@@ -102,7 +102,8 @@ export class ScdButtonPropertiesComponent implements OnInit {
    this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_button_properties.scd_button_properties.compsTitleID1","Common");
    this.SCD_SHAPEForm_0Config.isMaster = true;
    this.SCD_SHAPEForm_0Config.isSearchScreen = this.isSearchScreen;
-   this.SCD_SHAPEForm_0Config.showToolBar = !this.visibleOK_BTNS; 
+	if (this.visibleOK_BTNS) 
+   	this.SCD_SHAPEForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_SHAPEForm_0Config.queryable = false;
      this.SCD_SHAPEForm_0Config.removeable = false;
@@ -249,15 +250,15 @@ export class ScdButtonPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_BUTTON_GENERALFormdivs_1Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_BUTTON_ACTIONFormdivs_2Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_BUTTON_APPEARANCEFormdivs_3Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_BUTTON_APPEARANCEFormdivs_4Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_BUTTON_APPEARANCEFormdivs_5Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
@@ -435,6 +436,14 @@ export class ScdButtonPropertiesComponent implements OnInit {
               this.SCD_BUTTON_APPEARANCEFormdivs_3Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_BUTTON_APPEARANCEFormdivs_4Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_BUTTON_APPEARANCEFormdivs_5Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_SHAPEForm_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_BUTTON_GENERALFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_BUTTON_ACTIONFormdivs_2Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_BUTTON_APPEARANCEFormdivs_3Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_BUTTON_APPEARANCEFormdivs_4Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_BUTTON_APPEARANCEFormdivs_5Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

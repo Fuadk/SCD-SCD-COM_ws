@@ -1,5 +1,5 @@
 <div style="height: calc(100vh - 200px); display: flex; flex-direction: column;">
-  <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_symbolfactoryplus.SCD_symbolfactoryplus.component_title","Symbol Factory Plus") }}</legend>
+  <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_symbolfactoryplus.SCD_symbolfactoryplus.component_title","Symbol Factory Plus") }}</legend>
 <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment" style="flex: 1; min-height: 0;">
 <kendo-tabstrip-tab [selected]="true">
     <ng-template   kendoTabTitle>
@@ -7,6 +7,7 @@
      </ng-template>
     <ng-template kendoTabContent>
           <app-scd-symbolfactory
+			(setComponentConfig_Output)="onComponentConfig_Output($event)"
 			[setComponentConfig_Input]="scd_symbolfactory0_0Config">
 	 </app-scd-symbolfactory >
     </ng-template>
@@ -17,6 +18,7 @@
      </ng-template>
     <ng-template kendoTabContent>
           <app-scd-icons 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
 				[setComponentConfig_Input]="scd_icons1_1Config">
     </app-scd-icons >
     </ng-template>

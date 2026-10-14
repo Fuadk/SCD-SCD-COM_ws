@@ -1,19 +1,21 @@
     <div>   
-        <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_application_derived_tags.scd_application_derived_tags.component_title","") }}</legend> 
+        <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_application_derived_tags.scd_application_derived_tags.component_title","") }}</legend> 
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-adt-derived-tag-children  
+        <app-scd-adt-derived-tag-children  [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_DERIVED_TAG_CHILDGrid_0Config">
         </app-scd-adt-derived-tag-children >
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-        <app-scd-adt-derived-tag  [detail_Input]="form_1_SCD_DERIVED_TAG"  
+        <app-scd-adt-derived-tag  [hidden]="hide_comp_2" [detail_Input]="form_1_SCD_DERIVED_TAG"  
                       (formValidationChangedOutput)="formValidationChangedMD($event,2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_DERIVED_TAGForm_1Config">
         </app-scd-adt-derived-tag >
 

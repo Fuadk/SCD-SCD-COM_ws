@@ -21,9 +21,6 @@ export class ScdSymbolfactoryComponent implements OnInit {
   this.title =  this.starServices.getNLS([],"scd_symbolfactory.scd_symbolfactory.component_title","");
     this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-    if (this.visibleOK_BTNS)
-	     this.handleComponentConfig(this.componentConfig); 
   }
   public showToolBar = false;
   public paramConfig; 
@@ -45,8 +42,11 @@ export class ScdSymbolfactoryComponent implements OnInit {
   public card_1_SCD_ICONS : scdiconsScdScdIconsCard;
   public form_2_SCD_ICONS : scdiconsScdScdIconsForm;
   public  SCD_ICONS_CATEGORYTree_0Config : componentConfigDef;
+  public  hide_comp_1 = false;
   public  SCD_ICONSCard_1Config : componentConfigDef;
+  public  hide_comp_2 = false;
   public  SCD_ICONSForm_2Config : componentConfigDef;
+  public  hide_comp_3 = false;
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdSymbolfactory";
 
@@ -83,13 +83,16 @@ export class ScdSymbolfactoryComponent implements OnInit {
    this.SCD_ICONS_CATEGORYTree_0Config = new componentConfigDef();
    this.SCD_ICONS_CATEGORYTree_0Config.isMaster = true;
    this.SCD_ICONS_CATEGORYTree_0Config.isSearchScreen = this.isSearchScreen;
+   this.SCD_ICONS_CATEGORYTree_0Config.showToolBar = !this.visibleOK_BTNS; 
    this.SCD_ICONSCard_1Config = new componentConfigDef();
    this.SCD_ICONSCard_1Config.title = this.starServices.getNLS([],"scd_symbolfactory.scd_symbolfactory.compsTitleID2","Icons");
    this.SCD_ICONSCard_1Config.isChild = true;
+   this.SCD_ICONSCard_1Config.showToolBar = !this.visibleOK_BTNS; 
    this.SCD_ICONSCard_1Config.masterSelector = 'app-scd-symbolfactory';
    this.SCD_ICONSForm_2Config = new componentConfigDef();
    this.SCD_ICONSForm_2Config.title = this.starServices.getNLS([],"scd_symbolfactory.scd_symbolfactory.compsTitleID3","Icon");
    this.SCD_ICONSForm_2Config.isChild = true;
+   this.SCD_ICONSForm_2Config.showToolBar = !this.visibleOK_BTNS; 
    this.SCD_ICONSForm_2Config.masterSelector = 'app-scd-symbolfactory';
   }
   public ngOnDestroy(): void {
@@ -111,14 +114,14 @@ export class ScdSymbolfactoryComponent implements OnInit {
    	 	this.SCD_ICONSCard_1Config.formattedWhere  = form_SCD_ICONS_CATEGORY;
    	 	return;
 		  }
-    	this.card_1_SCD_ICONS = new scdiconsScdScdIconsCard();
-    	for (let i = 0; i< masterKeyNameArr.length; i++){
-       	this.card_1_SCD_ICONS[masterKeyNameArr[i]] = masterKeyArr[i];
-    	}
+    	//this.card_1_SCD_ICONS = new scdiconsScdScdIconsCard();
+    	//for (let i = 0; i< masterKeyNameArr.length; i++){
+       //	this.card_1_SCD_ICONS[masterKeyNameArr[i]] = masterKeyArr[i];
+    	//}
     	this.SCD_ICONSCard_1Config = new componentConfigDef();
     	this.SCD_ICONSCard_1Config.masterKeyArr =  [form_SCD_ICONS_CATEGORY.category_id,form_SCD_ICONS_CATEGORY.category];
     	this.SCD_ICONSCard_1Config.masterKeyNameArr =  ["category_id","category"];
-     //  this.SCD_ICONSCard_1Config.masterReadCompleted = true;
+       this.SCD_ICONSCard_1Config.masterReadCompleted = true;
     	}
     }
   public readCompletedHandler2( form_SCD_ICONS) {
@@ -136,20 +139,20 @@ export class ScdSymbolfactoryComponent implements OnInit {
    	 	this.SCD_ICONSForm_2Config.formattedWhere  = form_SCD_ICONS;
    	 	return;
 		  }
-    	this.form_2_SCD_ICONS = new scdiconsScdScdIconsForm();
-    	for (let i = 0; i< masterKeyNameArr.length; i++){
-       	this.form_2_SCD_ICONS[masterKeyNameArr[i]] = masterKeyArr[i];
-    	}
+    	//this.form_2_SCD_ICONS = new scdiconsScdScdIconsForm();
+    	//for (let i = 0; i< masterKeyNameArr.length; i++){
+       //	this.form_2_SCD_ICONS[masterKeyNameArr[i]] = masterKeyArr[i];
+    	//}
     	this.SCD_ICONSForm_2Config = new componentConfigDef();
     	this.SCD_ICONSForm_2Config.masterKeyArr =  [form_SCD_ICONS.id,form_SCD_ICONS.category,form_SCD_ICONS.svg_name];
     	this.SCD_ICONSForm_2Config.masterKeyNameArr =  ["id","category","svg_name"];
-     //  this.SCD_ICONSForm_2Config.masterReadCompleted = true;
+       this.SCD_ICONSForm_2Config.masterReadCompleted = true;
     	}
     }
   async clearCompletedHandler( form_SCD_ICONS_CATEGORY) {
-     await this.starServices.sleep(200);
+    // await this.starServices.sleep(200);
     this.SCD_ICONSCard_1Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+    // await this.starServices.sleep(200);
     this.SCD_ICONSForm_2Config = new componentConfigDef();
   }
   public keyNameArr = ["category_id","category"];
@@ -188,6 +191,7 @@ export class ScdSymbolfactoryComponent implements OnInit {
   public saveCompletedHandler2( event) {
       this.saveTriggerOutput.emit(event)
     }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Input() public set detail_Input(form: any) {
     if (typeof form !== "undefined")
     {
@@ -204,6 +208,19 @@ export class ScdSymbolfactoryComponent implements OnInit {
     }
     this.formValidationChangedOutput.emit(formValidation)
   }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -234,8 +251,12 @@ export class ScdSymbolfactoryComponent implements OnInit {
       if (ComponentConfig.masterSaved != null)
       {
        this.SCD_ICONS_CATEGORYTree_0Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_ICONSCard_1Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_ICONSForm_2Config.masterSaved = ComponentConfig.masterSaved;
+      }
+      if (ComponentConfig.showToolBar != null)
+      {
+       this.SCD_ICONS_CATEGORYTree_0Config.showToolBar = ComponentConfig.showToolBar;
+       this.SCD_ICONSCard_1Config.showToolBar = ComponentConfig.showToolBar;
+       this.SCD_ICONSForm_2Config.showToolBar = ComponentConfig.showToolBar;
       }
       if (ComponentConfig.newRec != null)
       {
@@ -293,14 +314,34 @@ export class ScdSymbolfactoryComponent implements OnInit {
   
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

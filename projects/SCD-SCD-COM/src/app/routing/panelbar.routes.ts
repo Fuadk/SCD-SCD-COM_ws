@@ -4037,6 +4037,7 @@ import { ScdAlarmDisplayFiltersScdScdAlarmDisplayFiltersGridComponent } from '..
 import { ScdAlarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditionsGridComponent } from '../components/SCD/scd-scd-alarm-display-filters-conditions/scd-scd-alarm-display-filters-conditions.component';
 import { ScdAlarmAppearanceScdScdAlarmAppearanceFormdivsComponent } from '../components/SCD/scd-scd-alarm-appearance/scd-scd-alarm-appearance.component';
 import { ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent } from '../components/SCD/scd-scd-alarm-behavior/scd-scd-alarm-behavior.component';
+import { ScdAlarmColumnsPropertiesComponent } from '../components/SCD/scd-alarm-columns-properties/scd-alarm-columns-properties.component';
 //point1
 
 export const PanelbarRoutes: Routes = [
@@ -8160,6 +8161,7 @@ export const PanelbarRoutes: Routes = [
 	{ path: 'scd_scd_alarm_display_filters_conditions', component: ScdAlarmDisplayFiltersConditionsScdScdAlarmDisplayFiltersConditionsGridComponent },
 	{ path: 'scd_scd_alarm_appearance', component: ScdAlarmAppearanceScdScdAlarmAppearanceFormdivsComponent },
 	{ path: 'scd_scd_alarm_behavior', component: ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent },
+	{ path: 'scd_alarm_columns_properties', component: ScdAlarmColumnsPropertiesComponent },
   //point2
 
 ];

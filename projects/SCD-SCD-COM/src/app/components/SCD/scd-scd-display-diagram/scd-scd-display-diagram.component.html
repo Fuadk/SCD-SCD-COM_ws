@@ -177,12 +177,23 @@
   </div>
 </div>
 
-<div #myTargetBox class="target-box" 
-  [class.insert-shape-active]="insertShapeFlag"
+<div #myTargetBox #diagramHost class="target-box" 
+  [class.insert-shape-active]="pendingDragShapeType || freehandMode"
   [style.cursor]="insertCursor"
   [class.grid-visible]="showGrid" [class.freehand-active]="freehandMode"
   (pointerdown)="onFreehandPointerDown($event)" (pointermove)="onFreehandPointerMove($event)"
   (pointerup)="onFreehandPointerUp($event)" (pointercancel)="onFreehandPointerUp($event)">
+  <svg *ngIf="dragBoxPreviewW > 0 && dragBoxPreviewH > 0"
+        class="drag-box-preview">
+      <rect [attr.x]="dragBoxPreviewX"
+            [attr.y]="dragBoxPreviewY"
+            [attr.width]="dragBoxPreviewW"
+            [attr.height]="dragBoxPreviewH"
+            fill="rgba(233,69,96,0.08)"
+            stroke="#e94560"
+            stroke-dasharray="4 2"
+            stroke-width="1.5" />
+    </svg>
   <svg *ngIf="freehandMode && freehandPreviewPath" class="freehand-preview" aria-hidden="true">
     <path [attr.d]="freehandPreviewPath" [attr.stroke]="strokeColor"></path>
   </svg>

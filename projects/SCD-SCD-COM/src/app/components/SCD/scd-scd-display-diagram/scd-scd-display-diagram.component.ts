@@ -303,10 +303,10 @@ public disableDISPLAY_DATA = false;
     if (this.propertyDialogData && this.propertyDialogData.isVisible) {
       this.createPropertyDialogComponent();
     }
-    this.diagramHost.nativeElement.addEventListener(
-    'pointerdown',
-    this.onPointerDown
-  );
+    //this.diagramHost.nativeElement.addEventListener(
+    //  'pointerdown',
+    //  this.onPointerDown
+    //);
     
   }
   public Comp_Config!: componentConfigDef;
@@ -911,45 +911,57 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
 
 }
  async ON_CLICK(formGroup){
-     console.log("kendoui_content:1:", this.starServices.sessionParams['COPIED_SHAPE']);
+     // console.log("kendoui_content:1:", this.starServices.sessionParams['COPIED_SHAPE']);
 
-    if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
-      && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
-      let copiedShape = this.starServices.sessionParams['COPIED_SHAPE'];
-      let kendoui_content = JSON.parse(copiedShape.kendoui_content);
-      kendoui_content.id = copiedShape.id;
-      this.starServices.sessionParams['COPIED_SHAPE'] = "";
-      console.log("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
-      let shapeType = "SYMPOL_FACTORY";
-      kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
-      this.add_new_shape(kendoui_content, copiedShape.type);
-      this.updateShapes();
-    }
+//     if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
+//       && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
+//       let copiedShape = this.starServices.sessionParams['COPIED_SHAPE'];
+//       let kendoui_content = JSON.parse(copiedShape.kendoui_content);
+//       kendoui_content.id = copiedShape.id;
+//       this.starServices.sessionParams['COPIED_SHAPE'] = "";
+//       console.log("kendoui_content:2:", formGroup, this.lastClickX, this.lastClickY, kendoui_content);
+//       let shapeType = "SYMPOL_FACTORY";
+//       kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
+//       this.add_new_shape(kendoui_content, copiedShape.type);
+//       this.updateShapes();
+//     }
 
 }
 
  async ON_CLICK_CONTEXT_MENU(menuType,event){
-     setTimeout(() => {
-      this.selectedShape = null;
-    });
-    if (menuType == "DROPDOWN" && !this.insertShapeFlag) {
-      console.log("DEBUG_IT:ON_CLICK_MENU:event.Id:", event.Id);
-      if (event.Id != "SymbolFactoryPlus") {
-        if (event.text == "FreeHand") {
-          this.toggleFreehandMode();
-        }
-        if (event.text == "Line") {
-          this.addLine();
-        }
+      setTimeout(() => {
+    this.selectedShape = null;
+  });
+
+  if (menuType === "DROPDOWN" && !this.insertShapeFlag) {
+    if (event.Id !== "SymbolFactoryPlus") {
+
+      // FreeHand tool
+      if (event.text === "FreeHand") {
         this.event = event;
+        this.toggleFreehandMode();
         this.menuType = menuType;
         this.insertShapeFlag = true;
-        this.pendingShapeType = this.event.text;
+        this.pendingShapeType = event.text;
         return;
       }
 
+      // Line tool
+      if (event.text === "Line") {
+        this.event = event;
+        this.addLine();
+        this.menuType = menuType;
+        this.insertShapeFlag = true;
+        this.pendingShapeType = event.text;
+        return;
+      }
+
+      // All other shapes: drag to size
+      this.armDragTool(event.text);
+      return;
     }
-    this.insertShapeFlag = false;
+  }
+  this.insertShapeFlag = false;
     let shapeInfo = this.getShapeInfo();
     let shapeType = shapeInfo['SHAPE_TYPE'];
     let action = "new";
@@ -2918,89 +2930,106 @@ public findPartAt(event): string | null {
     this.form.patchValue(object);
     this.form.updateValueAndValidity();
 }
-public add_new_shape(kendoui_content, type) {
-    let newShape = {
-      "id": "boilerA",
-      "x": 80,                    //this.lastClickX
-      "y": 80,                    //this.lastClickY
-      //"width": 400,                 //copy from data
-      //"height": 420,                //copy from data
-      "dataItem": {
-        "type": "boiler",           //copy from type
-        "definition": {
-          "shapeDefaults": {        //copy from data
-            "visual": null,
-            "fill": "#f0f4f8",
-            "stroke": {
-              "color": "#333333",
-              "width": 1
-            }
-          },
-          "connectionDefaults": {   //copy from data
-            "stroke": {
-              "color": "#555",
-              "width": 2
-            }
-          },
-          "layout": {               //copy from data
-            "type": "layered",
-            "subtype": "vertical"
-          },
-          "shapes": [               //copy from data
-
-          ],
-          "lines": [                //copy from data
-
-          ]
+public add_new_shape(
+  kendoui_content,
+  type,
+  x: number = this.lastClickX,
+  y: number = this.lastClickY,
+  width?: number,
+  height?: number
+) {
+  console.log ("add_new_shape:kendoui_content:",kendoui_content)
+  let newShape: any = {
+    "id": "boilerA",
+    "x": x,
+    "y": y,
+    "dataItem": {
+      "type": "boiler",
+      "definition": {
+        "shapeDefaults": {
+          "visual": null,
+          "fill": "#f0f4f8",
+          "stroke": {
+            "color": "#333333",
+            "width": 1
+          }
         },
-        "title": "Boiler A (Primary)"   //copy from type
-      }
+        "connectionDefaults": {
+          "stroke": {
+            "color": "#555",
+            "width": 2
+          }
+        },
+        "layout": {
+          "type": "layered",
+          "subtype": "vertical"
+        },
+        "shapes": [],
+        "lines": []
+      },
+      "title": "Boiler A (Primary)"
     }
+  };
 
-    if (typeof kendoui_content.shapeDefaults != "undefined") {
-      newShape.dataItem.definition.shapeDefaults = kendoui_content.shapeDefaults;
-    }
-    if (typeof kendoui_content.connectionDefaults != "undefined") {
-      newShape.dataItem.definition.connectionDefaults = kendoui_content.connectionDefaults;
-    }
+  if (typeof kendoui_content.shapeDefaults != "undefined") {
+    newShape.dataItem.definition.shapeDefaults = kendoui_content.shapeDefaults;
+  }
+  if (typeof kendoui_content.connectionDefaults != "undefined") {
+    newShape.dataItem.definition.connectionDefaults = kendoui_content.connectionDefaults;
+  }
+  if (typeof kendoui_content.layout != "undefined") {
+    newShape.dataItem.definition.layout = kendoui_content.layout;
+  }
+  if (typeof kendoui_content.shapes != "undefined") {
+    newShape.dataItem.definition.shapes = kendoui_content.shapes;
+  }
+  if (typeof kendoui_content.lines != "undefined") {
+    newShape.dataItem.definition.lines = kendoui_content.lines;
+  }
 
-    if (typeof kendoui_content.layout != "undefined") {
-      newShape.dataItem.definition.layout = kendoui_content.layout;
-    }
+  newShape.id = kendoui_content.id;
+  newShape.dataItem.title = type;
+  newShape.dataItem.type = type;
 
-    if (typeof kendoui_content.shapes != "undefined") {
-      newShape.dataItem.definition.shapes = kendoui_content.shapes;
-    }
-    if (typeof kendoui_content.lines != "undefined") {
-      newShape.dataItem.definition.lines = kendoui_content.lines;
-    }
-    newShape.id = kendoui_content.id;
-    newShape.dataItem.title = type;//Fuad kendoui_content.name;
-    newShape.dataItem.type = type;
-    //newShape.width = kendoui_content.width;
-    //newShape.height = kendoui_content.height;
-    // const diagramX = kendoui_content.diagramX;
-    // const diagramY = kendoui_content.diagramY;
+  // New: carry the drag box size onto the model when supplied.
+  if (width !== undefined)  newShape.width  = width;
+  if (height !== undefined) newShape.height = height;
 
-    newShape.x = this.lastClickX;
-    newShape.y = this.lastClickY;
-    
-    console.log("kendoui_content:newShape:", newShape);
-    const options: ShapeOptions = {
-      id: newShape.id,
-      x: this.lastClickX,
-      y: this.lastClickY,
-      //width: newShape.width,
-      //height: newShape.height,
-      dataItem: newShape.dataItem,
-      visual: (args) => {
-        return this.drawDiagramFromDefinition(
-          args.dataItem.definition
-        );
-      }
-    };
-    this.diagram.addShape(options);    //Store to screen diagram
-    this.shapes.push(newShape);                 //Store to my memory
+  newShape.x = x;
+  newShape.y = y;
+
+  console.log("kendoui_content:newShape:", newShape);
+
+  const options: ShapeOptions = {
+    id: newShape.id,
+    x,
+    y,
+    ...(width  !== undefined ? { width }  : {}),
+    ...(height !== undefined ? { height } : {}),
+    dataItem: newShape.dataItem,
+    visual: (args) => {
+      const targetWidth  = args?.width  ?? width  ?? newShape.width;
+      const targetHeight = args?.height ?? height ?? newShape.height;
+      return this.drawDiagramFromDefinition(
+        args.dataItem.definition,
+        0,
+        0,
+        args.dataItem.editorStyle,
+        targetWidth,
+        targetHeight
+      );
+    }
+  };
+
+  const runtime = this.diagram.addShape(options, true);
+  this.shapes.push(newShape);
+
+  // Keep the persisted model in sync with the runtime bounds Kendo derived,
+  // so the next save writes the dragged size rather than the definition's
+  // natural size.
+  if (runtime) {
+    this.syncRuntimeShapeToModel(runtime);
+  }
 }
 
 public popupVisible = false;
@@ -3227,6 +3256,11 @@ public onPropertyDialogClose(): void {
   } else {
     // Close immediately
     this.closePropertyDialog();
+    if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
+      && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
+        this.armDragTool("SYMPOL_FACTORY");
+     
+    }
   }
 }
 
@@ -3924,11 +3958,9 @@ public saveSahpesInfo(body){
 public menuType;
 public event;
 public insertShapeFlag = false;
-async insertSCDShape(kendoui_content, shapeType){
-      const diagramX =
-        (this.lastClickX - this.currentPan.x) / this.zoomLevel;
-      const diagramY =
-        (this.lastClickY - this.currentPan.y) / this.zoomLevel;
+async insertSCDShape(kendoui_content, shapeType, diagramX?: number, diagramY?: number){
+      const x = diagramX ?? (this.lastClickX - this.currentPan.x) / this.zoomLevel;
+      const y = diagramY ?? (this.lastClickY - this.currentPan.y) / this.zoomLevel;
       kendoui_content[diagramX] = diagramX;
       kendoui_content[diagramY] = diagramY;
       let body = [
@@ -3938,8 +3970,8 @@ async insertSCDShape(kendoui_content, shapeType){
           "SHAPE_TYPE": shapeType,
           "HEIGHT": 100,
           "WIDTH": 100,
-          "TOP": diagramY,
-          "LEFT": diagramX,
+          "TOP": x,
+          "LEFT": y,
           "NAME": kendoui_content.id,
           "VISIBLE": 1,
           "KEY_NAVIGATION": 1,
@@ -3968,7 +4000,7 @@ async insertShape(shapeType, options) {
     let kendoui_content: any = {
       id: shapeType
     }
-    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
+    //kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
     await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType)
     let kind = this.shapeToIconKey[shapeType] ?? 'Text';
     if (options == null) {
@@ -4004,7 +4036,7 @@ public statusMessage = "Select a shape to edit it.";
 public freehandMode = false;
 // Line tool: reuses the FreeHand pointer pipeline, but keeps only the start
 // and the current point so the result is one straight segment.
-private freehandStraight = false;
+public freehandStraight = false;
 private freehandPoints: Array<{ x: number; y: number }> = [];
 private freehandPointerId: number | null = null;
 public freehandPreviewPath = "";
@@ -4188,9 +4220,7 @@ private uniqueShapeId(prefix: string): string {
     this.addLibraryShape("image", { source: source.trim(), width: 180, height: 120, fillColor: "#f6f7f8" });
   }
 
-  public addEllipse(): void {
-    this.addLibraryShape("ellipse", { width: 150, height: 100, fillColor: "#d9e8f5" });
-  }
+  public addEllipse():   void { this.armDragTool('Elipse'); }
 
   /** Line tool: drag on the canvas from the start point to the end point. */
   public addLine(): void {
@@ -4212,27 +4242,28 @@ private uniqueShapeId(prefix: string): string {
     this.freehandPreviewPoints = [];
     this.freehandPreviewPath = "";
     this.freehandPointerId = null;
+    if (!active) {
+      this.pendingDragTool = null;
+      this.pendingDragShapeType = null;
+      this.pendingDragIsLibraryOnly = false;
+      this.dragBoxStart = null;
+      this.dragBoxCurrent = null;
+      this.clearDragBoxPreview();
+    }
   }
 
-  public addRectangle(): void {
-    this.addLibraryShape("rectangle", { width: 160, height: 100, fillColor: "#d9e8f5" });
-  }
 
-  public addRoundedRectangle(): void {
-    this.addLibraryShape("roundedRectangle", { width: 190, height: 100, fillColor: "#d9e8f5" });
-  }
 
-  public addArc(): void {
-    this.addLibraryShape("arc", { width: 170, height: 95, fillColor: "transparent" });
-  }
+  public addRectangle(): void { this.armDragTool('Rectangle'); }
 
-  public addPolygon(): void {
-    this.addLibraryShape("polygon", { width: 140, height: 120, fillColor: "#e9defa" });
-  }
+  public addRoundedRectangle(): void { this.armDragTool('Rounded Rectangle'); }
 
-  public addPolyline(): void {
-    this.addLibraryShape("polyline", { width: 180, height: 110, fillColor: "transparent" });
-  }
+  public addArc():       void { this.armDragTool('Arc'); }
+
+  public addPolygon():   void { this.armDragTool('Polygon'); }
+
+  public addPolyline():  void { this.armDragTool('Polyline'); }
+
  
   public toggleFreehandMode(): void {
     
@@ -4249,27 +4280,49 @@ private uniqueShapeId(prefix: string): string {
 
 
   public onFreehandPointerDown(event: PointerEvent): void {
-    if (!this.freehandMode || !this.diagram) {
-      return;
-    }
+    if (!this.freehandMode || !this.diagram) return;
     event.preventDefault();
     event.stopPropagation();
     this.freehandPointerId = event.pointerId;
     const point = this.pointerToModel(event);
-    if (!point) {
-      return;
-    }
-    this.freehandPoints = [point];
-    const previewPoint = this.pointerToStage(event);
-    this.freehandPreviewPoints = previewPoint ? [previewPoint] : [];
-    this.updateFreehandPreviewPath();
-    (event.currentTarget as HTMLElement | null)?.setPointerCapture?.(event.pointerId);
+    if (!point) return;
+
+  if (this.pendingDragTool) {
+    this.dragBoxStart = point;
+    this.dragBoxCurrent = point;
+    this.updateDragBoxPreview(event);
+    (event.currentTarget as HTMLElement | null)
+      ?.setPointerCapture?.(event.pointerId);
+    return;
   }
 
+  // Branch 2: freehand / line (existing behaviour)
+  this.freehandPoints = [point];
+  const previewPoint = this.pointerToStage(event);
+  this.freehandPreviewPoints = previewPoint ? [previewPoint] : [];
+  this.updateFreehandPreviewPath();
+  (event.currentTarget as HTMLElement | null)
+    ?.setPointerCapture?.(event.pointerId);
+}
+
+
   public onFreehandPointerMove(event: PointerEvent): void {
-    if (!this.freehandMode || this.freehandPointerId !== event.pointerId || !this.freehandPoints.length) {
-      return;
-    }
+    if (!this.freehandMode || this.freehandPointerId !== event.pointerId) return;
+
+  // Shape box drag
+  if (this.pendingDragTool && this.dragBoxStart) {
+    event.preventDefault();
+    event.stopPropagation();
+    const point = this.pointerToModel(event);
+    if (!point) return;
+    this.dragBoxCurrent = point;
+    this.updateDragBoxPreview(event);
+    return;
+  }
+
+  // Existing freehand/line path...
+  if (!this.freehandPoints.length) return;
+
     event.preventDefault();
     event.stopPropagation();
     const point = this.pointerToModel(event);
@@ -4298,14 +4351,41 @@ private uniqueShapeId(prefix: string): string {
     }
   }
 
-public onFreehandPointerUp(event: PointerEvent): void {
-    if (!this.freehandMode || this.freehandPointerId !== event.pointerId) {
-      return;
-    }
-    event.preventDefault();
-    event.stopPropagation();
-    (event.currentTarget as HTMLElement | null)?.releasePointerCapture?.(event.pointerId);
-    this.freehandPointerId = null;
+async onFreehandPointerUp(event: PointerEvent) {
+    if (!this.freehandMode || this.freehandPointerId !== event.pointerId) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  (event.currentTarget as HTMLElement | null)
+    ?.releasePointerCapture?.(event.pointerId);
+  this.freehandPointerId = null;
+
+  // Shape box release
+  if (this.pendingDragTool && this.dragBoxStart && this.dragBoxCurrent) {
+  const start = this.dragBoxStart;
+  const end   = this.dragBoxCurrent;
+  const x = Math.min(start.x, end.x);
+  const y = Math.min(start.y, end.y);
+  const w = Math.abs(end.x - start.x);
+  const h = Math.abs(end.y - start.y);
+
+  const shapeType = this.pendingDragShapeType!;
+  const libraryOnly = this.pendingDragIsLibraryOnly;
+
+  this.resetFreehandState(false);
+  this.clearDragBoxPreview();
+
+  if (w < 4 || h < 4) {
+    this.statusMessage = "Drag was too small; nothing was added.";
+    return;
+  }
+
+  this.lastClickX = x;
+  this.lastClickY = y;
+
+  await this.insertShapeFromBox(shapeType, x, y, w, h);
+  return;
+}
 
     const straight = this.freehandStraight;
     const tooShort = this.freehandPoints.length < 2 ||
@@ -6397,7 +6477,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Latched': 'buttonLatched',
     'Maintained': 'button',
     'Momentry': 'buttonmomentry',
-    'Push Button': '"pushbutton',
+    'Push Button': 'pushbutton',
     'Navigation Button': 'navButton',
     'Ramp Button': 'rampButton',
     'Button': 'button',
@@ -6452,21 +6532,21 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
    * Build a data-URI cursor for the currently pending shape type.
    * Returns 'crosshair' if no shape is pending.
    */
-    get insertCursor(): string {
-    if (!this.insertShapeFlag) return 'default';
+  get insertCursor(): string {
+  
+    const pending = this.pendingDragShapeType ?? this.pendingShapeType;
+    
+    if (!pending) return 'default';
 
-    const iconKey = this.shapeToIconKey[this.pendingShapeType] ?? 'default';
+    const iconKey = this.shapeToIconKey[pending] ?? 'default';
     const iconSvg = this.cursorIcons[iconKey] ?? this.cursorIcons['default'];
 
-    // 24×24 canvas. Hotspot at (2,2) = top-left area of the icon.
     const svg =
       `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">` +
-        // small arrow pointer behind the icon
         `<path d="M0 0 L0 10 L3 7 L5 12 L7 11 L5 6 L9 6 Z" fill="black" stroke="white" stroke-width="1"/>` +
         iconSvg +
       `</svg>`;
 
-    // encodeURIComponent keeps the SVG safe inside a CSS url()
     return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 4 4, crosshair`;
   }
 
@@ -8632,6 +8712,114 @@ private setButtonState(
   console.log(
     `ButtonSensor: refreshed ${shapeId}, state=${state}`
   );
+}
+// Tool that will be created when the user releases the pointer.
+// Set when the user picks a shape from the toolbar; cleared on release.
+public pendingDragTool: string | null = null;
+public pendingDragShapeType: string | null = null; // original toolbar label, e.g. 'Rectangle'
+private pendingDragIsLibraryOnly = false;           // true for library kinds (richText, container...)
+// Bounding box while dragging (for preview + final placement).
+private dragBoxStart: { x: number; y: number } | null = null;
+private dragBoxCurrent: { x: number; y: number } | null = null;
+public dragBoxPreviewX = 0;
+public dragBoxPreviewY = 0;
+public dragBoxPreviewW = 0;
+public dragBoxPreviewH = 0;
+
+private armDragTool(shapeType: string): void {
+  this.resetFreehandState(false);
+  this.insertShapeFlag = false;
+  this.diagram?.deselect();
+
+  this.pendingDragShapeType = shapeType;
+  this.pendingDragTool = this.shapeToIconKey[shapeType] ?? 'default';
+
+  const libraryOnlyKinds = [
+    'rectangle','rounded rectangle','elipse','arc','polygon',
+    'polyline','wedge','panel','freehand','image','text'
+  ];
+  this.pendingDragIsLibraryOnly =
+    libraryOnlyKinds.includes(shapeType.toLowerCase());
+
+  this.freehandMode = true;
+  this.freehandStraight = false;
+  this.freehandPoints = [];
+  this.statusMessage =
+    `Drag on the diagram to size the ${shapeType}, then release.`;
+}
+private async insertShapeFromBox(
+  shapeType: string,
+  x: number, y: number, width: number, height: number
+): Promise<void> {
+  // Choose the library kind that visually represents this SCD shape.
+  const kind = this.shapeToIconKey[shapeType] ?? 'default';
+  console.log("insertShapeFromBox:")
+  let kendoui_content: any = { id: shapeType };
+
+  // Reuse the existing SCD pipeline so DB rows are created exactly as before.
+  kendoui_content = await this.insertSCDShape(kendoui_content, shapeType,x,y);
+
+  // Store the click position on the kendoui_content object (matches old code).
+  const diagramX = x;
+  const diagramY = y;
+  kendoui_content[diagramX] = diagramX;
+  kendoui_content[diagramY] = diagramY;
+
+  await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType);
+
+  // Build the options the same way insertShape does, but with the real box.
+  const options: any = {
+    x, y, width, height,
+    SHAPE_ID:   kendoui_content.id,
+    SHAPE_TYPE: shapeType,
+    text:       "",
+    fillColor:  "#D3D3D3"
+  };
+
+  if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
+    && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
+    let copiedShape = this.starServices.sessionParams['COPIED_SHAPE'];
+    let kendoui_content = JSON.parse(copiedShape.kendoui_content);
+    console.log("kendoui_content:",kendoui_content)
+    kendoui_content.id = copiedShape.id;
+    this.starServices.sessionParams['COPIED_SHAPE'] = "";
+    let shapeType = "SYMPOL_FACTORY";
+    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType, x, y);
+    this.add_new_shape(kendoui_content, copiedShape.type, x, y, width, height);
+    this.updateShapes();
+    this.resetFreehandState(false);
+    
+  }
+  else
+    this.addLibraryShape(kind, options, true);
+}
+private updateDragBoxPreview(event: PointerEvent): void {
+  const start = this.dragBoxStart, end = this.dragBoxCurrent;
+  if (!start || !end) { this.clearDragBoxPreview(); return; }
+
+  // Convert both model corners back to stage coords for the SVG overlay.
+  const stageStart = this.modelToStage(start.x, start.y);
+  const stageEnd   = this.modelToStage(end.x,   end.y);
+  if (!stageStart || !stageEnd) { this.clearDragBoxPreview(); return; }
+
+  this.dragBoxPreviewX = Math.min(stageStart.x, stageEnd.x);
+  this.dragBoxPreviewY = Math.min(stageStart.y, stageEnd.y);
+  this.dragBoxPreviewW = Math.abs(stageEnd.x - stageStart.x);
+  this.dragBoxPreviewH = Math.abs(stageEnd.y - stageStart.y);
+}
+
+private clearDragBoxPreview(): void {
+  this.dragBoxPreviewX = this.dragBoxPreviewY = 0;
+  this.dragBoxPreviewW = this.dragBoxPreviewH = 0;
+}
+
+/** Inverse of pointerToModel — model coords → stage (SVG) coords. */
+private modelToStage(modelX: number, modelY: number): { x: number; y: number } | null {
+  if (!this.diagramHost) return null;
+  return {
+    x: modelX * this.zoomLevel - this.currentPan.x,
+    y: modelY * this.zoomLevel - this.currentPan.y
+  };
 }
 
 }

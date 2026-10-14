@@ -93,7 +93,8 @@ export class ScdArrowButtonPropertiesComponent implements OnInit {
    this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_button_properties.scd_arrow_button_properties.compsTitleID1","Common");
    this.SCD_SHAPEForm_0Config.isMaster = true;
    this.SCD_SHAPEForm_0Config.isSearchScreen = this.isSearchScreen;
-   this.SCD_SHAPEForm_0Config.showToolBar = !this.visibleOK_BTNS; 
+	if (this.visibleOK_BTNS) 
+   	this.SCD_SHAPEForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_SHAPEForm_0Config.queryable = false;
      this.SCD_SHAPEForm_0Config.removeable = false;
@@ -165,9 +166,9 @@ export class ScdArrowButtonPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ARROW_BUTTON_GENERALFormdivs_1Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ARROW_BUTTON_LABELFormdivs_2Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
@@ -300,6 +301,11 @@ export class ScdArrowButtonPropertiesComponent implements OnInit {
               this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ARROW_BUTTON_GENERALFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ARROW_BUTTON_LABELFormdivs_2Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_SHAPEForm_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ARROW_BUTTON_GENERALFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ARROW_BUTTON_LABELFormdivs_2Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

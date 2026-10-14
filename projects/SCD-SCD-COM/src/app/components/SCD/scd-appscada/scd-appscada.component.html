@@ -1,10 +1,16 @@
 <div style ="display:block;width:100%;"> 
 <legend  class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_appscada.SCD_appscada.component_title","AppScada") }}</legend>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-          <app-scd-appselect style="width : 300px ;" ></app-scd-appselect >
+			<app-scd-appselect style="width : 300px ;" [hidden]="hide_comp_1" 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
+				[setComponentConfig_Input]="scd_appselect0_0Config">
+    		</app-scd-appselect >
 
 
-          <app-scd-appboard style="position: relative;    overflow: hidden;    width: 100%;    height: 100%;" ></app-scd-appboard >
+			<app-scd-appboard style="position: relative;    overflow: hidden;    width: 100%;    height: 100%;" [hidden]="hide_comp_2" 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
+				[setComponentConfig_Input]="scd_appboard1_1Config">
+    		</app-scd-appboard >
 </div>
 
 <div> 

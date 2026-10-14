@@ -22,11 +22,8 @@ export class ScdApplicationTreeComponent implements OnInit {
   constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
    this.router = router;
   this.title =  this.starServices.getNLS([],"scd_application_tree.scd_application_tree.component_title","_del_Application Tree");
-    this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-    if (this.visibleOK_BTNS)
-	     this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
+    this.paramConfig = getParamConfig();
   }
   public showToolBar = false;
   public paramConfig; 
@@ -47,6 +44,7 @@ export class ScdApplicationTreeComponent implements OnInit {
 
   public form_0_SCD_ARROW_GENERAL : scdarrowGeneralScdApArrowGeneral;
   public  SCD_ARROW_GENERALForm_0Config : componentConfigDef;
+  public  hide_comp_1 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdApplicationTree";
 
@@ -89,6 +87,8 @@ export class ScdApplicationTreeComponent implements OnInit {
    this.SCD_ARROW_GENERALForm_0Config.title = this.starServices.getNLS([],"scd_application_tree.scd_application_tree.compsTitleID1","Application Tree");
    this.SCD_ARROW_GENERALForm_0Config.isMaster = true;
    this.SCD_ARROW_GENERALForm_0Config.isSearchScreen = this.isSearchScreen;
+	if (this.visibleOK_BTNS) 
+   	this.SCD_ARROW_GENERALForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_ARROW_GENERALForm_0Config.queryable = false;
      this.SCD_ARROW_GENERALForm_0Config.removeable = false;
@@ -140,6 +140,7 @@ export class ScdApplicationTreeComponent implements OnInit {
   }
   public saveTriggerHandler(event){
         }
+  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
   @Input() public set detail_Input(form: any) {
     if (typeof form !== "undefined")
     {
@@ -156,6 +157,19 @@ export class ScdApplicationTreeComponent implements OnInit {
     }
     this.formValidationChangedOutput.emit(formValidation)
   }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -186,17 +200,22 @@ export class ScdApplicationTreeComponent implements OnInit {
              this.SCD_ARROW_GENERALForm_0Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ARROW_GENERALForm_0Config.title = this.starServices.getNLS([],"scd_application_tree.scd_application_tree.compsTitleID1","Application Tree");
            this.setSteps(this);
-           }, 400);
+           }, 500);
        }
   
+       this.SCD_ARROW_GENERALForm_0Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
+              this.SCD_ARROW_GENERALForm_0Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.SCD_ARROW_GENERALForm_0Config = new componentConfigDef();
-       this.SCD_ARROW_GENERALForm_0Config = ComponentConfig;
-      if (ComponentConfig.masterSaved != null)
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_ARROW_GENERALForm_0Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_ARROW_GENERALForm_0Config.masterSelector = ComponentConfig.masterSelector;
+       }
+      if (ComponentConfig.masterSaved != null)//here1
       {
        this.SCD_ARROW_GENERALForm_0Config.masterSaved = ComponentConfig.masterSaved;
       }
@@ -220,19 +239,38 @@ export class ScdApplicationTreeComponent implements OnInit {
           }
        }
       }
-     }
     }
   }
   
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

@@ -15,6 +15,8 @@ declare function getParamConfig():any;
 export class ScdApplicationUsersManagementComponent implements OnInit {
   public componentConfig: componentConfigDef;
   public paramConfig;  
+  public routineAuth = 'ScdApplicationUsersManagement';
+  public compSelector = 'app-scd-application-users-management';
   public title =  '';
   public isPhonePortrait = false;
   public customerFacing = false;
@@ -27,11 +29,8 @@ export class ScdApplicationUsersManagementComponent implements OnInit {
     };
   constructor(public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices) {
     this.title =  this.starServices.getNLS([],"SCD_application_users_management.SCD_application_users_management.component_title","Application Users Management");
+    this.componentConfig = new componentConfigDef();
     this.paramConfig = getParamConfig();
-    this.componentConfig = new componentConfigDef(); 
-    if (this.visibleOK_BTNS)
-	    this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
 }
  @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
  @Input() public set detail_Input(form: any) { 
@@ -46,12 +45,21 @@ public ngAfterViewInit() {
 	//this.when_new_form_instance();
  
     this.WHEN_NEW_FORM_INSTANCE();
+    this.initComponents();
   }
 
   async WHEN_NEW_FORM_INSTANCE(){
 	   }
   public onSelect(e: SelectEvent): void { 
 	  }
+  async initComponents(){
+    await this.starServices.sleep(200);
+    // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
+   this.scd_au_user0_0Config = new componentConfigDef();
+   this.scd_au_user0_0Config.showToolBar = !this.visibleOK_BTNS; 
+   this.scd_group_membership1_1Config = new componentConfigDef();
+   this.scd_group_membership1_1Config.showToolBar = !this.visibleOK_BTNS; 
+  }
   public  scd_au_user0_0Config : componentConfigDef;
   public  hide_comp_1 = false;
   public  scd_group_membership1_1Config : componentConfigDef;
@@ -124,14 +132,34 @@ public ngAfterViewInit() {
   }
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

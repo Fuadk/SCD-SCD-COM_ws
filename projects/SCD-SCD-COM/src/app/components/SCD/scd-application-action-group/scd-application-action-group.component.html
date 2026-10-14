@@ -1,7 +1,10 @@
 <div style ="display:block;width:100%;"> 
 <legend  class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_application_action_group.SCD_application_action_group.component_title","Pending - Application Action Group") }}</legend>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
-          <app-scd-aag-action-group  ></app-scd-aag-action-group >
+			<app-scd-aag-action-group  [hidden]="hide_comp_1" 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
+				[setComponentConfig_Input]="scd_aag_action_group0_0Config">
+    		</app-scd-aag-action-group >
 </div>
 
 <div> 

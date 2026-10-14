@@ -22,11 +22,8 @@ export class ScdGroupMembershipComponent implements OnInit {
   constructor(public router: Router,public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices, public starlib1: Starlib1) {
    this.router = router;
   this.title =  this.starServices.getNLS([],"scd_group_membership.scd_group_membership.component_title","");
-    this.paramConfig = getParamConfig();
     this.componentConfig = new componentConfigDef();
-    if (this.visibleOK_BTNS)
-	     this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
+    this.paramConfig = getParamConfig();
   }
   public showToolBar = false;
   public paramConfig; 
@@ -93,6 +90,8 @@ export class ScdGroupMembershipComponent implements OnInit {
    this.SCD_GROUP_MEMBERSHIPForm_0Config.title = this.starServices.getNLS([],"scd_group_membership.scd_group_membership.compsTitleID1","Group");
    this.SCD_GROUP_MEMBERSHIPForm_0Config.isMaster = true;
    this.SCD_GROUP_MEMBERSHIPForm_0Config.isSearchScreen = this.isSearchScreen;
+	if (this.visibleOK_BTNS) 
+   	this.SCD_GROUP_MEMBERSHIPForm_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_GROUP_MEMBERSHIPForm_0Config.queryable = false;
      this.SCD_GROUP_MEMBERSHIPForm_0Config.removeable = false;
@@ -104,6 +103,7 @@ export class ScdGroupMembershipComponent implements OnInit {
    this.SCD_GROUP_MEMBERSHIPGrid_1Config.title = this.starServices.getNLS([],"scd_group_membership.scd_group_membership.compsTitleID2","Members");
    this.SCD_GROUP_MEMBERSHIPGrid_1Config.isChild = true;
    this.SCD_GROUP_MEMBERSHIPGrid_1Config.masterSelector = 'app-scd-group-membership';
+   this.SCD_GROUP_MEMBERSHIPGrid_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_GROUP_MEMBERSHIPGrid_1Config.navigable = false;
      //this.SCD_GROUP_MEMBERSHIPGrid_1Config.insertable = true;
@@ -138,7 +138,7 @@ export class ScdGroupMembershipComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_GROUP_MEMBERSHIP) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_GROUP_MEMBERSHIPGrid_1Config = new componentConfigDef();
   }
   public keyNameArr = ["GROUP_MEMBERSHIP_ID","APPLICATION_ID"];
@@ -242,22 +242,28 @@ export class ScdGroupMembershipComponent implements OnInit {
              this.SCD_GROUP_MEMBERSHIPGrid_1Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_GROUP_MEMBERSHIPGrid_1Config.title = this.starServices.getNLS([],"scd_group_membership.scd_group_membership.compsTitleID2","Members");
            this.setSteps(this);
-           }, 400);
+           }, 500);
        }
   
+       this.SCD_GROUP_MEMBERSHIPForm_0Config = new componentConfigDef();
+       this.SCD_GROUP_MEMBERSHIPGrid_1Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
+              this.SCD_GROUP_MEMBERSHIPForm_0Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_GROUP_MEMBERSHIPGrid_1Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.SCD_GROUP_MEMBERSHIPForm_0Config = new componentConfigDef();
-       this.SCD_GROUP_MEMBERSHIPForm_0Config = ComponentConfig;
-       this.SCD_GROUP_MEMBERSHIPGrid_1Config = new componentConfigDef();
-       this.SCD_GROUP_MEMBERSHIPGrid_1Config = ComponentConfig;
-      if (ComponentConfig.masterSaved != null)
+       if (ComponentConfig.showToolBar != null) {
+              this.SCD_GROUP_MEMBERSHIPForm_0Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_GROUP_MEMBERSHIPGrid_1Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_GROUP_MEMBERSHIPForm_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_GROUP_MEMBERSHIPGrid_1Config.masterSelector = ComponentConfig.masterSelector;
+       }
+      if (ComponentConfig.masterSaved != null)//here1
       {
        this.SCD_GROUP_MEMBERSHIPForm_0Config.masterSaved = ComponentConfig.masterSaved;
-       this.SCD_GROUP_MEMBERSHIPGrid_1Config.masterSaved = ComponentConfig.masterSaved;
       }
       if (ComponentConfig.newRec != null)
       {
@@ -287,7 +293,6 @@ export class ScdGroupMembershipComponent implements OnInit {
           }
        }
       }
-     }
     }
   }
    public grid_1_SCD_GROUP_MEMBERSHIPOpened = false;
@@ -300,14 +305,34 @@ export class ScdGroupMembershipComponent implements OnInit {
   
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

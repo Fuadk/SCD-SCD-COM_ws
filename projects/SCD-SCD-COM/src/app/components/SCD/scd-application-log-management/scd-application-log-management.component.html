@@ -1,5 +1,5 @@
 <div style="height: calc(100vh - 200px); display: flex; flex-direction: column;">
-  <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_application_log_management.SCD_application_log_management.component_title","Application Log Management") }}</legend>
+  <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_application_log_management.SCD_application_log_management.component_title","Application Log Management") }}</legend>
 <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment" style="flex: 1; min-height: 0;">
 <kendo-tabstrip-tab [selected]="true">
     <ng-template   kendoTabTitle>
@@ -7,6 +7,7 @@
      </ng-template>
     <ng-template kendoTabContent>
           <app-scd-alm-application-log-management
+			(setComponentConfig_Output)="onComponentConfig_Output($event)"
 			[setComponentConfig_Input]="scd_alm_application_log_management0_0Config">
 	 </app-scd-alm-application-log-management >
     </ng-template>
@@ -17,6 +18,7 @@
      </ng-template>
     <ng-template kendoTabContent>
           <app-scd-lt-log-triggers 
+				(setComponentConfig_Output)="onComponentConfig_Output($event)"
 				[setComponentConfig_Input]="scd_lt_log_triggers1_1Config">
     </app-scd-lt-log-triggers >
     </ng-template>

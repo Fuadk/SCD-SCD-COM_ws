@@ -1,37 +1,33 @@
     <div>   
         <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"scd_symbolfactory.scd_symbolfactory.component_title","") }}</legend> 
-<kendo-tilelayout 
-[columns]="isPhonePortrait ? 1 : null" [gap]="gap" 
-[resizable]="true" 
-[reorderable]="true">
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 1" [colSpan]="1" >
-        <app-scd-scd-icons-category-tree  
+<div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrapScreen' ">
+        <app-scd-scd-icons-category-tree  [hidden]="hide_comp_1" 
                       (readCompletedOutput)="readCompletedHandler($event)"
                       (clearCompletedOutput)="clearCompletedHandler($event)"
                       (saveCompletedOutput)="saveCompletedHandler($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 1)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ICONS_CATEGORYTree_0Config">
         </app-scd-scd-icons-category-tree >
 
-</kendo-tilelayout-item>
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 2" [colSpan]="1" >
-        <app-scd-scd-icons-card  [detail_Input]="card_1_SCD_ICONS"  
+
+        <app-scd-scd-icons-card  [hidden]="hide_comp_2" [detail_Input]="card_1_SCD_ICONS"  
                       (readCompletedOutput)="readCompletedHandler2($event)"
                       (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ICONSCard_1Config">
         </app-scd-scd-icons-card >
 
-</kendo-tilelayout-item>
-<kendo-tilelayout-item [col]="isPhonePortrait ? 1 : 3" [colSpan]="1" >
-        <app-scd-scd-icons-form  [detail_Input]="form_2_SCD_ICONS"  
+
+        <app-scd-scd-icons-form  [hidden]="hide_comp_3" [detail_Input]="form_2_SCD_ICONS"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
                       [setComponentConfig_Input]="SCD_ICONSForm_2Config">
         </app-scd-scd-icons-form >
 
-</kendo-tilelayout-item>
-</kendo-tilelayout>
+</div>
 
     </div>   
 <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">

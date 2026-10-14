@@ -90,7 +90,8 @@ export class ScdListIndicatorStatesPropertiesComponent implements OnInit {
    this.SCD_LIST_INDICATOR_STATEGrid_0Config.title = this.starServices.getNLS([],"scd_list_indicator_states_properties.scd_list_indicator_states_properties.compsTitleID1","States");
    this.SCD_LIST_INDICATOR_STATEGrid_0Config.isMaster = true;
    this.SCD_LIST_INDICATOR_STATEGrid_0Config.isSearchScreen = this.isSearchScreen;
-   this.SCD_LIST_INDICATOR_STATEGrid_0Config.showToolBar = !this.visibleOK_BTNS; 
+	if (this.visibleOK_BTNS) 
+   	this.SCD_LIST_INDICATOR_STATEGrid_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_LIST_INDICATOR_STATEGrid_0Config.queryable = false;
      this.SCD_LIST_INDICATOR_STATEGrid_0Config.removeable = false;
@@ -137,7 +138,7 @@ export class ScdListIndicatorStatesPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_LIST_INDICATOR_STATE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_LIST_INDICATOR_STATEFormdivs_1Config = new componentConfigDef();
   }
   public keyNameArr = ["LIST_INDICATOR_STATE_ID","SHAPE_ID"];
@@ -255,6 +256,10 @@ export class ScdListIndicatorStatesPropertiesComponent implements OnInit {
        if (ComponentConfig.showToolBar != null) {
               this.SCD_LIST_INDICATOR_STATEGrid_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_LIST_INDICATOR_STATEFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_LIST_INDICATOR_STATEGrid_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_LIST_INDICATOR_STATEFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

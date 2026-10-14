@@ -527,6 +527,16 @@ export class ScdAlarmAndEventBannerPropertiesComponent implements OnInit {
               this.SCD_ALARMFormtabs_6Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARM_SORTForm_7Config.showToolBar = ComponentConfig.showToolBar;
        }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_SHAPEForm_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARM_GENERAL_BANNERFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARM_COLUMNSGrid_2Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARM_COLUMNSGrid_3Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARM_COLUMNSGrid_4Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARMFormtabs_5Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARMFormtabs_6Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARM_SORTForm_7Config.masterSelector = ComponentConfig.masterSelector;
+       }
       if (ComponentConfig.masterSaved != null)//here1
       {
        this.SCD_SHAPEForm_0Config.masterSaved = ComponentConfig.masterSaved;

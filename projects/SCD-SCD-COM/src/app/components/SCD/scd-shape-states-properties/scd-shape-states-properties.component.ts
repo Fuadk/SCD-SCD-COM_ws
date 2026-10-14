@@ -138,7 +138,7 @@ export class ScdShapeStatesPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE_STATE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_SHAPE_STATEFormdivs_1Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_STATE_ID","SHAPE_ID"];
@@ -256,6 +256,10 @@ export class ScdShapeStatesPropertiesComponent implements OnInit {
        if (ComponentConfig.showToolBar != null) {
               this.SCD_SHAPE_STATEGrid_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_SHAPE_STATEFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_SHAPE_STATEGrid_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_SHAPE_STATEFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

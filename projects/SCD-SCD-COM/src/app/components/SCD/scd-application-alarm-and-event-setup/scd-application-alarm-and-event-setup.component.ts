@@ -15,6 +15,8 @@ declare function getParamConfig():any;
 export class ScdApplicationAlarmAndEventSetupComponent implements OnInit {
   public componentConfig: componentConfigDef;
   public paramConfig;  
+  public routineAuth = 'ScdApplicationAlarmAndEventSetup';
+  public compSelector = 'app-scd-application-alarm-and-event-setup';
   public title =  '';
   public isPhonePortrait = false;
   public customerFacing = false;
@@ -27,11 +29,10 @@ export class ScdApplicationAlarmAndEventSetupComponent implements OnInit {
     };
   constructor(public responsive: BreakpointObserver, private starNotify: StarNotifyService, public starServices: starServices) {
     this.title =  this.starServices.getNLS([],"SCD_application_alarm_and_event_setup.SCD_application_alarm_and_event_setup.component_title","Application Alarm and Event Setup under AE Server");
+    this.componentConfig = new componentConfigDef();
     this.paramConfig = getParamConfig();
-    this.componentConfig = new componentConfigDef(); 
-	this.componentConfig.showToolBar = !this.visibleOK_BTNS; 
-	this.handleComponentConfig(this.componentConfig); 
 }
+ @Output() setComponentConfig_Output: EventEmitter<any> = new EventEmitter();
  @Input() public set detail_Input(form: any) { 
   }
 public ngAfterViewInit() {
@@ -44,15 +45,33 @@ public ngAfterViewInit() {
 	//this.when_new_form_instance();
  
     this.WHEN_NEW_FORM_INSTANCE();
+    this.initComponents();
   }
 
   async WHEN_NEW_FORM_INSTANCE(){
 	   }
   public onSelect(e: SelectEvent): void { 
 	  }
+  async initComponents(){
+    await this.starServices.sleep(200);
+    // to stop initial loading remove [executeQueryInput]="form_dsp_template"  from this (parent) html file
+   this.scd_all_alarms0_0Config = new componentConfigDef();
+   this.scd_all_alarms0_0Config.showToolBar = !this.visibleOK_BTNS; 
+   this.scd_alm_local_messages1_1Config = new componentConfigDef();
+   this.scd_alm_local_messages1_1Config.showToolBar = !this.visibleOK_BTNS; 
+   this.scd_tur_tag_update_rates2_2Config = new componentConfigDef();
+   this.scd_tur_tag_update_rates2_2Config.showToolBar = !this.visibleOK_BTNS; 
+  }
   public  scd_all_alarms0_0Config : componentConfigDef;
+  public  hide_comp_1 = false;
   public  scd_alm_local_messages1_1Config : componentConfigDef;
+  public  hide_comp_2 = false;
   public  scd_tur_tag_update_rates2_2Config : componentConfigDef;
+  public  hide_comp_3 = false;
+  public onComponentConfig_Output(ComponentConfig) 
+{
+    this.setComponentConfig_Output.emit(ComponentConfig);
+}
   @Input() public set setComponentConfig_Input(ComponentConfig: componentConfigDef) {
     this.handleComponentConfig(ComponentConfig);
     } 
@@ -71,16 +90,15 @@ public ngAfterViewInit() {
            }, 400);
        }
   
+       this.scd_all_alarms0_0Config = new componentConfigDef();
+       this.scd_alm_local_messages1_1Config = new componentConfigDef();
+       this.scd_tur_tag_update_rates2_2Config = new componentConfigDef();
        if (ComponentConfig.masterParams != null) {
+              this.scd_all_alarms0_0Config.masterParams = ComponentConfig.masterParams;
+              this.scd_alm_local_messages1_1Config.masterParams = ComponentConfig.masterParams;
+              this.scd_tur_tag_update_rates2_2Config.masterParams = ComponentConfig.masterParams;
    		
        }
-       else{
-       this.scd_all_alarms0_0Config = new componentConfigDef();
-       this.scd_all_alarms0_0Config = ComponentConfig;
-       this.scd_alm_local_messages1_1Config = new componentConfigDef();
-       this.scd_alm_local_messages1_1Config = ComponentConfig;
-       this.scd_tur_tag_update_rates2_2Config = new componentConfigDef();
-       this.scd_tur_tag_update_rates2_2Config = ComponentConfig;
       if (ComponentConfig.masterSaved != null)
       {
        this.scd_all_alarms0_0Config.masterSaved = ComponentConfig.masterSaved;
@@ -129,19 +147,38 @@ public ngAfterViewInit() {
           }
        }
       }
-     }
     }
   }
  
 	public ON_CLICK_OK(event){
+    console.log('ON_CLICK_OK: Called');
 		this.componentConfig = new componentConfigDef(); 
 		this.componentConfig.masterSaved = true;
 		this.handleComponentConfig(this.componentConfig); 
+    ///
+    setTimeout(() => {
+      const config = new componentConfigDef();
+      config.parentClose = true;  // Should be Close
+      // Emit through setComponentConfig_Output
+      this.setComponentConfig_Output.emit(config);
+     }, 300);
+    
 	}
-	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
-	public ON_CLICK_CANCEL(event){
-    this.cancelClicked.emit();
-	}
+	
+	public ON_CLICK_CANCEL(event: any): void {
+  console.log('ON_CLICK_CANCEL: Called');
+  
+  // Create a new componentConfig with parentClose = true
+  const config = new componentConfigDef();
+  config.parentClose = true;
+  config.eventFrom = this.compSelector;
+  config.eventTo = ['any'];
+  
+  // Emit through setComponentConfig_Output
+  this.setComponentConfig_Output.emit(config);
+  
+  console.log('ON_CLICK_CANCEL: parentClose emitted to parent');
+}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
 	public ON_CLICK_HELP(event){

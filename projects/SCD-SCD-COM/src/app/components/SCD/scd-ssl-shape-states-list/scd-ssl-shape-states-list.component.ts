@@ -103,8 +103,8 @@ export class ScdShapeStateScdSslShapeStatesListGridComponent implements OnInit,O
   public  isColumnMenu : boolean = false;
   public  gridHeight = "";
 
-  private masterKeyArr = [];
-  private masterKeyNameArr = [];
+  public masterKeyArr = [];
+  public masterKeyNameArr = [];
   private masterKey ="";
   private masterKeyName ="SHAPE_ID";
   private insertCMD = "INSERT_SCD_SHAPE_STATE";
@@ -350,7 +350,8 @@ public compSelector = 'app-scd-ssl-shape-states-list';
 
     if (!this.uploadimage && this.formGroup && this.formGroup.valid &&
         !matches(e.target, '#grid tbody *, #grid .k-grid-toolbar .k-button, .k-link') &&
-        !isTimePickerPopup && !isTimePickerSetButton) {
+        !isTimePickerPopup && !isTimePickerSetButton 
+        && (this.editedRowIndex != null && typeof this.editedRowIndex != "undefined" ) ) {
         this.saveCurrent();
     }
     else if (typeof this.formGroup !== "undefined") {
@@ -361,6 +362,8 @@ public compSelector = 'app-scd-ssl-shape-states-list';
   
 
   public addHandler(): void {
+    if (this.paramConfig.DEBUG_FLAG) console.log("addHandler:this.gridInitialValues:", 
+        {...this.gridInitialValues});
     this.isNew = true;
     if (this.isSearch != true){
       this.setInitialValues();
@@ -372,9 +375,9 @@ public compSelector = 'app-scd-ssl-shape-states-list';
 
   if (this.formGroup.valid == false) {
         this.formGroup.markAllAsTouched()
-        setTimeout(() => {
+        //setTimeout(() => {
           this.formValidationChangedOutput.emit(this.formGroup.valid)
-        }, 100)
+        //}, 100)
       }
   }
    public setInitialValues() {
@@ -439,16 +442,15 @@ public compSelector = 'app-scd-ssl-shape-states-list';
 
       let GridData:any;
       GridData = Object.assign([], this.grid.data);
-      for (let i = 0; i < GridData.data.length; i++){
-        this.POST_QUERY(GridData.data[i], i);
-        if (this.att_arr.length != 0 || this.img_arr.length != 0){
-          await this.starServices.callGetSaveAttachemts("fetch", GridData.data[i],this); 
-          await this.starServices.sleep(100);
-          this.starServices.att_img_populateArrs(GridData.data[i],this);
-          await this.starServices.sleep(100);
+      setTimeout(() => {
+        for (let i = 0; i < GridData.data.length; i++) {
+          this.POST_QUERY(GridData.data[i], i);
+          if (this.att_arr.length != 0 || this.img_arr.length != 0 || this.svg_arr.length != 0) {
+            this.starServices.callGetSaveAttachemts("fetch", GridData.data[i], this);
+            this.starServices.att_img_populateArrs(GridData.data[i], this);
+          }
         }
-
-      }
+      }, 100)
       if (this.img_arr.length != 0){
         this.grid.data = [];
         await this.starServices.sleep(10);
@@ -512,6 +514,8 @@ public compSelector = 'app-scd-ssl-shape-states-list';
     if ( (typeof grid !== "undefined") && (typeof grid.autoSize == "undefined") )
       this.starServices.removeNonValidColumns(newGrid,formGroup.value);
     this.starServices.executeQuery_grid( newGrid,this);
+    if (this.paramConfig.DEBUG_FLAG) console.log("this.gridInitialValues:executeQuery:2:", 
+        {...this.gridInitialValues});
     this.editableMode = false;
   } 
 
@@ -1554,6 +1558,7 @@ public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
 public AttDwnUrl = "";
+public svg_arr = [];
 public uploadimage = false;
 public IMAGE_TYPE_show = false;
 public IMAGE_NAME_show = false;

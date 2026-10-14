@@ -168,10 +168,19 @@
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SAME_AS_ACTIVE_APPEARANCE"
  *ngIf=visibleSAME_AS_ACTIVE_APPEARANCE      [editable]=" !(disabledColumns.indexOf('SAME_AS_ACTIVE_APPEARANCE') > -1)  "
 
- [hidden]="hiddenColumns.indexOf('SAME_AS_ACTIVE_APPEARANCE') > -1" 		 title="{{starServices.getNLS([],'SCD_SSL_SHAPE_STATES_LIST.scdshapeStateScdSslShapeStatesList.SAME_AS_ACTIVE_APPEARANCE','Same as active appearance')}}"  editor="boolean" [width]="50">
+ [hidden]="hiddenColumns.indexOf('SAME_AS_ACTIVE_APPEARANCE') > -1" 		 title="{{starServices.getNLS([],'SCD_SSL_SHAPE_STATES_LIST.scdshapeStateScdSslShapeStatesList.SAME_AS_ACTIVE_APPEARANCE','Same as active appearance')}}"  [width]="50">
 		<ng-template kendoGridCellTemplate let-dataItem> <span     > 
 		 {{dataItem.SAME_AS_ACTIVE_APPEARANCE}} 
  		 </span>	</ng-template>
+		 <ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		 	<input kendoCheckBox type="checkbox" [formControl]="formGroup.get('SAME_AS_ACTIVE_APPEARANCE')" 
+		 	
+	 name="SAME_AS_ACTIVE_APPEARANCE"  ToggleValue  [true]= "'1'" [false]= "'0'" 
+		 		 (click)="ON_CLICK_SAME_AS_ACTIVE_APPEARANCE($event)"
+		 		[placeholder]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SAME_AS_ACTIVE_APPEARANCE_Hint','Please enter SAME_AS_ACTIVE_APPEARANCE.')"
+		 		kendoTooltip
+		 		[title]="starServices.getNLS([],'SCD_SCD_ALARM_STATES.scdalarmStatesScdScdAlarmStates.SAME_AS_ACTIVE_APPEARANCE_Hint','Please enter SAME_AS_ACTIVE_APPEARANCE.')" />
+		 </ng-template>
 	</kendo-grid-column>
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CAPTION"

@@ -1,5 +1,5 @@
 <div style="height: calc(100vh - 200px); display: flex; flex-direction: column;">
-  <legend class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_application_users_management.SCD_application_users_management.component_title","Application Users Management") }}</legend>
+  <legend *ngIf="!visibleOK_BTNS" class="k-form-legend" class="screen-legend">{{ this.starServices.getNLS([],"SCD_application_users_management.SCD_application_users_management.component_title","Application Users Management") }}</legend>
 <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment" style="flex: 1; min-height: 0;">
 <kendo-tabstrip-tab [selected]="true">
     <ng-template   kendoTabTitle>

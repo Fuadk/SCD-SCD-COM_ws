@@ -109,7 +109,7 @@ export class ScdArrowButtonTimingComponent implements OnInit {
      this.SCD_SHAPEForm_0Config.insertable = false;
    }
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
-   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General1");
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.isChild = true;
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = 'app-scd-arrow-button-timing';
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
@@ -222,13 +222,13 @@ export class ScdArrowButtonTimingComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_SHAPE_CONNECTIONGrid_4Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
@@ -357,7 +357,7 @@ export class ScdArrowButtonTimingComponent implements OnInit {
              this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID1","Common");
              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
+             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General1");
              this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
              this.SCD_ALARMFormtabs_2Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID3","States");
@@ -391,6 +391,13 @@ export class ScdArrowButtonTimingComponent implements OnInit {
               this.SCD_ALARMFormtabs_2Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ARROW_BUTTON_TIMINGForm_3Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_SHAPE_CONNECTIONGrid_4Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_SHAPEForm_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARMFormtabs_2Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_SHAPE_CONNECTIONGrid_4Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

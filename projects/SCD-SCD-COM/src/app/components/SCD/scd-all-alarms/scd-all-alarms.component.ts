@@ -90,7 +90,8 @@ export class ScdAllAlarmsComponent implements OnInit {
    this.SCD_ALARMGrid_0Config.title = this.starServices.getNLS([],"scd_all_alarms.scd_all_alarms.compsTitleID1","Alarms");
    this.SCD_ALARMGrid_0Config.isMaster = true;
    this.SCD_ALARMGrid_0Config.isSearchScreen = this.isSearchScreen;
-   this.SCD_ALARMGrid_0Config.showToolBar = !this.visibleOK_BTNS; 
+	if (this.visibleOK_BTNS) 
+   	this.SCD_ALARMGrid_0Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_ALARMGrid_0Config.queryable = false;
      this.SCD_ALARMGrid_0Config.removeable = false;
@@ -137,7 +138,7 @@ export class ScdAllAlarmsComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_ALARM) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ALARMForm_1Config = new componentConfigDef();
   }
   public keyNameArr = ["ALARM_ID","APPLICATION_ID"];
@@ -255,6 +256,10 @@ export class ScdAllAlarmsComponent implements OnInit {
        if (ComponentConfig.showToolBar != null) {
               this.SCD_ALARMGrid_0Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ALARMForm_1Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_ALARMGrid_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ALARMForm_1Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {

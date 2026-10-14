@@ -1479,7 +1479,7 @@ public delete(Page: string): Observable<GridDataResult> {
             }
             let exists = object.gridInitialValues[object.masterKeyNameArr[i]]
             if (object.paramConfig.DEBUG_FLAG) console.log("test42:object.gridInitialValues:exists:",exists, object.gridInitialValues);
-              if (typeof exists !== "undefined"){
+              if ( exists != false){
               object.gridInitialValues[object.masterKeyNameArr[i]] = object.masterKeyArr[i];
               }
           }
@@ -1788,7 +1788,7 @@ public delete(Page: string): Observable<GridDataResult> {
             //let exists = object.gridInitialValues[object.masterKeyNameArr[i]]
             if (object.paramConfig.DEBUG_FLAG) console.log("here3", exists,object.gridInitialValues, object.masterKeyNameArr[i], object.masterKeyArr[i]);
               
-              if (typeof exists !== "undefined"){
+              if ( exists != false){
                 if (object.paramConfig.DEBUG_FLAG) console.log("here4");
               object.gridInitialValues[object.masterKeyNameArr[i]] = object.masterKeyArr[i];
               }

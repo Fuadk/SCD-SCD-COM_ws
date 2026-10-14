@@ -591,9 +591,8 @@ k-grid-toolbar{
 }
 .form-fieldset{
 /*flex-basis: 800px;*/
-
 min-width:600px !important;
-/*width: 100% !important;*/  /* this causes a box in ekyc screen*/
+width: 100% !important;  /* this causes a box in ekyc screen*/
 }
 
 .form-field {

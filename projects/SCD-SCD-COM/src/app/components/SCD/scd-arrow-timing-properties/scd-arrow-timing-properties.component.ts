@@ -194,11 +194,11 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ARROW_BUTTON_LABELFormdivs_2Config = new componentConfigDef();
-     await this.starServices.sleep(200);
+     //await this.starServices.sleep(200);
     this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
@@ -346,6 +346,12 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
               this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ARROW_BUTTON_LABELFormdivs_2Config.showToolBar = ComponentConfig.showToolBar;
               this.SCD_ARROW_BUTTON_TIMINGForm_3Config.showToolBar = ComponentConfig.showToolBar;
+       }
+       if (ComponentConfig.masterSelector != null) {
+              this.SCD_SHAPEForm_0Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ARROW_BUTTON_LABELFormdivs_2Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {
