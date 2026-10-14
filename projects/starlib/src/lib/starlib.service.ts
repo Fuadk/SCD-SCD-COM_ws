@@ -872,7 +872,7 @@ public delete(Page: string): Observable<GridDataResult> {
         }
       }
     }
-    if (typeof object.multiselect_arr !== "undefined"){
+    if (typeof object.multiselect_tree_arr !== "undefined"){
       for (let i = 0; i < object.multiselect_tree_arr.length; i++) {
         if (NewVal[object.multiselect_tree_arr[i]] != null && NewVal[object.multiselect_tree_arr[i]].length > 0){
           NewVal[object.multiselect_tree_arr[i]] = JSON.parse(NewVal[object.multiselect_tree_arr[i]]);

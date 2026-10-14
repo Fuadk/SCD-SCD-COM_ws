@@ -1173,10 +1173,10 @@ if (
       {};
     const isCustomButton =
     dataItem?.visual === 'button3DVisual' ||
-    dataItem?.visual === 'raisedButtonVisual'||
-    dataItem?.visual === 'beveledButtonVisual'||
-    dataItem?.visual === 'recessedButtonVisual'||
-    dataItem?.visual === 'noneButtonVisual';
+    dataItem?.visual === 'buttonRaisedVisual'||
+    dataItem?.visual === 'buttonBelevedVisual'||
+    dataItem?.visual === 'buttonRecessedVisual'||
+    dataItem?.visual === 'buttonNoneVisual';
     
     
     
@@ -1191,7 +1191,7 @@ if (
       // Mouse enters button
       // -------------------------
       if (type === 'mouseEnter') {
-        if (!this.isDbYes(dataItem.disabled)) {
+        if ( !this.isDbYes(dataItem.disabled) && this.isDbYes(dataItem.allowHover) ) {
           dataItem.buttonState = 'hover';
           this.refreshCustomShape(shape);
         }
@@ -1838,10 +1838,10 @@ public visualTemplate = (options: any): Group => {
   }
   const visualMap = {
       button3DVisual: 'button3DVisual',
-      raisedButtonVisual: 'raisedButtonVisual',
-      beveledButtonVisual: 'beveledButtonVisual',
-      recessedButtonVisual: 'recessedButtonVisual',
-      noneButtonVisual: 'noneButtonVisual'
+      buttonRaisedVisual: 'buttonRaisedVisual',
+      buttonBelevedVisual: 'buttonBelevedVisual',
+      buttonRecessedVisual: 'buttonRecessedVisual',
+      buttonNoneVisual: 'buttonNoneVisual'
     };
 
     const method = visualMap[dataItem?.visual];
@@ -3958,7 +3958,7 @@ public saveSahpesInfo(body){
 public menuType;
 public event;
 public insertShapeFlag = false;
-async insertSCDShape(kendoui_content, shapeType, diagramX?: number, diagramY?: number){
+async insertSCDShape(kendoui_content, shapeType, diagramX: number, diagramY: number, width:any, height:any){
       const x = diagramX ?? (this.lastClickX - this.currentPan.x) / this.zoomLevel;
       const y = diagramY ?? (this.lastClickY - this.currentPan.y) / this.zoomLevel;
       kendoui_content[diagramX] = diagramX;
@@ -3968,8 +3968,8 @@ async insertSCDShape(kendoui_content, shapeType, diagramX?: number, diagramY?: n
           "_QUERY": "INSERT_SCD_SHAPE",
           "DISPLAY_ID": this.form.value.DISPLAY_ID,
           "SHAPE_TYPE": shapeType,
-          "HEIGHT": 100,
-          "WIDTH": 100,
+          "HEIGHT": height,
+          "WIDTH": width,
           "TOP": x,
           "LEFT": y,
           "NAME": kendoui_content.id,
@@ -4506,9 +4506,11 @@ async onFreehandPointerUp(event: PointerEvent) {
       console.log ("populateshapeAttributes:stateStyles:",stateStyles);
       options['stateStyles'] = stateStyles;
 
-      options.visual       = options.visual       ?? 'button3DVisual'; // default variant
+      tablesArr = this.findRowsByTable(this.SahpesInfoArr, shape_ID, "SCD_BUTTON_GENERAL" )
+      options.visual       = options.visual       ?? "button" +tablesArr[0].BUTTON_STYLE+ "Visual"; // default variant
       options.buttonState  = options.buttonState  ?? 'normal';
       options.disabled     = options.disabled     ?? false;
+      options.allowHover     = tablesArr[0].HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS;
 
     }
   }
@@ -6782,7 +6784,7 @@ public getButtonVisualStyle(dataItem: any): any {
 
  
 
-  public noneButtonVisual(options: any): Group {
+  public buttonNoneVisual(options: any): Group {
   
   const dataItem =
     options?.dataItem?.dataItem ??
@@ -7287,7 +7289,7 @@ if (imageSource) {
  *   disabled - greyed out, no interaction
  */
 
-public raisedButtonVisual(options: any): Group {
+public buttonRaisedVisual(options: any): Group {
 
   const dataItem =
     options?.dataItem?.dataItem ??
@@ -7567,7 +7569,7 @@ if (imageSource) {
 
 
 
-public beveledButtonVisual(options: any): Group {
+public buttonBelevedVisual(options: any): Group {
 
   const dataItem =
     options?.dataItem?.dataItem ??
@@ -7924,7 +7926,7 @@ if (imageSource) {
   return group;
 }
 
-public recessedButtonVisual(options: any): Group {
+public buttonRecessedVisual(options: any): Group {
   const dataItem = options?.dataItem?.dataItem ?? options?.dataItem ?? {};
 
   const {
@@ -8757,7 +8759,7 @@ private async insertShapeFromBox(
   let kendoui_content: any = { id: shapeType };
 
   // Reuse the existing SCD pipeline so DB rows are created exactly as before.
-  kendoui_content = await this.insertSCDShape(kendoui_content, shapeType,x,y);
+  kendoui_content = await this.insertSCDShape(kendoui_content, shapeType,x,y, width,height );
 
   // Store the click position on the kendoui_content object (matches old code).
   const diagramX = x;
@@ -8784,7 +8786,7 @@ private async insertShapeFromBox(
     kendoui_content.id = copiedShape.id;
     this.starServices.sessionParams['COPIED_SHAPE'] = "";
     let shapeType = "SYMPOL_FACTORY";
-    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType, x, y);
+    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType, x, y,  width, height);
     this.add_new_shape(kendoui_content, copiedShape.type, x, y, width, height);
     this.updateShapes();
     this.resetFreehandState(false);
