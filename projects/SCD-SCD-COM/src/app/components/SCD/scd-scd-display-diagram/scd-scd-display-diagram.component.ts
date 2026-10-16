@@ -2114,43 +2114,8 @@ public performMapperFrom(In) {
 public isDiagramInitializing = true;
 public expData =[];
 ////
-async  prepareShapes(){
-
-  let shapesIDs = "";
-  for (let i =0; i< this.shapes.length; i++){
-    let shapeID = this.shapes[i].id;
-    let array = shapeID.split(":");
-    shapeID = array[1];
-    if (typeof shapeID != "undefined"){
-        if (shapesIDs != "")
-          shapesIDs = shapesIDs + ",";
-        shapesIDs = shapesIDs + shapeID;
-    }
-  }
-  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesIDs:", shapesIDs);
-  //
-  let statement_shapesTpDelete = "SELECT SHAPE_ID from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
-  let body_shapes = [
-     {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_shapesTpDelete
-      }
-    ]
-  let shapesTpDelete = await this.starServices.execSQLBody(this, body_shapes, "");
-  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesTpDelete:", shapesTpDelete[0].data, "this.form.value.DISPLAY_ID:", this.form.value.DISPLAY_ID, "statement_shapesTpDelete:",statement_shapesTpDelete);
-  let shapeIDsToDelete = "";
-  if (shapesTpDelete[0].data.length > 0){
-     shapeIDsToDelete = shapesTpDelete[0].data.map(item => item.SHAPE_ID).join(',');
-    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapeIDsToDelete:", shapeIDsToDelete);
-  }
-
-  //
-
-  //removeUnusedShapes
-  if (shapeIDsToDelete != ""){
-
-    const tables = [
-      "SCD_TEXT_GENERAL",
+public shapeTables = [
+      "SCD_SHAPE",
       "SCD_SHAPE_DISPLAY_GENERAL",
       "SCD_SHAPE_INPUT_GENERAL",
       "SCD_SHAPE_INPUT_APPEARANCE",
@@ -2180,24 +2145,112 @@ async  prepareShapes(){
       "SCD_ALARM_DISPLAY_FILTERS_CONDITIONS",
       "SCD_ALARM_DISPLAY_FILTERS",
     ];
+private formatShapesInfoResponse(response: any[]): Record<string, any[]> {
+  const grouped: Record<string, any[]> = {};
 
-      let body_defs = tables.map(table => ({
+  for (const entry of response ?? []) {
+    const rowCount = Number(entry?.rowCount ?? 0);
+    if (rowCount === 0) continue;                     // skip empty tables
+    const rows = Array.isArray(entry?.data) ? entry.data : [];
+    if (!rows.length) continue;
+
+    // Derive the table name from the query name:
+    // "GET_SCD_BUTTON_GENERAL_QUERY" -> "SCD_BUTTON_GENERAL"
+    const table = this.tableNameFromQuery(entry.query);
+
+    for (const row of rows) {
+      const shapeId = row?.SHAPE_ID;
+      if (shapeId === undefined || shapeId === null || shapeId === "") continue;
+
+      const key = String(shapeId);
+      if (!grouped[key]) grouped[key] = [];
+
+      // Attach the source table on a cloned row so the caller's objects
+      // stay untouched and the tag survives serialization.
+      grouped[key].push({ ...row, _TABLE: table });
+    }
+  }
+
+  return grouped;
+}
+async updateShapesInfoArr(closedComponent, closedShapeId){
+
+}
+private tableNameFromQuery(query: string): string {
+  if (typeof query !== "string" || !query) return "";
+  return query
+    .replace(/^GET_/, "")
+    .replace(/_QUERY$/, "");
+}
+async  loadShapesData(){
+
+  let shapesIDs = "";
+  for (let i =0; i< this.shapes.length; i++){
+    let shapeID = this.shapes[i].id;
+    let array = shapeID.split(":");
+    shapeID = array[1];
+    if (typeof shapeID != "undefined"){
+        if (shapesIDs != "")
+          shapesIDs = shapesIDs + ",";
+        shapesIDs = shapesIDs + shapeID;
+    }
+  }
+  if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:shapesIDs:", shapesIDs);
+  //
+  let statement_shapesTpDelete = "SELECT SHAPE_ID from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+  let body_shapes = [
+     {
+        "_QUERY": "EXECSQL",
+        "_STMT": statement_shapesTpDelete
+      }
+    ]
+  let shapesTpDelete = await this.starServices.execSQLBody(this, body_shapes, "");
+  if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:shapesTpDelete:", shapesTpDelete[0].data, "this.form.value.DISPLAY_ID:", this.form.value.DISPLAY_ID, "statement_shapesTpDelete:",statement_shapesTpDelete);
+  let shapeIDsToDelete = "";
+  if (shapesTpDelete[0].data.length > 0){
+     shapeIDsToDelete = shapesTpDelete[0].data.map(item => item.SHAPE_ID).join(',');
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:shapeIDsToDelete:", shapeIDsToDelete);
+  }
+
+  //
+
+  //removeUnusedShapes
+  if (shapeIDsToDelete != ""){
+
+    
+
+      let body_defs = this.shapeTables.map(table => ({
         "_QUERY": "EXECSQL",
         "_STMT": `DELETE from ${table} where shape_id in (${shapeIDsToDelete})`
       }));
-      let statement = "DELETE from scd_shape where shape_id  in (" + shapeIDsToDelete + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
-      let newVal:any ={
-            "_QUERY": "EXECSQL",
-            "_STMT": statement
-          };
-      body_defs.push(newVal)    
+      // let statement = "DELETE from scd_shape where shape_id  in (" + shapeIDsToDelete + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+      // let newVal:any ={
+      //       "_QUERY": "EXECSQL",
+      //       "_STMT": statement
+      //     };
+      // body_defs.push(newVal)    
       if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
       let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
     }
                                                                                                                                   
-                
+  const whereShapesInfo = `SHAPE_ID IN (${shapesIDs})`;
+  const bodyShapesInfo = this.shapeTables.map(table => ({
+  "_QUERY": `GET_${table}_QUERY`,
+  "_WHERE": whereShapesInfo
+}));
 
+console.log ("bodyShapesInfo:",bodyShapesInfo)
+let dataShapesInfo = await this.starServices.execSQLBody(this, bodyShapesInfo, "");
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:dataShapesInfo[0].data:",JSON.stringify( dataShapesInfo));
+    if (typeof dataShapesInfo[0].data != "undefined"){
+      this.ShapesInfoArr = this.formatShapesInfoResponse(dataShapesInfo);
 
+      if (this.paramConfig.DEBUG_FLAG) {
+        console.log("loadShapesData:ShapesInfoArr:", this.ShapesInfoArr);
+      }      
+    } 
+
+  ////////
 
   
   let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
@@ -2222,17 +2275,17 @@ async  prepareShapes(){
       
     
     
-    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:body:", body);
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:body:", body);
     let data = await this.starServices.execSQLBody(this, body, "");
-    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:data[0].data:", data[0].data);
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:data[0].data:", data[0].data);
     if (typeof data[0].data != "undefined"){
       this.scdShapes = data[0].data;
     } 
     if (typeof data[1].data != "undefined"){
       let expData = data[1].data;
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", JSON.stringify(expData));
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:expData:", JSON.stringify(expData));
       
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData.length, expData, JSON.stringify(expData));
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:expData:", expData.length, expData, JSON.stringify(expData));
       const convert = (s: string): string => s.replace(/^\[(.+?)\](.+?)\.VAL$/, '$1:$2');
 
 
@@ -2265,16 +2318,16 @@ async  prepareShapes(){
           tags[name] = j;
           j++;
         }
-        if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:loaded:", loaded);
+        if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:loaded:", loaded);
         expData[i]['loaded'] = loaded;
         expData[i]['tagNames'] = tagNames;
         expData[i]['tagNamesScada'] = tagNamesScada;
       }
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData);
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:expData:", expData);
       //this.expData = formatData(expData);
       this.expData = expData;
       
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:this.expData:", this.expData);
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:this.expData:", this.expData);
     } 
 }  
 ////
@@ -2308,7 +2361,7 @@ public mapSampleData() {
             this.isDiagramInitializing = false;
         });
     });
-    this.prepareShapes();
+    this.loadShapesData();
 
     setTimeout(() => {
         //  this.disableButton1023(); //Fuad testing disable a button
@@ -3160,6 +3213,10 @@ public valueChange_del(value: any): void {
     width: number;
     height: number;
     state: 'default' | 'maximized'; // <-- FIX: Use specific type
+    comp: string;            // dialog id, e.g. '4'
+    componentName: string;   // e.g. 'Button_Properties'
+    shapeId: string | null;
+    shapeType: string | null;
   } | null = null;
 
   // Keep track of the last instance to avoid re-subscribing endlessly
@@ -3174,9 +3231,9 @@ public valueChange_del(value: any): void {
    */
  public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType,action,SHAPE_ID,title): void {
   console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize, shapeType);
-  if (typeof shapeType !="undefined"){
-    shapeType = shapeType.toLowerCase();
-  }
+  //if (typeof shapeType !="undefined"){
+  //  shapeType = shapeType.toLowerCase();
+  //}
   
   // Find the dialog properties
   const dialogDef = this.dialogProperties.find(x => x.Id === comp);
@@ -3226,7 +3283,11 @@ public valueChange_del(value: any): void {
     componentInstance: null,
     width: parseInt(dialogDef.Width) || 700,
     height: parseInt(dialogDef.Height) || 500,
-    state: Maximize === 'Y' ? 'maximized' : 'default'
+    state: Maximize === 'Y' ? 'maximized' : 'default',
+    comp: comp,
+    componentName: componentName,
+    shapeId: SHAPE_ID ?? null,
+    shapeType: shapeType ?? null
   };
 
   // Reset flags
@@ -3346,7 +3407,11 @@ private async handlePropertyDialogSave(): Promise<void> {
    * Close property dialog and cleanup
    */
 private closePropertyDialog(): void {
-  console.log('closePropertyDialog: Closing property dialog');
+  const closedComponent = this.propertyDialogData?.componentName;  // e.g. 'Button_Properties'
+  const closedShapeId   = this.propertyDialogData?.shapeId; 
+  const closedShapeType = this.propertyDialogData?.shapeType;      // 'button'
+  console.log('closePropertyDialog: Closing property dialog:closedComponent:',
+    closedComponent, closedShapeId, closedShapeType);
   
   if (this.propertyDialogData) {
     this.propertyDialogData.isVisible = false;
@@ -3365,6 +3430,7 @@ private closePropertyDialog(): void {
   
   // Force change detection
   this.cdr.detectChanges();
+  this.updateShapeInfoArr(closedShapeType, closedShapeId)
 }
 
   /**
@@ -3541,7 +3607,100 @@ public getShapeInfo(){
 
   return shapeInfo;
 }
+private readonly shapeTablesMap: Record<string, string[]> = {
+  'Numeric Display':      ['SCD_SHAPE_DISPLAY_GENERAL'],
+  'String Display':       ['SCD_SHAPE_DISPLAY_GENERAL'],
+  'Time and Date Display':['SCD_MESSAGE_GENERAL'],
+  'Tag Label':            ['SCD_TAG_LABEL_GENERAL'],
+  'Local Message':        ['SCD_MESSAGE_GENERAL', 'SCD_SHAPE_CONNECTION'],
+  'Text':                 ['SCD_TEXT_GENERAL'],
+  'Numeric Input':        ['SCD_SHAPE_INPUT_GENERAL', 'SCD_SHAPE_INPUT_APPEARANCE', 'SCD_SHAPE_CONNECTION'],
+  'String Input':         ['SCD_SHAPE_INPUT_GENERAL', 'SCD_SHAPE_INPUT_APPEARANCE'],
 
+  'Bar':                  ['SCD_GRAPH_GENERAL', 'SCD_SHAPE_CONNECTION'],
+  'Scale':                ['SCD_GRAPH_GENERAL'],
+  'Gauge':                ['SCD_GRAPH_GENERAL', 'SCD_GAUGE_DISPLAY', 'SCD_SHAPE_CONNECTION'],
+
+  'Multiple':             ['SCD_MULTISTATE_INDICATOR_GENERAL',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE',
+                           'SCD_SHAPE_CONNECTION'],
+
+  'List':                 ['SCD_LIST_INDICATOR_GENERAL',
+                           'SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE',
+                           'SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE',
+                           'SCD_SHAPE_CONNECTION'],
+
+  'Backspace':            ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
+  'End':                  ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
+  'Enter':                ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
+
+  'Move Left':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Move Right':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Move Down':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Move Up':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Page Up':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Page Down':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+
+  'Momentry':             ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Maintained':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Latched':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Interlocked':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Multistate':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_ARROW_BUTTON_TIMING',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Ramp Button':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_ARROW_BUTTON_TIMING', 'SCD_SHAPE_STATE'],
+
+  'Navigation Button':    ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Panel':                ['SCD_SHAPE_GENERAL'],
+  'Arc':                  ['SCD_SHAPE_GENERAL'],
+  'Elipse':               ['SCD_SHAPE_GENERAL'],
+  'FreeHand':             ['SCD_SHAPE_GENERAL'],
+  'Line':                 ['SCD_SHAPE_GENERAL'],
+  'Polygon':              ['SCD_SHAPE_GENERAL'],
+  'Polyline':             ['SCD_SHAPE_GENERAL'],
+  'Rectangle':            ['SCD_SHAPE_GENERAL'],
+  'Rounded Rectangle':    ['SCD_SHAPE_GENERAL'],
+  'Wedge':                ['SCD_SHAPE_GENERAL'],
+  'Arrow':                ['SCD_SHAPE_GENERAL'],
+
+  'Button':               ['SCD_BUTTON_GENERAL', 'SCD_BUTTON_ACTION',
+                           'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE'],
+
+  'Banner':               ['SCD_ALARM_GENERAL_BANNER',
+                           'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS',
+                           'SCD_ALARM_EVENT_SUBSCRIPTIONS',
+                           'SCD_ALARM_STATES',
+                           'SCD_ALARM_SORT'],
+
+  'Summary':              ['SCD_ALARM_APPEARANCE',
+                           'SCD_ALARM_COLUMNS',
+                           'SCD_ALARM_EVENT_SUBSCRIPTIONS',
+                           'SCD_ALARM_STATES',
+                           'SCD_ALARM_SORT',
+                           'SCD_ALARM_BEHAVIOR'],
+
+  'Log Viewer':           ['SCD_ALARM_GENERAL_LOG_VIEWER',
+                           'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS',
+                           // 'SCD_ALARM_DISPLAY_FILTERS',
+                           // 'SCD_ALARM_DISPLAY_FILTERS_CONDITIONS',
+                           'SCD_ALARM_STATES',
+                           'SCD_ALARM_SORT'],
+
+  'Status Explorer':      ['SCD_ALARM_GENERAL_STATUS_EXPLORER'],
+};
+public getInsertTables(shapeType: string): string[] {
+  const tables = this.shapeTablesMap[shapeType] ?? [];
+  return tables.map(table => `INSERT_${table}`);
+}
    async insertSCDShapeTables(shapeID, shapeType) {
     function groupByFieldName<T extends { FIELD_NAME: string; FIELD_VALUE: any }>(
       data: T[]
@@ -3574,166 +3733,9 @@ public getShapeInfo(){
     }
     console.log("insertSCDShapeTables:shapeType:", shapeType)
     let tables = [];
-    switch (shapeType) {
-      case 'Numeric Display':
-        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
-        break;
-      case 'String Display':
-        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
-        break;
-      case 'Time and Date Display':
-        tables.push('INSERT_SCD_MESSAGE_GENERAL');
-        break;
-      case 'Tag Label':
-        tables.push('INSERT_SCD_TAG_LABEL_GENERAL');
-        break;
-      case 'Local Message':
-        tables.push('INSERT_SCD_MESSAGE_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'Text':
-        tables.push('INSERT_SCD_TEXT_GENERAL');
-        break;
-      case 'Numeric Input':
-        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'String Input':
-        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
-        break;
-      case 'Bar':
-        tables.push('INSERT_SCD_GRAPH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'Scale':
-        tables.push('INSERT_SCD_GRAPH_GENERAL');
-        break;
-      case 'Gauge':
-        tables.push('INSERT_SCD_GRAPH_GENERAL');
-        tables.push('INSERT_SCD_GAUGE_DISPLAY');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break; 
-      case 'Multiple':
-        tables.push('INSERT_SCD_MULTISTATE_INDICATOR_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break; 
-      case 'List':
-        tables.push('INSERT_SCD_LIST_INDICATOR_GENERAL');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'Backspace':
-      case 'End':
-      case 'Enter':
-        tables.push('INSERT_SCD_ARROW_BUTTON_GENERAL');
-        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
-        break; 
-      case 'Move Left':
-      case 'Move Right':
-      case 'Move Down':
-      case 'Move Up':
-      case 'Page Up':
-      case 'Page Down':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
-        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
-        break; 
-      case 'Momentry':
-      case 'Maintained':
-      case 'Latched':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Interlocked':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Multistate':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Ramp Button':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Navigation Button':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Panel':
-      case 'Arc':
-      case 'Elipse':
-      case 'FreeHand':
-      case 'Line':
-      case 'Polygon':
-      case 'Polyline':
-      case 'Rectangle':
-      case 'Rounded Rectangle':
-      case 'Wedge':
-      case 'Arrow':
-        tables.push('INSERT_SCD_SHAPE_GENERAL');
-        break;
-      case 'Button':
-        tables.push('INSERT_SCD_BUTTON_GENERAL');
-        tables.push('INSERT_SCD_BUTTON_ACTION');
-        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
-        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
-        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
-        break;
-      case 'Banner':
-        tables.push('INSERT_SCD_ALARM_GENERAL_BANNER');
-        tables.push('INSERT_SCD_ALARM_COLUMNS');
-        tables.push('INSERT_SCD_ALARM_COLUMNS');
-        tables.push('INSERT_SCD_ALARM_COLUMNS');
-        tables.push('INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS');
-        tables.push('INSERT_SCD_ALARM_STATES');
-        tables.push('INSERT_SCD_ALARM_SORT');
-        break;
 
-      case 'Summary':
-        tables.push('INSERT_SCD_ALARM_APPEARANCE');
-        tables.push('INSERT_SCD_ALARM_COLUMNS');
-        tables.push('INSERT_SCD_ALARM_EVENT_SUBSCRIPTIONS');
-        tables.push('INSERT_SCD_ALARM_STATES');
-        tables.push('INSERT_SCD_ALARM_SORT');
-        tables.push('INSERT_SCD_ALARM_BEHAVIOR');
-        break;
-      case 'Log Viewer':
-        tables.push('INSERT_SCD_ALARM_GENERAL_LOG_VIEWER');
-        tables.push('INSERT_SCD_ALARM_COLUMNS');
-        tables.push('INSERT_SCD_ALARM_COLUMNS');
-        //tables.push('INSERT_SCD_SCD_ALARM_DISPLAY_FILTERS');
-        //tables.push('INSERT_SCD_ALARM_DISPLAY_FILTERS_CONDITIONS');
-        tables.push('INSERT_SCD_ALARM_STATES');
-        tables.push('INSERT_SCD_ALARM_SORT');
-        break;
-      case 'Status Explorer':
-        tables.push('INSERT_SCD_ALARM_GENERAL_STATUS_EXPLORER');
-        break;
-      default:
-        break;
-    }
+    tables = this.getInsertTables(shapeType);
+
     console.log("insertSCDShapeTables:tables:", shapeType, tables)
     let butApp = 0;
     let ALARM_COLUMNS = 0;
@@ -3886,19 +3888,52 @@ public getShapeInfo(){
             let body = [];
             body.push(object);
             console.log("insertSCDShapeTables:body:", body)
-            this.saveSahpesInfo(body)
+            this.saveShapesInfo(body)
             let data = await this.starServices.execSQLBody(this, body, "");
             if (this.paramConfig.DEBUG_FLAG) console.log("insertSCDShapeTables:", data);
           }
         }
       }
     }
-    console.log ("this.SahpesInfo:",JSON.stringify(this.SahpesInfo));
-    this.SahpesInfoArr = this.groupBodyByShapeId(this.SahpesInfo);
-    console.log ("this.SahpesInfoArr:",this.SahpesInfoArr);
+    console.log ("this.ShapesInfo:",JSON.stringify(this.ShapesInfo));
+    let newGrouped = this.groupBodyByShapeId(this.ShapesInfo);
+    this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
+    console.log ("this.ShapesInfoArr:",newGrouped, this.ShapesInfoArr);
   }
-public SahpesInfo = [];
-public SahpesInfoArr = {};
+
+  private  selectTables(shapeType: string): string[] {
+      const tables = this.shapeTablesMap[shapeType] ?? [];
+      return Array.from(new Set(tables));
+    }
+
+  async updateShapeInfoArr (shapeType, shapesID){
+    
+    let tables = this.selectTables(shapeType);
+    //let tables = this.shapeTablesMap[shapeType];
+  
+      console.log ("updateShapeInfoArr:",tables, this.shapeTablesMap, shapeType)
+    if (typeof tables != "undefined"){
+      tables.push('SCD_SHAPE')
+      const whereShapesInfo = `SHAPE_ID IN (${shapesID})`;
+        const bodyShapesInfo = tables.map(table => ({
+        "_QUERY": `GET_${table}_QUERY`,
+        "_WHERE": whereShapesInfo
+      }));
+
+      console.log ("bodyShapesInfo:",bodyShapesInfo)
+      let dataShapesInfo = await this.starServices.execSQLBody(this, bodyShapesInfo, "");
+          if (this.paramConfig.DEBUG_FLAG) console.log("updateShapeInfoArr:dataShapesInfo[0].data:", dataShapesInfo);
+          if (typeof dataShapesInfo[0].data != "undefined"){
+            let newGrouped = this.formatShapesInfoResponse(dataShapesInfo);
+            this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
+            if (this.paramConfig.DEBUG_FLAG) {
+              console.log("updateShapeInfoArr:newGrouped:", newGrouped);
+            }      
+          } 
+    }
+  }
+public ShapesInfo = [];
+public ShapesInfoArr = {};
 
 public findRowsByTable(
   grouped,
@@ -3947,10 +3982,10 @@ public groupBodyByShapeId(body: any[]) {
   return grouped;
 }
 
-public saveSahpesInfo(body){
+public saveShapesInfo(body){
   for (let i = 0 ; i< body.length;i++){
     if (body[i]['_QUERY'].startsWith("INSERT")){
-      this.SahpesInfo.push(body[i])
+      this.ShapesInfo.push(body[i])
     }
   }
 }
@@ -3991,7 +4026,7 @@ async insertSCDShape(kendoui_content, shapeType, diagramX: number, diagramY: num
         kendoui_content.id =    kendoui_content.id + ":" + last_insert_rowid;
         kendoui_content.shapeID = last_insert_rowid;
         body[0]['SHAPE_ID'] = last_insert_rowid;
-        this.saveSahpesInfo(body)
+        this.saveShapesInfo(body)
         if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
       }
       return kendoui_content;
@@ -4487,7 +4522,7 @@ async onFreehandPointerUp(event: PointerEvent) {
       'button'
     ];
     if (buttonShapeTypes.includes(shapeType)) {
-      let tablesArr = this.findRowsByTable(this.SahpesInfoArr, shape_ID, "SCD_BUTTON_APPEARANCE" )
+      let tablesArr = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_APPEARANCE" )
       console.log ("tablesArr:",tablesArr);
       let stateStyles = {};
       for (let i=0;i<tablesArr.length;i++){
@@ -4506,7 +4541,7 @@ async onFreehandPointerUp(event: PointerEvent) {
       console.log ("populateshapeAttributes:stateStyles:",stateStyles);
       options['stateStyles'] = stateStyles;
 
-      tablesArr = this.findRowsByTable(this.SahpesInfoArr, shape_ID, "SCD_BUTTON_GENERAL" )
+      tablesArr = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_GENERAL" )
       options.visual       = options.visual       ?? "button" +tablesArr[0].BUTTON_STYLE+ "Visual"; // default variant
       options.buttonState  = options.buttonState  ?? 'normal';
       options.disabled     = options.disabled     ?? false;
