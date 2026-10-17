@@ -3906,7 +3906,7 @@ public getInsertTables(shapeType: string): string[] {
       return Array.from(new Set(tables));
     }
 
-  async updateShapeInfoArr (shapeType, shapesID){
+async updateShapeInfoArr (shapeType, shapesID){
     
     let tables = this.selectTables(shapeType);
     //let tables = this.shapeTablesMap[shapeType];
@@ -3925,10 +3925,27 @@ public getInsertTables(shapeType: string): string[] {
           if (this.paramConfig.DEBUG_FLAG) console.log("updateShapeInfoArr:dataShapesInfo[0].data:", dataShapesInfo);
           if (typeof dataShapesInfo[0].data != "undefined"){
             let newGrouped = this.formatShapesInfoResponse(dataShapesInfo);
-            this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
             if (this.paramConfig.DEBUG_FLAG) {
               console.log("updateShapeInfoArr:newGrouped:", newGrouped);
-            }      
+            }  
+            this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
+            let dwgShapeId = shapeType + ":" + shapesID
+            const shape = this.diagram?.getShapeById(dwgShapeId);
+            console.log ("updateShapeInfoArr:shape:", shape);
+            if (shape) {
+              const dataItem = shape.dataItem;   
+              let shapeType = dataItem.dataItem.libraryKind;
+              
+               let options = {};
+               this.populateshapeAttributes(options,shapeType.toLowerCase(),dwgShapeId);
+               console.log ("updateShapeInfoArr:options:",JSON.stringify(options));
+                Object.assign(dataItem.dataItem, options);
+               console.log ("updateShapeInfoArr:dataItem:",dataItem, "shape:",shape )
+               this.refreshCustomShape(shape);
+               this.syncRuntimeShapeToModel(shape);
+           }
+
+                
           } 
     }
   }
@@ -4991,10 +5008,17 @@ private syncRuntimeShapeToModel(shape: any): void {
       runtimeData.width = bounds.width;
       runtimeData.height = bounds.height;
     }
-    if (runtimeData?.editorStyle) {
+    if (runtimeData?.editorStyle !== undefined) {
       model.dataItem ??= {};
       const modelData = model.dataItem?.dataItem ?? model.dataItem;
       modelData.editorStyle = this.clonePlain(runtimeData.editorStyle);
+    }
+    if (runtimeData && typeof runtimeData === "object"
+        && "stateStyles" in runtimeData) {
+      model.dataItem ??= {};
+      const modelData = model.dataItem?.dataItem ?? model.dataItem;
+
+      modelData.stateStyles = this.clonePlain(runtimeData.stateStyles);
     }
 
     // The runtime shape's dataItem is not always the same object reference as
@@ -8420,38 +8444,66 @@ private drawStraightLines(
 
 private drawDiagonalPattern(
   group: Group,
-  x: number, y: number, w: number, h: number,
-  color: string, size: number, spacing: number, style: string
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  color: string,
+  size: number,
+  spacing: number,
+  style: string
 ): void {
-  const wide = style.includes('wide');
+  const normalizedStyle = style.trim().toLowerCase();
+  const wide = normalizedStyle.includes('wide');
   const gap = wide ? spacing * 1.8 : spacing;
   const lineWidth = Math.max(1, wide ? size * 0.65 : size * 0.3);
 
-  const drawRight = style === 'right diagonal' ||
-                    style === 'wide right diagonal' ||
-                    style === 'hatch';
-  const drawLeft = style === 'left diagonal' ||
-                   style === 'wide left diagonal' ||
-                   style === 'hatch';
+  const drawRight =
+    normalizedStyle === 'right diagonal' ||
+    normalizedStyle === 'wide right diagonal' ||
+    normalizedStyle === 'hatch';
 
-  // Generate diagonal segments spanning the rectangular face.
-  for (let offset = -h; offset <= w; offset += gap) {
+  const drawLeft =
+    normalizedStyle === 'left diagonal' ||
+    normalizedStyle === 'wide left diagonal' ||
+    normalizedStyle === 'hatch';
+
+  // Generate diagonal lines only between points on the rectangle boundary.
+  // This prevents pattern geometry from extending beyond the button.
+  const minOffset = -h;
+  const maxOffset = w;
+
+  for (let offset = minOffset; offset <= maxOffset; offset += gap) {
     if (drawRight) {
-      this.addPatternPath(
-        group,
-        [[x + offset, y], [x + offset + h, y + h]],
-        color,
-        lineWidth
-      );
+      const x1 = Math.max(0, offset);
+      const y1 = Math.max(0, -offset);
+      const x2 = Math.min(w, offset + h);
+      const y2 = Math.min(h, h - offset);
+
+      if (x1 <= x2 && y1 <= y2) {
+        this.addPatternPath(
+          group,
+          [[x + x1, y + y1], [x + x2, y + y2]],
+          color,
+          lineWidth
+        );
+      }
     }
 
     if (drawLeft) {
-      this.addPatternPath(
-        group,
-        [[x + offset, y + h], [x + offset + h, y]],
-        color,
-        lineWidth
-      );
+      const x1 = Math.max(0, offset);
+      const y1 = Math.min(h, h + offset);
+      const x2 = Math.min(w, offset + h);
+      const y2 = Math.max(0, -offset);
+
+      if (x1 <= x2 && y2 <= y1) {
+        this.addPatternPath(
+          group,
+          [[x + x1, y + y1], [x + x2, y + y2]],
+          color,
+          lineWidth
+        );
+      }
     }
   }
 }

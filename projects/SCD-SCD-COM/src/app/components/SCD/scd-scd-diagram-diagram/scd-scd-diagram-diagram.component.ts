@@ -1,6 +1,6 @@
 import { Component, Input, Output,ViewChild, EventEmitter,
    HostListener ,ViewContainerRef, ComponentRef, AfterViewInit, 
-   OnDestroy, ChangeDetectorRef } from '@angular/core';
+   OnDestroy, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { DialogService } from '@progress/kendo-angular-dialog';
 import { geometry } from '@progress/kendo-drawing';
@@ -164,6 +164,10 @@ interface ShapeEditorStyle {
 
 
 export class ScdDiagramScdScdDiagramDiagramDiagramComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('diagramHost', { read: ElementRef })
+  diagramHost!: ElementRef<HTMLElement>;
+  private pressedShapeId: string | null = null;
+
   @ViewChild('diagram')    diagram!: DiagramComponent;
   public title =  this.starServices.getNLS([],"SCD_SCD_DIAGRAM_DIAGRAM.scddiagramScdScdDiagramDiagram.component_title","SCD DIAGRAM DIAGRAM");
   public compTitleMsg =  "SCD_SCD_DIAGRAM_DIAGRAM.scddiagramScdScdDiagramDiagram";
@@ -287,6 +291,10 @@ public disableNAME = false;
     if (this.propertyDialogData && this.propertyDialogData.isVisible) {
       this.createPropertyDialogComponent();
     }
+    //this.diagramHost.nativeElement.addEventListener(
+    //  'pointerdown',
+    //  this.onPointerDown
+    //);
     
   }
   public Comp_Config!: componentConfigDef;
@@ -383,6 +391,12 @@ public disableNAME = false;
     // Unsubscribe the event once not needed.
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
     this.scadaSubscriptions.forEach(sub => sub.unsubscribe());
+
+    this.diagramHost?.nativeElement.removeEventListener(
+      'pointerdown',
+      this.onPointerDown
+    );
+    this.releasePressedButton();
  }
 
   callStarNotify(componentConfig:any) {
@@ -1070,8 +1084,84 @@ public currentPan: { x: number, y: number } = { x: 0, y: 0 };
 public lastSelectedContainerId: string | null = null;
 
 async ON_EVENT(type: string, event: any) {
-  if (!this.isEditMode)
-    return;
+   // ============================================================
+// BUTTON RUNTIME INTERACTION
+// These events must work in both Edit Mode and Runtime Mode.
+// ============================================================
+
+if (
+  type === "mouseEnter" ||
+  type === "mouseLeave" 
+) {
+  const shape = event.item;
+
+  if (shape) {
+    if (shape.id) {
+      this.currentShapeId = shape.id;
+    }
+
+    const dataItem =
+      shape.dataItem?.dataItem ??
+      shape.dataItem ??
+      {};
+    const isCustomButton =
+    dataItem?.visual === 'button3DVisual' ||
+    dataItem?.visual === 'buttonRaisedVisual'||
+    dataItem?.visual === 'buttonBelevedVisual'||
+    dataItem?.visual === 'buttonRecessedVisual'||
+    dataItem?.visual === 'buttonNoneVisual';
+    
+    
+    
+    if (isCustomButton) {
+
+      // Disabled buttons don't react
+      if (dataItem?.disabled === true) {
+        //return;
+      }
+
+      // -------------------------
+      // Mouse enters button
+      // -------------------------
+      if (type === 'mouseEnter') {
+        if ( !this.isDbYes(dataItem.disabled) && this.isDbYes(dataItem.allowHover) ) {
+          dataItem.buttonState = 'hover';
+          this.refreshCustomShape(shape);
+        }
+      }
+
+      // -------------------------
+      // Mouse leaves button
+      // -------------------------
+      if (type === 'mouseLeave') {
+        const buttonData =
+          shape.dataItem?.dataItem ??
+          shape.dataItem ??
+          {};
+
+        if (!this.isDbYes(buttonData.disabled)) {
+          buttonData.buttonState =
+            this.pressedShapeId === shape.id ? 'pressed' : 'normal';
+
+          this.refreshCustomShape(shape);
+        }
+      }
+
+   
+
+      
+    }
+  }
+}
+
+
+// ============================================================
+// EDITOR-ONLY EVENTS
+// ============================================================
+
+if (!this.isEditMode)
+  return;
+
   if (type === "select" || type === "shapeBoundsChange" || type === "change") {
       setTimeout(() => this.syncInspectorFromSelection());
     }
@@ -1539,59 +1629,51 @@ public snapDistance = 6;
         group.append(textBlock);
       });
     }
-    // ------------------------------------------------------------
-// Resize the ENTIRE rendered visual if Kendo supplied
-// targetWidth / targetHeight.
-//
-// The definition itself remains at its natural/original size.
-// We scale the Drawing Group only.
-// ------------------------------------------------------------
-
-if (
-  targetWidth !== undefined &&
-  targetHeight !== undefined &&
-  targetWidth > 0 &&
-  targetHeight > 0
-) {
-  const drawingGroup: any = group.drawingElement;
-
-  if (drawingGroup) {
-    const naturalBounds = drawingGroup.bbox();
-
-    if (
-      naturalBounds &&
-      naturalBounds.size &&
-      naturalBounds.origin &&
-      naturalBounds.size.width > 0 &&
-      naturalBounds.size.height > 0
-    ) {
-      const naturalWidth = naturalBounds.size.width;
-      const naturalHeight = naturalBounds.size.height;
-
-      const naturalX = naturalBounds.origin.x;
-      const naturalY = naturalBounds.origin.y;
-
-      const scaleX = targetWidth / naturalWidth;
-      const scaleY = targetHeight / naturalHeight;
-
-      const transform = geometry
-        .transform()
-        .translate(
-          -naturalX,
-          -naturalY
-        )
-        .scale(
-          scaleX,
-          scaleY,
-          [0, 0]
-        );
-
-      drawingGroup.transform(transform);
-    }
-  }
-}
+    // Resize the whole rendered visual when Kendo supplies the shape's current
+    // width/height. The definition stays at its natural size; only the drawing
+    // group is scaled, so a resized compound shape keeps its size when it is
+    // redrawn or restored from saved state.
+    this.fitGroupToSize(group, targetWidth, targetHeight);
 
     return group;
+  }
+  private fitGroupToSize(group: Group, width?: number, height?: number): void {
+    const targetWidth = Number(width);
+    const targetHeight = Number(height);
+    if (!(targetWidth > 0) || !(targetHeight > 0)) {
+      return;
+    }
+    const drawingGroup: any = group.drawingElement;
+    const natural = drawingGroup?.bbox?.();
+    if (!(natural?.origin && natural?.size && natural.size.width > 0 && natural.size.height > 0)) {
+      return;
+    }
+
+    let scaleX = targetWidth / natural.size.width;
+    let scaleY = targetHeight / natural.size.height;
+    // Stroke widths do not scale with the geometry, so one pass lands a pixel
+    // or so off. Measure and correct a couple of times so the size is exact and
+    // does not drift on every reload.
+    for (let pass = 0; pass < 6; pass++) {
+      // Matrices apply right-to-left: move the visual to the origin, then scale.
+      drawingGroup.transform(
+        geometry.transform().scale(scaleX, scaleY).translate(-natural.origin.x, -natural.origin.y)
+      );
+      const fitted = drawingGroup.bbox?.();
+      if (!fitted?.size || fitted.size.width <= 0 || fitted.size.height <= 0) {
+        return;
+      }
+      const errorX = targetWidth / fitted.size.width;
+      const errorY = targetHeight / fitted.size.height;
+      if (Math.abs(errorX - 1) < 0.0005 && Math.abs(errorY - 1) < 0.0005) {
+        return;
+      }
+      scaleX *= errorX;
+      scaleY *= errorY;
+    }
+    drawingGroup.transform(
+      geometry.transform().scale(scaleX, scaleY).translate(-natural.origin.x, -natural.origin.y)
+    );
   }
   // Visual template that uses the diagram definition
 public visualTemplate = (options: any): Group => {
@@ -1602,6 +1684,18 @@ public visualTemplate = (options: any): Group => {
   if (!dataItem) {
     return new Group();
   }
+  const visualMap = {
+      button3DVisual: 'button3DVisual',
+      buttonRaisedVisual: 'buttonRaisedVisual',
+      buttonBelevedVisual: 'buttonBelevedVisual',
+      buttonRecessedVisual: 'buttonRecessedVisual',
+      buttonNoneVisual: 'buttonNoneVisual'
+    };
+
+    const method = visualMap[dataItem?.visual];
+    if (method) {
+      return this[method](options);
+    }
 
   let group: Group;
 
@@ -1618,7 +1712,14 @@ public visualTemplate = (options: any): Group => {
       Number(dataItem.groupOriginalHeight) ||
         Number(dataItem.height) ||
         undefined
-    );
+     );
+    // The children are drawn at their original size inside the original
+      // frame; scale the result to the group's current (resized) size.
+      this.fitGroupToSize(
+        group,
+        options?.width ?? dataItem.width,
+        options?.height ?? dataItem.height
+      );
 
   } else if (dataItem.libraryKind) {
 
@@ -1636,23 +1737,15 @@ public visualTemplate = (options: any): Group => {
     // to these target dimensions.
     // ----------------------------------------------------------
 
-    const shapeWidth =
-      options?.width ??
-      dataItem.width ??
-      undefined;
-
-    const shapeHeight =
-      options?.height ??
-      dataItem.height ??
-      undefined;
+    
 
     group = this.drawDiagramFromDefinition(
       dataItem.definition,
       dataItem.offsetX || 0,
       dataItem.offsetY || 0,
       dataItem.editorStyle,
-      shapeWidth,
-      shapeHeight
+      options?.width ?? dataItem.width,
+      options?.height ?? dataItem.height
     );
 
   } else {
@@ -1712,6 +1805,19 @@ public visualTemplate = (options: any): Group => {
         );
       } else if (dataItem.libraryKind) {
         childGroup = this.drawLibraryShape(dataItem, x, y, parentStyle);
+        if (dataItem.libraryKind === "richText") {
+          // A standalone Rich Text shape gets its text from Kendo's own
+          // model.content renderer, which does not exist for a child inside a
+          // group's single custom visual - so draw the blocks ourselves.
+          const blocks = dataItem.richTextBlocks ?? child?.content?.blocks ?? [];
+          const padding = 10;
+          const frameW = Math.max(20, Number(dataItem.width) || Number(child?.width) || 140);
+          const frameH = Math.max(20, Number(dataItem.height) || Number(child?.height) || 90);
+          this.appendRichTextBlocks(
+            childGroup, blocks, x + padding, y + padding,
+            Math.max(10, frameW - padding * 2), Math.max(10, frameH - padding * 2)
+          );
+        }
       } else if (dataItem.definition) {
         const mergedStyle: ShapeEditorStyle = {
           ...(dataItem.editorStyle || {}),
@@ -1730,10 +1836,43 @@ public visualTemplate = (options: any): Group => {
       // bbox.size.{width,height} - it has no flat .width/.height properties.
       // Reading bbox.width directly silently reads undefined, which is why
       // the >0 checks below always fell through to "no scaling" before.
-      const bboxWidth = bbox?.size?.width;
-      const bboxHeight = bbox?.size?.height;
-
-      if (drawingElement?.transform && bbox) {
+      // A standalone Kendo shape stretches its drawn outline to fill the shape's
+      // box. Open-path library shapes (polyline, arc, freehand, legacy line)
+      // only occupy part of their box, so inside a group they must be fitted
+      // the same way or they look flatter/taller than before grouping.
+      const libraryKind = !Array.isArray(dataItem.groupChildren) ? dataItem.libraryKind : undefined;
+      const fitsOutline = libraryKind === "polyline" || libraryKind === "arc" ||
+        libraryKind === "freehand" || (libraryKind === "line" && !dataItem.lineStart);
+      // Other library shapes (rich text, text, container, ...) are drawn at
+      // their real width/height; their outline bbox can be larger than the box
+      // (e.g. overflowing text), so use the nominal box as the unscaled size.
+      const isNominalChild = Boolean(libraryKind) && !fitsOutline;
+      const bboxWidth = isNominalChild
+        ? Math.max(20, Number(dataItem.width) || 140)
+        : bbox?.size?.width;
+      const bboxHeight = isNominalChild
+        ? Math.max(20, Number(dataItem.height) || 90)
+        : bbox?.size?.height;
+      if (drawingElement?.transform && bbox && fitsOutline && bboxWidth > 0 && bboxHeight > 0) {
+        const fitWidth = Math.max(1, Number(child?.width) || Number(dataItem?.width) || bboxWidth);
+        const fitHeight = Math.max(1, Number(child?.height) || Number(dataItem?.height) || bboxHeight);
+        const fitCenter = [x + fitWidth / 2, y + fitHeight / 2];
+        const fitTx = geometry.transform();
+        // Matrices apply right-to-left: outline -> child box (below), then
+        // rotate, then flip, matching the order used for the other children.
+        if ((childStyle.flipX ?? 1) !== 1 || (childStyle.flipY ?? 1) !== 1) {
+          fitTx.scale(childStyle.flipX ?? 1, childStyle.flipY ?? 1, fitCenter);
+        }
+        const fitAngle = Number(child?.rotation?.angle) || 0;
+        if (fitAngle) {
+          fitTx.rotate(fitAngle, fitCenter);
+        }
+        fitTx
+          .translate(x, y)
+          .scale(fitWidth / bboxWidth, fitHeight / bboxHeight)
+          .translate(-bbox.origin.x, -bbox.origin.y);
+        drawingElement.transform(fitTx);
+      } else if (drawingElement?.transform && bbox) {
         let tx = geometry.transform();
 
         // A normal Kendo Shape scales its custom visual to the shape's stored
@@ -1772,14 +1911,21 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     }
     const drawingGroup = (group as any).drawingElement;
     const bounds = drawingGroup?.bbox?.();
+    // Same bug class as drawGroupedChildren: kendo-drawing's Rect has no flat
+    // .x/.y - position is bounds.origin.{x,y}. Reading bounds.x directly read
+    // undefined, so the flip pivoted around (NaN/0,NaN/0) instead of the
+    // shape's actual center, sending the flipped shape outside its own
+    // selection box (the reported Flip Right/Left bug).
     if (drawingGroup?.transform && bounds?.origin && bounds?.size) {
       const center = [
         bounds.origin.x + bounds.size.width / 2,
         bounds.origin.y + bounds.size.height / 2
       ];
-      drawingGroup.transform(
-        geometry.transform().scale(flipX, flipY, center)
-      );
+      // Compose with any transform already on the group (e.g. the resize
+      // scale from drawDiagramFromDefinition) instead of replacing it.
+      const flip = geometry.transform().scale(flipX, flipY, center);
+      const existing = drawingGroup.transform?.();
+      drawingGroup.transform(existing ? flip.multiply(existing) : flip);
     }
   }
 
@@ -1816,7 +1962,75 @@ public performMapperFrom(In) {
 public isDiagramInitializing = true;
 public expData =[];
 ////
-async  prepareShapes(){
+public shapeTables = [
+      "SCD_SHAPE",
+      "SCD_SHAPE_DISPLAY_GENERAL",
+      "SCD_SHAPE_INPUT_GENERAL",
+      "SCD_SHAPE_INPUT_APPEARANCE",
+      "SCD_SHAPE_CONNECTION",
+      "SCD_SHAPE_GENERAL",
+      "SCD_BUTTON_GENERAL",
+      "SCD_BUTTON_ACTION",
+      "SCD_BUTTON_APPEARANCE",
+      "SCD_BUTTON_PUSH_GENERAL",
+      "SCD_SHAPE_STATE",
+      "SCD_ARROW_BUTTON_TIMING",
+      "SCD_MESSAGE_GENERAL",
+      "SCD_TEXT_GENERAL",
+      "SCD_GRAPH_GENERAL",
+      "SCD_MULTISTATE_INDICATOR_GENERAL",
+      "SCD_LIST_INDICATOR_GENERAL",
+      "SCD_LIST_INDICATOR_STATE",
+      "SCD_ARROW_BUTTON_GENERAL",
+      "SCD_ARROW_BUTTON_LABEL",
+      "SCD_ALARM_BEHAVIOR",
+      "SCD_ALARM_COLUMNS",
+      "SCD_ALARM_EVENT_SUBSCRIPTIONS",
+      "SCD_ALARM_GENERAL_BANNER",
+      "SCD_ALARM_GENERAL_LOG_VIEWER",
+      "SCD_ALARM_SORT",
+      "SCD_ALARM_STATES",
+      "SCD_ALARM_DISPLAY_FILTERS_CONDITIONS",
+      "SCD_ALARM_DISPLAY_FILTERS",
+    ];
+private formatShapesInfoResponse(response: any[]): Record<string, any[]> {
+  const grouped: Record<string, any[]> = {};
+
+  for (const entry of response ?? []) {
+    const rowCount = Number(entry?.rowCount ?? 0);
+    if (rowCount === 0) continue;                     // skip empty tables
+    const rows = Array.isArray(entry?.data) ? entry.data : [];
+    if (!rows.length) continue;
+
+    // Derive the table name from the query name:
+    // "GET_SCD_BUTTON_GENERAL_QUERY" -> "SCD_BUTTON_GENERAL"
+    const table = this.tableNameFromQuery(entry.query);
+
+    for (const row of rows) {
+      const shapeId = row?.SHAPE_ID;
+      if (shapeId === undefined || shapeId === null || shapeId === "") continue;
+
+      const key = String(shapeId);
+      if (!grouped[key]) grouped[key] = [];
+
+      // Attach the source table on a cloned row so the caller's objects
+      // stay untouched and the tag survives serialization.
+      grouped[key].push({ ...row, _TABLE: table });
+    }
+  }
+
+  return grouped;
+}
+async updateShapesInfoArr(closedComponent, closedShapeId){
+
+}
+private tableNameFromQuery(query: string): string {
+  if (typeof query !== "string" || !query) return "";
+  return query
+    .replace(/^GET_/, "")
+    .replace(/_QUERY$/, "");
+}
+async  loadShapesData(){
 
   let shapesIDs = "";
   for (let i =0; i< this.shapes.length; i++){
@@ -1829,163 +2043,64 @@ async  prepareShapes(){
         shapesIDs = shapesIDs + shapeID;
     }
   }
-  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:shapesIDs:", shapesIDs);
-  //removeUnusedShapes
-  let statement_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SHAPE_DISPLAY_GENERAL = "DELETE from SCD_SHAPE_DISPLAY_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_SHAPE_INPUT_GENERAL = "DELETE from SCD_SHAPE_INPUT_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_SHAPE_INPUT_APPEARANCE = "DELETE from SCD_SHAPE_INPUT_APPEARANCE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_SHAPE_CONNECTION = "DELETE from SCD_SHAPE_CONNECTION where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
-  let statement_SCD_SHAPE_GENERAL = "DELETE from SCD_SHAPE_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_BUTTON_GENERAL = "DELETE from SCD_BUTTON_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_BUTTON_ACTION = "DELETE from SCD_BUTTON_ACTION where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
-  let statement_SCD_BUTTON_APPEARANCE = "DELETE from SCD_BUTTON_APPEARANCE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_BUTTON_PUSH_GENERAL = "DELETE from SCD_BUTTON_PUSH_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
-  let statement_SCD_SHAPE_STATE = "DELETE from SCD_SHAPE_STATE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                    
-  let statement_SCD_ARROW_BUTTON_TIMING = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";    
-  let statement_SCD_MESSAGE_GENERAL = "DELETE from SCD_MESSAGE_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";     
-  let statement_SCD_TEXT_GENERAL = "DELETE from SCD_TEXT_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_GRAPH_GENERAL = "DELETE from SCD_GRAPH_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";  
-  let statement_SCD_MULTISTATE_INDICATOR_GENERAL = "DELETE from SCD_MULTISTATE_INDICATOR_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
-  let statement_SCD_LIST_INDICATOR_GENERAL = "DELETE from SCD_LIST_INDICATOR_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")"; 
-  let statement_SCD_LIST_INDICATOR_STATE = "DELETE from SCD_LIST_INDICATOR_STATE where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";   
-  let statement_SCD_ARROW_BUTTON_GENERAL = "DELETE from SCD_ARROW_BUTTON_GENERAL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_ARROW_BUTTON_LABEL = "DELETE from SCD_ARROW_BUTTON_LABEL where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";
-  let statement_SCD_ARROW_BUTTON_TIMINGE = "DELETE from SCD_ARROW_BUTTON_TIMING where shape_id  in "
-                  + "(SELECT  shape_id from scd_shape where shape_id not in (" 
-                  + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID + ")";                                                                                                                                    
-                
-  let body_defs = [
+  if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:shapesIDs:", shapesIDs);
+  //
+  let statement_shapesTpDelete = "SELECT SHAPE_ID from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+  let body_shapes = [
      {
         "_QUERY": "EXECSQL",
-        "_STMT": statement_TEXT_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SHAPE_DISPLAY_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_INPUT_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_INPUT_APPEARANCE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_CONNECTION
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_ACTION
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_APPEARANCE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_BUTTON_PUSH_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_SHAPE_STATE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_TIMING
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_MESSAGE_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_TEXT_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_GRAPH_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_MULTISTATE_INDICATOR_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_LIST_INDICATOR_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_LIST_INDICATOR_STATE
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_GENERAL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_LABEL
-      },
-           {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement_SCD_ARROW_BUTTON_TIMINGE
+        "_STMT": statement_shapesTpDelete
       }
+    ]
+  let shapesTpDelete = await this.starServices.execSQLBody(this, body_shapes, "");
+  if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:shapesTpDelete:", shapesTpDelete[0].data, "this.form.value.DISPLAY_ID:", this.form.value.DISPLAY_ID, "statement_shapesTpDelete:",statement_shapesTpDelete);
+  let shapeIDsToDelete = "";
+  if (shapesTpDelete[0].data.length > 0){
+     shapeIDsToDelete = shapesTpDelete[0].data.map(item => item.SHAPE_ID).join(',');
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:shapeIDsToDelete:", shapeIDsToDelete);
+  }
 
-    ];
-  if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
-  let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
+  //
 
-  let statement = "DELETE from scd_shape where shape_id not in (" + shapesIDs + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+  //removeUnusedShapes
+  if (shapeIDsToDelete != ""){
+
+    
+
+      let body_defs = this.shapeTables.map(table => ({
+        "_QUERY": "EXECSQL",
+        "_STMT": `DELETE from ${table} where shape_id in (${shapeIDsToDelete})`
+      }));
+      // let statement = "DELETE from scd_shape where shape_id  in (" + shapeIDsToDelete + ") and DISPLAY_ID = " + this.form.value.DISPLAY_ID;
+      // let newVal:any ={
+      //       "_QUERY": "EXECSQL",
+      //       "_STMT": statement
+      //     };
+      // body_defs.push(newVal)    
+      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes_defs:body_defs:", body_defs);
+      let data_defs = await this.starServices.execSQLBody(this, body_defs, "");
+    }
+                                                                                                                                  
+  const whereShapesInfo = `SHAPE_ID IN (${shapesIDs})`;
+  const bodyShapesInfo = this.shapeTables.map(table => ({
+  "_QUERY": `GET_${table}_QUERY`,
+  "_WHERE": whereShapesInfo
+}));
+
+console.log ("bodyShapesInfo:",bodyShapesInfo)
+let dataShapesInfo = await this.starServices.execSQLBody(this, bodyShapesInfo, "");
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:dataShapesInfo[0].data:",JSON.stringify( dataShapesInfo));
+    if (typeof dataShapesInfo[0].data != "undefined"){
+      this.ShapesInfoArr = this.formatShapesInfoResponse(dataShapesInfo);
+
+      if (this.paramConfig.DEBUG_FLAG) {
+        console.log("loadShapesData:ShapesInfoArr:", this.ShapesInfoArr);
+      }      
+    } 
+
+  ////////
+
+  
   let whereClause = "DISPLAY_ID =" + this.form.value.DISPLAY_ID;
   let statement_expressions = "SELECT A.SHAPE_ID, B.EXPRESSION_DATA , A.SHAPE_TYPE "
                               +"    FROM SCD_SHAPE A, SCD_SHAPE_DISPLAY_GENERAL B "
@@ -1993,11 +2108,9 @@ async  prepareShapes(){
                               +"    AND A.DISPLAY_ID = " + this.form.value.DISPLAY_ID
                               +"    AND (B.EXPRESSION_DATA != '' or B.EXPRESSION_DATA is not null) ";
 
-    let body = [
-      {
-        "_QUERY": "EXECSQL",
-        "_STMT": statement
-      },
+    let body = [];
+
+      body = [
       {
       "_QUERY": "GET_SCD_SHAPE_QUERY",
       "_WHERE": whereClause
@@ -2005,19 +2118,22 @@ async  prepareShapes(){
       {
         "_QUERY": "EXECSQL",
         "_STMT": statement_expressions
-      },
-    ];
-    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:body:", body);
-    let data = await this.starServices.execSQLBody(this, body, "");
-    if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:data[1].data:", data[1].data);
-    if (typeof data[1].data != "undefined"){
-      this.scdShapes = data[1].data;
-    } 
-    if (typeof data[2].data != "undefined"){
-      let expData = data[2].data;
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", JSON.stringify(expData));
+      }
+      ]
       
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData.length, expData, JSON.stringify(expData));
+    
+    
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:body:", body);
+    let data = await this.starServices.execSQLBody(this, body, "");
+    if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:data[0].data:", data[0].data);
+    if (typeof data[0].data != "undefined"){
+      this.scdShapes = data[0].data;
+    } 
+    if (typeof data[1].data != "undefined"){
+      let expData = data[1].data;
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:expData:", JSON.stringify(expData));
+      
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:expData:", expData.length, expData, JSON.stringify(expData));
       const convert = (s: string): string => s.replace(/^\[(.+?)\](.+?)\.VAL$/, '$1:$2');
 
 
@@ -2050,18 +2166,18 @@ async  prepareShapes(){
           tags[name] = j;
           j++;
         }
-        if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:loaded:", loaded);
+        if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:loaded:", loaded);
         expData[i]['loaded'] = loaded;
         expData[i]['tagNames'] = tagNames;
         expData[i]['tagNamesScada'] = tagNamesScada;
       }
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:expData:", expData);
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:expData:", expData);
       //this.expData = formatData(expData);
       this.expData = expData;
       
-      if (this.paramConfig.DEBUG_FLAG) console.log("prepareShapes:this.expData:", this.expData);
+      if (this.paramConfig.DEBUG_FLAG) console.log("loadShapesData:this.expData:", this.expData);
     } 
-} 
+}  
 ////
 public mapSampleData() {
     let OutRec = this.performMapperFrom(this.executeQueryresult.data);
@@ -2093,7 +2209,11 @@ public mapSampleData() {
             this.isDiagramInitializing = false;
         });
     });
-    this.prepareShapes();
+    this.loadShapesData();
+
+    setTimeout(() => {
+        //  this.disableButton1023(); //Fuad testing disable a button
+    }, 100);
     
 }
 
@@ -2253,9 +2373,16 @@ public lastClickY: number = 0;
 
 // ===== CLICK HANDLER =====
   public onDiagramClick(event: any): void {
+    let target = event.target.outerHTML;
+    if (target.startsWith("<svg")) {
+      console.log("Clicked on empty space");
+      this.currentShapeId = "";
+      this.currentShapeType = "";
+      // this.showContextMenuAt(event.pageX, event.pageY, null);
+    }
     this.lastClickX = event.offsetX || event.layerX || 0;
     this.lastClickY = event.offsetY || event.layerY || 0;
-    if (this.event.text != "FreeHand") {
+    //if (this.event.text != "FreeHand") {
       if (this.insertShapeFlag == true) {
         let shapeType = this.event.text;
         let options = null;
@@ -2271,27 +2398,29 @@ public lastClickY: number = 0;
         || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
         || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
         || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
+        || (shapeType == "Banner") || (shapeType == "Summary") || (shapeType == "Log Viewer") || (shapeType == "Status Explorer")
          )
           options = {
             width: 180,
             height: 24,
             text: "",
-            fillColor: "transparent",
+            fillColor: "#D3D3D3",
             x: this.lastClickX,
             y: this.lastClickY,
           };
-        if ((shapeType == "Button") || (shapeType == "Momentry") 
-          || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
-          || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
-          || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
-          || (shapeType == "Text") || (shapeType == "Text")  || (shapeType == "Bar") || (shapeType == "Gauge") 
-          || (shapeType == "Scale") || (shapeType == "Multiple") || (shapeType == "List") 
-          || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
-          || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
-          || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
-        ) {
-          options.fillColor = "#D3D3D3"
-        }
+        // if ((shapeType == "Button") || (shapeType == "Momentry") 
+        //   || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
+        //   || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
+        //   || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
+        //   || (shapeType == "Text") || (shapeType == "Text")  || (shapeType == "Bar") || (shapeType == "Gauge") 
+        //   || (shapeType == "Scale") || (shapeType == "Multiple") || (shapeType == "List") 
+        //   || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
+        //   || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
+        //   || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
+        //   || (shapeType == "Banner") || (shapeType == "Summary") || (shapeType == "Log Viewer") || (shapeType == "Status Explorer")
+        // ) {
+        //   options.fillColor = "#D3D3D3"
+        // }
 
         this.insertShape(shapeType, options);
         this.insertShapeFlag = false;
@@ -2300,14 +2429,8 @@ public lastClickY: number = 0;
           //this.ON_CLICK_CONTEXT_MENU(this.menuType,this.event);
         }, 500);
       }
-    }
-    let target = event.target.outerHTML;
-    if (target.startsWith("<svg")) {
-      console.log("Clicked on empty space");
-      //this.currentShapeId = "";
-      this.currentShapeType = "";
-      // this.showContextMenuAt(event.pageX, event.pageY, null);
-    }
+    //}
+    
     console.log(`📍 checking:Click: (${this.lastClickX}, ${this.lastClickY})`);
 
     // 🔑 Clear any existing timer
@@ -2317,14 +2440,35 @@ public lastClickY: number = 0;
     }
 
     // 🔑 Set a timer to detect part on already-selected shapes
-    this.clickTimer = setTimeout(() => {
+    //this.clickTimer = setTimeout(() => {
       this.detectPartAtClick(this.lastClickX, this.lastClickY, event);
       this.clickTimer = null;
-    }, 100);
+    //}, 100);
 
     this.ON_CLICK(event);
   }
+public onShapeClick(event: any): void {
+    console.log("Pressing : onShapeClick:",event)
+    this.lastClickX = event.offsetX || event.layerX || 0;
+    this.lastClickY = event.offsetY || event.layerY || 0;
+   
+    this.currentShapeId = event.item.id;
+    this.currentShapeType = event.item.type;
 
+
+    console.log(`📍 checking:Click: (${this.lastClickX}, ${this.lastClickY})`);
+
+    // 🔑 Clear any existing timer
+    if (this.clickTimer) {
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
+    }
+    console.log("Pressing : onShapeClick:this.currentShapeId:",this.currentShapeId)
+    // 🔑 Set a timer to detect part on already-selected shapes
+
+
+   
+  }
 public detectPartAtClick(clickX: number, clickY: number, event): void {
     // 🔑 Use currentShapeId if available
     let foundContainerId: string | null = this.currentShapeId;
@@ -2687,89 +2831,106 @@ public findPartAt(event): string | null {
     this.form.patchValue(object);
     this.form.updateValueAndValidity();
 }
-public add_new_shape(kendoui_content, type) {
-    let newShape = {
-      "id": "boilerA",
-      "x": 80,                    //this.lastClickX
-      "y": 80,                    //this.lastClickY
-      //"width": 400,                 //copy from data
-      //"height": 420,                //copy from data
-      "dataItem": {
-        "type": "boiler",           //copy from type
-        "definition": {
-          "shapeDefaults": {        //copy from data
-            "visual": null,
-            "fill": "#f0f4f8",
-            "stroke": {
-              "color": "#333333",
-              "width": 1
-            }
-          },
-          "connectionDefaults": {   //copy from data
-            "stroke": {
-              "color": "#555",
-              "width": 2
-            }
-          },
-          "layout": {               //copy from data
-            "type": "layered",
-            "subtype": "vertical"
-          },
-          "shapes": [               //copy from data
-
-          ],
-          "lines": [                //copy from data
-
-          ]
+public add_new_shape(
+  kendoui_content,
+  type,
+  x: number = this.lastClickX,
+  y: number = this.lastClickY,
+  width?: number,
+  height?: number
+) {
+  console.log ("add_new_shape:kendoui_content:",kendoui_content)
+  let newShape: any = {
+    "id": "boilerA",
+    "x": x,
+    "y": y,
+    "dataItem": {
+      "type": "boiler",
+      "definition": {
+        "shapeDefaults": {
+          "visual": null,
+          "fill": "#f0f4f8",
+          "stroke": {
+            "color": "#333333",
+            "width": 1
+          }
         },
-        "title": "Boiler A (Primary)"   //copy from type
-      }
+        "connectionDefaults": {
+          "stroke": {
+            "color": "#555",
+            "width": 2
+          }
+        },
+        "layout": {
+          "type": "layered",
+          "subtype": "vertical"
+        },
+        "shapes": [],
+        "lines": []
+      },
+      "title": "Boiler A (Primary)"
     }
+  };
 
-    if (typeof kendoui_content.shapeDefaults != "undefined") {
-      newShape.dataItem.definition.shapeDefaults = kendoui_content.shapeDefaults;
-    }
-    if (typeof kendoui_content.connectionDefaults != "undefined") {
-      newShape.dataItem.definition.connectionDefaults = kendoui_content.connectionDefaults;
-    }
+  if (typeof kendoui_content.shapeDefaults != "undefined") {
+    newShape.dataItem.definition.shapeDefaults = kendoui_content.shapeDefaults;
+  }
+  if (typeof kendoui_content.connectionDefaults != "undefined") {
+    newShape.dataItem.definition.connectionDefaults = kendoui_content.connectionDefaults;
+  }
+  if (typeof kendoui_content.layout != "undefined") {
+    newShape.dataItem.definition.layout = kendoui_content.layout;
+  }
+  if (typeof kendoui_content.shapes != "undefined") {
+    newShape.dataItem.definition.shapes = kendoui_content.shapes;
+  }
+  if (typeof kendoui_content.lines != "undefined") {
+    newShape.dataItem.definition.lines = kendoui_content.lines;
+  }
 
-    if (typeof kendoui_content.layout != "undefined") {
-      newShape.dataItem.definition.layout = kendoui_content.layout;
-    }
+  newShape.id = kendoui_content.id;
+  newShape.dataItem.title = type;
+  newShape.dataItem.type = type;
 
-    if (typeof kendoui_content.shapes != "undefined") {
-      newShape.dataItem.definition.shapes = kendoui_content.shapes;
-    }
-    if (typeof kendoui_content.lines != "undefined") {
-      newShape.dataItem.definition.lines = kendoui_content.lines;
-    }
-    newShape.id = kendoui_content.id;
-    newShape.dataItem.title = type;//Fuad kendoui_content.name;
-    newShape.dataItem.type = type;
-    //newShape.width = kendoui_content.width;
-    //newShape.height = kendoui_content.height;
-    // const diagramX = kendoui_content.diagramX;
-    // const diagramY = kendoui_content.diagramY;
+  // New: carry the drag box size onto the model when supplied.
+  if (width !== undefined)  newShape.width  = width;
+  if (height !== undefined) newShape.height = height;
 
-    newShape.x = this.lastClickX;
-    newShape.y = this.lastClickY;
-    
-    console.log("kendoui_content:newShape:", newShape);
-    const options: ShapeOptions = {
-      id: newShape.id,
-      x: this.lastClickX,
-      y: this.lastClickY,
-      //width: newShape.width,
-      //height: newShape.height,
-      dataItem: newShape.dataItem,
-      visual: (args) => {
-        return this.drawDiagramFromDefinition(
-          args.dataItem.definition
-        );
-      }
-    };
-    this.diagram.addShape(options);    //Store to screen diagram
-    this.shapes.push(newShape);                 //Store to my memory
+  newShape.x = x;
+  newShape.y = y;
+
+  console.log("kendoui_content:newShape:", newShape);
+
+  const options: ShapeOptions = {
+    id: newShape.id,
+    x,
+    y,
+    ...(width  !== undefined ? { width }  : {}),
+    ...(height !== undefined ? { height } : {}),
+    dataItem: newShape.dataItem,
+    visual: (args) => {
+      const targetWidth  = args?.width  ?? width  ?? newShape.width;
+      const targetHeight = args?.height ?? height ?? newShape.height;
+      return this.drawDiagramFromDefinition(
+        args.dataItem.definition,
+        0,
+        0,
+        args.dataItem.editorStyle,
+        targetWidth,
+        targetHeight
+      );
+    }
+  };
+
+  const runtime = this.diagram.addShape(options, true);
+  this.shapes.push(newShape);
+
+  // Keep the persisted model in sync with the runtime bounds Kendo derived,
+  // so the next save writes the dragged size rather than the definition's
+  // natural size.
+  if (runtime) {
+    this.syncRuntimeShapeToModel(runtime);
+  }
 }
 
 public popupVisible = false;
@@ -2876,6 +3037,10 @@ public valueChange_del(value: any): void {
     width: number;
     height: number;
     state: 'default' | 'maximized'; // <-- FIX: Use specific type
+    comp: string;            // dialog id, e.g. '4'
+    componentName: string;   // e.g. 'Button_Properties'
+    shapeId: string | null;
+    shapeType: string | null;
   } | null = null;
 
   // Keep track of the last instance to avoid re-subscribing endlessly
@@ -2890,9 +3055,9 @@ public valueChange_del(value: any): void {
    */
  public openPropertyDialog(object: any, comp: string, Maximize: string, shapeType,action,SHAPE_ID,title): void {
   console.log('openPropertyDialog: comp:', comp, 'Maximize:', Maximize, shapeType);
-  if (typeof shapeType !="undefined"){
-    shapeType = shapeType.toLowerCase();
-  }
+  //if (typeof shapeType !="undefined"){
+  //  shapeType = shapeType.toLowerCase();
+  //}
   
   // Find the dialog properties
   const dialogDef = this.dialogProperties.find(x => x.Id === comp);
@@ -2942,7 +3107,11 @@ public valueChange_del(value: any): void {
     componentInstance: null,
     width: parseInt(dialogDef.Width) || 700,
     height: parseInt(dialogDef.Height) || 500,
-    state: Maximize === 'Y' ? 'maximized' : 'default'
+    state: Maximize === 'Y' ? 'maximized' : 'default',
+    comp: comp,
+    componentName: componentName,
+    shapeId: SHAPE_ID ?? null,
+    shapeType: shapeType ?? null
   };
 
   // Reset flags
@@ -2972,6 +3141,11 @@ public onPropertyDialogClose(): void {
   } else {
     // Close immediately
     this.closePropertyDialog();
+    if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
+      && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
+        this.armDragTool("SYMPOL_FACTORY");
+     
+    }
   }
 }
 
@@ -3057,7 +3231,11 @@ private async handlePropertyDialogSave(): Promise<void> {
    * Close property dialog and cleanup
    */
 private closePropertyDialog(): void {
-  console.log('closePropertyDialog: Closing property dialog');
+  const closedComponent = this.propertyDialogData?.componentName;  // e.g. 'Button_Properties'
+  const closedShapeId   = this.propertyDialogData?.shapeId; 
+  const closedShapeType = this.propertyDialogData?.shapeType;      // 'button'
+  console.log('closePropertyDialog: Closing property dialog:closedComponent:',
+    closedComponent, closedShapeId, closedShapeType);
   
   if (this.propertyDialogData) {
     this.propertyDialogData.isVisible = false;
@@ -3076,6 +3254,7 @@ private closePropertyDialog(): void {
   
   // Force change detection
   this.cdr.detectChanges();
+  this.updateShapeInfoArr(closedShapeType, closedShapeId)
 }
 
   /**
@@ -3252,7 +3431,100 @@ public getShapeInfo(){
 
   return shapeInfo;
 }
+private readonly shapeTablesMap: Record<string, string[]> = {
+  'Numeric Display':      ['SCD_SHAPE_DISPLAY_GENERAL'],
+  'String Display':       ['SCD_SHAPE_DISPLAY_GENERAL'],
+  'Time and Date Display':['SCD_MESSAGE_GENERAL'],
+  'Tag Label':            ['SCD_TAG_LABEL_GENERAL'],
+  'Local Message':        ['SCD_MESSAGE_GENERAL', 'SCD_SHAPE_CONNECTION'],
+  'Text':                 ['SCD_TEXT_GENERAL'],
+  'Numeric Input':        ['SCD_SHAPE_INPUT_GENERAL', 'SCD_SHAPE_INPUT_APPEARANCE', 'SCD_SHAPE_CONNECTION'],
+  'String Input':         ['SCD_SHAPE_INPUT_GENERAL', 'SCD_SHAPE_INPUT_APPEARANCE'],
 
+  'Bar':                  ['SCD_GRAPH_GENERAL', 'SCD_SHAPE_CONNECTION'],
+  'Scale':                ['SCD_GRAPH_GENERAL'],
+  'Gauge':                ['SCD_GRAPH_GENERAL', 'SCD_GAUGE_DISPLAY', 'SCD_SHAPE_CONNECTION'],
+
+  'Multiple':             ['SCD_MULTISTATE_INDICATOR_GENERAL',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE',
+                           'SCD_SHAPE_CONNECTION'],
+
+  'List':                 ['SCD_LIST_INDICATOR_GENERAL',
+                           'SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE',
+                           'SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE',
+                           'SCD_SHAPE_CONNECTION'],
+
+  'Backspace':            ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
+  'End':                  ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
+  'Enter':                ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
+
+  'Move Left':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Move Right':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Move Down':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Move Up':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Page Up':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+  'Page Down':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
+
+  'Momentry':             ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Maintained':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Latched':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Interlocked':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Multistate':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_ARROW_BUTTON_TIMING',
+                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Ramp Button':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
+                           'SCD_ARROW_BUTTON_TIMING', 'SCD_SHAPE_STATE'],
+
+  'Navigation Button':    ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+
+  'Panel':                ['SCD_SHAPE_GENERAL'],
+  'Arc':                  ['SCD_SHAPE_GENERAL'],
+  'Elipse':               ['SCD_SHAPE_GENERAL'],
+  'FreeHand':             ['SCD_SHAPE_GENERAL'],
+  'Line':                 ['SCD_SHAPE_GENERAL'],
+  'Polygon':              ['SCD_SHAPE_GENERAL'],
+  'Polyline':             ['SCD_SHAPE_GENERAL'],
+  'Rectangle':            ['SCD_SHAPE_GENERAL'],
+  'Rounded Rectangle':    ['SCD_SHAPE_GENERAL'],
+  'Wedge':                ['SCD_SHAPE_GENERAL'],
+  'Arrow':                ['SCD_SHAPE_GENERAL'],
+
+  'Button':               ['SCD_BUTTON_GENERAL', 'SCD_BUTTON_ACTION',
+                           'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE'],
+
+  'Banner':               ['SCD_ALARM_GENERAL_BANNER',
+                           'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS',
+                           'SCD_ALARM_EVENT_SUBSCRIPTIONS',
+                           'SCD_ALARM_STATES',
+                           'SCD_ALARM_SORT'],
+
+  'Summary':              ['SCD_ALARM_APPEARANCE',
+                           'SCD_ALARM_COLUMNS',
+                           'SCD_ALARM_EVENT_SUBSCRIPTIONS',
+                           'SCD_ALARM_STATES',
+                           'SCD_ALARM_SORT',
+                           'SCD_ALARM_BEHAVIOR'],
+
+  'Log Viewer':           ['SCD_ALARM_GENERAL_LOG_VIEWER',
+                           'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS',
+                           // 'SCD_ALARM_DISPLAY_FILTERS',
+                           // 'SCD_ALARM_DISPLAY_FILTERS_CONDITIONS',
+                           'SCD_ALARM_STATES',
+                           'SCD_ALARM_SORT'],
+
+  'Status Explorer':      ['SCD_ALARM_GENERAL_STATUS_EXPLORER'],
+};
+public getInsertTables(shapeType: string): string[] {
+  const tables = this.shapeTablesMap[shapeType] ?? [];
+  return tables.map(table => `INSERT_${table}`);
+}
    async insertSCDShapeTables(shapeID, shapeType) {
     function groupByFieldName<T extends { FIELD_NAME: string; FIELD_VALUE: any }>(
       data: T[]
@@ -3285,138 +3557,12 @@ public getShapeInfo(){
     }
     console.log("insertSCDShapeTables:shapeType:", shapeType)
     let tables = [];
-    switch (shapeType) {
-      case 'Numeric Display':
-        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
-        break;
-      case 'String Display':
-        tables.push('INSERT_SCD_SHAPE_DISPLAY_GENERAL');
-        break;
-      case 'Time and Date Display':
-        tables.push('INSERT_SCD_MESSAGE_GENERAL');
-        break;
-      case 'Tag Label':
-        tables.push('INSERT_SCD_TAG_LABEL_GENERAL');
-        break;
-      case 'Local Message':
-        tables.push('INSERT_SCD_MESSAGE_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'Text':
-        tables.push('INSERT_SCD_TEXT_GENERAL');
-        break;
-      case 'Numeric Input':
-        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'String Input':
-        tables.push('INSERT_SCD_SHAPE_INPUT_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_INPUT_APPEARANCE');
-        break;
-      case 'Bar':
-        tables.push('INSERT_SCD_GRAPH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'Scale':
-        tables.push('INSERT_SCD_GRAPH_GENERAL');
-        break;
-      case 'Gauge':
-        tables.push('INSERT_SCD_GRAPH_GENERAL');
-        tables.push('INSERT_SCD_GAUGE_DISPLAY');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break; 
-      case 'Multiple':
-        tables.push('INSERT_SCD_MULTISTATE_INDICATOR_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break; 
-      case 'List':
-        tables.push('INSERT_SCD_LIST_INDICATOR_GENERAL');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_LIST_INDICATOR_STATE');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        break;
-      case 'Backspace':
-      case 'End':
-      case 'Enter':
-        tables.push('INSERT_SCD_ARROW_BUTTON_GENERAL');
-        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
-        break; 
-      case 'Move Left':
-      case 'Move Right':
-      case 'Move Down':
-      case 'Move Up':
-      case 'Page Up':
-      case 'Page Down':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_ARROW_BUTTON_LABEL');
-        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
-        break; 
-      case 'Momentry':
-      case 'Maintained':
-      case 'Latched':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Interlocked':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Multistate':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Ramp Button':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_CONNECTION');
-        tables.push('INSERT_SCD_ARROW_BUTTON_TIMING');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Navigation Button':
-        tables.push('INSERT_SCD_BUTTON_PUSH_GENERAL');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        tables.push('INSERT_SCD_SHAPE_STATE');
-        break;
-      case 'Panel':
-      case 'Arc':
-      case 'Elipse':
-      case 'FreeHand':
-      case 'Line':
-      case 'Polygon':
-      case 'Polyline':
-      case 'Rectangle':
-      case 'Rounded Rectangle':
-      case 'Wedge':
-      case 'Arrow':
-        tables.push('INSERT_SCD_SHAPE_GENERAL');
-        break;
-      case 'Button':
-        tables.push('INSERT_SCD_BUTTON_GENERAL');
-        tables.push('INSERT_SCD_BUTTON_ACTION');
-        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
-        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
-        tables.push('INSERT_SCD_BUTTON_APPEARANCE');
-        break;
-      default:
-        break;
-    }
+
+    tables = this.getInsertTables(shapeType);
+
     console.log("insertSCDShapeTables:tables:", shapeType, tables)
     let butApp = 0;
+    let ALARM_COLUMNS = 0;
     if (tables.length > 0) {
       for (let i = 0; i < tables.length; i++) {
         let useshapeType = null;
@@ -3425,6 +3571,29 @@ public getShapeInfo(){
           if ((shapeType == "Maintained") || (shapeType == "Multistate"))
             useshapeType = "Momentry";
         }
+        if ( (tables[i] == "INSERT_SCD_ALARM_COLUMNS") && (shapeType == "Banner") ) {
+          if (ALARM_COLUMNS == 0)
+            useshapeType = shapeType;
+          if (ALARM_COLUMNS == 1)
+            useshapeType = "Status Bar Panel";
+          if (ALARM_COLUMNS == 2)
+            useshapeType = "Status Bar Button";
+            ALARM_COLUMNS++;
+        }
+        if ( (tables[i] == "INSERT_SCD_ALARM_COLUMNS") && (shapeType == "Log Viewer") ) {
+          if (ALARM_COLUMNS == 0)
+            useshapeType = shapeType;
+          if (ALARM_COLUMNS == 1)
+            useshapeType = "Toolbar";
+            ALARM_COLUMNS++;
+        }
+        if  (tables[i] == "INSERT_SCD_ALARM_STATES"){
+            useshapeType = shapeType;
+        }
+        if ( (tables[i] == "INSERT_SCD_ALARM_COLUMNS") && (shapeType == "Summary") ) {
+            useshapeType = shapeType;
+        }
+
         let TableDefauls = await this.starlib1.setShapeDefaults(tables[i], useshapeType);
         console.log("insertSCDShapeTables:TableDefauls:", JSON.stringify(TableDefauls));
         let TableDefaulsArr = groupByFieldName(TableDefauls);
@@ -3543,23 +3712,131 @@ public getShapeInfo(){
             let body = [];
             body.push(object);
             console.log("insertSCDShapeTables:body:", body)
+            this.saveShapesInfo(body)
             let data = await this.starServices.execSQLBody(this, body, "");
             if (this.paramConfig.DEBUG_FLAG) console.log("insertSCDShapeTables:", data);
           }
         }
       }
     }
+    console.log ("this.ShapesInfo:",JSON.stringify(this.ShapesInfo));
+    let newGrouped = this.groupBodyByShapeId(this.ShapesInfo);
+    this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
+    console.log ("this.ShapesInfoArr:",newGrouped, this.ShapesInfoArr);
   }
 
+  private  selectTables(shapeType: string): string[] {
+      const tables = this.shapeTablesMap[shapeType] ?? [];
+      return Array.from(new Set(tables));
+    }
+
+async updateShapeInfoArr (shapeType, shapesID){
+    
+    let tables = this.selectTables(shapeType);
+    //let tables = this.shapeTablesMap[shapeType];
+  
+      console.log ("updateShapeInfoArr:",tables, this.shapeTablesMap, shapeType)
+    if (typeof tables != "undefined"){
+      tables.push('SCD_SHAPE')
+      const whereShapesInfo = `SHAPE_ID IN (${shapesID})`;
+        const bodyShapesInfo = tables.map(table => ({
+        "_QUERY": `GET_${table}_QUERY`,
+        "_WHERE": whereShapesInfo
+      }));
+
+      console.log ("bodyShapesInfo:",bodyShapesInfo)
+      let dataShapesInfo = await this.starServices.execSQLBody(this, bodyShapesInfo, "");
+          if (this.paramConfig.DEBUG_FLAG) console.log("updateShapeInfoArr:dataShapesInfo[0].data:", dataShapesInfo);
+          if (typeof dataShapesInfo[0].data != "undefined"){
+            let newGrouped = this.formatShapesInfoResponse(dataShapesInfo);
+            if (this.paramConfig.DEBUG_FLAG) {
+              console.log("updateShapeInfoArr:newGrouped:", newGrouped);
+            }  
+            this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
+            let dwgShapeId = shapeType + ":" + shapesID
+            const shape = this.diagram?.getShapeById(dwgShapeId);
+            console.log ("updateShapeInfoArr:shape:", shape);
+            if (shape) {
+              const dataItem = shape.dataItem;   
+              let shapeType = dataItem.dataItem.libraryKind;
+              
+               let options = {};
+               this.populateshapeAttributes(options,shapeType.toLowerCase(),dwgShapeId);
+               console.log ("updateShapeInfoArr:options:",JSON.stringify(options));
+                Object.assign(dataItem.dataItem, options);
+               console.log ("updateShapeInfoArr:dataItem:",dataItem, "shape:",shape )
+               this.refreshCustomShape(shape);
+               this.syncRuntimeShapeToModel(shape);
+           }
+
+                
+          } 
+    }
+  }
+public ShapesInfo = [];
+public ShapesInfoArr = {};
+
+public findRowsByTable(
+  grouped,
+  shapeId: number | string,
+  table: string
+) {
+  const bucket = grouped?.[String(shapeId)];
+  if (!Array.isArray(bucket)) return [];
+  return bucket.filter(row => row._TABLE === table);
+}
+
+public groupBodyByShapeId(body: any[]) {
+  const grouped = {};
+
+  for (const entry of body || []) {
+    if (!entry || typeof entry !== "object") {
+      continue;
+    }
+
+    // ── 1. Rename _QUERY -> _TABLE and strip the INSERT_ prefix. ──
+    const clone = { ...entry };
+
+    if (typeof clone._QUERY === "string") {
+      const table = clone._QUERY.startsWith("INSERT_")
+        ? clone._QUERY.slice("INSERT_".length)
+        : clone._QUERY;
+
+      clone._TABLE = table;
+      delete clone._QUERY;
+    }
+
+    // ── 2. Resolve the bucket key. String() normalises 1063 vs "1063". ──
+    const rawId = (entry as any).SHAPE_ID;
+    const key =
+      rawId === undefined || rawId === null || rawId === ""
+        ? "__no_shape__"
+        : String(rawId);
+
+    // ── 3. Append, preserving original order. ──
+    if (!grouped[key]) {
+      grouped[key] = [];
+    }
+    grouped[key].push(clone);
+  }
+
+  return grouped;
+}
+
+public saveShapesInfo(body){
+  for (let i = 0 ; i< body.length;i++){
+    if (body[i]['_QUERY'].startsWith("INSERT")){
+      this.ShapesInfo.push(body[i])
+    }
+  }
+}
 
 public menuType;
 public event;
 public insertShapeFlag = false;
-async insertSCDShape(kendoui_content, shapeType){
-      const diagramX =
-        (this.lastClickX - this.currentPan.x) / this.zoomLevel;
-      const diagramY =
-        (this.lastClickY - this.currentPan.y) / this.zoomLevel;
+async insertSCDShape(kendoui_content, shapeType, diagramX: number, diagramY: number, width:any, height:any){
+      const x = diagramX ?? (this.lastClickX - this.currentPan.x) / this.zoomLevel;
+      const y = diagramY ?? (this.lastClickY - this.currentPan.y) / this.zoomLevel;
       kendoui_content[diagramX] = diagramX;
       kendoui_content[diagramY] = diagramY;
       let body = [
@@ -3567,10 +3844,10 @@ async insertSCDShape(kendoui_content, shapeType){
           "_QUERY": "INSERT_SCD_SHAPE",
           "DISPLAY_ID": this.form.value.DISPLAY_ID,
           "SHAPE_TYPE": shapeType,
-          "HEIGHT": 100,
-          "WIDTH": 100,
-          "TOP": diagramY,
-          "LEFT": diagramX,
+          "HEIGHT": height,
+          "WIDTH": width,
+          "TOP": x,
+          "LEFT": y,
           "NAME": kendoui_content.id,
           "VISIBLE": 1,
           "KEY_NAVIGATION": 1,
@@ -3589,6 +3866,8 @@ async insertSCDShape(kendoui_content, shapeType){
         let last_insert_rowid = data[1].data[0]["LAST_INSERT_ID"];
         kendoui_content.id =    kendoui_content.id + ":" + last_insert_rowid;
         kendoui_content.shapeID = last_insert_rowid;
+        body[0]['SHAPE_ID'] = last_insert_rowid;
+        this.saveShapesInfo(body)
         if (this.paramConfig.DEBUG_FLAG) console.log("INSERT_SCD_SHAPE:kendoui_content.id:", kendoui_content.id);
       }
       return kendoui_content;
@@ -3597,7 +3876,7 @@ async insertShape(shapeType, options) {
     let kendoui_content: any = {
       id: shapeType
     }
-    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
+    //kendoui_content = await this.insertSCDShape(kendoui_content, shapeType)
     await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType)
     let kind = this.shapeToIconKey[shapeType] ?? 'Text';
     if (options == null) {
@@ -3616,6 +3895,14 @@ async insertShape(shapeType, options) {
       options['SHAPE_ID'] = kendoui_content.id;
       options['SHAPE_TYPE'] = shapeType;
     }
+    //   const buttonShapeTypes = [
+  //   'Button'
+  // ];
+  // if (buttonShapeTypes.includes(shapeType)) {
+  //   options.visual       = options.visual       ?? 'button3DVisual'; // default variant
+  //   options.buttonState  = options.buttonState  ?? 'normal';
+  //   options.disabled     = options.disabled     ?? false;
+  // }
     console.log("kind:",kind,"shapeType:", shapeType, "options:", options);
     this.addLibraryShape(kind, options, true);
   }
@@ -3623,9 +3910,15 @@ async insertShape(shapeType, options) {
 //////////
 public statusMessage = "Select a shape to edit it.";
 public freehandMode = false;
+// Line tool: reuses the FreeHand pointer pipeline, but keeps only the start
+// and the current point so the result is one straight segment.
+public freehandStraight = false;
 private freehandPoints: Array<{ x: number; y: number }> = [];
 private freehandPointerId: number | null = null;
 public freehandPreviewPath = "";
+public get lineMode(): boolean {
+  return this.freehandMode && this.freehandStraight;
+}
 private freehandPreviewPoints: Array<{ x: number; y: number }> = [];
 public richTextEditorOpen = false;
 public richTextHtml = '<p><strong>Rich Text</strong></p>';
@@ -3803,41 +4096,57 @@ private uniqueShapeId(prefix: string): string {
     this.addLibraryShape("image", { source: source.trim(), width: 180, height: 120, fillColor: "#f6f7f8" });
   }
 
-  public addEllipse(): void {
-    this.addLibraryShape("ellipse", { width: 150, height: 100, fillColor: "#d9e8f5" });
-  }
+  public addEllipse():   void { this.armDragTool('Elipse'); }
 
+  /** Line tool: drag on the canvas from the start point to the end point. */
   public addLine(): void {
-    this.addLibraryShape("line", { width: 180, height: 24, fillColor: "transparent" });
+    if (this.lineMode) {
+      this.resetFreehandState(false);
+      this.statusMessage = "Line mode cancelled.";
+      return;
+    }
+    this.resetFreehandState(true);
+    this.freehandStraight = true;
+    this.diagram?.deselect();
+    this.statusMessage = "Line mode ON: press at the start point, drag, and release at the end point.";
   }
 
-  public addRectangle(): void {
-    this.addLibraryShape("rectangle", { width: 160, height: 100, fillColor: "#d9e8f5" });
-  }
-
-  public addRoundedRectangle(): void {
-    this.addLibraryShape("roundedRectangle", { width: 190, height: 100, fillColor: "#d9e8f5" });
-  }
-
-  public addArc(): void {
-    this.addLibraryShape("arc", { width: 170, height: 95, fillColor: "transparent" });
-  }
-
-  public addPolygon(): void {
-    this.addLibraryShape("polygon", { width: 140, height: 120, fillColor: "#e9defa" });
-  }
-
-  public addPolyline(): void {
-    this.addLibraryShape("polyline", { width: 180, height: 110, fillColor: "transparent" });
-  }
- 
-  public toggleFreehandMode(): void {
-    this.freehandMode = !this.freehandMode;
+  private resetFreehandState(active: boolean): void {
+    this.freehandMode = active;
+    this.freehandStraight = false;
     this.freehandPoints = [];
     this.freehandPreviewPoints = [];
     this.freehandPreviewPath = "";
     this.freehandPointerId = null;
-    if (this.freehandMode) {
+    if (!active) {
+      this.pendingDragTool = null;
+      this.pendingDragShapeType = null;
+      this.pendingDragIsLibraryOnly = false;
+      this.dragBoxStart = null;
+      this.dragBoxCurrent = null;
+      this.clearDragBoxPreview();
+    }
+  }
+
+
+
+  public addRectangle(): void { this.armDragTool('Rectangle'); }
+
+  public addRoundedRectangle(): void { this.armDragTool('Rounded Rectangle'); }
+
+  public addArc():       void { this.armDragTool('Arc'); }
+
+  public addPolygon():   void { this.armDragTool('Polygon'); }
+
+  public addPolyline():  void { this.armDragTool('Polyline'); }
+
+ 
+  public toggleFreehandMode(): void {
+    
+    // Pressing FreeHand while Line mode is active switches tools instead of cancelling.
+    const turnOn = !this.freehandMode || this.freehandStraight;
+    this.resetFreehandState(turnOn);
+    if (turnOn) {
       this.diagram?.deselect();
       this.statusMessage = "FreeHand mode ON: drag on the diagram canvas to draw, then release to create the shape.";
     } else {
@@ -3845,32 +4154,65 @@ private uniqueShapeId(prefix: string): string {
     }
   }
 
+
   public onFreehandPointerDown(event: PointerEvent): void {
-    if (!this.freehandMode || !this.diagram) {
-      return;
-    }
+    if (!this.freehandMode || !this.diagram) return;
     event.preventDefault();
     event.stopPropagation();
     this.freehandPointerId = event.pointerId;
     const point = this.pointerToModel(event);
-    if (!point) {
-      return;
-    }
-    this.freehandPoints = [point];
-    const previewPoint = this.pointerToStage(event);
-    this.freehandPreviewPoints = previewPoint ? [previewPoint] : [];
-    this.updateFreehandPreviewPath();
-    (event.currentTarget as HTMLElement | null)?.setPointerCapture?.(event.pointerId);
+    if (!point) return;
+
+  if (this.pendingDragTool) {
+    this.dragBoxStart = point;
+    this.dragBoxCurrent = point;
+    this.updateDragBoxPreview(event);
+    (event.currentTarget as HTMLElement | null)
+      ?.setPointerCapture?.(event.pointerId);
+    return;
   }
 
+  // Branch 2: freehand / line (existing behaviour)
+  this.freehandPoints = [point];
+  const previewPoint = this.pointerToStage(event);
+  this.freehandPreviewPoints = previewPoint ? [previewPoint] : [];
+  this.updateFreehandPreviewPath();
+  (event.currentTarget as HTMLElement | null)
+    ?.setPointerCapture?.(event.pointerId);
+}
+
+
   public onFreehandPointerMove(event: PointerEvent): void {
-    if (!this.freehandMode || this.freehandPointerId !== event.pointerId || !this.freehandPoints.length) {
-      return;
-    }
+    if (!this.freehandMode || this.freehandPointerId !== event.pointerId) return;
+
+  // Shape box drag
+  if (this.pendingDragTool && this.dragBoxStart) {
+    event.preventDefault();
+    event.stopPropagation();
+    const point = this.pointerToModel(event);
+    if (!point) return;
+    this.dragBoxCurrent = point;
+    this.updateDragBoxPreview(event);
+    return;
+  }
+
+  // Existing freehand/line path...
+  if (!this.freehandPoints.length) return;
+
     event.preventDefault();
     event.stopPropagation();
     const point = this.pointerToModel(event);
     if (!point) {
+      return;
+    }
+    if (this.freehandStraight) {
+      // Straight line: only the start point and the live end point matter.
+      const previewEnd = this.pointerToStage(event);
+      this.freehandPoints = [this.freehandPoints[0], point];
+      if (previewEnd && this.freehandPreviewPoints.length) {
+        this.freehandPreviewPoints = [this.freehandPreviewPoints[0], previewEnd];
+        this.updateFreehandPreviewPath();
+      }
       return;
     }
     const last = this.freehandPoints[this.freehandPoints.length - 1];
@@ -3885,21 +4227,60 @@ private uniqueShapeId(prefix: string): string {
     }
   }
 
-public onFreehandPointerUp(event: PointerEvent): void {
-    if (!this.freehandMode || this.freehandPointerId !== event.pointerId) {
+async onFreehandPointerUp(event: PointerEvent) {
+    if (!this.freehandMode || this.freehandPointerId !== event.pointerId) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  (event.currentTarget as HTMLElement | null)
+    ?.releasePointerCapture?.(event.pointerId);
+  this.freehandPointerId = null;
+
+  // Shape box release
+  if (this.pendingDragTool && this.dragBoxStart && this.dragBoxCurrent) {
+  const start = this.dragBoxStart;
+  const end   = this.dragBoxCurrent;
+  const x = Math.min(start.x, end.x);
+  const y = Math.min(start.y, end.y);
+  const w = Math.abs(end.x - start.x);
+  const h = Math.abs(end.y - start.y);
+
+  const shapeType = this.pendingDragShapeType!;
+  const libraryOnly = this.pendingDragIsLibraryOnly;
+
+  this.resetFreehandState(false);
+  this.clearDragBoxPreview();
+
+  if (w < 4 || h < 4) {
+    this.statusMessage = "Drag was too small; nothing was added.";
+    return;
+  }
+
+  this.lastClickX = x;
+  this.lastClickY = y;
+
+  await this.insertShapeFromBox(shapeType, x, y, w, h);
+  return;
+}
+
+    const straight = this.freehandStraight;
+    const tooShort = this.freehandPoints.length < 2 ||
+      (straight && Math.hypot(
+        this.freehandPoints[1].x - this.freehandPoints[0].x,
+        this.freehandPoints[1].y - this.freehandPoints[0].y
+      ) < 5);
+    if (tooShort) {
+      this.resetFreehandState(false);
+      this.statusMessage = straight
+        ? "Line was too short; nothing was added. Press and drag to set both end points."
+        : "FreeHand drawing was too short; nothing was added.";
       return;
     }
-    event.preventDefault();
-    event.stopPropagation();
-    (event.currentTarget as HTMLElement | null)?.releasePointerCapture?.(event.pointerId);
-    this.freehandPointerId = null;
 
-    if (this.freehandPoints.length < 2) {
-      this.freehandMode = false;
-      this.freehandPoints = [];
-      this.freehandPreviewPoints = [];
-      this.freehandPreviewPath = "";
-      this.statusMessage = "FreeHand drawing was too short; nothing was added.";
+    if (straight) {
+      const [start, end] = this.freehandPoints;
+      this.resetFreehandState(false);
+      this.addStraightLine(start, end);
       return;
     }
 
@@ -3915,16 +4296,37 @@ public onFreehandPointerUp(event: PointerEvent): void {
     this.freehandPoints = [];
     this.freehandPreviewPoints = [];
     this.freehandPreviewPath = "";
-    if (this.insertShapeFlag == true){
-        let shapeType = this.event.text;
-        let options = { x: minX, y: minY, width, height, points, fillColor: "transparent" };
-        this.insertShape ( shapeType,options);
-        this.insertShapeFlag = false;
-        
-        
-      }
-    
+    this.addLibraryShape("freehand", { x: minX, y: minY, width, height, points, fillColor: "transparent" }, true);
   }
+
+  /**
+   * Create a straight line from `start` to `end` (model coordinates). The
+   * endpoints are stored as 0-1 fractions of the shape box, so resizing the
+   * shape scales the line and it is rebuilt identically after a reload.
+   */
+  private addStraightLine(start: { x: number; y: number }, end: { x: number; y: number }): void {
+    const minSize = 20;
+    const spanX = Math.abs(end.x - start.x);
+    const spanY = Math.abs(end.y - start.y);
+    const width = Math.max(minSize, spanX);
+    const height = Math.max(minSize, spanY);
+    // Horizontal/vertical lines sit in the middle of the minimum-size box.
+    const centerX = (start.x + end.x) / 2;
+    const centerY = (start.y + end.y) / 2;
+    const x = spanX >= minSize ? Math.min(start.x, end.x) : centerX - width / 2;
+    const y = spanY >= minSize ? Math.min(start.y, end.y) : centerY - height / 2;
+    const fraction = (value: number, origin: number, size: number): number =>
+      Math.max(0, Math.min(1, (value - origin) / size));
+
+    this.addLibraryShape("line", {
+      x, y, width, height,
+      fillColor: "transparent",
+      lineStart: { x: fraction(start.x, x, width), y: fraction(start.y, y, height) },
+      lineEnd: { x: fraction(end.x, x, width), y: fraction(end.y, y, height) }
+    }, true);
+  }
+
+
 
   private pointerToStage(event: PointerEvent): { x: number; y: number } | null {
     const target = event.currentTarget as HTMLElement | null;
@@ -3952,6 +4354,42 @@ public onFreehandPointerUp(event: PointerEvent): void {
     }
     return { x: point.x, y: point.y };
   }
+  populateshapeAttributes(options,shapeType,shapeID){
+    let arr = shapeID.split(":");
+      //shapeType = arr[0];
+      let shape_ID = arr[1];
+    console.log ("populateshapeAttributes:shapeType:",shapeType, "shape_ID:",shape_ID);
+  const buttonShapeTypes = [
+      'button'
+    ];
+    if (buttonShapeTypes.includes(shapeType)) {
+      let tablesArr = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_APPEARANCE" )
+      console.log ("tablesArr:",tablesArr);
+      let stateStyles = {};
+      for (let i=0;i<tablesArr.length;i++){
+        let appearance = tablesArr[i];
+        if (appearance.BUTTON_APPEARANCE == "UP"){
+          stateStyles['up'] = appearance;
+        }
+        else if (appearance.BUTTON_APPEARANCE == "DOWN"){
+          stateStyles['down'] = appearance;
+        }
+        else if (appearance.BUTTON_APPEARANCE == "DISABLED"){
+          stateStyles['disabled'] = appearance;
+        }
+
+      }
+      console.log ("populateshapeAttributes:stateStyles:",stateStyles);
+      options['stateStyles'] = stateStyles;
+
+      tablesArr = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_GENERAL" )
+      options.visual       = options.visual       ?? "button" +tablesArr[0].BUTTON_STYLE+ "Visual"; // default variant
+      options.buttonState  = options.buttonState  ?? 'normal';
+      options.disabled     = options.disabled     ?? false;
+      options.allowHover     = tablesArr[0].HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS;
+
+    }
+  }
   private addLibraryShape(kind: string, options: any = {}, exactPosition: boolean = false): void {
     if (!this.diagram) {
       this.statusMessage = "The diagram is not ready yet.";
@@ -3965,6 +4403,7 @@ public onFreehandPointerUp(event: PointerEvent): void {
     let id = this.uniqueShapeId(kind);
     if (typeof options.SHAPE_ID != "undefined" )
       id =   options.SHAPE_ID ;
+    this.populateshapeAttributes(options, kind,id);
     const dataItem: any = {
       type: "libraryShape",
       title: this.libraryShapeTitle(kind),
@@ -3978,7 +4417,7 @@ public onFreehandPointerUp(event: PointerEvent): void {
     };
     delete dataItem.x;
     delete dataItem.y;
-
+    console.log("dataItem:", dataItem, options)
     const standardType = kind === "ellipse"
       ? "circle"
       : kind === "image"
@@ -4081,6 +4520,7 @@ public onFreehandPointerUp(event: PointerEvent): void {
      || (kind == "backspace")  || (kind == "end")  || (kind == "enter") 
      || (kind == "moveleft")  || (kind == "moveright")  || (kind == "movedown") 
      || (kind == "moveup")  || (kind == "pageup")  || (kind == "pagedown") 
+     || (kind == "banner") || (kind == "summary") || (kind == "logViewer") || (kind == "statusExplorer")
      ) {
       const background = new Rectangle({
         x, y, width, height, cornerRadius: 4,
@@ -4138,16 +4578,35 @@ public onFreehandPointerUp(event: PointerEvent): void {
     }
 
     if ( (kind === "line")||(kind === "arrow") ) {
-      // Render Line using the same lightweight Path approach as Arc.
-      // The Diagram shape model owns the selectable/resizable bounds; the
-      // visible geometry is only the line itself.
-      const centerY = y + height / 2;
-      group.append(new Path({
-        data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
-        stroke: { color: stroke, width: 2 },
-        fill: { color: "transparent" }
-      }));
-      return group;
+      const lineStart = dataItem.lineStart;
+      const lineEnd = dataItem.lineEnd;
+      if (lineStart && lineEnd) {
+        // User-drawn line: the transparent frame keeps the drawing bbox equal
+        // to the full shape box (a horizontal/vertical line has no extent on
+        // one axis), so selection and resizing match the shape bounds.
+        const frame = new Rectangle({
+          x, y, width, height,
+          stroke: { color: "transparent", width: 0 },
+          fill: { color: "transparent" }
+        });
+        frame.options.opacity = 0.001;
+        group.append(frame);
+        group.append(new Path({
+          data: `M ${x + Number(lineStart.x) * width},${y + Number(lineStart.y) * height} `
+            + `L ${x + Number(lineEnd.x) * width},${y + Number(lineEnd.y) * height}`,
+          stroke: { color: stroke, width: 2 },
+          fill: { color: "transparent" }
+        }));
+        return group;
+      }
+      // Legacy line (saved before start/end points existed): horizontal, centered.
+      // const centerY = y + height / 2;
+      // group.append(new Path({
+      //   data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
+      //   stroke: { color: stroke, width: 2 },
+      //   fill: { color: "#D70040" }
+      // }));
+      // return group;
     }
 
     if (kind === "roundedRectangle" || kind === "rectangle") {
@@ -4256,7 +4715,8 @@ public onFreehandPointerUp(event: PointerEvent): void {
 
     if (kind === "arc") {
       group.append(new Path({
-        data: `M ${x + 5},${y + height - 5} Q ${x + width / 2},${y - height * 0.15} ${x + width - 5},${y + height - 5}`,
+        // Peak of this curve is exactly the top of the box (control point at y - height).
+        data: `M ${x},${y + height} Q ${x + width / 2},${y - height} ${x + width},${y + height}`,
         stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
@@ -4265,8 +4725,15 @@ public onFreehandPointerUp(event: PointerEvent): void {
 
     const points = Array.isArray(dataItem.points) ? dataItem.points : [];
     if (kind === "freehand" && points.length >= 2) {
+      // Points are stored in the pixels of the original drawing. Scale them to
+      // the shape's current width/height so a resized FreeHand keeps its size
+      // when it is redrawn, restored from saved state or ungrouped.
+      const extentX = Math.max(...points.map((point: any) => Number(point.x)));
+      const extentY = Math.max(...points.map((point: any) => Number(point.y)));
+      const pointScaleX = extentX > 0 ? width / extentX : 1;
+      const pointScaleY = extentY > 0 ? height / extentY : 1;
       const pathData = points.map((point: any, index: number) =>
-        `${index === 0 ? "M" : "L"} ${x + Number(point.x)},${y + Number(point.y)}`
+        `${index === 0 ? "M" : "L"} ${x + Number(point.x) * pointScaleX},${y + Number(point.y) * pointScaleY}`
       ).join(" ");
       group.append(new Path({
         data: pathData,
@@ -4287,7 +4754,10 @@ public onFreehandPointerUp(event: PointerEvent): void {
 
     if (kind === "polyline") {
       group.append(new Path({
-        data: `M ${x},${y + height * 0.8} L ${x + width * 0.28},${y + height * 0.2} L ${x + width * 0.56},${y + height * 0.72} L ${x + width},${y + height * 0.15}`,
+        // The outline spans the full box top-to-bottom (y fractions 1, 0.08, 0.88,
+        // 0). A path that fills only part of its box makes Kendo shrink the box
+        // to the outline, and the outline shrinks again on every recreate.
+        data: `M ${x},${y + height} L ${x + width * 0.28},${y + height * 0.08} L ${x + width * 0.56},${y + height * 0.88} L ${x + width},${y}`,
         stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
@@ -4362,10 +4832,17 @@ private syncRuntimeShapeToModel(shape: any): void {
       runtimeData.width = bounds.width;
       runtimeData.height = bounds.height;
     }
-    if (runtimeData?.editorStyle) {
+    if (runtimeData?.editorStyle !== undefined) {
       model.dataItem ??= {};
       const modelData = model.dataItem?.dataItem ?? model.dataItem;
       modelData.editorStyle = this.clonePlain(runtimeData.editorStyle);
+    }
+    if (runtimeData && typeof runtimeData === "object"
+        && "stateStyles" in runtimeData) {
+      model.dataItem ??= {};
+      const modelData = model.dataItem?.dataItem ?? model.dataItem;
+
+      modelData.stateStyles = this.clonePlain(runtimeData.stateStyles);
     }
 
     // The runtime shape's dataItem is not always the same object reference as
@@ -4413,6 +4890,10 @@ public selectedContainerMax = 100;
     { text: "24px", size: 24 },
     { text: "32px", size: 32 }
   ];
+// Bounds exactly as saved. Kendo re-derives a custom visual's bounds from the
+  // drawn visual when the Diagram is created, which can be a few pixels off the
+  // saved size, so they are re-applied once the Diagram exists.
+  private savedBounds = new Map<string, { x: number; y: number; width: number; height: number }>();
 
 // Add these methods for the toolbar functionality
 
@@ -4935,7 +5416,12 @@ public groupSelected(): void {
       childData.editorStyle.flipY = (childData.editorStyle.flipY ?? 1) * parentFlipY;
 
       (this.shapes as any[]).push(child);
-      restoredRuntime.push(this.diagram.addShape(child, true));
+      const restoredShape = this.diagram.addShape(child, true);
+      // Kendo re-derives bounds from the drawn visual (stroke included), which
+      // grows each shape by a pixel per ungroup. Pin the intended box.
+      restoredShape.bounds(new Rect(child.x, child.y, childWidth, childHeight));
+      restoredShape.updateModel?.(true);
+      restoredRuntime.push(restoredShape);
     }
 
     this.diagram.deselect();
@@ -5375,12 +5861,12 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
             text: piece,
             x: cursorX,
             y: cursorY,
-            fill: color
+            fill: color,
+            fontSize,
+            fontWeight: bold ? "bold" : "normal",
+            fontStyle: italic ? "italic" : "normal",
+            fontFamily
           });
-          textBlock.options.fontSize = fontSize;
-          textBlock.options.fontWeight = bold ? "bold" : "normal";
-          textBlock.options.fontStyle = italic ? "italic" : "normal";
-          textBlock.options.fontFamily = fontFamily;
           group.append(textBlock);
 
           if (underline && !isOnlyWhitespace) {
@@ -5818,7 +6304,39 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="9" cy="11" r="2" fill="#e94560"/><path d="M4 18 L10 13 L14 17 L18 14 L21 17" fill="none" stroke="#e94560" stroke-width="2"/>`,
     browser:
       `<rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#e94560" stroke-width="2"/><circle cx="6" cy="8" r="1" fill="#e94560"/>`,
-
+    banner:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="8" width="20" height="8" rx="1.5" stroke="#e94560" stroke-width="2"/>
+      <circle cx="6.5" cy="12" r="1.2" fill="#e94560"/>
+      <line x1="10" y1="12" x2="19" y2="12" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+    summary:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="4" width="18" height="16" rx="1.5" stroke="#e94560" stroke-width="2"/>
+      <line x1="7" y1="9" x2="13" y2="9" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="13" x2="17" y2="13" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="17" x2="15" y2="17" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+    logViewer:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="3" width="14" height="18" rx="1.5" stroke="#e94560" stroke-width="2"/>
+      <line x1="7" y1="8" x2="15" y2="8" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="12" x2="15" y2="12" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="16" x2="15" y2="16" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="19" y1="6" x2="19" y2="18" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="19" cy="8" r="1.5" fill="#e94560"/>
+    </svg>`,
+    statusExplorer:
+    `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="5" cy="6" r="2" stroke="#e94560" stroke-width="2"/>
+      <circle cx="5" cy="12" r="2" stroke="#e94560" stroke-width="2"/>
+      <circle cx="5" cy="18" r="2" stroke="#e94560" stroke-width="2"/>
+      <line x1="7" y1="6" x2="20" y2="6" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="12" x2="16" y2="12" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="18" x2="18" y2="18" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
+      <line x1="5" y1="8" x2="5" y2="10" stroke="#e94560" stroke-width="2"/>
+      <line x1="5" y1="14" x2="5" y2="16" stroke="#e94560" stroke-width="2"/>
+    </svg>`,
     // ── Generic fallback ──
     default:
       `<rect x="5" y="5" width="14" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2" stroke-dasharray="3 2"/><line x1="12" y1="9" x2="12" y2="15" stroke="#e94560" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="#e94560" stroke-width="2"/>`,
@@ -5844,7 +6362,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Latched': 'buttonLatched',
     'Maintained': 'button',
     'Momentry': 'buttonmomentry',
-    'Push Button': '"pushbutton',
+    'Push Button': 'pushbutton',
     'Navigation Button': 'navButton',
     'Ramp Button': 'rampButton',
     'Button': 'button',
@@ -5882,11 +6400,12 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Time and Date Display': 'timeDateDisplay',
     'Local Message': 'localMessage',
     'Tag Label': 'tagLabel',
-    'Banner': 'text',
     'Alarms and Events': 'list',
-    'Status Explorer': 'list',
-    'Log Viewer': 'list',
+    'Banner': 'banner',
+    'Status Explorer': 'statusExplorer',
+    'Log Viewer': 'logViewer',
     'Summary': 'list',
+
     'Symbol': 'polygon',
     'Web Browser': 'browser',
     'Image': 'image',
@@ -5898,21 +6417,21 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
    * Build a data-URI cursor for the currently pending shape type.
    * Returns 'crosshair' if no shape is pending.
    */
-    get insertCursor(): string {
-    if (!this.insertShapeFlag) return 'default';
+  get insertCursor(): string {
+  
+    const pending = this.pendingDragShapeType ?? this.pendingShapeType;
+    
+    if (!pending) return 'default';
 
-    const iconKey = this.shapeToIconKey[this.pendingShapeType] ?? 'default';
+    const iconKey = this.shapeToIconKey[pending] ?? 'default';
     const iconSvg = this.cursorIcons[iconKey] ?? this.cursorIcons['default'];
 
-    // 24×24 canvas. Hotspot at (2,2) = top-left area of the icon.
     const svg =
       `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">` +
-        // small arrow pointer behind the icon
         `<path d="M0 0 L0 10 L3 7 L5 12 L7 11 L5 6 L9 6 Z" fill="black" stroke="white" stroke-width="1"/>` +
         iconSvg +
       `</svg>`;
 
-    // encodeURIComponent keeps the SVG safe inside a CSS url()
     return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 4 4, crosshair`;
   }
 
@@ -6014,5 +6533,2179 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       break;
   }
 }
+
+//////////// Visual for buttons /////////
+private darken(hex: string, amount: number): string {
+  const c = hex.replace('#', '');
+
+  const num = parseInt(c, 16);
+
+  let r = (num >> 16) & 255;
+  let g = (num >> 8) & 255;
+  let b = num & 255;
+
+  r = Math.max(0, Math.round(r * (1 - amount)));
+  g = Math.max(0, Math.round(g * (1 - amount)));
+  b = Math.max(0, Math.round(b * (1 - amount)));
+
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b)
+    .toString(16)
+    .slice(1)}`;
+}
+
+private isDbYes(value: any): boolean {
+  return value === true ||
+    String(value ?? '').trim().toUpperCase() === 'Y';
+}
+private resolveButtonAttributes(
+  dataItem: any,
+  state: 'up' | 'down' | 'disabled'
+): any {
+  const stateStyles = dataItem?.stateStyles ?? {};
+  const upStyle = stateStyles.up ?? {};
+  const selectedStyle = stateStyles[state] ?? {};
+
+  // UP always uses its own attributes.
+  // DOWN and DISABLED can independently inherit UP.
+  const followsUp =
+    state !== 'up' && this.isDbYes(selectedStyle.followUp);
+
+  const attributes =
+    state === 'up' || followsUp
+      ? upStyle
+      : selectedStyle;
+
+  return {
+    ...attributes,
+
+    backStyle: attributes.BACK_STYLE,
+    fillColor: attributes.BACK_COLOR,
+    color: attributes.FORE_COLOR,
+    patternStyle: attributes.PATTERN_STYLE,
+    patternColor: attributes.PATTERN_COLOR,
+
+    text: attributes.CAPTION,
+    fontFamily: attributes.FONT_NAME,
+    fontSize: attributes.FONT_SIZE,
+    fontWeight: this.isDbYes(attributes.FONT_BOLD) ? 'bold' : 'normal',
+    fontItalic: this.isDbYes(attributes.FONT_ITALIC),
+    fontUnderline: this.isDbYes(attributes.FONT_UNDERLINE),
+
+    imageType: attributes.IMAGE_TYPE,
+    imageSource: attributes.IMAGE_NAME,
+    imageScale: this.isDbYes(attributes.SCALE_IMAGE)
+  };
+}
+/** Small helper: lighten a hex color by ratio (0..1). */
+  private lighten(hex: string, ratio: number): string {
+    const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex).trim());
+    if (!m) return hex;
+    let h = m[1];
+    if (h.length === 3) h = h.split('').map(c => c + c).join('');
+    const num = parseInt(h, 16);
+    const r = Math.min(255, Math.round(((num >> 16) & 0xff) + (255 - ((num >> 16) & 0xff)) * ratio));
+    const g = Math.min(255, Math.round(((num >> 8)  & 0xff) + (255 - ((num >> 8)  & 0xff)) * ratio));
+    const b = Math.min(255, Math.round(( num        & 0xff) + (255 - ( num        & 0xff)) * ratio));
+    return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+
+public getButtonVisualStyle(dataItem: any): any {
+  const buttonState = String(
+    dataItem?.buttonState ?? 'normal'
+  ).toLowerCase();
+
+  const disabled =
+    this.isDbYes(dataItem?.disabled) ||
+    buttonState === 'disabled';
+
+  // State used for drawing the visual.
+  const visualState = disabled
+    ? 'disabled'
+    : buttonState === 'hover'
+      ? 'hover'
+      : buttonState === 'pressed' || buttonState === 'down'
+        ? 'pressed'
+        : 'normal';
+
+  // State used to resolve database attributes.
+  // Hover uses the normal/up attributes.
+  const attributeState: 'up' | 'down' | 'disabled' =
+    disabled
+      ? 'disabled'
+      : visualState === 'pressed'
+        ? 'down'
+        : 'up';
+
+  const attributes = this.resolveButtonAttributes(
+    dataItem,
+    attributeState
+  );
+
+  return {
+    state: visualState,
+    disabled,
+    attributes,
+
+    actualFillTop:
+      attributes.fillColor ??
+      dataItem?.fillColor ??
+      '#2196f3',
+
+    actualFillBase:
+      dataItem?.strokeColor ??
+      '#0d47a1',
+
+    actualTextColor:
+      attributes.color ??
+      dataItem?.color ??
+      '#000000'
+  };
+}
+
+
+
+
+ 
+
+  public buttonNoneVisual(options: any): Group {
+  
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  const {
+    state,
+    disabled,
+    attributes,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+   // Common properties are retained, but state-specific properties
+  // take precedence.
+  const visualData = {
+    ...dataItem,
+    ...attributes
+  };
+
+  const shape = options?.dataItem ?? {};
+
+ const w = Math.max(
+  20,
+  Number(options?.width ?? visualData.width ?? 181)
+);
+  const h = Math.max(
+  16,
+  Number(options?.height ?? visualData.height ?? 60)
+);
+
+  const radius = Math.min(14, h / 3);
+  const label = String(visualData.text ?? '');
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // Pressed geometry: shrink and darken.
+  //   normal / hover : inset = 0, no darken
+  //   pressed        : inset = 2, darken 0.12
+  // -----------------------------------------
+  const backStyle = String(
+      visualData.backStyle ?? 'Solid'
+    ).trim().toLowerCase();
+  const isTransparent = backStyle === 'transparent';
+  const pressed =
+  state === 'pressed' && !isTransparent;
+
+  const inset = pressed
+    ? Math.min(3, Math.max(1, h * 0.06))
+    : 0;
+
+  const faceX = inset;
+  const faceY = inset;
+  const faceW = Math.max(1, w - inset * 2);
+  const faceH = Math.max(1, h - inset * 2);
+  const faceRadius = Math.max(0, radius - inset);
+
+  // A flat button reads "pressed" when its fill gets darker.
+  // Hover: slightly lighter. Disabled: leave as resolved by the style helper.
+  let faceColor = actualFillTop;
+  if (pressed) {
+    faceColor = this.darken(actualFillTop, 0.12);
+  } else if (state === 'hover' && !isTransparent && !disabled) {
+    faceColor = this.lighten(actualFillTop, 0.20);
+  }
+
+  // Optional explicit border (default invisible).
+  const borderWidth = Number(visualData?.borderWidth) || 0;
+  const borderColor =
+    visualData?.borderColor ??
+    (borderWidth > 0 ? actualFillBase : null);
+
+  // -----------------------------------------
+  // 1. Flat face — gradient direction flips on press
+  //    normal : light at top    -> dark at bottom (raised look)
+  //    pressed: dark at top     -> light at bottom (sunk look)
+  // -----------------------------------------
+  const stops = state === 'disabled'
+    ? [
+        { offset: 0, color: faceColor },
+        { offset: 1, color: faceColor }
+      ]
+    : pressed
+      ? [
+          { offset: 0, color: this.darken(faceColor, 0.10) },
+          { offset: 1, color: this.lighten(faceColor, 0.06) }
+        ]
+      : [
+          { offset: 0, color: this.lighten(faceColor, 0.15) },
+          { offset: 1, color: faceColor }
+        ];
+
+  const top = new Rectangle({
+    x: faceX,
+    y: faceY,
+    width: faceW,
+    height: faceH,
+    cornerRadius: faceRadius,
+    fill: isTransparent
+        ? { color: 'transparent' }
+        : {
+            color: faceColor,
+            gradient: {
+              type: 'linear',
+              start: [0, 0],
+              end: [0, faceH],
+              stops
+            }
+          },
+
+      stroke: borderColor
+        ? { color: borderColor, width: borderWidth }
+        : { width: 0 }
+    } as any);
+
+  group.append(top);
+
+  // -----------------------------------------
+  // 1b. Inner top shadow line — reads as "sunk"
+  //     Only drawn on press. A short dark line
+  //     just under the top edge sells the depth.
+  // -----------------------------------------
+  if (pressed && !disabled) {
+    const shadowY = faceY + 1;
+    const shadow = new Path({
+      data:
+        `M ${faceX + faceRadius},${shadowY} ` +
+        `L ${faceX + faceW - faceRadius},${shadowY}`,
+      stroke: {
+        color: this.darken(faceColor, 0.35),
+        width: 2
+      },
+      fill: { color: 'transparent' }
+    });
+    group.append(shadow);
+  }
+
+  // -----------------------------------------
+  // 2. Pattern — drawn on the (possibly inset) face
+  // -----------------------------------------
+  this.drawPattern(
+    group,
+    visualData,
+    faceX,
+    faceY,
+    faceW,
+    faceH,
+    faceRadius
+  );
+
+  // -----------------------------------------
+  // 3. Image
+  // -----------------------------------------
+  const imageSource = visualData?.imageSource;
+  let textX = faceX + faceW / 2;
+
+  if (imageSource) {
+    const baseWidth  = Number(visualData.imageWidth)  || 32;
+    const baseHeight = Number(visualData.imageHeight) || 32;
+    const scaleImage = visualData.imageScale === true;
+
+    let imageWidth: number, imageHeight: number, padding: number, gap: number;
+
+    if (scaleImage) {
+      const aspect = baseWidth / baseHeight;
+      const heightRatio = Number(visualData.imageScaleRatio) || 0.55;
+      imageHeight = faceH * heightRatio;
+      imageWidth  = imageHeight * aspect;
+      const maxWidth = faceW * 0.4;
+      if (imageWidth > maxWidth) { imageWidth = maxWidth; imageHeight = imageWidth / aspect; }
+      padding = Math.max(6, faceH * 0.15);
+      gap     = Math.max(6, faceH * 0.12);
+    } else {
+      imageWidth = baseWidth; imageHeight = baseHeight;
+      padding = 10; gap = 8;
+    }
+
+    const position = String(
+        visualData.imagePosition ?? 'left'
+      ).toLowerCase();
+    let imageX: number;
+    if (position === 'right')      imageX = faceX + faceW - padding - imageWidth;
+    else if (position === 'center') imageX = faceX + (faceW - imageWidth) / 2;
+    else                            imageX = faceX + padding;
+
+    const imageY = faceY + (faceH - imageHeight) / 2;
+
+    group.append(new DiagramImage({
+      source: imageSource,
+      x: imageX, y: imageY,
+      width: imageWidth, height: imageHeight
+    }));
+
+    const fontSize = Number(visualData?.fontSize) || 14;
+    const halfText = (label.length * fontSize * 0.6) / 2;
+    if (position === 'left') {
+      textX = Math.max(faceX + faceW / 2, faceX + padding + imageWidth + gap + halfText);
+    } else if (position === 'right') {
+      textX = Math.min(faceX + faceW / 2, faceX + faceW - padding - imageWidth - gap - halfText);
+    }
+  }
+
+  // -----------------------------------------
+  // 4. Label — nudges down 1px on press for extra feedback
+  // -----------------------------------------
+  if (label) {
+    const pressNudge = pressed ? 1 : 0;
+    const text = new TextBlock({
+      text: label,
+      x: textX,
+      y: faceY + faceH / 2 + 5 + pressNudge,
+      fill: actualTextColor
+    });
+    (text.options as any).fontSize   = Number(visualData?.fontSize) || 14;
+    (text.options as any).fontWeight = visualData?.fontWeight || 'bold';
+    (text.options as any).fontFamily = visualData?.fontFamily || 'Arial, sans-serif';
+    (text.options as any).textAnchor = 'middle';
+    (text.options as any).fontStyle =
+      visualData.fontItalic ? 'italic' : 'normal';
+
+    (text.options as any).textDecoration =
+      visualData.fontUnderline ? 'underline' : 'none';
+      
+    group.append(text);
+  }
+
+  return group;
+}
+
+
+  /**
+   * 3D button visual.
+   * Renders a raised, rounded, glossy button in ~3 DOM nodes per shape:
+   *   1) dark "base" rect (the raised bottom layer)
+   *   2) top face rect with vertical gradient + rounded corners
+   *   3) label text
+   
+   * Kept allocation-light so 100+ shapes still render smoothly.
+   */
+
+public button3DVisual(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  // Resolve button state and colors centrally.
+  const {
+    state,
+    disabled,
+    attributes,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const faceColor =
+  state === 'hover' && !disabled
+    ? this.lighten(actualFillTop, 0.20)
+    : actualFillTop;
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+  const radius = Math.min(14, h / 3);
+
+  // Normal/hover: visible depth.
+  // Pressed: reduced depth.
+  const depth = state === 'pressed' ? 1 : 4;
+  const topH = h - depth;
+
+  const label = String(dataItem?.text ?? '');
+
+  // -----------------------------------------
+  // Main button group
+  // -----------------------------------------
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // 1. Dark base / raised bottom layer
+  // -----------------------------------------
+
+  const base = new Rectangle({
+    x: 1,
+    y: depth,
+    width: w - 2,
+    height: topH,
+    cornerRadius: radius,
+    fill: {
+      color: actualFillBase
+    },
+    stroke: null
+  } as any);
+
+  group.append(base);
+
+  // -----------------------------------------
+  // 2. Top face
+  // -----------------------------------------
+
+  const topY = state === 'pressed' ? 1 : 0;
+
+  const top = new Rectangle({
+    x: 0,
+    y: topY,
+    width: w,
+    height: topH,
+    cornerRadius: radius,
+
+    fill: {
+      color: faceColor,
+      gradient: {
+        type: 'linear',
+        start: [0, 0],
+        end: [0, topH],
+        stops: [
+          {
+            offset: 0,
+            color: state === 'disabled'
+              ? faceColor
+              : this.lighten(faceColor, 0.35)
+          },
+          {
+            offset: 1,
+            color: faceColor
+          }
+        ]
+      }
+    },
+
+    stroke: {
+      color: actualFillBase,
+      width: 1
+    }
+  } as any);
+
+  group.append(top);
+  
+  this.drawPattern(
+    group,
+    dataItem,
+    0,
+    topY,
+    w,
+    topH,
+    radius
+  );
+
+  const imageSource = dataItem?.imageSource;
+let textX = w / 2;
+
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
+  const scaleImage = !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
+
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
+
+  if (scaleImage) {
+    // Scales with the button: height is a fraction of the button face.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = topH * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    const maxWidth = w * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
+    }
+
+    padding = Math.max(6, topH * 0.15);
+    gap     = Math.max(6, topH * 0.12);
+  } else {
+    // Fixed size: exactly imageWidth x imageHeight pixels, fixed spacing.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
+  }
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = w - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = (w - imageWidth) / 2;
+  } else {
+    imageX = padding;
+  }
+  const imageY = topY + (topH - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  // Keep the label centred; shift it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (label.length * fontSize * 0.6) / 2;   // or your measureText() version
+
+  if (position === 'left') {
+    textX = Math.max(w / 2, padding + imageWidth + gap + halfText);
+  } else if (position === 'right') {
+    textX = Math.min(w / 2, w - padding - imageWidth - gap - halfText);
+  }
+}
+  // -----------------------------------------
+  // 3. Label
+  // -----------------------------------------
+
+  if (label) {
+
+    const text = new TextBlock({
+      text: label,
+      x: textX,
+      y: topY + topH / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'bold';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily || 'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+
+ 
+/**
+ * Raised button visual.
+ * Same 3-node allocation strategy as button3DVisual, plus one gloss rect
+ * for the curved-surface look. Total: 4 nodes per shape (3 while pressed).
+ *
+ * Layers:
+ *   1) dark base (the visible "wall" of the raised button)
+ *   2) top face with vertical gradient
+ *   3) gloss pill across the top half
+ *   4) label
+ */
+/**
+ * Raised glossy button.
+ *
+ * Based directly on the SVG design:
+ *
+ *   1. Dark base / wall shifted downward
+ *   2. Gradient top face
+ *   3. Gloss highlight
+ *   4. Thin inner rim
+ *   5. Label + text shadow
+ *
+ * States:
+ *   normal   - standard raised appearance
+ *   hover    - slightly brighter
+ *   pressed  - top face moves down toward the base
+ *   disabled - greyed out, no interaction
+ */
+
+public buttonRaisedVisual(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  // -----------------------------------------
+  // Shared button state and colors
+  // -----------------------------------------
+
+  const {
+    state,
+    disabled,
+    attributes,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const faceColor =
+  state === 'hover' && !disabled
+    ? this.lighten(actualFillTop, 0.20)
+    : actualFillTop;
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+  const radius = Math.min(14, h / 3);
+
+  // Normal/hover: visible depth.
+  // Pressed: reduced depth.
+  const depth = state === 'pressed' ? 1 : 4;
+  const topH = h - depth;
+
+  const label = String(dataItem?.text ?? '');
+
+  // -----------------------------------------
+  // Main button group
+  // -----------------------------------------
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // 1. Dark base / raised bottom layer
+  // -----------------------------------------
+
+  const base = new Rectangle({
+    x: 1,
+    y: depth,
+    width: w - 2,
+    height: topH,
+    cornerRadius: radius,
+    fill: {
+      color: actualFillBase
+    },
+    stroke: null
+  } as any);
+
+  group.append(base);
+
+  // -----------------------------------------
+  // 2. Main inset face
+  // -----------------------------------------
+
+  const topY = state === 'pressed' ? 1 : 0;
+
+  const topHeight = Math.max(1, topH - 10);
+
+  const top = new Rectangle({
+    x: 5,
+    y: topY + 10,
+    width: w - 10,
+    height: topHeight,
+    cornerRadius: radius,
+
+    fill: {
+      color: faceColor,
+      gradient: {
+        type: 'linear',
+        start: [0, 0],
+        end: [0, topHeight],
+        stops: [
+          {
+            offset: 0,
+            color: state === 'disabled'
+              ? faceColor
+              : this.lighten(faceColor, 0.35)
+          },
+          {
+            offset: 1,
+            color: faceColor
+          }
+        ]
+      }
+    },
+
+    // White outline creates the raised rim.
+    stroke: {
+      color: '#FFFFFF',
+      width: 1
+    }
+  } as any);
+
+  group.append(top);
+
+  // -----------------------------------------
+  // 2b. Upper gloss / lighter overlay
+  // -----------------------------------------
+
+  const top2Height = Math.max(1, topHeight * 0.30);
+
+  const top2 = new Rectangle({
+    x: 5,
+    y: topY + 10,
+    width: w - 10,
+    height: top2Height,
+    cornerRadius: radius,
+
+    fill: {
+      color: this.lighten(faceColor, 0.35),
+      gradient: {
+        type: 'linear',
+        start: [0, 0],
+        end: [0, top2Height],
+        stops: [
+          {
+            offset: 0,
+            color: this.lighten(faceColor, 0.55)
+          },
+          {
+            offset: 1,
+            color: this.lighten(faceColor, 0.15)
+          }
+        ]
+      }
+    },
+
+    // No outline around the gloss overlay.
+    stroke: {
+      width: 0
+    }
+  } as any);
+
+  group.append(top2);
+
+  this.drawPattern(
+    group,
+    dataItem,
+    0,
+    topY,
+    w,
+    topH,
+    radius
+  );
+
+
+ const imageSource = dataItem?.imageSource;
+let textX = w / 2;
+
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
+  const scaleImage = !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
+
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
+
+  if (scaleImage) {
+    // Scales with the button: height is a fraction of the button face.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = topH * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    const maxWidth = w * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
+    }
+
+    padding = Math.max(6, topH * 0.15);
+    gap     = Math.max(6, topH * 0.12);
+  } else {
+    // Fixed size: exactly imageWidth x imageHeight pixels, fixed spacing.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
+  }
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = w - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = (w - imageWidth) / 2;
+  } else {
+    imageX = padding;
+  }
+  const imageY = topY + (topH - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  // Keep the label centred; shift it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (label.length * fontSize * 0.6) / 2;   // or your measureText() version
+
+  if (position === 'left') {
+    textX = Math.max(w / 2, padding + imageWidth + gap + halfText);
+  } else if (position === 'right') {
+    textX = Math.min(w / 2, w - padding - imageWidth - gap - halfText);
+  }
+}
+
+  // -----------------------------------------
+  // 3. Label
+  // -----------------------------------------
+
+  if (label) {
+
+    const text = new TextBlock({
+      text: label,
+      x: textX,
+      y: topY + topH / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'bold';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily ||
+      'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+
+
+
+public buttonBelevedVisual(options: any): Group {
+
+  const dataItem =
+    options?.dataItem?.dataItem ??
+    options?.dataItem ??
+    {};
+
+  // -----------------------------------------
+  // Shared button state and colors
+  // -----------------------------------------
+
+  const {
+    state,
+    disabled,
+    attributes,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(
+      options?.width ??
+      shape?.width ??
+      dataItem?.width ??
+      181
+    )
+  );
+
+  const h = Math.max(
+    16,
+    Number(
+      options?.height ??
+      shape?.height ??
+      dataItem?.height ??
+      60
+    )
+  );
+
+  const label = String(dataItem?.text ?? '');
+
+  // -----------------------------------------
+  // Geometry
+  // -----------------------------------------
+
+  const radius = Math.min(14, h / 3) - 10;
+
+  const bevel = Math.max(
+    2,
+    Math.min(5, Math.min(w, h) * 0.08)
+  );
+
+  const b = state === 'pressed'
+    ? Math.max(1, bevel * 0.5)
+    : bevel;
+
+  const faceRadius = Math.max(0, radius - b);
+
+  // -----------------------------------------
+  // Bevel colors
+  // -----------------------------------------
+
+  const baseColor = actualFillBase;
+
+  const faceColor =
+    state === 'hover' && !disabled
+      ? this.lighten(actualFillTop, 0.20)
+      : actualFillTop;
+
+  // Normal: light from top-left, shadow on bottom-right.
+  let topEdgeColor = this.lighten(faceColor, 0.65);
+  let leftEdgeColor = this.lighten(faceColor, 0.35);
+
+  let rightEdgeColor = this.darken(baseColor, 0.05);
+  let bottomEdgeColor = this.darken(baseColor, 0.25);
+
+  if (state === 'hover') {
+
+    // Slightly brighter overall, preserving bevel direction.
+    topEdgeColor = this.lighten(faceColor, 0.75);
+    leftEdgeColor = this.lighten(faceColor, 0.45);
+
+    rightEdgeColor = this.darken(baseColor, 0.02);
+    bottomEdgeColor = this.darken(baseColor, 0.15);
+  }
+
+  if (state === 'pressed') {
+
+    // Invert the light and shadow to simulate a pressed button.
+    topEdgeColor = this.darken(faceColor, 0.20);
+    leftEdgeColor = this.darken(faceColor, 0.10);
+
+    rightEdgeColor = this.lighten(baseColor, 0.15);
+    bottomEdgeColor = this.lighten(baseColor, 0.25);
+  }
+
+  if (state === 'disabled') {
+
+    // Desaturated grey appearance.
+    topEdgeColor = '#E2E2E2';
+    leftEdgeColor = '#D8D8D8';
+
+    rightEdgeColor = '#A0A0A0';
+    bottomEdgeColor = '#909090';
+  }
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+  // -----------------------------------------
+  // 1. Outer rounded base
+  // -----------------------------------------
+
+  const base = new Rectangle({
+    x: 0,
+    y: 0,
+    width: w,
+    height: h,
+    cornerRadius: radius,
+    fill: {
+      color: baseColor
+    },
+    stroke: {
+      color: leftEdgeColor,
+      width: 0
+    }
+  } as any);
+
+  group.append(base);
+
+  // -----------------------------------------
+  // 2. Rounded button face
+  // -----------------------------------------
+
+  // const face = new Rectangle({
+  //   x: b,
+  //   y: b,
+  //   width: Math.max(1, w - 2 * b),
+  //   height: Math.max(1, h - 2 * b),
+  //   cornerRadius: faceRadius,
+  //   fill: {
+  //     color: faceColor
+  //   },
+  //   stroke: {
+  //     color: faceColor,
+  //     width: 0
+  //   }
+  // } as any);
+
+  // group.append(face);
+
+  
+// -----------------------------------------
+// 3. Top highlight — overlaps both corners
+// -----------------------------------------
+const top = new Rectangle({
+  x: 0,
+  y: 0,
+  width: w,
+  height: b,
+  cornerRadius: radius,
+  fill: { color: topEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(top);
+
+// -----------------------------------------
+// 4. Left highlight — overlaps top/bottom
+// -----------------------------------------
+const left = new Rectangle({
+  x: 0,
+  y: 0,
+  width: b,
+  height: h,
+  cornerRadius: radius,
+  fill: { color: topEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(left);
+
+// -----------------------------------------
+// 5. Right dark bevel — overlaps top/bottom
+// -----------------------------------------
+const right = new Rectangle({
+  x: w - b ,
+  y: 0,
+  width: b,
+  height: h,
+  cornerRadius: radius,
+  fill: { color: rightEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(right);
+
+// -----------------------------------------
+// 6. Bottom dark bevel — overlaps both corners
+// -----------------------------------------
+const bottom = new Rectangle({
+  x: 0,
+  y: h - b,
+  width: w,
+  height: b,
+  cornerRadius: radius,
+  fill: { color: bottomEdgeColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(bottom);
+// 7. Rounded button face — slightly overlaps the bevels.
+const faceOverlap = Math.min(2, b * 0.4);
+const faceInset = b - faceOverlap;
+
+const faceWidth = w * 0.95;
+const faceHeight = h * 0.90;
+
+const faceX = (w - faceWidth) / 2;
+const faceY = (h - faceHeight) / 2;
+
+
+// Smaller radius prevents the base showing through at the corners.
+const faceCornerRadius = Math.max(
+  0,
+  Math.min(radius * 0.35, faceHeight / 2, faceWidth / 2)
+);
+
+const face = new Rectangle({
+  x: faceX,
+  y: faceY,
+  width: faceWidth,
+  height: faceHeight,
+  cornerRadius: faceCornerRadius,
+  fill: { color: faceColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(face);
+
+this.drawPattern(
+  group,
+  dataItem,
+  faceX,
+  faceY,
+  faceWidth,
+  faceHeight,
+  faceCornerRadius
+);
+
+
+ const imageSource = dataItem?.imageSource;
+const labelText = String(dataItem?.text ?? '');
+let textX = w / 2;
+
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
+
+  // false only for false / 0 / "false" / "0"; a missing value keeps scaling on.
+  const scaleImage =
+    !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
+
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
+
+  if (scaleImage) {
+    // Scales with the button face: height is a fraction of the face height.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = faceHeight * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    // Never let a wide image take more than 40% of the face.
+    const maxWidth = faceWidth * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
+    }
+
+    padding = Math.max(6, faceHeight * 0.15);
+    gap     = Math.max(6, faceHeight * 0.12);
+  } else {
+    // Fixed size, exactly imageWidth x imageHeight pixels.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
+  }
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = faceX + faceWidth - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = faceX + (faceWidth - imageWidth) / 2;
+  } else {
+    imageX = faceX + padding;
+  }
+  const imageY = faceY + (faceHeight - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  // Keep the label where it was (w / 2) and move it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (labelText.length * fontSize * 0.6) / 2;   // or your measureText() version
+
+  if (position === 'left') {
+    textX = Math.max(w / 2, faceX + padding + imageWidth + gap + halfText);
+  } else if (position === 'right') {
+    textX = Math.min(w / 2, faceX + faceWidth - padding - imageWidth - gap - halfText);
+  }
+}
+
+  // -----------------------------------------
+  // 7. Label
+  // -----------------------------------------
+
+  if (label) {
+    const text = new TextBlock({
+      text: label,
+      x: textX,
+      y: h / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'normal';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily || 'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+public buttonRecessedVisual(options: any): Group {
+  const dataItem = options?.dataItem?.dataItem ?? options?.dataItem ?? {};
+
+  const {
+    state,
+    disabled,
+    attributes,
+    actualFillTop,
+    actualFillBase,
+    actualTextColor
+  } = this.getButtonVisualStyle(dataItem);
+
+  const shape = options?.dataItem ?? {};
+
+  const w = Math.max(
+    20,
+    Number(options?.width ?? shape?.width ?? dataItem?.width ?? 181)
+  );
+
+  const h = Math.max(
+    16,
+    Number(options?.height ?? shape?.height ?? dataItem?.height ?? 60)
+  );
+
+  const label = String(dataItem?.text ?? '');
+
+  const radius = Math.min(10, h * 0.18);
+  const bevel = Math.max(3, Math.min(8, Math.min(w, h) * 0.08));
+
+  // The face is inset from the outer edge.
+  const b = state === 'pressed' ? bevel * 0.7 : bevel;
+
+  
+
+  
+  const baseColor = actualFillBase;
+  const faceColor =
+  state === 'hover' && !disabled
+    ? this.lighten(actualFillTop, 0.20)
+    : actualFillTop;
+
+  // Intermediate-tone frame around the recessed button.
+  let borderColor = this.lighten(baseColor, 0.25);
+
+  if (state === 'hover') {
+    borderColor = this.lighten(baseColor, 0.35);
+  }
+
+  if (state === 'pressed') {
+    borderColor = this.lighten(baseColor, 0.15);
+  }
+
+  if (state === 'disabled') {
+    borderColor = '#BDBDBD';
+  }
+
+  // Recessed bevel: dark top/left, light bottom/right.
+  let topColor = this.darken(baseColor, 0.35);
+  let leftColor = this.darken(baseColor, 0.20);
+  let rightColor = this.lighten(faceColor, 0.45);
+  let bottomColor = this.lighten(faceColor, 0.65);
+  let innerShadowColor = this.darken(faceColor, 0.12);
+
+  if (state === 'hover') {
+    topColor = this.darken(baseColor, 0.25);
+    leftColor = this.darken(baseColor, 0.12);
+    rightColor = this.lighten(faceColor, 0.55);
+    bottomColor = this.lighten(faceColor, 0.72);
+    innerShadowColor = this.darken(faceColor, 0.08);
+  }
+
+  if (state === 'pressed') {
+    // A pressed recessed button appears deeper.
+    topColor = this.darken(baseColor, 0.45);
+    leftColor = this.darken(baseColor, 0.30);
+    rightColor = this.lighten(faceColor, 0.30);
+    bottomColor = this.lighten(faceColor, 0.45);
+    innerShadowColor = this.darken(faceColor, 0.20);
+  }
+
+  if (state === 'disabled') {
+    topColor = '#858585';
+    leftColor = '#A0A0A0';
+    rightColor = '#E0E0E0';
+    bottomColor = '#F0F0F0';
+    innerShadowColor = '#C8C8C8';
+  }
+
+  const group = new Group({
+    cursor: disabled ? 'default' : 'pointer'
+  } as any);
+
+ 
+// 1. Outer rounded border — make it clearly visible.
+const borderWidth = Math.max(4, bevel * 0.8);
+
+const border = new Rectangle({
+  x: 0,
+  y: 0,
+  width: w,
+  height: h,
+  cornerRadius: radius,
+  fill: { color: borderColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(border);
+const innerX = borderWidth;
+const innerY = borderWidth;
+const innerW = w - 2 * borderWidth;
+const innerH = h - 2 * borderWidth;
+const innerRadius = Math.max(0, radius - borderWidth);
+
+const faceX = innerX + b;
+const faceY = innerY + b;
+const faceW = Math.max(1, innerW - 2 * b);
+const faceH = Math.max(1, innerH - 2 * b);
+const faceRadius = Math.max(0, innerRadius - b * 0.5);
+
+// 2. Dark top bevel — extends across both corners.
+const top = new Rectangle({
+  x: innerX,
+  y: innerY,
+  width: innerW,
+  height: b,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: topColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(top);
+
+// 3. Dark left bevel — overlaps top and bottom.
+const left = new Rectangle({
+  x: innerX,
+  y: innerY,
+  width: b,
+  height: innerH,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: leftColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(left);
+
+// 4. Light right bevel — overlaps top and bottom.
+const right = new Rectangle({
+  x: innerX + innerW - b,
+  y: innerY,
+  width: b,
+  height: innerH,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: rightColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(right);
+
+// 5. Light bottom bevel — extends across both corners.
+const bottom = new Rectangle({
+  x: innerX,
+  y: innerY + innerH - b,
+  width: innerW,
+  height: b,
+  cornerRadius: Math.min(innerRadius, b / 2),
+  fill: { color: bottomColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(bottom);
+
+// 6. Rounded recessed face.
+const face = new Rectangle({
+  x: faceX,
+  y: faceY,
+  width: faceW,
+  height: faceH,
+  cornerRadius: faceRadius,
+  fill: { color: faceColor },
+  stroke: { width: 0 }
+} as any);
+
+group.append(face);
+
+this.drawPattern(
+  group,
+  dataItem,
+  faceX,
+  faceY,
+  faceW,
+  faceH,
+  faceRadius
+);
+
+
+ const imageSource = dataItem?.imageSource;
+const padding = 10;
+const gap = 8;
+let textX = faceX + faceW / 2;
+
+if (imageSource) {
+  const imageWidth = Number(dataItem.imageWidth) || 32;
+  const imageHeight = Number(dataItem.imageHeight) || 32;
+  const position = String(
+    dataItem.imagePosition || 'left'
+  ).toLowerCase();
+
+  let imageX: number;
+
+  if (position === 'right') {
+    imageX = faceX + faceW - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = faceX + (faceW - imageWidth) / 2;
+  } else {
+    imageX = faceX + padding;
+  }
+
+  const imageSource = dataItem?.imageSource;
+const labelText = String(dataItem?.text ?? '');
+const centerX = faceX + faceW / 2;
+let textX = centerX;
+
+if (imageSource) {
+  const baseWidth  = Number(dataItem.imageWidth)  || 32;
+  const baseHeight = Number(dataItem.imageHeight) || 32;
+
+  // false only for false / 0 / "false" / "0"; a missing value keeps scaling on.
+  const scaleImage =
+    !['false', '0'].includes(String(dataItem.imageScale).toLowerCase());
+
+  let imageWidth: number;
+  let imageHeight: number;
+  let padding: number;
+  let gap: number;
+
+  if (scaleImage) {
+    // Scales with the button face: height is a fraction of the face height.
+    const aspect = baseWidth / baseHeight;
+    const heightRatio = Number(dataItem.imageScaleRatio) || 0.55;
+
+    imageHeight = faceH * heightRatio;
+    imageWidth  = imageHeight * aspect;
+
+    // Never let a wide image take more than 40% of the face.
+    const maxWidth = faceW * 0.4;
+    if (imageWidth > maxWidth) {
+      imageWidth  = maxWidth;
+      imageHeight = imageWidth / aspect;
+    }
+
+    padding = Math.max(6, faceH * 0.15);
+    gap     = Math.max(6, faceH * 0.12);
+  } else {
+    // Fixed size, exactly imageWidth x imageHeight pixels.
+    imageWidth  = baseWidth;
+    imageHeight = baseHeight;
+    padding = 10;
+    gap = 8;
+  }
+
+  const position = String(dataItem.imagePosition || 'left').toLowerCase();
+
+  let imageX: number;
+  if (position === 'right') {
+    imageX = faceX + faceW - padding - imageWidth;
+  } else if (position === 'center') {
+    imageX = faceX + (faceW - imageWidth) / 2;
+  } else {
+    imageX = faceX + padding;
+  }
+  const imageY = faceY + (faceH - imageHeight) / 2;
+
+  group.append(new DiagramImage({
+    source: imageSource,
+    x: imageX,
+    y: imageY,
+    width: imageWidth,
+    height: imageHeight
+  }));
+
+  // Keep the label centred on the face; move it only if it would overlap the image.
+  const fontSize = Number(dataItem?.fontSize) || 14;
+  const halfText = (labelText.length * fontSize * 0.6) / 2;   // or your measureText() version
+
+  if (position === 'left') {
+    textX = Math.max(centerX, faceX + padding + imageWidth + gap + halfText);
+  } else if (position === 'right') {
+    textX = Math.min(centerX, faceX + faceW - padding - imageWidth - gap - halfText);
+  }
+}
+
+  // 8. Label.
+  if (label) {
+    const text = new TextBlock({
+      text: label,
+      x: textX,
+      y: faceY + faceH / 2 + 5,
+      fill: actualTextColor
+    });
+
+    (text.options as any).fontSize =
+      Number(dataItem?.fontSize) || 14;
+
+    (text.options as any).fontWeight =
+      dataItem?.fontWeight || 'normal';
+
+    (text.options as any).fontFamily =
+      dataItem?.fontFamily || 'Arial, sans-serif';
+
+    (text.options as any).textAnchor = 'middle';
+
+    group.append(text);
+  }
+
+  return group;
+}
+
+}
+
+  public disableButton1023(){
+    const shape = this.diagram?.getShapeById("Button:1023");
+
+    if (shape) {
+
+      const dataItem =
+        shape.dataItem?.dataItem ??
+        shape.dataItem ??
+        {};
+
+      dataItem.disabled = true;
+
+      this.refreshCustomShape(shape);
+    }
+  }
+
+////// patterns
+
+
+
+private addPatternPath(
+  group: Group,
+  points: Array<[number, number]>,
+  color: string,
+  width: number = 1
+): void {
+  if (points.length < 2) {
+    return;
+  }
+
+  // Build an SVG path string: "M x0 y0 L x1 y1 L x2 y2 ..."
+  const data = points
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0]} ${p[1]}`)
+    .join(' ');
+
+  const path = new Path({
+    data,
+    stroke: { color, width },
+    fill: { color: 'transparent' }
+  });
+
+  group.append(path);
+}
+
+
+private drawDots(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  radius: number, color: string, size: number, spacing: number
+): void {
+  // Use tiny filled rectangles for dots to avoid Circle geometry issues.
+  const d = Math.max(1, size * 0.6);
+
+  for (let cy = y + spacing / 2; cy < y + h; cy += spacing) {
+    for (let cx = x + spacing / 2; cx < x + w; cx += spacing) {
+      const dot = new Rectangle({
+        x: cx - d / 2,
+        y: cy - d / 2,
+        width: d,
+        height: d,
+        cornerRadius: d / 2,
+        fill: { color },
+        stroke: { width: 0 }
+      } as any);
+
+      group.append(dot);
+    }
+  }
+}
+
+private drawChecks(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number
+): void {
+  const cell = Math.max(spacing, size * 2);
+
+  for (let cy = y; cy < y + h; cy += cell) {
+    for (let cx = x; cx < x + w; cx += cell) {
+      const even = (Math.floor((cx - x) / cell) +
+                    Math.floor((cy - y) / cell)) % 2 === 0;
+
+      if (even) {
+        group.append(new Rectangle({
+          x: cx, y: cy,
+          width: Math.min(cell, x + w - cx),
+          height: Math.min(cell, y + h - cy),
+          fill: { color },
+          stroke: { width: 0 }
+        } as any));
+      }
+    }
+  }
+}
+
+private drawBoxes(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const factor = style === 'small boxes' ? 0.6 :
+                 style === 'medium boxes' ? 1.0 : 1.6;
+  const cell = Math.max(3, spacing * factor);
+
+  for (let cy = y; cy < y + h; cy += cell) {
+    for (let cx = x; cx < x + w; cx += cell) {
+      group.append(new Rectangle({
+        x: cx, y: cy,
+        width: Math.min(cell, x + w - cx),
+        height: Math.min(cell, y + h - cy),
+        fill: { color, opacity: 0 },
+        stroke: { color, width: Math.max(1, size / 3) }
+      } as any));
+    }
+  }
+}
+
+private drawStraightLines(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const vertical = style.includes('vertical');
+  const wide = style.includes('wide');
+  const gap = wide ? spacing * 1.8 : spacing;
+  const lineWidth = Math.max(1, wide ? size * 0.65 : size * 0.3);
+
+  if (vertical) {
+    for (let cx = x; cx <= x + w; cx += gap) {
+      this.addPatternPath(group, [[cx, y], [cx, y + h]], color, lineWidth);
+    }
+  } else {
+    for (let cy = y; cy <= y + h; cy += gap) {
+      this.addPatternPath(group, [[x, cy], [x + w, cy]], color, lineWidth);
+    }
+  }
+}
+
+private drawDiagonalPattern(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const wide = style.includes('wide');
+  const gap = wide ? spacing * 1.8 : spacing;
+  const lineWidth = Math.max(1, wide ? size * 0.65 : size * 0.3);
+
+  const drawRight = style === 'right diagonal' ||
+                    style === 'wide right diagonal' ||
+                    style === 'hatch';
+  const drawLeft = style === 'left diagonal' ||
+                   style === 'wide left diagonal' ||
+                   style === 'hatch';
+
+  // Generate diagonal segments spanning the rectangular face.
+  for (let offset = -h; offset <= w; offset += gap) {
+    if (drawRight) {
+      this.addPatternPath(
+        group,
+        [[x + offset, y], [x + offset + h, y + h]],
+        color,
+        lineWidth
+      );
+    }
+
+    if (drawLeft) {
+      this.addPatternPath(
+        group,
+        [[x + offset, y + h], [x + offset + h, y]],
+        color,
+        lineWidth
+      );
+    }
+  }
+}
+
+private drawBricks(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number
+): void {
+  const brickW = Math.max(spacing * 2, size * 3);
+  const brickH = Math.max(spacing, size * 1.5);
+  const lineWidth = Math.max(1, size / 3);
+
+  for (let row = 0, cy = y; cy <= y + h; row++, cy += brickH) {
+    const offset = row % 2 ? brickW / 2 : 0;
+
+    this.addPatternPath(
+      group, [[x, cy], [x + w, cy]], color, lineWidth
+    );
+
+    for (let cx = x + offset; cx <= x + w; cx += brickW) {
+      this.addPatternPath(
+        group,
+        [[cx, cy], [cx, Math.min(cy + brickH, y + h)]],
+        color,
+        lineWidth
+      );
+    }
+  }
+}
+
+private drawDecorativePattern(
+  group: Group,
+  x: number, y: number, w: number, h: number,
+  color: string, size: number, spacing: number, style: string
+): void {
+  const cellW = Math.max(spacing * 1.5, size * 2);
+  const cellH = Math.max(spacing, size * 1.5);
+  const lineWidth = Math.max(1, size / 3);
+
+  for (let cy = y; cy < y + h; cy += cellH) {
+    for (let cx = x; cx < x + w; cx += cellW) {
+      const rw = Math.min(cellW, x + w - cx);
+      const rh = Math.min(cellH, y + h - cy);
+
+      if (style === 'diamonds') {
+        this.addPatternPath(
+          group,
+          [
+            [cx + rw / 2, cy],
+            [cx + rw, cy + rh / 2],
+            [cx + rw / 2, cy + rh],
+            [cx, cy + rh / 2],
+            [cx + rw / 2, cy]
+          ],
+          color, lineWidth
+        );
+      } else if (style === 'ovals') {
+        // Approximate an oval with a closed polygon.
+        const points: Array<[number, number]> = [];
+        for (let i = 0; i <= 16; i++) {
+          const angle = (i / 16) * Math.PI * 2;
+          points.push([
+            cx + rw / 2 + Math.cos(angle) * rw / 2,
+            cy + rh / 2 + Math.sin(angle) * rh / 2
+          ]);
+        }
+        this.addPatternPath(group, points, color, lineWidth);
+      } else if (style === 'scales') {
+        this.addPatternPath(
+          group,
+          [
+            [cx, cy + rh],
+            [cx + rw / 2, cy],
+            [cx + rw, cy + rh]
+          ],
+          color, lineWidth
+        );
+      } else if (style === 'waves') {
+        const points: Array<[number, number]> = [];
+        for (let i = 0; i <= 12; i++) {
+          const px = cx + (i / 12) * rw;
+          const py = cy + rh / 2 +
+            Math.sin((i / 12) * Math.PI * 2) * rh / 2;
+          points.push([px, py]);
+        }
+        this.addPatternPath(group, points, color, lineWidth);
+      }
+    }
+  }
+}
+
+
+private drawPattern(
+  group: Group,
+  dataItem: any,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+): void {
+  const style = String(dataItem?.patternStyle ?? '')
+    .trim()
+    .toLowerCase();
+
+  if (!style || style === 'none') {
+    return;
+  }
+
+  const color = dataItem?.patternColor || '#FFFFFF';
+  const size = Math.max(1, Number(dataItem?.patternSize) || 5);
+  const spacing = Math.max(
+    size + 1,
+    Number(dataItem?.patternSpacing) || 10
+  );
+
+  switch (style) {
+    case 'dots':
+      this.drawDots(group, x, y, width, height, radius, color, size, spacing);
+      break;
+
+    case 'checks':
+      this.drawChecks(group, x, y, width, height, color, size, spacing);
+      break;
+
+    case 'small boxes':
+    case 'medium boxes':
+    case 'large boxes':
+      this.drawBoxes(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+
+    case 'vertical lines':
+    case 'wide vertical lines':
+    case 'horizontal lines':
+    case 'wide horizontal lines':
+      this.drawStraightLines(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+
+    case 'right diagonal':
+    case 'wide right diagonal':
+    case 'left diagonal':
+    case 'wide left diagonal':
+    case 'hatch':
+      this.drawDiagonalPattern(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+
+    case 'bricks':
+      this.drawBricks(group, x, y, width, height, color, size, spacing);
+      break;
+
+    case 'ovals':
+    case 'diamonds':
+    case 'scales':
+    case 'waves':
+      this.drawDecorativePattern(
+        group, x, y, width, height, color, size, spacing, style
+      );
+      break;
+  }
+}
+
+private isShapeTarget(event: PointerEvent): boolean {
+  const target = event.target;
+
+  if (!(target instanceof Element)) {
+    return false;
+  }
+
+  // The SVG root itself represents the diagram background
+  // in your current test.
+  return target instanceof SVGElement &&
+         target.tagName.toLowerCase() !== 'svg';
+}
+
+@HostListener('document:pointerup')
+onPointerUp(): void {
+  console.log('ButtonSensor: document pointerup');
+  this.releasePressedButton();
+}
+
+@HostListener('document:pointercancel')
+onPointerCancel(): void {
+  console.log('ButtonSensor: document pointercancel');
+  this.releasePressedButton();
+}
+
+@HostListener('window:blur')
+onWindowBlur(): void {
+  if (!this.pressedShapeId) return;
+
+  console.log('ButtonSensor: window blur - releasing button');
+  this.releasePressedButton();
+}
+
+@HostListener('document:pointerdown', ['$event'])
+onPointerDown(event: PointerEvent): void {
+  if (event.button !== 0) return;
+
+  const isShape = this.isShapeTarget(event);
+
+  console.log('ButtonSensor: pointerdown', {
+    isShape,
+    currentShapeId: this.currentShapeId,
+    targetTag: (event.target as Element)?.tagName
+  });
+
+  if (!isShape || !this.currentShapeId) {
+    return;
+  }
+
+  const shapeId = this.currentShapeId;
+
+  // Verify that the current shape is actually a button.
+  const shape = this.diagram?.getShapeById(shapeId);
+  if (!shape) {
+    console.warn('ButtonSensor: shape not found', shapeId);
+    return;
+  }
+
+  const dataItem = this.shapeDataItem(shape);
+  if (!dataItem) return;
+console.log('ButtonSensor: dataItem:', dataItem);
+  const type = String(dataItem.libraryKind ?? '').toLowerCase();
+
+  const isButton = [
+    'button',
+    'push button',
+    'momentary',
+    'momentry',
+    'maintained',
+    'latched',
+    'multistate',
+    'interlocked',
+    'ramp button',
+    'navigation button'
+  ].includes(type);
+
+  if (!isButton) {
+    console.log('ButtonSensor: current shape is not a button', type);
+    return;
+  }
+
+  this.pressedShapeId = shapeId;
+  this.setButtonState(shapeId, 'pressed');
+}
+
+private releasePressedButton(): void {
+  if (!this.pressedShapeId) {
+    return;
+  }
+
+  const id = this.pressedShapeId;
+
+  console.log('ButtonSensor: releasing button', id);
+
+  this.pressedShapeId = null;
+  this.setButtonState(id, 'normal');
+}
+
+private setButtonState(
+  shapeId: string,
+  state: 'normal' | 'pressed'
+): void {
+  console.log('ButtonSensor: setButtonState', shapeId);
+  if (!shapeId || !this.diagram) return;
+
+  const shape = this.diagram.getShapeById(shapeId);
+  if (!shape) {
+    console.warn('ButtonSensor: shape not found', shapeId);
+    return;
+  }
+
+  const dataItem = this.shapeDataItem(shape);
+  if (!dataItem) return;
+
+  if (dataItem.disabled === true) {
+    state = 'normal';
+  }
+
+  if (dataItem.buttonState === state) return;
+
+  // Update the state first.
+  dataItem.buttonState = state;
+
+  // Redraw the custom visual.
+  this.refreshCustomShape(shape);
+
+  console.log(
+    `ButtonSensor: refreshed ${shapeId}, state=${state}`
+  );
+}
+// Tool that will be created when the user releases the pointer.
+// Set when the user picks a shape from the toolbar; cleared on release.
+public pendingDragTool: string | null = null;
+public pendingDragShapeType: string | null = null; // original toolbar label, e.g. 'Rectangle'
+private pendingDragIsLibraryOnly = false;           // true for library kinds (richText, container...)
+// Bounding box while dragging (for preview + final placement).
+private dragBoxStart: { x: number; y: number } | null = null;
+private dragBoxCurrent: { x: number; y: number } | null = null;
+public dragBoxPreviewX = 0;
+public dragBoxPreviewY = 0;
+public dragBoxPreviewW = 0;
+public dragBoxPreviewH = 0;
+
+private armDragTool(shapeType: string): void {
+  this.resetFreehandState(false);
+  this.insertShapeFlag = false;
+  this.diagram?.deselect();
+
+  this.pendingDragShapeType = shapeType;
+  this.pendingDragTool = this.shapeToIconKey[shapeType] ?? 'default';
+
+  const libraryOnlyKinds = [
+    'rectangle','rounded rectangle','elipse','arc','polygon',
+    'polyline','wedge','panel','freehand','image','text'
+  ];
+  this.pendingDragIsLibraryOnly =
+    libraryOnlyKinds.includes(shapeType.toLowerCase());
+
+  this.freehandMode = true;
+  this.freehandStraight = false;
+  this.freehandPoints = [];
+  this.statusMessage =
+    `Drag on the diagram to size the ${shapeType}, then release.`;
+}
+private async insertShapeFromBox(
+  shapeType: string,
+  x: number, y: number, width: number, height: number
+): Promise<void> {
+  // Choose the library kind that visually represents this SCD shape.
+  const kind = this.shapeToIconKey[shapeType] ?? 'default';
+  console.log("insertShapeFromBox:")
+  let kendoui_content: any = { id: shapeType };
+
+  // Reuse the existing SCD pipeline so DB rows are created exactly as before.
+  kendoui_content = await this.insertSCDShape(kendoui_content, shapeType,x,y, width,height );
+
+  // Store the click position on the kendoui_content object (matches old code).
+  const diagramX = x;
+  const diagramY = y;
+  kendoui_content[diagramX] = diagramX;
+  kendoui_content[diagramY] = diagramY;
+
+  await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType);
+
+  // Build the options the same way insertShape does, but with the real box.
+  const options: any = {
+    x, y, width, height,
+    SHAPE_ID:   kendoui_content.id,
+    SHAPE_TYPE: shapeType,
+    text:       "",
+    fillColor:  "#D3D3D3"
+  };
+
+  if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
+    && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
+    let copiedShape = this.starServices.sessionParams['COPIED_SHAPE'];
+    let kendoui_content = JSON.parse(copiedShape.kendoui_content);
+    console.log("kendoui_content:",kendoui_content)
+    kendoui_content.id = copiedShape.id;
+    this.starServices.sessionParams['COPIED_SHAPE'] = "";
+    let shapeType = "SYMPOL_FACTORY";
+    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType, x, y,  width, height);
+    this.add_new_shape(kendoui_content, copiedShape.type, x, y, width, height);
+    this.updateShapes();
+    this.resetFreehandState(false);
+    
+  }
+  else
+    this.addLibraryShape(kind, options, true);
+}
+private updateDragBoxPreview(event: PointerEvent): void {
+  const start = this.dragBoxStart, end = this.dragBoxCurrent;
+  if (!start || !end) { this.clearDragBoxPreview(); return; }
+
+  // Convert both model corners back to stage coords for the SVG overlay.
+  const stageStart = this.modelToStage(start.x, start.y);
+  const stageEnd   = this.modelToStage(end.x,   end.y);
+  if (!stageStart || !stageEnd) { this.clearDragBoxPreview(); return; }
+
+  this.dragBoxPreviewX = Math.min(stageStart.x, stageEnd.x);
+  this.dragBoxPreviewY = Math.min(stageStart.y, stageEnd.y);
+  this.dragBoxPreviewW = Math.abs(stageEnd.x - stageStart.x);
+  this.dragBoxPreviewH = Math.abs(stageEnd.y - stageStart.y);
+}
+
+private clearDragBoxPreview(): void {
+  this.dragBoxPreviewX = this.dragBoxPreviewY = 0;
+  this.dragBoxPreviewW = this.dragBoxPreviewH = 0;
+}
+
+/** Inverse of pointerToModel — model coords → stage (SVG) coords. */
+private modelToStage(modelX: number, modelY: number): { x: number; y: number } | null {
+  if (!this.diagramHost) return null;
+  return {
+    x: modelX * this.zoomLevel - this.currentPan.x,
+    y: modelY * this.zoomLevel - this.currentPan.y
+  };
+}
+
 }
 
