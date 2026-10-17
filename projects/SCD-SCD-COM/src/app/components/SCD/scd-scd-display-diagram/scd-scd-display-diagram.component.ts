@@ -2090,7 +2090,24 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       connect: false // This disables the hover connection dots safely
     }
   };
+public get canGroup(): boolean {
+    return this.selectedShapes().length >= 2;
+  }
 
+  /** Align commands need at least two selected shapes. */
+  public get canAlign(): boolean {
+    return this.selectedShapes().length >= 2;
+  }
+
+  /** Even spacing is only meaningful with three or more shapes. */
+  public get canDistribute(): boolean {
+    return this.selectedShapes().length >= 3;
+  }
+
+  public get canUngroup(): boolean {
+    const shapes = this.selectedShapes();
+    return shapes.length === 1 && this.isGroupRuntimeShape(shapes[0]);
+  }
 public markers:any = [];
 public performMapperFrom(In) {
     
@@ -5823,6 +5840,87 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
   }
   public flipVertical(): void {
     this.toggleFlip("vertical");
+  }
+  /**
+   * Align the selected shapes to the bounding box of the whole selection:
+   * left/right/center edges, top/bottom/middle edges, or both centers.
+   */
+  public alignSelected(mode: "left" | "right" | "center" | "top" | "bottom" | "middle" | "centerPoints"): void {
+    const shapes = this.selectedShapes();
+    if (shapes.length < 2) {
+      this.statusMessage = "Select at least two shapes to align them.";
+      return;
+    }
+
+    const boxes = shapes.map(shape => ({ shape, bounds: shape.bounds() }));
+    const left = Math.min(...boxes.map(item => item.bounds.x));
+    const top = Math.min(...boxes.map(item => item.bounds.y));
+    const right = Math.max(...boxes.map(item => item.bounds.x + item.bounds.width));
+    const bottom = Math.max(...boxes.map(item => item.bounds.y + item.bounds.height));
+    const centerX = (left + right) / 2;
+    const centerY = (top + bottom) / 2;
+
+    for (const { shape, bounds } of boxes) {
+      let x = bounds.x;
+      let y = bounds.y;
+      switch (mode) {
+        case "left": x = left; break;
+        case "right": x = right - bounds.width; break;
+        case "center": x = centerX - bounds.width / 2; break;
+        case "top": y = top; break;
+        case "bottom": y = bottom - bounds.height; break;
+        case "middle": y = centerY - bounds.height / 2; break;
+        case "centerPoints":
+          x = centerX - bounds.width / 2;
+          y = centerY - bounds.height / 2;
+          break;
+      }
+      this.moveShapePreservingBounds(shape, x, y, true);
+    }
+
+    const labels: Record<string, string> = {
+      left: "left", right: "right", center: "center", top: "top",
+      bottom: "bottom", middle: "middle", centerPoints: "center points"
+    };
+    this.statusMessage = `Aligned ${shapes.length} shapes: ${labels[mode]}.`;
+    setTimeout(() => this.syncInspectorFromSelection(false));
+  }
+
+  /**
+   * Space the selected shapes evenly between the outermost two, which stay
+   * where they are. Order follows each shape's current position.
+   */
+  public distributeSelected(axis: "horizontal" | "vertical"): void {
+    const shapes = this.selectedShapes();
+    if (shapes.length < 3) {
+      this.statusMessage = "Select at least three shapes to space them evenly.";
+      return;
+    }
+
+    const horizontal = axis === "horizontal";
+    const items = shapes
+      .map(shape => ({ shape, bounds: shape.bounds() }))
+      .sort((a, b) => horizontal ? a.bounds.x - b.bounds.x : a.bounds.y - b.bounds.y);
+
+    const size = (item: { bounds: any }): number => horizontal ? item.bounds.width : item.bounds.height;
+    const start = horizontal ? items[0].bounds.x : items[0].bounds.y;
+    const last = items[items.length - 1];
+    const end = (horizontal ? last.bounds.x : last.bounds.y) + size(last);
+    const totalSize = items.reduce((sum, item) => sum + size(item), 0);
+    const gap = (end - start - totalSize) / (items.length - 1);
+
+    let cursor = start;
+    for (const item of items) {
+      if (horizontal) {
+        this.moveShapePreservingBounds(item.shape, cursor, item.bounds.y, true);
+      } else {
+        this.moveShapePreservingBounds(item.shape, item.bounds.x, cursor, true);
+      }
+      cursor += size(item) + gap;
+    }
+
+    this.statusMessage = `Spaced ${items.length} shapes evenly ${horizontal ? "horizontally" : "vertically"}.`;
+    setTimeout(() => this.syncInspectorFromSelection(false));
   }
    private toggleFlip(axis: "horizontal" | "vertical"): void {
     const shapes = this.selectedShapes();

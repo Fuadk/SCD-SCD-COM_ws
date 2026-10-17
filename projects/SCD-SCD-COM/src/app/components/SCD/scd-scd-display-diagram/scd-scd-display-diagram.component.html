@@ -167,6 +167,18 @@
     (click)="processButton('ungroupSelected')" class="toolbar-btn">
     <span class="button-icon">🔳</span>
   </button>
+  <div class="toolbar-group">
+      <span class="toolbar-label">Align</span>
+      <button type="button" class="tool-btn" (click)="alignSelected('left')" [disabled]="!canAlign" title="Line up the left edges of the selected shapes">Align Left</button>
+      <button type="button" class="tool-btn" (click)="alignSelected('center')" [disabled]="!canAlign" title="Line up the horizontal centers of the selected shapes">Align Center</button>
+      <button type="button" class="tool-btn" (click)="alignSelected('right')" [disabled]="!canAlign" title="Line up the right edges of the selected shapes">Align Right</button>
+      <button type="button" class="tool-btn" (click)="alignSelected('top')" [disabled]="!canAlign" title="Line up the top edges of the selected shapes">Align Top</button>
+      <button type="button" class="tool-btn" (click)="alignSelected('middle')" [disabled]="!canAlign" title="Line up the vertical centers of the selected shapes">Align Middle</button>
+      <button type="button" class="tool-btn" (click)="alignSelected('bottom')" [disabled]="!canAlign" title="Line up the bottom edges of the selected shapes">Align Bottom</button>
+      <button type="button" class="tool-btn" (click)="alignSelected('centerPoints')" [disabled]="!canAlign" title="Put the centers of the selected shapes on the same point">Align Center Points</button>
+      <button type="button" class="tool-btn" (click)="distributeSelected('horizontal')" [disabled]="!canDistribute" title="Equal horizontal gaps between three or more shapes">Space Horizontal</button>
+      <button type="button" class="tool-btn" (click)="distributeSelected('vertical')" [disabled]="!canDistribute" title="Equal vertical gaps between three or more shapes">Space Vertical</button>
+    </div>
 </ng-container>
     </div>
     <!-- Tooltip Popup - Shows only in Edit Mode -->
