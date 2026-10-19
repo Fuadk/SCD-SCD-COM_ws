@@ -3,7 +3,7 @@ import { Component, Input, Output,ViewChild, EventEmitter,
    OnDestroy, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { DialogService } from '@progress/kendo-angular-dialog';
-import { geometry } from '@progress/kendo-drawing';
+import { geometry, LinearGradient } from '@progress/kendo-drawing';
 import {
   KENDO_DIAGRAM,
   ShapeOptions,
@@ -159,6 +159,26 @@ interface LibraryShapeData {
   fontSize?: number;
   fontWeight?: string;
   textColor?: string;
+}
+/** SCADA-style animation bound to a simulated tag value on one shape. */
+interface ShapeAnimation {
+  type: string;
+  value: number;
+  min: number;
+  max: number;
+  colorA: string;
+  colorB: string;
+  warn: number;
+  alarm: number;
+  axis: "x" | "y";
+  distance: number;
+  speed: number;
+  unit: string;
+  textOn: string;
+  textOff: string;
+  clickToggle: boolean;
+  imageOn: string;
+  imageOff: string;
 }
 interface ShapeEditorStyle {
   fillColor?: string;
@@ -401,6 +421,7 @@ public disableDISPLAY_DATA = false;
 }
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
+    this.stopAnimationTimer();
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
     this.scadaSubscriptions.forEach(sub => sub.unsubscribe());
 
@@ -929,7 +950,7 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
 }
 
  async ON_CLICK_CONTEXT_MENU(menuType,event){
-      setTimeout(() => {
+        setTimeout(() => {
     this.selectedShape = null;
   });
 
@@ -950,6 +971,22 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
       if (event.text === "Line") {
         this.event = event;
         this.addLine();
+        this.menuType = menuType;
+        this.insertShapeFlag = true;
+        this.pendingShapeType = event.text;
+        return;
+      }
+      if ( (event.text === "Polygon") )  {
+        this.event = event;
+        this.addPolygon();               // enters polyMode = "polygon"
+        this.menuType = menuType;
+        this.insertShapeFlag = true;
+        this.pendingShapeType = event.text;
+        return;
+      }
+       if (  (event.text === "Polyline"))  {
+        this.event = event;
+        this.addPolyline();               // enters polyMode = "Polyline"
         this.menuType = menuType;
         this.insertShapeFlag = true;
         this.pendingShapeType = event.text;
@@ -1099,7 +1136,8 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
           Id = 'Navigation_Button_Properties';
           title = shapeType + ' Properties';
           break;
-        case 'Arrow':
+        case 'Arrow Horizontal':
+        case 'Arrow Vertical':
           Id = 'Arrow_Properties';
           break;
         case 'Panel':
@@ -1236,6 +1274,9 @@ if (!this.isEditMode)
       // Paste/duplicate/delete can add or remove runtime shapes. Reconcile
       // those changes with this.shapes as well.
       this.applyDiagramChangeToAppMemory(event);
+    }
+    if (type === "select" && this.animationRunning) {
+      this.handleAnimationClick(this.onlyShapes(event?.selected || []));
     }
     // ===== ZOOM TRACKING =====
     if (type === "zoomStart") {
@@ -1829,13 +1870,18 @@ public snapDistance = 6;
   }
   // Visual template that uses the diagram definition
 public visualTemplate = (options: any): Group => {
-  const dataItem =
+  const rawItem =
     options?.dataItem?.dataItem ??
     options?.dataItem;
 
-  if (!dataItem) {
+  if (!rawItem) {
     return new Group();
   }
+  // While animations run, draw from a copy whose fill reflects the live value.
+    const anim = this.activeAnimation(rawItem);
+    const dataItem = anim ? this.withAnimationStyle(rawItem, anim) : rawItem;
+
+  
   const visualMap = {
       button3DVisual: 'button3DVisual',
       buttonRaisedVisual: 'buttonRaisedVisual',
@@ -1909,9 +1955,490 @@ public visualTemplate = (options: any): Group => {
     group,
     dataItem.editorStyle
   );
+  if (anim) {
+      this.applyAnimationEffects(group, anim);
+    }
 
   return group;
 };
+// ---------------- Animation engine ----------------
+
+  private activeAnimation(dataItem: any): ShapeAnimation | null {
+    const a = dataItem?.animation;
+    if (!this.animationRunning || !a || a.type === "none") {
+      return null;
+    }
+    return { ...this.defaultAnimation(), ...a };
+  }
+
+  private animationRatio(a: ShapeAnimation): number {
+    const span = a.max - a.min;
+    return span === 0 ? 0 : Math.max(0, Math.min(1, (a.value - a.min) / span));
+  }
+
+  private lerpColor(from: string, to: string, t: number): string {
+    const parse = (hex: string): number[] => {
+      const h = hex.replace("#", "");
+      const full = h.length === 3 ? h.split("").map(c => c + c).join("") : h;
+      return [0, 2, 4].map(i => parseInt(full.substr(i, 2), 16) || 0);
+    };
+    const [r1, g1, b1] = parse(from);
+    const [r2, g2, b2] = parse(to);
+    const mix = (x: number, y: number): string =>
+      Math.round(x + (y - x) * t).toString(16).padStart(2, "0");
+    return `#${mix(r1, r2)}${mix(g1, g2)}${mix(b1, b2)}`;
+  }
+
+  /** Fill colour a colour-type animation wants for the current value. */
+  private animationFill(a: ShapeAnimation): string | undefined {
+    switch (a.type) {
+      case "blink":
+        if (a.value === 0) {
+          return undefined;
+        }
+        return Math.floor(Date.now() / Math.max(100, a.speed)) % 2 === 0 ? a.colorA : a.colorB;
+      case "discrete":
+        return a.value >= a.alarm ? "#e53935" : a.value >= a.warn ? "#fbc02d" : "#43a047";
+      case "analog":
+        return this.lerpColor(a.colorA, a.colorB, this.animationRatio(a));
+      default:
+        return undefined;
+    }
+  }
+
+  private withAnimationStyle(dataItem: any, a: ShapeAnimation): any {
+    const style: any = { ...(dataItem.editorStyle || {}) };
+    const extra: any = {};
+    const on = a.value !== 0;
+
+    switch (a.type) {
+      case "lamp":
+        style.fillColor = on ? a.colorA : a.colorB;
+        if (on) {
+          style.strokeColor = "#ffc107";
+        }
+        break;
+      case "alarm":
+        if (a.value === 1) {
+          style.fillColor = Math.floor(Date.now() / Math.max(100, a.speed)) % 2 === 0 ? a.colorA : "#330000";
+        } else if (a.value >= 2) {
+          style.fillColor = a.colorA;
+        }
+        break;
+      case "flow":
+        if (on) {
+          const dash = 10;
+          const gap = 6;
+          const travelled = (Date.now() / 1000) * Number(a.speed || 0) * (a.value < 0 ? -1 : 1);
+          style.strokeColor = a.colorA;
+          extra.animFlow = { dash, gap, phase: ((travelled % (dash + gap)) + dash + gap) % (dash + gap) };
+        }
+        break;
+      case "imageSwap": {
+        const src = on ? a.imageOn : a.imageOff;
+        if (src) {
+          extra.source = src;
+        }
+        break;
+      }
+      default: {
+        const fill = this.animationFill(a);
+        if (fill) {
+          style.fillColor = fill;
+        }
+      }
+    }
+    // Shapes with no fill (lines, buttons, panels) take the animated colour on
+    // their own parts, so hand it over as a separate value.
+    if (style.fillColor && style.fillColor !== dataItem.editorStyle?.fillColor) {
+      extra.animColor = style.fillColor;
+    }
+    return { ...dataItem, ...extra, editorStyle: style };
+  }
+  /**
+   * Dashes laid along a polyline and shifted by `phase`, so redrawing with a
+   * growing phase makes the dashes appear to flow along the line.
+   */
+  private flowDashData(pts: number[][], flow: { dash: number; gap: number; phase: number }): string {
+    const period = flow.dash + flow.gap;
+    let data = "";
+    let cumulative = 0;
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const [x1, y1] = pts[i];
+      const [x2, y2] = pts[i + 1];
+      const len = Math.hypot(x2 - x1, y2 - y1);
+      if (len === 0) {
+        continue;
+      }
+      const ux = (x2 - x1) / len;
+      const uy = (y2 - y1) / len;
+      // Dashes sit where ((distance - phase) mod period) < dash, so a growing
+      // phase moves them forward along the line.
+      const start = -((((cumulative - flow.phase) % period) + period) % period);
+      for (let t = start; t < len; t += period) {
+        const from = Math.max(0, t);
+        const to = Math.min(len, t + flow.dash);
+        if (to > from) {
+          data += `M ${x1 + ux * from},${y1 + uy * from} L ${x1 + ux * to},${y1 + uy * to} `;
+        }
+      }
+      cumulative += len;
+    }
+    return data.trim() || `M ${pts[0][0]},${pts[0][1]} L ${pts[0][0]},${pts[0][1]}`;
+  }
+
+  /** Transform / opacity / label effects, applied after the shape is drawn. */
+  private applyAnimationEffects(group: Group, a: ShapeAnimation): void {
+    const drawing = (group as any).drawingElement;
+    const bounds = drawing?.bbox?.();
+    if (!drawing || !bounds?.origin || !bounds?.size) {
+      return;
+    }
+    const left = bounds.origin.x;
+    const top = bounds.origin.y;
+    const w = bounds.size.width;
+    const h = bounds.size.height;
+    let t: any = null;
+
+    switch (a.type) {
+      case "visibility":
+      case "alarm":
+        if (a.value === 0) {
+          // Kendo can reset the outer group's opacity when it redraws a shape,
+          // so hide the content itself as well.
+          drawing.opacity?.(0);
+          Array.from(drawing.children || []).forEach((kid: any) => kid.opacity?.(0));
+        }
+        break;
+      case "scale": {
+        const ratio = Math.max(0.02, this.animationRatio(a));
+        t = a.axis === "x"
+          ? geometry.transform().scale(ratio, 1, [left, top])
+          : geometry.transform().scale(1, ratio, [left, top + h]);
+        break;
+      }
+      case "move": {
+        const offset = this.animationRatio(a) * a.distance;
+        t = geometry.transform().translate(a.axis === "x" ? offset : 0, a.axis === "y" ? -offset : 0);
+        break;
+      }
+      case "flip":
+        if (a.value !== 0) {
+          t = geometry.transform().scale(a.axis === "x" ? -1 : 1, a.axis === "y" ? -1 : 1, [left + w / 2, top + h / 2]);
+        }
+        break;
+      case "heatmap":
+        this.applyHeatMap(drawing, a, w * h);
+        break;
+      case "valueText":
+      case "stringText": {
+        const text = a.type === "valueText"
+          ? `${Math.round(a.value * 100) / 100}${a.unit}`
+          : (a.value !== 0 ? a.textOn : a.textOff);
+        const label = new TextBlock({ text, x: left + 6, y: top + h / 2 - 8, fill: "#000000" });
+        label.options.fontSize = 14;
+        label.options.fontWeight = "bold";
+        group.append(label);
+        break;
+      }
+    }
+
+    if (t) {
+      const existing = drawing.transform?.();
+      drawing.transform(existing ? t.multiply(existing) : t);
+    }
+  }
+  /**
+   * Heat map: the large filled parts of the shape are filled completely with a
+   * gradient that starts at the cold colour (bottom, or left) and ends at the
+   * colour for the current value, blended only between the chosen Cold and Hot
+   * colours. Value 0 is all cold and Max reaches the hot colour.
+   */
+  private applyHeatMap(drawing: any, a: ShapeAnimation, totalArea: number): void {
+    const ratio = this.animationRatio(a);
+    // Only the two chosen colours: a straight blend from Cold to Hot.
+    const at = (t: number): string => this.lerpColor(a.colorA, a.colorB, t);
+    const horizontal = a.axis === "x";
+    const stops = Array.from({ length: 9 }, (_, i) => ({
+      offset: i / 8,
+      color: at(ratio * i / 8),
+      opacity: 1
+    }));
+    const walk = (node: any): void => {
+      const colour = node?.options?.get?.("fill.color");
+      const box = node?.rawBBox?.();
+      if (colour && colour !== "transparent" && colour !== "none" && box?.size
+        && typeof node.content !== "function"
+        && box.size.width * box.size.height >= totalArea * 0.2) {
+        node.options.set("fill", new LinearGradient({
+          stops,
+          start: horizontal ? [0, 0] : [0, 1],
+          end: horizontal ? [1, 0] : [0, 0]
+        } as any));
+      }
+      Array.from(node?.children || []).forEach(walk);
+    };
+    walk(drawing);
+  }
+
+  /** True when the animation must be redrawn every tick (time based). */
+  private isContinuousAnimation(a: any): boolean {
+    return !!a && ((a.value !== 0 && (a.type === "blink" || a.type === "flow")) || (a.type === "alarm" && a.value === 1));
+  }
+
+  public toggleAnimationRun(): void {
+    this.animationRunning = !this.animationRunning;
+    this.redrawAnimatedShapes(false);
+    if (this.animationRunning) {
+      this.animTimer = setInterval(() => this.redrawAnimatedShapes(true), 60);
+      this.startSpinLoop();
+      this.diagram?.deselect();
+      this.statusMessage = "Animation running. Change a shape's Tag value to see it react.";
+    } else {
+      this.stopAnimationTimer();
+      this.statusMessage = "Animation stopped. Shapes are back to their normal look.";
+    }
+  }
+
+  private spinFrame: number | null = null;
+
+  /**
+   * Rotation runs per animation frame by turning the already-drawn visual
+   * (no redraw), so it is smooth and pivots on the shape's own centre.
+   * A redrawn visual is a new object, so the cached pivot resets by itself.
+   */
+  private startSpinLoop(): void {
+    if (typeof window === "undefined" || this.spinFrame !== null) {
+      return;
+    }
+    const step = (): void => {
+      if (!this.animationRunning) {
+        this.spinFrame = null;
+        return;
+      }
+      for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
+        const a = this.shapeDataItem(shape)?.animation;
+        if (!a || a.type !== "rotate") {
+          continue;
+        }
+        const drawing = shape?.visual?.drawingElement ?? shape?.visual;
+        const kids: any[] = drawing?.children ? Array.from(drawing.children) : [];
+        if (!kids.length) {
+          continue;
+        }
+        // Turn the shape's CONTENT, not the shape's own transform: Kendo moves
+        // and resizes a shape through that outer transform, and overwriting it
+        // made a dragged shape orbit or snap back. The pivot is the centre of
+        // the content in the shape's local space, so it stays on the shape.
+        // Kendo reuses the shape's group when it redraws, so key the cached
+        // pivot to the current child objects; new children mean a fresh pivot.
+        const cached = drawing.__spin;
+        if (cached && (cached.kids.length !== kids.length || kids.some((kid, i) => kid !== cached.kids[i]))) {
+          drawing.__spin = undefined;
+        }
+        if (!drawing.__spin) {
+          // Use the content's visible box (bbox() includes strokes and text, the
+          // same box fitGroupToSize scaled to the shape size). bbox() is in canvas
+          // space, so map its centre back into the group's own space, where the
+          // turn is applied.
+          let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+          for (const kid of kids) {
+            const box = kid.bbox?.();
+            if (!box?.origin || !box?.size) {
+              continue;
+            }
+            minX = Math.min(minX, box.origin.x);
+            minY = Math.min(minY, box.origin.y);
+            maxX = Math.max(maxX, box.origin.x + box.size.width);
+            maxY = Math.max(maxY, box.origin.y + box.size.height);
+          }
+          if (!Number.isFinite(minX)) {
+            continue;
+          }
+          let pivotX = (minX + maxX) / 2;
+          let pivotY = (minY + maxY) / 2;
+          const cm = drawing.currentTransform?.()?.matrix?.() ?? drawing.transform?.()?.matrix?.();
+          if (cm && typeof cm.a === "number") {
+            const det = cm.a * cm.d - cm.b * cm.c;
+            if (Math.abs(det) > 1e-9) {
+              const cx0 = pivotX;
+              const cy0 = pivotY;
+              pivotX = (cm.d * (cx0 - cm.e) - cm.c * (cy0 - cm.f)) / det;
+              pivotY = (-cm.b * (cx0 - cm.e) + cm.a * (cy0 - cm.f)) / det;
+            }
+          }
+          drawing.__spin = {
+            kids,
+            cx: pivotX,
+            cy: pivotY,
+            bases: kids.map(kid => kid.transform?.() || null)
+          };
+        }
+        const spin = drawing.__spin;
+        const angle = a.value !== 0 ? ((Date.now() / 1000) * Number(a.speed || 0)) % 360 : 0;
+        const turn = geometry.transform().rotate(angle, [spin.cx, spin.cy]);
+        kids.forEach((kid, i) => {
+          const base = spin.bases[i];
+          kid.transform?.(base ? turn.multiply(base) : turn);
+        });
+      }
+      this.spinFrame = requestAnimationFrame(step);
+    };
+    this.spinFrame = requestAnimationFrame(step);
+  }
+
+  private stopAnimationTimer(): void {
+    if (this.spinFrame !== null && typeof window !== "undefined") {
+      cancelAnimationFrame(this.spinFrame);
+      this.spinFrame = null;
+    }
+    if (this.animTimer !== null) {
+      clearInterval(this.animTimer);
+      this.animTimer = null;
+    }
+  }
+
+  private redrawAnimatedShapes(continuousOnly: boolean): void {
+    for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
+      const a = this.shapeDataItem(shape)?.animation;
+      if (!a || a.type === "none") {
+        continue;
+      }
+      if (continuousOnly && !this.isContinuousAnimation(a)) {
+        continue;
+      }
+      this.redrawAnimated(shape);
+    }
+  }
+
+  /** Redraw one shape while keeping its bounds/rotation, without persisting. */
+  private redrawAnimated(shape: any): void {
+    const bounds = typeof shape?.bounds === "function" ? shape.bounds() : null;
+    const rotation = this.readRotation(shape);
+    if (typeof shape.redrawVisual === "function") {
+      shape.redrawVisual();
+    } else if (typeof shape.refresh === "function") {
+      shape.refresh();
+    }
+    if (bounds) {
+      shape.bounds(bounds);
+    }
+    if (rotation && typeof shape.rotate === "function") {
+      shape.rotate(rotation);
+    }
+    shape.refreshConnections?.();
+  }
+
+  /** Picking a type resets Speed to a sensible default for that type. */
+  public onAnimationTypeChange(): void {
+    // Each type starts from its own sensible colours and speed, so choosing a
+    // type never inherits the colours of the previously chosen one.
+    const defaults = this.defaultAnimation();
+    this.anim.colorA = defaults.colorA;
+    this.anim.colorB = defaults.colorB;
+    this.anim.axis = defaults.axis;
+    switch (this.anim.type) {
+      case "rotate":
+        this.anim.speed = 90;
+        break;
+      case "blink":
+        this.anim.speed = 500;
+        this.anim.colorA = "#e53935";
+        this.anim.colorB = "#1e88e5";
+        break;
+      case "analog":
+        this.anim.colorA = "#1e88e5";
+        this.anim.colorB = "#e53935";
+        break;
+      case "alarm":
+        this.anim.speed = 250;
+        this.anim.colorA = "#e53935";
+        break;
+      case "flow":
+        this.anim.speed = 60;
+        this.anim.colorA = "#1e88e5";
+        break;
+      case "lamp":
+        this.anim.colorA = "#ffeb3b";
+        this.anim.colorB = "#424242";
+        break;
+      case "flip":
+        this.anim.axis = "x";
+        break;
+      case "heatmap":
+        this.anim.colorA = "#1e88e5";
+        this.anim.colorB = "#e53935";
+        break;
+    }
+    this.applyAnimation();
+  }
+
+  /** Apply the Animation panel settings to every selected shape. */
+  public applyAnimation(): void {
+    const shapes = this.selectedShapes();
+    if (!shapes.length) {
+      this.statusMessage = "Select a shape first, then choose its animation.";
+      return;
+    }
+    const config = this.clonePlain(this.anim);
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      if (!dataItem) {
+        continue;
+      }
+      dataItem.animation = this.clonePlain(config);
+      const model = this.modelForShape(shape);
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.animation = this.clonePlain(config);
+      }
+      if (this.animationRunning) {
+        this.redrawAnimated(shape);
+      }
+    }
+    this.schedulePersistState();
+    const label = this.animationTypes.find(t => t.id === config.type)?.label || config.type;
+    this.statusMessage = config.type === "none"
+      ? "Animation removed from the selected shape(s)."
+      : `Animation "${label}" saved. Press Run Animation to preview it.`;
+  }
+
+  /** While running, clicking a shape with "toggle on click" flips its value. */
+  private handleAnimationClick(selected: any[]): void {
+    for (const shape of selected || []) {
+      const dataItem = this.shapeDataItem(shape);
+      const a = dataItem?.animation;
+      if (!a?.clickToggle) {
+        continue;
+      }
+      a.value = a.value !== 0 ? 0 : (a.max || 1);
+      const model = this.modelForShape(shape);
+      const modelData = model?.dataItem?.dataItem ?? model?.dataItem;
+      if (modelData?.animation) {
+        modelData.animation.value = a.value;
+      }
+      this.redrawAnimated(shape);
+    }
+    this.schedulePersistState();
+  }
+
+  /** White icon polygons (unit box) for the keypad-style push buttons. */
+  private readonly NAVIGATION_BUTTON_ICONS: Record<string, number[][][]> = {
+    arrowVertical: [],
+    arrowHorizontal: [],
+    backspace: [[[0.05, 0.5], [0.4, 0.2], [0.4, 0.4], [0.95, 0.4], [0.95, 0.6], [0.4, 0.6], [0.4, 0.8]]],
+    endButton: [[[0.1, 0.1], [0.9, 0.1], [0.5, 0.6]], [[0.1, 0.72], [0.9, 0.72], [0.9, 0.9], [0.1, 0.9]]],
+    enter: [[[0.9, 0.15], [0.9, 0.65], [0.4, 0.65], [0.4, 0.85], [0.05, 0.57], [0.4, 0.3], [0.4, 0.5], [0.72, 0.5], [0.72, 0.15]]],
+    moveLeft: [[[0.85, 0.05], [0.15, 0.5], [0.85, 0.95]]],
+    moveRight: [[[0.15, 0.05], [0.85, 0.5], [0.15, 0.95]]],
+    moveUp: [[[0.05, 0.85], [0.5, 0.15], [0.95, 0.85]]],
+    moveDown: [[[0.05, 0.15], [0.5, 0.85], [0.95, 0.15]]],
+    pageUp: [[[0.1, 0.45], [0.5, 0.05], [0.9, 0.45]], [[0.1, 0.9], [0.5, 0.5], [0.9, 0.9]]],
+    pageDown: [[[0.1, 0.1], [0.5, 0.5], [0.9, 0.1]], [[0.1, 0.55], [0.5, 0.95], [0.9, 0.55]]]
+  };
+  // ---------------- EOF Animation engine ----------------
+ 
     private drawGroupedChildren(
     children: any[],
     parentStyle?: ShapeEditorStyle,
@@ -2090,6 +2617,9 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       connect: false // This disables the hover connection dots safely
     }
   };
+  public get hasSelection(): boolean {
+    return this.selectedCount > 0;
+  }
 public get canGroup(): boolean {
     return this.selectedShapes().length >= 2;
   }
@@ -2577,19 +3107,7 @@ public lastClickY: number = 0;
             x: this.lastClickX,
             y: this.lastClickY,
           };
-        // if ((shapeType == "Button") || (shapeType == "Momentry") 
-        //   || (shapeType == "Maintained")  || (shapeType == "Latched") || (shapeType == "Multistate")  
-        //   || (shapeType == "Interlocked") || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") 
-        //   || (shapeType == "Time and Date Display") || (shapeType == "Tag Label") || (shapeType == "Local Message") 
-        //   || (shapeType == "Text") || (shapeType == "Text")  || (shapeType == "Bar") || (shapeType == "Gauge") 
-        //   || (shapeType == "Scale") || (shapeType == "Multiple") || (shapeType == "List") 
-        //   || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
-        //   || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
-        //   || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
-        //   || (shapeType == "Banner") || (shapeType == "Summary") || (shapeType == "Log Viewer") || (shapeType == "Status Explorer")
-        // ) {
-        //   options.fillColor = "#D3D3D3"
-        // }
+       
 
         this.insertShape(shapeType, options);
         this.insertShapeFlag = false;
@@ -3687,7 +4205,8 @@ private readonly shapeTablesMap: Record<string, string[]> = {
   'Rectangle':            ['SCD_SHAPE_GENERAL'],
   'Rounded Rectangle':    ['SCD_SHAPE_GENERAL'],
   'Wedge':                ['SCD_SHAPE_GENERAL'],
-  'Arrow':                ['SCD_SHAPE_GENERAL'],
+  'Arrow Horizontal':     ['SCD_SHAPE_GENERAL'],
+  'Arrow Vertical':       ['SCD_SHAPE_GENERAL'],
 
   'Button':               ['SCD_BUTTON_GENERAL', 'SCD_BUTTON_ACTION',
                            'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE'],
@@ -4102,7 +4621,48 @@ async insertShape(shapeType, options) {
 
 //////////
 public statusMessage = "Select a shape to edit it.";
+
+// ---- Animation (SCADA) ----
+  public readonly animationTypes = [
+    { id: "none", label: "None" },
+    { id: "visibility", label: "Visibility (show/hide)" },
+    { id: "blink", label: "Blinking" },
+    { id: "discrete", label: "Discrete colour (Normal/Warning/Alarm)" },
+    { id: "analog", label: "Analog colour (blend low to high)" },
+    { id: "analog", label: "Analog colour (gradient)" },
+    { id: "scale", label: "Size / Scaling" },
+    { id: "move", label: "Position (move)" },
+    { id: "rotate", label: "Rotation (spin)" },
+    { id: "valueText", label: "Value display" },
+    { id: "stringText", label: "String (text by state)" },
+    { id: "flip", label: "Flip (mirror when on)" },
+    { id: "heatmap", label: "Gradient heat map (colour by value)" },
+    { id: "flow", label: "Flow (moving dashes on a line/pipe)" },
+    { id: "lamp", label: "Lamp on/off (glow)" },
+    { id: "alarm", label: "Alarm escalation (0 hidden, 1 blink, 2 solid)" },
+    { id: "imageSwap", label: "Graphic swap (Image shape, by state)" }
+  ];
+  public animationRunning = false;
+  public anim: ShapeAnimation = this.defaultAnimation();
+  private animTimer: any = null;
+
+  private  defaultAnimation(): ShapeAnimation {
+    return {
+      type: "none", value: 0, min: 0, max: 100, colorA: "#e53935", colorB: "#1e88e5",
+      warn: 50, alarm: 80, axis: "y", distance: 80, speed: 500, unit: "", textOn: "ON", textOff: "OFF",
+      clickToggle: false, imageOn: "", imageOff: ""
+    };
+  }
 public freehandMode = false;
+// Click-by-click Polygon/Polyline drawing: each left click adds a vertex
+  // joined to the previous one; right click finishes (Polygon also closes
+  // back to the first vertex, Polyline stays open).
+  public polyMode: "polygon" | "polyline" | null = null;
+  private polyPoints: Array<{ x: number; y: number }> = [];
+  private polyStagePoints: Array<{ x: number; y: number }> = [];
+  private polyCursor: { x: number; y: number } | null = null;
+  public polyPreviewPath = "";
+
 // Line tool: reuses the FreeHand pointer pipeline, but keeps only the start
 // and the current point so the result is one straight segment.
 public freehandStraight = false;
@@ -4148,6 +4708,17 @@ private uniqueShapeId(prefix: string): string {
       freehand: "FreeHand",
       polygon: "Polygon",
       polyline: "Polyline",
+      arrowVertical: "Arrow Vertical",
+      arrowHorizontal: "Arrow Horizontal",
+      backspace: "Back space",
+      endButton: "End Button",
+      enter: "Enter",
+      moveLeft: "Move Left",
+      moveRight: "Move Right",
+      moveUp: "Move Up",
+      moveDown: "Move Down",
+      pageUp: "Page Up",
+      pageDown: "Page Down",
       container: "Container"
     };
     return titles[kind] || "Shape";
@@ -4291,6 +4862,37 @@ private uniqueShapeId(prefix: string): string {
 
   public addEllipse():   void { this.armDragTool('Elipse'); }
 
+ /**
+ * Add one of the keypad-style navigation / push buttons. Mirrors
+ * KendoDiagramComponent.addButtonShape but routes through this component's
+ * drag-to-size pipeline so the user sizes the button like any other SCD shape.
+ */
+public addNavigationShape(kind: string): void {
+  const defaults: Record<string, { width: number; height: number; fillColor: string }> = {
+    arrowVertical:   { width: 80,  height: 60, fillColor: "#008080" },
+    arrowHorizontal: { width: 170, height: 60, fillColor: "#008080" },
+    backspace:       { width: 80,  height: 40, fillColor: "#000080" },
+    endButton:       { width: 80,  height: 40, fillColor: "#000080" },
+    enter:           { width: 80,  height: 40, fillColor: "#000080" },
+    moveLeft:        { width: 80,  height: 40, fillColor: "#000080" },
+    moveRight:       { width: 80,  height: 40, fillColor: "#000080" },
+    moveUp:          { width: 80,  height: 40, fillColor: "#000080" },
+    moveDown:        { width: 80,  height: 40, fillColor: "#000080" },
+    pageUp:          { width: 80,  height: 40, fillColor: "#000080" },
+    pageDown:        { width: 80,  height: 40, fillColor: "#000080" }
+  };
+
+  if (!defaults[kind]) {
+    this.statusMessage = `Unknown navigation shape: ${kind}`;
+    return;
+  }
+
+  // Two insertion modes: drag-to-size (default) or place-with-default-size.
+  // Drag-to-size reuses armDragTool; that's the interaction pattern this
+  // component already uses for Rectangle/Polygon/etc.
+  this.armDragTool(kind);
+}
+
   /** Line tool: drag on the canvas from the start point to the end point. */
   public addLine(): void {
     if (this.lineMode) {
@@ -4305,6 +4907,9 @@ private uniqueShapeId(prefix: string): string {
   }
 
   private resetFreehandState(active: boolean): void {
+    if (active) {
+      this.resetPolyDrawing();
+    }
     this.freehandMode = active;
     this.freehandStraight = false;
     this.freehandPoints = [];
@@ -4329,9 +4934,111 @@ private uniqueShapeId(prefix: string): string {
 
   public addArc():       void { this.armDragTool('Arc'); }
 
-  public addPolygon():   void { this.armDragTool('Polygon'); }
+  public addPolygon(): void {
+    this.togglePolyMode("polygon");
+  }
 
-  public addPolyline():  void { this.armDragTool('Polyline'); }
+  public addPolyline(): void {
+    this.togglePolyMode("polyline");
+  }
+
+ private togglePolyMode(mode: "polygon" | "polyline"): void {
+    const wasActive = this.polyMode === mode;
+    this.resetPolyDrawing();
+    this.resetFreehandState(false);
+    if (wasActive) {
+      this.statusMessage = `${mode === "polygon" ? "Polygon" : "Polyline"} drawing cancelled.`;
+      return;
+    }
+    this.polyMode = mode;
+    this.diagram?.deselect();
+    this.statusMessage = mode === "polygon"
+      ? "Polygon: click to add points, then right-click to close the shape."
+      : "Polyline: click to add points, then right-click to finish (the shape stays open).";
+  }
+
+  private resetPolyDrawing(): void {
+    this.polyMode = null;
+    this.polyPoints = [];
+    this.polyStagePoints = [];
+    this.polyCursor = null;
+    this.polyPreviewPath = "";
+  }
+
+  private updatePolyPreviewPath(): void {
+    const pts = this.polyCursor ? [...this.polyStagePoints, this.polyCursor] : this.polyStagePoints;
+    this.polyPreviewPath = pts
+      .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
+      .join(" ");
+  }
+
+  public onPolyPointerDown(event: PointerEvent): void {
+    if (!this.polyMode || !this.diagram || event.button !== 0) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const point = this.pointerToModel(event);
+    const stage = this.pointerToStage(event);
+    if (!point || !stage) {
+      return;
+    }
+    this.polyPoints.push(point);
+    this.polyStagePoints.push(stage);
+    this.polyCursor = stage;
+    this.updatePolyPreviewPath();
+  }
+
+  public onPolyPointerMove(event: PointerEvent): void {
+    if (!this.polyMode || !this.polyStagePoints.length) {
+      return;
+    }
+    this.polyCursor = this.pointerToStage(event);
+    this.updatePolyPreviewPath();
+  }
+
+  public onPolyContextMenu(event: MouseEvent): void {
+    if (!this.polyMode) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const mode = this.polyMode;
+    const label = mode === "polygon" ? "Polygon" : "Polyline";
+    const minPoints = mode === "polygon" ? 3 : 2;
+    const pts = this.polyPoints;
+    if (pts.length < minPoints) {
+      this.resetPolyDrawing();
+      this.statusMessage = `${label} needs at least ${minPoints} points; nothing was added.`;
+      return;
+    }
+    const minX = Math.min(...pts.map(p => p.x));
+    const minY = Math.min(...pts.map(p => p.y));
+    const maxX = Math.max(...pts.map(p => p.x));
+    const maxY = Math.max(...pts.map(p => p.y));
+    const width = Math.max(20, maxX - minX);
+    const height = Math.max(20, maxY - minY);
+    // A straight line has ~0 height/width but the box is at least 20px. Keep the
+    // drawn shape true to scale and centre it in the box, instead of stretching
+    // it to fill the box (which would tilt a flat line).
+    const offsetX = (width - (maxX - minX)) / 2;
+    const offsetY = (height - (maxY - minY)) / 2;
+    const points = pts.map(p => ({ x: p.x - minX + offsetX, y: p.y - minY + offsetY }));
+    this.resetPolyDrawing();
+    this.addLibraryShape(mode, {
+      x: minX - offsetX, y: minY - offsetY, width, height, points, pointRef: { w: width, h: height },
+      fillColor: mode === "polygon" ? "#e9defa" : "transparent"
+    }, true);
+  }
+
+  /** Add one of the keypad-style push buttons / arrow indicators. */
+  public addButtonShape(kind: string): void {
+    const size = kind === "arrowVertical" ? { width: 80, height: 60 }
+      : kind === "arrowHorizontal" ? { width: 170, height: 60 }
+      : { width: 80, height: 40 };
+    const isArrow = kind === "arrowVertical" || kind === "arrowHorizontal";
+    this.addLibraryShape(kind, { ...size, fillColor: isArrow ? "#008080" : "#000080" });
+  }
 
  
   public toggleFreehandMode(): void {
@@ -4677,9 +5384,78 @@ async onFreehandPointerUp(event: PointerEvent) {
       ...(parentStyle?.strokeColor ? { strokeColor: parentStyle.strokeColor } : {}),
       ...(parentStyle?.fillColor ? { fillColor: parentStyle.fillColor } : {})
     };
-    const stroke = style.strokeColor || dataItem.strokeColor || "#2f4858";
+    const strokeOnly = dataItem.libraryKind === "line" || dataItem.libraryKind === "polyline"
+      || dataItem.libraryKind === "freehand" || dataItem.libraryKind === "arc";
+    const stroke = (strokeOnly && dataItem.animColor)
+      || style.strokeColor || dataItem.strokeColor || "#2f4858";
     const fill = style.fillColor || dataItem.fillColor || "#d9e8f5";
     const kind = dataItem.libraryKind;
+//── NAVIGATION / KEYPAD SHAPES ─────────────────────────────────────
+  // Must come first: otherwise the kind falls through to the empty Group
+  // returned at the end of this method and renders as nothing.
+  const buttonSpec = this.NAVIGATION_BUTTON_ICONS[kind];
+    if (buttonSpec) {
+      if (kind === "arrowVertical" || kind === "arrowHorizontal") {
+        // Teal indicator panel with a black arrow (matches the reference diagram).
+        group.append(new Rectangle({
+          x, y, width, height,
+          stroke: { color: "#1f2933", width: 1 },
+          fill: { color: dataItem.animColor || "#008080" }
+        }));
+        const black = { color: "#000000", width: 2.5 };
+        if (kind === "arrowVertical") {
+          const cx = x + width / 2;
+          group.append(new Path({ data: `M ${cx},${y + height} L ${cx},${y + 10}`, stroke: black, fill: { color: "transparent" } }));
+          group.append(new Path({
+            data: `M ${cx},${y + 4} L ${cx - 5},${y + 20} L ${cx + 5},${y + 20} Z`,
+            stroke: { color: "#000000", width: 1 }, fill: { color: "#000000" }
+          }));
+        } else {
+          const cy = y + height / 2;
+          group.append(new Path({ data: `M ${x},${cy} L ${x + width},${cy}`, stroke: black, fill: { color: "transparent" } }));
+          // Probe-style pointer measured from the reference diagram: a tall block
+          // followed by a stepped taper, all as fractions of the panel size.
+          const steps: Array<[number, number]> = [
+            [0.5, 0.1], [0.545, 0.082], [0.65, 0.06], [0.74, 0.04], [0.84, 0.02], [0.94, 0.008]
+          ];
+          const end = 0.95;
+          const top: string[] = [];
+          const bottom: string[] = [];
+          steps.forEach(([f, half], i) => {
+            const next = i + 1 < steps.length ? steps[i + 1][0] : end;
+            top.push(`${x + width * f},${cy - height * half} ${x + width * next},${cy - height * half}`);
+            bottom.unshift(`${x + width * next},${cy + height * half} ${x + width * f},${cy + height * half}`);
+          });
+          group.append(new Path({
+            data: `M ${top.join(" L ")} L ${bottom.join(" L ")} Z`,
+            stroke: { color: "#000000", width: 0.5 }, fill: { color: "#000000" }
+          }));
+        }
+        return group;
+      }
+
+      // Navy 3-D push button: lighter top/left edge, darker bottom/right edge.
+      group.append(new Rectangle({ x, y, width, height, stroke: { color: "#00003c", width: 1 }, fill: { color: dataItem.animColor || "#000080" } }));
+      group.append(new Path({
+        data: `M ${x + 1},${y + height - 1} L ${x + 1},${y + 1} L ${x + width - 1},${y + 1}`,
+        stroke: { color: "#2a2ae0", width: 3 }, fill: { color: "transparent" }
+      }));
+      group.append(new Path({
+        data: `M ${x + width - 1},${y + 2} L ${x + width - 1},${y + height - 1} L ${x + 2},${y + height - 1}`,
+        stroke: { color: "#00002a", width: 2 }, fill: { color: "transparent" }
+      }));
+      const size = Math.min(width, height) * 0.5;
+      const ox = x + width / 2 - size / 2;
+      const oy = y + height / 2 - size / 2;
+      for (const poly of buttonSpec) {
+        const data = poly
+          .map((pt, i) => `${i === 0 ? "M" : "L"} ${ox + pt[0] * size},${oy + pt[1] * size}`)
+          .join(" ") + " Z";
+        group.append(new Path({ data, stroke: { color: "#ffffff", width: 1 }, fill: { color: "#ffffff" } }));
+      }
+      return group;
+    }
+
 
     if (kind === "richText") {
       group.append(new Rectangle({
@@ -4710,9 +5486,6 @@ async onFreehandPointerUp(event: PointerEvent) {
      || (kind === "localMessage") || (kind === "text") || (kind === "stringInput") || (kind === "stringDisplay")
      || (kind === "bar") || (kind === "gauge") || (kind === "scale")  || (kind === "multiple")
      || (kind === "list")
-     || (kind == "backspace")  || (kind == "end")  || (kind == "enter") 
-     || (kind == "moveleft")  || (kind == "moveright")  || (kind == "movedown") 
-     || (kind == "moveup")  || (kind == "pageup")  || (kind == "pagedown") 
      || (kind == "banner") || (kind == "summary") || (kind == "logViewer") || (kind == "statusExplorer")
      ) {
       const background = new Rectangle({
@@ -4770,7 +5543,7 @@ async onFreehandPointerUp(event: PointerEvent) {
       return group;
     }
 
-    if ( (kind === "line")||(kind === "arrow") ) {
+    if (kind === "line") {
       const lineStart = dataItem.lineStart;
       const lineEnd = dataItem.lineEnd;
       if (lineStart && lineEnd) {
@@ -4784,10 +5557,15 @@ async onFreehandPointerUp(event: PointerEvent) {
         });
         frame.options.opacity = 0.001;
         group.append(frame);
+        const linePts = [
+          [x + Number(lineStart.x) * width, y + Number(lineStart.y) * height],
+          [x + Number(lineEnd.x) * width, y + Number(lineEnd.y) * height]
+        ];
         group.append(new Path({
-          data: `M ${x + Number(lineStart.x) * width},${y + Number(lineStart.y) * height} `
-            + `L ${x + Number(lineEnd.x) * width},${y + Number(lineEnd.y) * height}`,
-          stroke: { color: stroke, width: 2 },
+          data: dataItem.animFlow
+            ? this.flowDashData(linePts, dataItem.animFlow)
+            : `M ${linePts[0][0]},${linePts[0][1]} L ${linePts[1][0]},${linePts[1][1]}`,
+          stroke: { color: stroke, width: dataItem.animFlow ? 4 : 2 },
           fill: { color: "transparent" }
         }));
         return group;
@@ -4795,11 +5573,12 @@ async onFreehandPointerUp(event: PointerEvent) {
       // Legacy line (saved before start/end points existed): horizontal, centered.
       // const centerY = y + height / 2;
       // group.append(new Path({
-      //   data: `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
-      //   stroke: { color: stroke, width: 2 },
-      //   fill: { color: "#D70040" }
+            //   data: dataItem.animFlow
+      //     ? this.flowDashData([[x + 5, centerY], [x + width - 5, centerY]], dataItem.animFlow)
+      //     : `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
+      //   stroke: { color: stroke, width: dataItem.animFlow ? 4 : 2 },
+      //   fill: { color: "transparent" }
       // }));
-      // return group;
     }
 
     if (kind === "roundedRectangle" || kind === "rectangle") {
@@ -4907,10 +5686,22 @@ async onFreehandPointerUp(event: PointerEvent) {
     }
 
     if (kind === "arc") {
+      // Sample the curve so Flow can lay dashes along it.
+      const arcPoints: number[][] = [];
+      for (let i = 0; i <= 48; i++) {
+        const t = i / 48;
+        const u = 1 - t;
+        arcPoints.push([
+          u * u * x + 2 * u * t * (x + width / 2) + t * t * (x + width),
+          u * u * (y + height) + 2 * u * t * (y - height) + t * t * (y + height)
+        ]);
+      }
       group.append(new Path({
         // Peak of this curve is exactly the top of the box (control point at y - height).
-        data: `M ${x},${y + height} Q ${x + width / 2},${y - height} ${x + width},${y + height}`,
-        stroke: { color: stroke, width: 3 },
+        data: dataItem.animFlow
+          ? this.flowDashData(arcPoints, dataItem.animFlow)
+          : `M ${x},${y + height} Q ${x + width / 2},${y - height} ${x + width},${y + height}`,
+        stroke: { color: stroke, width: dataItem.animFlow ? 4 : 3 },
         fill: { color: "transparent" }
       }));
       return group;
@@ -4925,37 +5716,85 @@ async onFreehandPointerUp(event: PointerEvent) {
       const extentY = Math.max(...points.map((point: any) => Number(point.y)));
       const pointScaleX = extentX > 0 ? width / extentX : 1;
       const pointScaleY = extentY > 0 ? height / extentY : 1;
-      const pathData = points.map((point: any, index: number) =>
-        `${index === 0 ? "M" : "L"} ${x + Number(point.x) * pointScaleX},${y + Number(point.y) * pointScaleY}`
-      ).join(" ");
+      const pathData = dataItem.animFlow
+        ? this.flowDashData(points.map((point: any) => [x + Number(point.x) * pointScaleX, y + Number(point.y) * pointScaleY]), dataItem.animFlow)
+        : points.map((point: any, index: number) =>
+          `${index === 0 ? "M" : "L"} ${x + Number(point.x) * pointScaleX},${y + Number(point.y) * pointScaleY}`
+        ).join(" ");
       group.append(new Path({
         data: pathData,
-        stroke: { color: stroke, width: 3 },
+        stroke: { color: stroke, width: dataItem.animFlow ? 4 : 3 },
         fill: { color: "transparent" }
       }));
       return group;
     }
 
-    if (kind === "polygon") {
+    if ((kind === "polygon" && points.length >= 3) || (kind === "polyline" && points.length >= 2)) {
+      const ref = dataItem.pointRef;
+      const extX = ref?.w > 0 ? ref.w : Math.max(...points.map((point: any) => Number(point.x)));
+      const extY = ref?.h > 0 ? ref.h : Math.max(...points.map((point: any) => Number(point.y)));
+      const sx = extX > 0 ? width / extX : 1;
+      const sy = extY > 0 ? height / extY : 1;
+      const drawn = points.map((point: any, index: number) =>
+        `${index === 0 ? "M" : "L"} ${x + Number(point.x) * sx},${y + Number(point.y) * sy}`
+      ).join(" ");
+      const flowPts = points.map((point: any) => [x + Number(point.x) * sx, y + Number(point.y) * sy]);
+      if (kind === "polygon" && dataItem.animFlow) {
+        // Keep the filled body, and run dashes along the closed outline.
+        group.append(new Path({ data: `${drawn} Z`, stroke: { color: "transparent", width: 0 }, fill: { color: fill } }));
+        group.append(new Path({
+          data: this.flowDashData([...flowPts, flowPts[0]], dataItem.animFlow),
+          stroke: { color: stroke, width: 3 },
+          fill: { color: "transparent" }
+        }));
+        return group;
+      }
       group.append(new Path({
-        data: `M ${x + width / 2},${y} L ${x + width},${y + height * 0.38} L ${x + width * 0.82},${y + height} L ${x + width * 0.18},${y + height} L ${x},${y + height * 0.38} Z`,
-        stroke: { color: stroke, width: 2 },
+        data: kind === "polyline" && dataItem.animFlow
+          ? this.flowDashData(flowPts, dataItem.animFlow)
+          : (kind === "polygon" ? `${drawn} Z` : drawn),
+        stroke: { color: stroke, width: kind === "polygon" ? 2 : (dataItem.animFlow ? 4 : 3) },
+        fill: { color: kind === "polygon" ? fill : "transparent" }
+      }));
+      return group;
+    }
+    if (kind === "polygon" && dataItem.animFlow) {
+      const outline = [
+        [x + width / 2, y], [x + width, y + height * 0.38], [x + width * 0.82, y + height],
+        [x + width * 0.18, y + height], [x, y + height * 0.38]
+      ];
+      group.append(new Path({
+        data: `M ${outline.map(pt => pt.join(",")).join(" L ")} Z`,
+        stroke: { color: "transparent", width: 0 },
         fill: { color: fill }
       }));
-      return group;
-    }
-
-    if (kind === "polyline") {
       group.append(new Path({
-        // The outline spans the full box top-to-bottom (y fractions 1, 0.08, 0.88,
-        // 0). A path that fills only part of its box makes Kendo shrink the box
-        // to the outline, and the outline shrinks again on every recreate.
-        data: `M ${x},${y + height} L ${x + width * 0.28},${y + height * 0.08} L ${x + width * 0.56},${y + height * 0.88} L ${x + width},${y}`,
+        data: this.flowDashData([...outline, outline[0]], dataItem.animFlow),
         stroke: { color: stroke, width: 3 },
         fill: { color: "transparent" }
       }));
       return group;
     }
+    // if (kind === "polygon") {
+    //   group.append(new Path({
+    //     data: `M ${x + width / 2},${y} L ${x + width},${y + height * 0.38} L ${x + width * 0.82},${y + height} L ${x + width * 0.18},${y + height} L ${x},${y + height * 0.38} Z`,
+    //     stroke: { color: stroke, width: 2 },
+    //     fill: { color: fill }
+    //   }));
+    //   return group;
+    // }
+
+    // if (kind === "polyline") {
+    //   group.append(new Path({
+    //     // The outline spans the full box top-to-bottom (y fractions 1, 0.08, 0.88,
+    //     // 0). A path that fills only part of its box makes Kendo shrink the box
+    //     // to the outline, and the outline shrinks again on every recreate.
+    //     data: `M ${x},${y + height} L ${x + width * 0.28},${y + height * 0.08} L ${x + width * 0.56},${y + height * 0.88} L ${x + width},${y}`,
+    //     stroke: { color: stroke, width: 3 },
+    //     fill: { color: "transparent" }
+    //   }));
+    //   return group;
+    // }
 
     return group;
   }
@@ -5977,6 +6816,12 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     // color/fill stuck in the toolbar.
     this.strokeColor = style.strokeColor || this.inferStrokeColor(this.shapeDataItem(shape));
     this.fillColor = style.fillColor || this.inferFillColor(this.shapeDataItem(shape));
+    const dataItem = this.shapeDataItem(shape);
+    this.anim = { ...this.defaultAnimation(), ...(dataItem?.animation || {}) };
+    if (dataItem?.libraryKind === "container") {
+      this.selectedContainerValue = Number(dataItem.containerValue) || 0;
+      this.selectedContainerMax = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
+    }
 
     if (updateStatus) {
       this.statusMessage = shapes.length === 1
@@ -6533,28 +7378,34 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     end:
       `<line x1="18" y1="6" x2="18" y2="20" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>
       <path d="M4 13 L15 13" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round"/>`,
-    moveleft:
+    moveLeft:
       `<path d="M20 13 L6 13 M11 8 L5 13 L11 18"
       fill="none" stroke="#e94560" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round"/>`,
-    moveright:
+    moveRight:
       `<path d="M4 13 L16 13 M12 8 L18 13 L12 18"
       fill="none" stroke="#e94560" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round"/>`,
-    movedown:
+    moveDown:
       `<path d="M12 4 L12 18 M7 13 L12 19 L17 13"
       fill="none" stroke="#e94560" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round"/>`,
-    moveup:
+    moveUp:
       `<path d="M12 20 L12 6 M7 11 L12 5 L17 11"
       fill="none" stroke="#e94560" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round"/>`,
     arrow:
       `<path d="M4 13 L16 13 M12 8 L18 13 L12 18" fill="none" stroke="#e94560" stroke-width="2"/>`,
-    pageup:
+    arrowVertical:
+      `<path d="M12 21 L12 6" stroke="#e94560" stroke-width="2"/>
+      <path d="M12 4 L8 10 L16 10 Z" fill="#e94560" stroke="#e94560" stroke-width="1" stroke-linejoin="round"/>`,
+    arrowHorizontal:
+      `<path d="M3 12 L20 12" stroke="#e94560" stroke-width="2"/>
+      <path d="M21 12 L15 8 L15 16 Z" fill="#e94560" stroke="#e94560" stroke-width="1" stroke-linejoin="round"/>`,
+    pageUp:
       `<path d="M7 18 L12 12 L17 18 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>
     <path d="M7 12 L12 6  L17 12 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>`,
-    pagedown:
+    pageDown:
       `<path d="M7 6 L12 12 L17 6 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>
       <path d="M7 12 L12 18 L17 12 Z" fill="#e94560" stroke="#e94560" stroke-width="2" stroke-linejoin="round"/>`,
     enter:
@@ -6654,15 +7505,17 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'List': 'list',
     'Multiple': 'multiple',
     'Indicator': 'indicator',
-    'Page Up': 'pageup',
-    'Page Down': 'pagedown',
-    'Move Up': 'moveup',
-    'Move Down': 'movedown',
-    'Move Right': 'moveright',
-    'Move Left': 'moveleft',
+    'Page Up': 'pageUp',
+    'Page Down': 'pageDown',
+    'Move Up': 'moveUp',
+    'Move Down': 'moveDown',
+    'Move Right': 'moveRight',
+    'Move Left': 'moveLeft',
     'Enter': 'enter',
-    'End': 'end',
+    'End': 'endButton',
     'Backspace': 'backspace',
+    'Arrow Horizontal': 'arrowHorizontal',
+    'Arrow Vertical':   'arrowVertical',
     //'Navigation': 'navButton',
     //'Arrow': 'arrow',
     'Display': 'display',
@@ -8923,10 +9776,13 @@ private armDragTool(shapeType: string): void {
 
   const libraryOnlyKinds = [
     'rectangle','rounded rectangle','elipse','arc','polygon',
-    'polyline','wedge','panel','freehand','image','text'
+    'polyline','wedge','panel','freehand','image','text',
+    // ── navigation / keypad shapes (exact camelCase, matched case-sensitively) ──
+    'arrowVertical','arrowHorizontal','backspace','endButton','enter',
+    'moveLeft','moveRight','moveUp','moveDown','pageUp','pageDown'
   ];
-  this.pendingDragIsLibraryOnly =
-    libraryOnlyKinds.includes(shapeType.toLowerCase());
+  this.pendingDragIsLibraryOnly = libraryOnlyKinds.includes(shapeType);
+
 
   this.freehandMode = true;
   this.freehandStraight = false;
@@ -9007,6 +9863,80 @@ private modelToStage(modelX: number, modelY: number): { x: number; y: number } |
     x: modelX * this.zoomLevel - this.currentPan.x,
     y: modelY * this.zoomLevel - this.currentPan.y
   };
+}
+/**
+ * Single dispatcher used by the Align / Distribute DropDownButton.
+ * Each menu item carries { text, action, icon } in `data`.
+ */
+public onAlignCommand(event: any): void {
+  const action = event.action;
+  console.log ("onAlignCommand:action:", action, "event:",event)
+  if (!action) {
+    return;
+  }
+  switch (action) {
+    case "align-left":
+      this.alignSelected("left");
+      break;
+    case "align-center":
+      this.alignSelected("center");
+      break;
+    case "align-right":
+      this.alignSelected("right");
+      break;
+    case "align-top":
+      this.alignSelected("top");
+      break;
+    case "align-middle":
+      this.alignSelected("middle");
+      break;
+    case "align-bottom":
+      this.alignSelected("bottom");
+      break;
+    case "align-center-points":
+      this.alignSelected("centerPoints");
+      break;
+    case "distribute-horizontal":
+      this.distributeSelected("horizontal");
+      break;
+    case "distribute-vertical":
+      this.distributeSelected("vertical");
+      break;
+    default:
+      console.warn(`[onAlignCommand] unknown action: ${action}`);
+      break;
+  }
+}
+
+/** Split the flat command list into two DropDownButton menus. */
+public readonly alignMenuItems = [
+  { text: "Align Left",          action: "align-left",          icon: "alignLeft" },
+  { text: "Align Center",        action: "align-center",        icon: "alignCenter" },
+  { text: "Align Right",         action: "align-right",         icon: "alignRight" },
+  { text: "Align Top",           action: "align-top",           icon: "alignTop" },
+  { text: "Align Middle",        action: "align-middle",        icon: "alignMiddle" },
+  { text: "Align Bottom",        action: "align-bottom",        icon: "alignBottom" },
+  { text: "Align Center Points", action: "align-center-points", icon: "alignCenterPoints" }
+];
+
+public readonly distributeMenuItems = [
+  { text: "Space Horizontal", action: "distribute-horizontal", icon: "spaceHorizontal" },
+  { text: "Space Vertical",   action: "distribute-vertical",   icon: "spaceVertical" }
+];
+/** Tooltip shown on the Align dropdown — explains the disabled reason. */
+public get alignTitle(): string {
+  if (this.canAlign) {
+    return "Align or distribute the selected shapes";
+  }
+  return `Select at least 2 shapes to align (${this.selectedShapes().length} selected)`;
+}
+
+/** Tooltip shown on the Distribute dropdown — explains the disabled reason. */
+public get distributeTitle(): string {
+  if (this.canDistribute) {
+    return "Space the selected shapes evenly";
+  }
+  return `Select at least 3 shapes to space evenly (${this.selectedShapes().length} selected)`;
 }
 
 }

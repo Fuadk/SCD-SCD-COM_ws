@@ -16,6 +16,7 @@ import { ChartsModule } from '@progress/kendo-angular-charts';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { DropDownButtonModule } from "@progress/kendo-angular-buttons";
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DialogModule, WindowModule } from '@progress/kendo-angular-dialog';
 import { MenuModule } from '@progress/kendo-angular-menu';
@@ -1069,6 +1070,7 @@ const scdRoutes: Routes = [
         ButtonsModule,
         InputsModule,
         DropDownsModule,
+		DropDownButtonModule,
         LayoutModule,
         DialogModule,
         SortableModule,

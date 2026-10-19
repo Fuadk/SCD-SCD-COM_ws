@@ -16,8 +16,7 @@
     </button>
     <div *ngIf="isEditMode" class="diagram-toolbar">
       <kendo-dropdowntree kendoDropDownTreeExpandable [kendoDropDownTreeHierarchyBinding]="ShapeMenu" textField="text"
-        valueField="id" childrenField="items" placeholder="Shapes"
-        [filterable]="true"
+        valueField="id" childrenField="items" placeholder="Shapes" [filterable]="true"
         (valueChange)="ON_CLICK_CONTEXT_MENU('DROPDOWN', $event)" [(value)]="selectedShape"
         [popupSettings]="{ width: 300, popupClass: 'expandable-tree-popup' }" class="shape-dropdown"
         style="display: inline-flex; width: 120px; vertical-align: middle;">
@@ -35,152 +34,165 @@
       <!-- Group 1: Display Controls - Shown when no shape is selected -->
       <ng-container *ngIf="currentShapeType == ''">
 
-  <!-- Toggle Grid -->
-  <button kendoButton [style.background]="showGrid ? '#e94560' : 'transparent'"
-    [style.color]="showGrid ? '#ffffff' : '#555555'" [style.border-color]="showGrid ? '#e94560' : '#d1d5db'"
-    kendoTooltip [title]="showGrid ? 'Hide Grid' : 'Show Grid'" 
-    (click)="processButton('toggleGrid')" class="toolbar-btn">
-    <span class="button-icon">⊞</span>
-  </button>
+        <!-- Toggle Grid -->
+        <button kendoButton [style.background]="showGrid ? '#e94560' : 'transparent'"
+          [style.color]="showGrid ? '#ffffff' : '#555555'" [style.border-color]="showGrid ? '#e94560' : '#d1d5db'"
+          kendoTooltip [title]="showGrid ? 'Hide Grid' : 'Show Grid'" (click)="processButton('toggleGrid')"
+          class="toolbar-btn">
+          <span class="button-icon">⊞</span>
+        </button>
 
-  <!-- Toggle Snap -->
-  <button kendoButton [style.background]="snapEnabled ? '#e94560' : 'transparent'"
-    [style.color]="snapEnabled ? '#ffffff' : '#555555'" [style.border-color]="snapEnabled ? '#e94560' : '#d1d5db'"
-    kendoTooltip [title]="snapEnabled ? 'Snap Off' : 'Snap On'" 
-    (click)="processButton('toggleSnap')" class="toolbar-btn">
-    <span class="button-icon">⚡</span>
-  </button>
+        <!-- Toggle Snap -->
+        <button kendoButton [style.background]="snapEnabled ? '#e94560' : 'transparent'"
+          [style.color]="snapEnabled ? '#ffffff' : '#555555'" [style.border-color]="snapEnabled ? '#e94560' : '#d1d5db'"
+          kendoTooltip [title]="snapEnabled ? 'Snap Off' : 'Snap On'" (click)="processButton('toggleSnap')"
+          class="toolbar-btn">
+          <span class="button-icon">⚡</span>
+        </button>
 
-  <!-- Zoom -->
-  <button kendoButton kendoTooltip title="Zoom Out" 
-    (click)="processButton('zoomOut')" class="toolbar-btn">
-    <span class="button-icon">🔍-</span>
-  </button>
-  <button kendoButton kendoTooltip title="Zoom In" 
-    (click)="processButton('zoomIn')" class="toolbar-btn">
-    <span class="button-icon">🔍+</span>
-  </button>
-  <button kendoButton kendoTooltip title="Zoom to Fit" 
-    (click)="processButton('zoomToFit')" class="toolbar-btn">
-    <span class="button-icon">🔍⤢</span>
-  </button>
-</ng-container>
+        <!-- Zoom -->
+        <button kendoButton kendoTooltip title="Zoom Out" (click)="processButton('zoomOut')" class="toolbar-btn">
+          <span class="button-icon">🔍-</span>
+        </button>
+        <button kendoButton kendoTooltip title="Zoom In" (click)="processButton('zoomIn')" class="toolbar-btn">
+          <span class="button-icon">🔍+</span>
+        </button>
+        <button kendoButton kendoTooltip title="Zoom to Fit" (click)="processButton('zoomToFit')" class="toolbar-btn">
+          <span class="button-icon">🔍⤢</span>
+        </button>
+      </ng-container>
 
       <!-- Group 2: Shape Controls - Shown when shape is selected -->
       <ng-container *ngIf="currentShapeType != ''">
 
-  <!-- Copy -->
-  <button kendoButton kendoTooltip title="Copy Selected" 
-    (click)="processButton('copySelected')" class="toolbar-btn">
-    <span class="button-icon">📋</span>
-  </button>
+        <!-- Copy -->
+        <button kendoButton kendoTooltip title="Copy Selected" (click)="processButton('copySelected')"
+          class="toolbar-btn">
+          <span class="button-icon">📋</span>
+        </button>
 
-  <!-- Paste -->
-  <button kendoButton kendoTooltip title="Paste" 
-    (click)="processButton('paste')" class="toolbar-btn">
-    <span class="button-icon">📄</span>
-  </button>
+        <!-- Paste -->
+        <button kendoButton kendoTooltip title="Paste" (click)="processButton('paste')" class="toolbar-btn">
+          <span class="button-icon">📄</span>
+        </button>
 
-  <!-- Delete -->
-  <button kendoButton kendoTooltip title="Delete Selected" 
-    (click)="processButton('deleteSelected')" class="toolbar-btn">
-    <span class="button-icon">🗑️</span>
-  </button>
+        <!-- Delete -->
+        <button kendoButton kendoTooltip title="Delete Selected" (click)="processButton('deleteSelected')"
+          class="toolbar-btn">
+          <span class="button-icon">🗑️</span>
+        </button>
 
-  <!-- Duplicate -->
-  <button kendoButton kendoTooltip title="Duplicate Selected" 
-    (click)="processButton('duplicateSelected')" class="toolbar-btn">
-    <span class="button-icon">📑</span>
-  </button>
+        <!-- Duplicate -->
+        <button kendoButton kendoTooltip title="Duplicate Selected" (click)="processButton('duplicateSelected')"
+          class="toolbar-btn">
+          <span class="button-icon">📑</span>
+        </button>
 
-  <span class="toolbar-separator"></span>
+        <span class="toolbar-separator"></span>
 
-  <!-- Send to Back -->
-  <button kendoButton kendoTooltip title="Send to Back" 
-    (click)="processButton('sendToBack')" class="toolbar-btn">
-    <span class="button-icon">⬇️</span>
-  </button>
+        <!-- Send to Back -->
+        <button kendoButton kendoTooltip title="Send to Back" (click)="processButton('sendToBack')" class="toolbar-btn">
+          <span class="button-icon">⬇️</span>
+        </button>
 
-  <!-- Bring to Front -->
-  <button kendoButton kendoTooltip title="Bring to Front" 
-    (click)="processButton('bringToFront')" class="toolbar-btn">
-    <span class="button-icon">⬆️</span>
-  </button>
+        <!-- Bring to Front -->
+        <button kendoButton kendoTooltip title="Bring to Front" (click)="processButton('bringToFront')"
+          class="toolbar-btn">
+          <span class="button-icon">⬆️</span>
+        </button>
 
-  <!-- Align to Grid -->
-  <button kendoButton kendoTooltip title="Align to Grid" 
-    (click)="processButton('alignToGrid')" class="toolbar-btn">
-    <span class="button-icon">⊞</span>
-  </button>
+        <!-- Align to Grid -->
+        <button kendoButton kendoTooltip title="Align to Grid" (click)="processButton('alignToGrid')"
+          class="toolbar-btn">
+          <span class="button-icon">⊞</span>
+        </button>
 
-  <span class="toolbar-separator"></span>
+        <span class="toolbar-separator"></span>
 
-  <!-- Flip Horizontal -->
-  <button kendoButton kendoTooltip title="Flip Horizontal" 
-    (click)="processButton('flipHorizontal')" class="toolbar-btn">
-    <span class="button-icon">↔</span>
-  </button>
+        <!-- Flip Horizontal -->
+        <button kendoButton kendoTooltip title="Flip Horizontal" (click)="processButton('flipHorizontal')"
+          class="toolbar-btn">
+          <span class="button-icon">↔</span>
+        </button>
 
-  <!-- Flip Vertical -->
-  <button kendoButton kendoTooltip title="Flip Vertical" 
-    (click)="processButton('flipVertical')" class="toolbar-btn">
-    <span class="button-icon">↕</span>
-  </button>
+        <!-- Flip Vertical -->
+        <button kendoButton kendoTooltip title="Flip Vertical" (click)="processButton('flipVertical')"
+          class="toolbar-btn">
+          <span class="button-icon">↕</span>
+        </button>
 
-  <!-- Rotate Right -->
-  <button kendoButton kendoTooltip title="Rotate Right" 
-    (click)="processButton('rotateRight')" class="toolbar-btn">
-    <span class="button-icon">⟳</span>
-  </button>
+        <!-- Rotate Right -->
+        <button kendoButton kendoTooltip title="Rotate Right" (click)="processButton('rotateRight')"
+          class="toolbar-btn">
+          <span class="button-icon">⟳</span>
+        </button>
 
-  <!-- Rotate Left -->
-  <button kendoButton kendoTooltip title="Rotate Left" 
-    (click)="processButton('rotateLeft')" class="toolbar-btn">
-    <span class="button-icon">⟲</span>
-  </button>
+        <!-- Rotate Left -->
+        <button kendoButton kendoTooltip title="Rotate Left" (click)="processButton('rotateLeft')" class="toolbar-btn">
+          <span class="button-icon">⟲</span>
+        </button>
 
-  <!-- Rotation Input -->
-  <div class="rotation-control">
-    <input type="number" [(value)]="rotationAngle" [(ngModel)]="rotationAngle" [min]="0" [max]="360"
-      [step]="1" kendoTooltip title="Rotation Angle" [style.width.px]="55" 
-      (change)="processButton('applyRotation')">
-  </div>
+        <!-- Rotation Input -->
+        <div class="rotation-control">
+          <input type="number" [(value)]="rotationAngle" [(ngModel)]="rotationAngle" [min]="0" [max]="360" [step]="1"
+            kendoTooltip title="Rotation Angle" [style.width.px]="55" (change)="processButton('applyRotation')">
+        </div>
 
-  <span class="toolbar-separator"></span>
+        <span class="toolbar-separator"></span>
 
-  <!-- Stroke / Fill Colors -->
-  <input type="color" [(ngModel)]="strokeColor" (input)="processButton('applyStrokeColor')"
-    style="min-width:40px; max-width:40px;" />
-  <input type="color" [(ngModel)]="fillColor" (input)="processButton('applyFillColor')"
-    style="min-width:40px; max-width:40px;" />
+        <!-- Stroke / Fill Colors -->
+        <input type="color" [(ngModel)]="strokeColor" (input)="processButton('applyStrokeColor')"
+          style="min-width:40px; max-width:40px;" />
+        <input type="color" [(ngModel)]="fillColor" (input)="processButton('applyFillColor')"
+          style="min-width:40px; max-width:40px;" />
 
-  <span class="toolbar-separator"></span>
+        <span class="toolbar-separator"></span>
 
-  <!-- Group -->
-  <button kendoButton kendoTooltip title="Group Selected" 
-    (click)="processButton('groupSelected')" class="toolbar-btn">
-    <span class="button-icon">🔲</span>
-  </button>
+        <!-- Group -->
+        <button kendoButton kendoTooltip title="Group Selected" (click)="processButton('groupSelected')"
+          class="toolbar-btn">
+          <span class="button-icon">🔲</span>
+        </button>
 
-  <!-- Ungroup -->
-  <button kendoButton kendoTooltip title="Ungroup Selected" 
-    (click)="processButton('ungroupSelected')" class="toolbar-btn">
-    <span class="button-icon">🔳</span>
-  </button>
-  <div class="toolbar-group">
-      <span class="toolbar-label">Align</span>
-      <button type="button" class="tool-btn" (click)="alignSelected('left')" [disabled]="!canAlign" title="Line up the left edges of the selected shapes">Align Left</button>
-      <button type="button" class="tool-btn" (click)="alignSelected('center')" [disabled]="!canAlign" title="Line up the horizontal centers of the selected shapes">Align Center</button>
-      <button type="button" class="tool-btn" (click)="alignSelected('right')" [disabled]="!canAlign" title="Line up the right edges of the selected shapes">Align Right</button>
-      <button type="button" class="tool-btn" (click)="alignSelected('top')" [disabled]="!canAlign" title="Line up the top edges of the selected shapes">Align Top</button>
-      <button type="button" class="tool-btn" (click)="alignSelected('middle')" [disabled]="!canAlign" title="Line up the vertical centers of the selected shapes">Align Middle</button>
-      <button type="button" class="tool-btn" (click)="alignSelected('bottom')" [disabled]="!canAlign" title="Line up the bottom edges of the selected shapes">Align Bottom</button>
-      <button type="button" class="tool-btn" (click)="alignSelected('centerPoints')" [disabled]="!canAlign" title="Put the centers of the selected shapes on the same point">Align Center Points</button>
-      <button type="button" class="tool-btn" (click)="distributeSelected('horizontal')" [disabled]="!canDistribute" title="Equal horizontal gaps between three or more shapes">Space Horizontal</button>
-      <button type="button" class="tool-btn" (click)="distributeSelected('vertical')" [disabled]="!canDistribute" title="Equal vertical gaps between three or more shapes">Space Vertical</button>
+        <!-- Ungroup -->
+        <button kendoButton kendoTooltip title="Ungroup Selected" (click)="processButton('ungroupSelected')"
+          class="toolbar-btn">
+          <span class="button-icon">🔳</span>
+        </button>
+
+        <kendo-dropdownbutton
+          [data]="alignMenuItems"
+          [disabled]="!canAlign"
+          (itemClick)="onAlignCommand($event)"
+          [title]="alignTitle">
+          <span class="dd-label">
+            <svg class="dd-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 4h18v2H3z" />
+              <rect x="4" y="8"  width="6" height="12" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="14" y="8" width="6" height="12" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            
+          </span>
+        </kendo-dropdownbutton>
+
+        <kendo-dropdownbutton
+          [data]="distributeMenuItems"
+          [disabled]="!canDistribute"
+          (itemClick)="onAlignCommand($event)"
+          [title]="distributeTitle">
+          <span class="dd-label">
+            <svg class="dd-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="2"  y="8" width="4" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="10" y="8" width="4" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="18" y="8" width="4" height="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            
+          </span>
+        </kendo-dropdownbutton>
+      </ng-container>
+
     </div>
-</ng-container>
-    </div>
+
     <!-- Tooltip Popup - Shows only in Edit Mode -->
     <div *ngIf="isEditMode && tooltipVisible" class="custom-tooltip-popup" [style.left.px]="tooltipX"
       [style.top.px]="tooltipY">
@@ -189,47 +201,88 @@
   </div>
 </div>
 
-<div #myTargetBox #diagramHost class="target-box" 
-  [class.insert-shape-active]="pendingDragShapeType || freehandMode"
-  [style.cursor]="insertCursor"
-  [class.grid-visible]="showGrid" [class.freehand-active]="freehandMode"
-  (pointerdown)="onFreehandPointerDown($event)" (pointermove)="onFreehandPointerMove($event)"
-  (pointerup)="onFreehandPointerUp($event)" (pointercancel)="onFreehandPointerUp($event)">
-  <svg *ngIf="dragBoxPreviewW > 0 && dragBoxPreviewH > 0"
-        class="drag-box-preview">
-      <rect [attr.x]="dragBoxPreviewX"
-            [attr.y]="dragBoxPreviewY"
-            [attr.width]="dragBoxPreviewW"
-            [attr.height]="dragBoxPreviewH"
-            fill="rgba(233,69,96,0.08)"
-            stroke="#e94560"
-            stroke-dasharray="4 2"
-            stroke-width="1.5" />
-    </svg>
+
+ <div class="toolbar-group animation-group">
+      <span class="toolbar-label">Animation</span>
+      <label class="field">
+        <span>Type</span>
+        <select [(ngModel)]="anim.type" (change)="onAnimationTypeChange()" [disabled]="!hasSelection">
+          <option *ngFor="let t of animationTypes" [value]="t.id">{{ t.label }}</option>
+        </select>
+      </label>
+      <ng-container *ngIf="anim.type !== 'none'">
+        <label class="field compact-field">
+          <span>Tag value</span>
+          <input type="number" [(ngModel)]="anim.value" (change)="applyAnimation()" [disabled]="!hasSelection" title="Simulated tag value. 0 = off for Visibility, Blink, Rotation and String." />
+        </label>
+        <ng-container *ngIf="anim.type === 'scale' || anim.type === 'move' || anim.type === 'analog' || anim.type === 'heatmap'">
+          <label class="field compact-field"><span>Min</span><input type="number" [(ngModel)]="anim.min" (change)="applyAnimation()" /></label>
+          <label class="field compact-field"><span>Max</span><input type="number" [(ngModel)]="anim.max" (change)="applyAnimation()" /></label>
+        </ng-container>
+        <ng-container *ngIf="anim.type === 'discrete'">
+          <label class="field compact-field"><span>Warning at</span><input type="number" [(ngModel)]="anim.warn" (change)="applyAnimation()" /></label>
+          <label class="field compact-field"><span>Alarm at</span><input type="number" [(ngModel)]="anim.alarm" (change)="applyAnimation()" /></label>
+        </ng-container>
+        <ng-container *ngIf="anim.type === 'blink' || anim.type === 'analog' || anim.type === 'heatmap' || anim.type === 'lamp' || anim.type === 'alarm' || anim.type === 'flow'">
+          <label class="field compact-field"><span>{{ anim.type === 'blink' ? 'Colour 1' : anim.type === 'analog' ? 'Low colour' : anim.type === 'heatmap' ? 'Cold colour' : anim.type === 'lamp' ? 'On colour' : anim.type === 'alarm' ? 'Alarm colour' : 'Flow colour' }}</span><input type="color" [(ngModel)]="anim.colorA" (change)="applyAnimation()" /></label>
+          <label class="field compact-field" *ngIf="anim.type === 'blink' || anim.type === 'analog' || anim.type === 'heatmap' || anim.type === 'lamp'"><span>{{ anim.type === 'blink' ? 'Colour 2' : anim.type === 'analog' ? 'High colour' : anim.type === 'heatmap' ? 'Hot colour' : 'Off colour' }}</span><input type="color" [(ngModel)]="anim.colorB" (change)="applyAnimation()" /></label>
+        </ng-container>
+        <label class="field compact-field" *ngIf="anim.type === 'scale' || anim.type === 'move' || anim.type === 'flip' || anim.type === 'heatmap'">
+          <span>{{ anim.type === 'flip' ? 'Mirror' : anim.type === 'heatmap' ? 'Hot side' : 'Direction' }}</span>
+          <select [(ngModel)]="anim.axis" (change)="applyAnimation()">
+            <option value="y">{{ anim.type === 'flip' ? 'Top-bottom' : anim.type === 'heatmap' ? 'Top' : 'Vertical' }}</option>
+            <option value="x">{{ anim.type === 'flip' ? 'Left-right' : anim.type === 'heatmap' ? 'Right' : 'Horizontal' }}</option>
+          </select>
+        </label>
+        <label class="field compact-field" *ngIf="anim.type === 'move'"><span>Distance px</span><input type="number" [(ngModel)]="anim.distance" (change)="applyAnimation()" /></label>
+        <label class="field compact-field" *ngIf="anim.type === 'blink' || anim.type === 'alarm'"><span>Blink ms</span><input type="number" min="100" step="100" [(ngModel)]="anim.speed" (change)="applyAnimation()" /></label>
+        <label class="field compact-field" *ngIf="anim.type === 'flow'"><span>Flow px/s</span><input type="number" [(ngModel)]="anim.speed" (change)="applyAnimation()" title="Negative Tag value reverses the flow direction." /></label>
+        <ng-container *ngIf="anim.type === 'imageSwap'">
+          <label class="field compact-field"><span>Image if on</span><input type="text" [(ngModel)]="anim.imageOn" (change)="applyAnimation()" placeholder="URL or data URL" /></label>
+          <label class="field compact-field"><span>Image if off</span><input type="text" [(ngModel)]="anim.imageOff" (change)="applyAnimation()" placeholder="URL or data URL" /></label>
+        </ng-container>
+        <label class="field compact-field" *ngIf="anim.type === 'rotate'"><span>Speed °/s</span><input type="number" [(ngModel)]="anim.speed" (change)="applyAnimation()" /></label>
+        <label class="field compact-field" *ngIf="anim.type === 'valueText'"><span>Unit</span><input type="text" [(ngModel)]="anim.unit" (change)="applyAnimation()" placeholder="psi" /></label>
+        <ng-container *ngIf="anim.type === 'stringText'">
+          <label class="field compact-field"><span>Text if on</span><input type="text" [(ngModel)]="anim.textOn" (change)="applyAnimation()" /></label>
+          <label class="field compact-field"><span>Text if off</span><input type="text" [(ngModel)]="anim.textOff" (change)="applyAnimation()" /></label>
+        </ng-container>
+        <label class="field compact-field">
+          <span>Click toggles</span>
+          <input type="checkbox" [(ngModel)]="anim.clickToggle" (change)="applyAnimation()" title="While running, clicking the shape flips its value between 0 and Max." />
+        </label>
+      </ng-container>
+      <button type="button" class="tool-btn" (click)="toggleAnimationRun()" [class.active]="animationRunning">{{ animationRunning ? 'Stop Animation' : 'Run Animation' }}</button>
+    </div>
+
+<div #myTargetBox #diagramHost class="target-box" [class.insert-shape-active]="pendingDragShapeType || freehandMode"
+  [style.cursor]="insertCursor" [class.grid-visible]="showGrid" [class.freehand-active]="freehandMode"
+  (pointerdown)="onPolyPointerDown($event); onFreehandPointerDown($event)" (contextmenu)="onPolyContextMenu($event)"
+  (pointermove)="onPolyPointerMove($event); onFreehandPointerMove($event)" (pointerdown)="onFreehandPointerDown($event)"
+  (pointermove)="onFreehandPointerMove($event)" (pointerup)="onFreehandPointerUp($event)"
+  (pointercancel)="onFreehandPointerUp($event)">
+  <svg *ngIf="dragBoxPreviewW > 0 && dragBoxPreviewH > 0" class="drag-box-preview">
+    <rect [attr.x]="dragBoxPreviewX" [attr.y]="dragBoxPreviewY" [attr.width]="dragBoxPreviewW"
+      [attr.height]="dragBoxPreviewH" fill="rgba(233,69,96,0.08)" stroke="#e94560" stroke-dasharray="4 2"
+      stroke-width="1.5" />
+  </svg>
   <svg *ngIf="freehandMode && freehandPreviewPath" class="freehand-preview" aria-hidden="true">
     <path [attr.d]="freehandPreviewPath" [attr.stroke]="strokeColor"></path>
   </svg>
-  <kendo-diagram [shapes]="shapes" #diagram
-      [connections]="connections"
-      [shapeDefaults]="shapeDefaults" 
-      (select)="ON_EVENT('select', $event)" 
-      [editable]="editable" 
-      (mouseEnter)="ON_EVENT('mouseEnter', $event)"
-      (contextmenu)="onDiagramContextMenu($event)"
-      (click)="onDiagramClick($event)"
-      (diagramClick)="onShapeClick($event)"
-      (zoomEnd)="ON_EVENT('zoomEnd', $event)"
-      (zoomStart)="ON_EVENT('zoomStart', $event)"
-      [zoom]="zoomLevel"
-      (pan)="ON_EVENT('pan', $event)"
-      (shapeBoundsChange)="ON_EVENT('shapeBoundsChange', $event)"
-      (dragStart)="ON_EVENT('dragStart', $event)"
-      (dragEnd)="ON_EVENT('dragEnd', $event)"
-      (change)="ON_EVENT('change', $event)"
-      (drag)="ON_EVENT('drag', $event)"
-      (mouseLeave)="ON_EVENT('mouseLeave', $event)"
-   
-      >
+      <svg
+      *ngIf="polyMode && polyPreviewPath"
+      class="freehand-preview"
+      aria-hidden="true">
+      <path [attr.d]="polyPreviewPath" [attr.stroke]="strokeColor"></path>
+    </svg>
+  <kendo-diagram [shapes]="shapes" #diagram [connections]="connections" [shapeDefaults]="shapeDefaults"
+    (select)="ON_EVENT('select', $event)" [editable]="editable" (mouseEnter)="ON_EVENT('mouseEnter', $event)"
+    (contextmenu)="onDiagramContextMenu($event)" (click)="onDiagramClick($event)" (diagramClick)="onShapeClick($event)"
+    (zoomEnd)="ON_EVENT('zoomEnd', $event)" (zoomStart)="ON_EVENT('zoomStart', $event)" [zoom]="zoomLevel"
+    (pan)="ON_EVENT('pan', $event)" (shapeBoundsChange)="ON_EVENT('shapeBoundsChange', $event)"
+    (dragStart)="ON_EVENT('dragStart', $event)" (dragEnd)="ON_EVENT('dragEnd', $event)"
+    (change)="ON_EVENT('change', $event)" (drag)="ON_EVENT('drag', $event)"
+    (mouseLeave)="ON_EVENT('mouseLeave', $event)">
   </kendo-diagram>
 
   <div *ngIf="popupVisible" [ngStyle]="{
@@ -253,18 +306,16 @@
   (select)="onContextMenuSelect($event)">
 </kendo-contextmenu>
 
-<kendo-window [hidden]="!AIFormOpened" title="Create Diagram" (close)="AIFormOpened = false" [minWidth]="500"
-  [top]=100 [left]=100
-  [width]="800" [height]="700" [state]="isPhonePortrait ? 'maximized' : 'default'">
+<kendo-window [hidden]="!AIFormOpened" title="Create Diagram" (close)="AIFormOpened = false" [minWidth]="500" [top]=100
+  [left]=100 [width]="800" [height]="700" [state]="isPhonePortrait ? 'maximized' : 'default'">
   <app-ai-ai-form (saveCompletedOutput)="saveFormCompletedHandler($event)"
     [setComponentConfig_Input]="DSP_AIFormConfig">
   </app-ai-ai-form>
 </kendo-window>
 
 <!-- ===== PROPERTY DIALOG ===== -->
-<kendo-window *ngIf="propertyDialogData && propertyDialogData.isVisible" [title]="propertyDialogData.title"
-[top]=0 [left]=0
-  [minWidth]="propertyDialogData.width || 500" [width]="propertyDialogData.width || 700"
+<kendo-window *ngIf="propertyDialogData && propertyDialogData.isVisible" [title]="propertyDialogData.title" [top]=0
+  [left]=0 [minWidth]="propertyDialogData.width || 500" [width]="propertyDialogData.width || 700"
   [height]="propertyDialogData.height || 500" [state]="propertyDialogData.state || 'default'" [resizable]="true"
   (close)="onPropertyDialogClose()">
 
