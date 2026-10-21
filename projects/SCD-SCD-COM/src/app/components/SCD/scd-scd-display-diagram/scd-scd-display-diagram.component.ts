@@ -865,9 +865,9 @@ public printScreen(){
     }
   }
   async WHEN_NEW_FORM_INSTANCE(){
-    if (!this.isChild) {
-  this.executeQuery(this.form.value);
-}
+    // if (!this.isChild) {
+//   this.executeQuery(this.form.value);
+// }
 
 console.log("WHEN_NEW_FORM_INSTANCE");
 var href = window.location.href;
@@ -2892,7 +2892,87 @@ public mapSampleData() {
     }
     else
       dwg = JSON.parse(OutRec.DiagramData);
+    
     if (this.paramConfig.DEBUG_FLAG) console.log("dwg:1:", dwg)
+      this.isDiagramInitializing = true;
+      this.connections = dwg.connections;
+      this.connections = dwg.connections;
+
+for (const model of dwg.shapes) {
+  console.log("BEFORE ADD:", model.dataItem?.type);
+
+  (this.shapes as any[]).push(model);
+
+  const runtime = this.diagram.addShape(model, true);
+
+  console.log("AFTER ADD:", {
+    runtimeType: runtime?.dataItem?.type,
+    nestedType: runtime?.dataItem?.dataItem?.type,
+    modelType: model.dataItem?.type
+  });
+
+  this.diagram.select(runtime);
+
+  // Temporarily disable this call for the test.
+  // this.syncRuntimeShapeToModel(runtime);
+}
+    
+    
+      //this.shapes = dwg.shapes;
+      
+
+        console.log(
+          "MODEL:",
+          this.shapes[0]?.dataItem?.type,
+          this.shapes[0]?.dataItem?.dataItem
+        );
+   
+    // this.shapes = dwg.shapes;
+    // this.connections = dwg.connections;
+    this.editable = this.buildEditable();
+
+    // Generate the JSON
+    let diagramMenus = this.diagramMenus["DIAGRAM"]
+    const result = this.buildHierarchy(diagramMenus);
+    this.items=result;
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            this.isDiagramInitializing = false;
+        });
+    });
+    this.loadShapesData();
+
+    setTimeout(() => {
+        //  this.disableButton1023(); //Fuad testing disable a button
+    }, 100);
+    
+}
+public mapSampleData_org() {
+    let OutRec = this.performMapperFrom(this.executeQueryresult.data);
+    if (this.paramConfig.DEBUG_FLAG) console.log("OutRec:1:", OutRec)
+    let dwg;
+    if (OutRec.DiagramData == ""){
+      dwg = {
+        "shapes": [
+          ],
+        "connections": [
+                ]
+      }
+    }
+    else
+      dwg = JSON.parse(OutRec.DiagramData);
+    if (this.paramConfig.DEBUG_FLAG) console.log("dwg:1:", dwg)
+    if (this.paramConfig.DEBUG_FLAG) console.log("dwg:1:", dwg)
+      for (let i =0; i< dwg.shapes.length; i++){
+      let shape = dwg.shapes[i];
+      if (shape.dataItem.tooltip !== undefined) {
+        shape.tooltip = shape.dataItem.tooltip;
+      }
+      if (shape.dataItem.tooltipText !== undefined) {
+        shape.tooltipText = shape.dataItem.tooltipText;
+      }
+    }
     this.isDiagramInitializing = true;
     this.shapes = dwg.shapes;
     this.connections = dwg.connections;
@@ -4456,33 +4536,44 @@ async updateShapeInfoArr (shapeType, shapesID){
         "_WHERE": whereShapesInfo
       }));
 
-      console.log ("bodyShapesInfo:",bodyShapesInfo)
+            console.log ("bodyShapesInfo:",bodyShapesInfo)
       let dataShapesInfo = await this.starServices.execSQLBody(this, bodyShapesInfo, "");
-          if (this.paramConfig.DEBUG_FLAG) console.log("updateShapeInfoArr:dataShapesInfo[0].data:", dataShapesInfo);
-          if (typeof dataShapesInfo[0].data != "undefined"){
-            let newGrouped = this.formatShapesInfoResponse(dataShapesInfo);
-            if (this.paramConfig.DEBUG_FLAG) {
-              console.log("updateShapeInfoArr:newGrouped:", newGrouped);
-            }  
-            this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
-            let dwgShapeId = shapeType + ":" + shapesID
-            const shape = this.diagram?.getShapeById(dwgShapeId);
-            console.log ("updateShapeInfoArr:shape:", shape);
-            if (shape) {
-              const dataItem = shape.dataItem;   
-              let shapeType = dataItem.dataItem.libraryKind;
-              
-               let options = {};
-               this.populateshapeAttributes(options,shapeType.toLowerCase(),dwgShapeId);
-               console.log ("updateShapeInfoArr:options:",JSON.stringify(options));
-                Object.assign(dataItem.dataItem, options);
-               console.log ("updateShapeInfoArr:dataItem:",dataItem, "shape:",shape )
-               this.refreshCustomShape(shape);
-               this.syncRuntimeShapeToModel(shape);
-           }
+      if (this.paramConfig.DEBUG_FLAG) console.log("updateShapeInfoArr:dataShapesInfo[0].data:", dataShapesInfo);
+      if (typeof dataShapesInfo[0].data != "undefined"){
+        let newGrouped = this.formatShapesInfoResponse(dataShapesInfo);
+        if (this.paramConfig.DEBUG_FLAG) {
+          console.log("updateShapeInfoArr:newGrouped:", newGrouped);
+        }  
+        this.ShapesInfoArr = { ...this.ShapesInfoArr, ...newGrouped };
+        let dwgShapeId = shapeType + ":" + shapesID
+        const shape = this.diagram?.getShapeById(dwgShapeId);
+        console.log ("checkdatItem:updateShapeInfoArr:shape:", shape);
+        if (shape) {
+          let dataItem = this.shapeDataItem(shape);
+          let shapeType = dataItem.libraryKind;
+          
+            let options:any = {};
+            this.populateshapeAttributes(options,shapeType.toLowerCase(),dwgShapeId);
+            console.log ("updateShapeInfoArr:options:",JSON.stringify(options));
+            Object.assign(dataItem, options);
+            
+            if (options.tooltip !== undefined) {
+              shape.dataItem.tooltip = options.tooltip;
+            }
 
-                
-          } 
+            if (options.tooltipText !== undefined) {
+              shape.dataItem.tooltipText = options.tooltipText;
+            }
+            
+            this.refreshCustomShape(shape);
+            this.syncRuntimeShapeToModel(shape);
+            const shape1 = this.diagram?.getShapeById(dwgShapeId);
+        console.log ("checkdatItem:updateShapeInfoArr:shape1:", shape1);
+            console.log ("updateShapeInfoArr:dataItem:",dataItem, "shape:",shape,"this.shapes:",this.shapes )
+        }
+
+            
+      } 
     }
   }
 public ShapesInfo = [];
@@ -5278,15 +5369,22 @@ async onFreehandPointerUp(event: PointerEvent) {
           stateStyles['disabled'] = appearance;
         }
 
-      }
-      console.log ("populateshapeAttributes:stateStyles:",stateStyles);
+      }console.log ("populateshapeAttributes:stateStyles:",stateStyles);
       options['stateStyles'] = stateStyles;
 
-      tablesArr = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_GENERAL" )
-      options.visual       = options.visual       ?? "button" +tablesArr[0].BUTTON_STYLE+ "Visual"; // default variant
+      let buttonGeneral = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_GENERAL" )
+      options.visual       = options.visual       ?? "button" +buttonGeneral[0].BUTTON_STYLE+ "Visual"; // default variant
       options.buttonState  = options.buttonState  ?? 'normal';
       options.disabled     = options.disabled     ?? false;
-      options.allowHover     = tablesArr[0].HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS;
+      options.allowHover     = buttonGeneral[0].HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS;
+      
+      let shape = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_SHAPE" );
+      if (shape[0].TOOLTIP_TEXT != ""){
+        options.tooltipText = shape[0].TOOLTIP_TEXT
+        options.tooltip = { "visible": true }
+      }
+      console.log ("populateshapeAttributes:options:",options);
+      
 
     }
   }
@@ -5860,6 +5958,8 @@ private syncRuntimeShapeToModel(shape: any): void {
     model.rotation = { angle: this.readRotation(shape) };
 
     const runtimeData = this.shapeDataItem(shape);
+    const runtimeOuterData = shape.dataItem;
+    
     if (runtimeData && typeof runtimeData === "object") {
       runtimeData.width = bounds.width;
       runtimeData.height = bounds.height;
@@ -5875,6 +5975,27 @@ private syncRuntimeShapeToModel(shape: any): void {
       const modelData = model.dataItem?.dataItem ?? model.dataItem;
 
       modelData.stateStyles = this.clonePlain(runtimeData.stateStyles);
+      /////
+      if (runtimeOuterData?.tooltip !== undefined) {
+        model.tooltip =
+          this.clonePlain(runtimeOuterData.tooltip);
+      }
+
+      if (runtimeOuterData?.tooltipText !== undefined) {
+        model.tooltipText = runtimeOuterData.tooltipText;
+      }
+
+      // Inner saved library metadata.
+      if (modelData && typeof modelData === "object") {
+        if (runtimeData?.tooltip !== undefined) {
+          modelData.tooltip =
+            this.clonePlain(runtimeData.tooltip);
+        }
+
+        if (runtimeData?.tooltipText !== undefined) {
+          modelData.tooltipText = runtimeData.tooltipText;
+        }
+      }
     }
 
     // The runtime shape's dataItem is not always the same object reference as
@@ -5889,9 +6010,12 @@ private syncRuntimeShapeToModel(shape: any): void {
         modelData.height = bounds.height;
       }
     }
+    
 
     this.schedulePersistState();
   }
+
+  
 // Add these properties
 public showGrid: boolean = false;
 public snapEnabled: boolean = true;
