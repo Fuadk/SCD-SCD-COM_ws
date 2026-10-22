@@ -179,6 +179,10 @@ interface ShapeAnimation {
   clickToggle: boolean;
   imageOn: string;
   imageOff: string;
+  changeSpeed: number;
+  rotateMode: "spin" | "angle";
+  sweep: number;
+  pivot: "center" | "bottom" | "top" | "left" | "right";
 }
 interface ShapeEditorStyle {
   fillColor?: string;
@@ -316,6 +320,9 @@ public disableDISPLAY_DATA = false;
   private scadaSubscriptions: Subscription[] = [];
   private componentConfigChangeEvent!: Subscription;
   public ngAfterViewInit() {
+    if (typeof document !== "undefined") {
+      document.addEventListener("keydown", this.polyKeyHandler, true);
+    }
     this.starServices.setRTL();
     this.disableFields();
     this.WHEN_NEW_FORM_INSTANCE();
@@ -421,6 +428,9 @@ public disableDISPLAY_DATA = false;
 }
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
+    if (typeof document !== "undefined") {
+      document.removeEventListener("keydown", this.polyKeyHandler, true);
+    }
     this.stopAnimationTimer();
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
     this.scadaSubscriptions.forEach(sub => sub.unsubscribe());
@@ -1275,9 +1285,10 @@ if (!this.isEditMode)
       // those changes with this.shapes as well.
       this.applyDiagramChangeToAppMemory(event);
     }
-    if (type === "select" && this.animationRunning) {
-      this.handleAnimationClick(this.onlyShapes(event?.selected || []));
+    if (type === "select" || type === "shapeBoundsChange" || type === "change") {
+      setTimeout(() => this.syncInspectorFromSelection());
     }
+
     // ===== ZOOM TRACKING =====
     if (type === "zoomStart") {
         this.zoomLevel = event.zoom || 1;
@@ -1968,7 +1979,10 @@ public visualTemplate = (options: any): Group => {
     if (!this.animationRunning || !a || a.type === "none") {
       return null;
     }
-    return { ...this.defaultAnimation(), ...a };
+    // The value drawn is the "display" value, which follows the polled tag value
+    // at the configured change speed (or jumps straight to it when speed is 0).
+    const state = this.animState.get(a);
+    return { ...this.defaultAnimation(), ...a, value: state ? state.display : a.value };
   }
 
   private animationRatio(a: ShapeAnimation): number {
@@ -2012,12 +2026,14 @@ public visualTemplate = (options: any): Group => {
     const on = a.value !== 0;
 
     switch (a.type) {
-      case "lamp":
-        style.fillColor = on ? a.colorA : a.colorB;
-        if (on) {
+      case "lamp": {
+        const k = Math.min(1, Math.abs(a.value));
+        style.fillColor = k >= 1 ? a.colorA : k <= 0 ? a.colorB : this.lerpColor(a.colorB, a.colorA, k);
+        if (k > 0.5) {
           style.strokeColor = "#ffc107";
         }
         break;
+      }
       case "alarm":
         if (a.value === 1) {
           style.fillColor = Math.floor(Date.now() / Math.max(100, a.speed)) % 2 === 0 ? a.colorA : "#330000";
@@ -2101,7 +2117,15 @@ public visualTemplate = (options: any): Group => {
     let t: any = null;
 
     switch (a.type) {
-      case "visibility":
+      case "visibility": {
+        // Fades with the display value (0 = hidden, 1 = shown).
+        const k = a.value === 0 ? 0 : Math.min(1, Math.abs(a.value));
+        if (k < 1) {
+          drawing.opacity?.(k);
+          Array.from(drawing.children || []).forEach((kid: any) => kid.opacity?.(k));
+        }
+        break;
+      }
       case "alarm":
         if (a.value === 0) {
           // Kendo can reset the outer group's opacity when it redraws a shape,
@@ -2110,23 +2134,47 @@ public visualTemplate = (options: any): Group => {
           Array.from(drawing.children || []).forEach((kid: any) => kid.opacity?.(0));
         }
         break;
-      case "scale": {
-        const ratio = Math.max(0.02, this.animationRatio(a));
-        t = a.axis === "x"
-          ? geometry.transform().scale(ratio, 1, [left, top])
-          : geometry.transform().scale(1, ratio, [left, top + h]);
-        break;
-      }
+      case "scale":
       case "move": {
-        const offset = this.animationRatio(a) * a.distance;
-        t = geometry.transform().translate(a.axis === "x" ? offset : 0, a.axis === "y" ? -offset : 0);
+        let moved: any;
+        if (a.type === "scale") {
+          const ratio = Math.max(0.02, this.animationRatio(a));
+          moved = a.axis === "x"
+            ? geometry.transform().scale(ratio, 1, [left, top])
+            : geometry.transform().scale(1, ratio, [left, top + h]);
+        } else {
+          const offset = this.animationRatio(a) * a.distance;
+          moved = geometry.transform().translate(a.axis === "x" ? offset : 0, a.axis === "y" ? -offset : 0);
+        }
+        // Kendo stretches a redrawn shape back to its box, which would undo the
+        // effect. So the box is held by an invisible frame, and only the shape's
+        // own content is scaled or moved.
+        const content = Array.from(drawing.children || []) as any[];
+        const frame = new Rectangle({
+          x: left, y: top, width: w, height: h,
+          stroke: { color: "transparent", width: 0 },
+          fill: { color: "transparent" }
+        });
+        frame.options.opacity = 0.001;
+        group.append(frame);
+        content.forEach(kid => {
+          const existing = kid.transform?.();
+          kid.transform?.(existing ? moved.multiply(existing) : moved);
+        });
         break;
       }
-      case "flip":
-        if (a.value !== 0) {
-          t = geometry.transform().scale(a.axis === "x" ? -1 : 1, a.axis === "y" ? -1 : 1, [left + w / 2, top + h / 2]);
+      case "flip": {
+        // Turns over smoothly as the display value goes 0 -> 1 (and back).
+        const k = Math.min(1, Math.abs(a.value));
+        if (k > 0) {
+          let f = 1 - 2 * k;
+          if (Math.abs(f) < 0.02) {
+            f = 0.02;
+          }
+          t = geometry.transform().scale(a.axis === "x" ? f : 1, a.axis === "y" ? f : 1, [left + w / 2, top + h / 2]);
         }
         break;
+      }
       case "heatmap":
         this.applyHeatMap(drawing, a, w * h);
         break;
@@ -2188,15 +2236,121 @@ public visualTemplate = (options: any): Group => {
 
   public toggleAnimationRun(): void {
     this.animationRunning = !this.animationRunning;
-    this.redrawAnimatedShapes(false);
+    this.animState = new WeakMap();
     if (this.animationRunning) {
-      this.animTimer = setInterval(() => this.redrawAnimatedShapes(true), 60);
+      for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
+        const a = this.shapeDataItem(shape)?.animation;
+        if (a) {
+          const v = Number(a.value) || 0;
+          this.animState.set(a, { sig: JSON.stringify(a), target: v, display: v });
+        }
+      }
+      this.redrawAnimatedShapes(false);
+      this.lastAnimTick = performance.now();
+      this.animTimer = setInterval(() => this.animationTick(), 60);
+      this.restartPollTimer();
       this.startSpinLoop();
-      this.diagram?.deselect();
-      this.statusMessage = "Animation running. Change a shape's Tag value to see it react.";
+      this.statusMessage = `Animation running. Tag values are read every ${this.animationPollMs / 1000} s.`;
     } else {
       this.stopAnimationTimer();
+      this.redrawAnimatedShapes(false);
       this.statusMessage = "Animation stopped. Shapes are back to their normal look.";
+    }
+  }
+
+/** Types whose drawn value follows the tag value at the "change speed". */
+  private isEased(type: string): boolean {
+    return ["scale", "move", "analog", "heatmap", "discrete", "valueText", "visibility", "flip", "lamp", "rotate"]
+      .includes(type);
+  }
+
+  /** Shown in the panel for types that glide to a new value at a set speed. */
+  public get showChangeSpeed(): boolean {
+    return (this.anim.type !== "rotate" && this.isEased(this.anim.type))
+      || (this.anim.type === "rotate" && this.anim.rotateMode === "angle");
+  }
+
+  private restartPollTimer(): void {
+    if (this.animPollTimer !== null) {
+      clearInterval(this.animPollTimer);
+      this.animPollTimer = null;
+    }
+    if (this.animationRunning) {
+      this.animPollTimer = setInterval(() => this.pollAnimations(), Math.max(100, Number(this.animationPollMs) || 1000));
+    }
+  }
+
+  public onPollIntervalChange(): void {
+    this.restartPollTimer();
+    if (this.animationRunning) {
+      this.statusMessage = `Tag values are now read every ${this.animationPollMs / 1000} s.`;
+    }
+  }
+
+  /** Timer: read every shape's tag value; redraw only the ones that changed. */
+  private pollAnimations(): void {
+    for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
+      const a = this.shapeDataItem(shape)?.animation;
+      if (!a || a.type === "none") {
+        continue;
+      }
+      const sig = JSON.stringify(a);
+      const value = Number(a.value) || 0;
+      const state = this.animState.get(a);
+      if (!state) {
+        this.animState.set(a, { sig, target: value, display: value });
+        this.redrawAnimated(shape);
+        continue;
+      }
+      if (state.sig === sig) {
+        continue;
+      }
+      state.sig = sig;
+      state.target = value;
+      if (!(this.isEased(a.type) && Number(a.changeSpeed) > 0)) {
+        state.display = value;
+      }
+      this.redrawAnimated(shape);
+    }
+  }
+
+  /** Move the displayed value toward the target at changeSpeed units/second. */
+  private stepDisplay(state: { target: number; display: number }, a: any, dt: number): boolean {
+    if (state.display === state.target) {
+      return false;
+    }
+    const speed = Number(a.changeSpeed) || 0;
+    if (speed <= 0) {
+      state.display = state.target;
+      return true;
+    }
+    const diff = state.target - state.display;
+    const step = speed * dt;
+    state.display = Math.abs(diff) <= step ? state.target : state.display + Math.sign(diff) * step;
+    return true;
+  }
+
+  /** Fast tick: glide values toward their targets and redraw time-based types. */
+  private animationTick(): void {
+    const now = performance.now();
+    const dt = Math.min(0.25, (now - this.lastAnimTick) / 1000);
+    this.lastAnimTick = now;
+    for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
+      const a = this.shapeDataItem(shape)?.animation;
+      if (!a || a.type === "none") {
+        continue;
+      }
+      const state = this.animState.get(a);
+      let redraw = false;
+      if (state && a.type !== "rotate" && this.isEased(a.type) && Number(a.changeSpeed) > 0) {
+        redraw = this.stepDisplay(state, a, dt);
+      }
+      if (this.isContinuousAnimation({ ...a, value: state ? state.display : a.value })) {
+        redraw = true;
+      }
+      if (redraw) {
+        this.redrawAnimated(shape);
+      }
     }
   }
 
@@ -2204,18 +2358,24 @@ public visualTemplate = (options: any): Group => {
 
   /**
    * Rotation runs per animation frame by turning the already-drawn visual
-   * (no redraw), so it is smooth and pivots on the shape's own centre.
-   * A redrawn visual is a new object, so the cached pivot resets by itself.
+   * (no redraw), so it is smooth and pivots where the user chose. Two modes:
+   * continuous spin (speed in degrees/second) or an angle that follows the
+   * value (so it can be used as a clock hand). A redrawn visual is a new
+   * object, so the cached bounds reset by themselves.
    */
   private startSpinLoop(): void {
     if (typeof window === "undefined" || this.spinFrame !== null) {
       return;
     }
+    let last = performance.now();
     const step = (): void => {
       if (!this.animationRunning) {
         this.spinFrame = null;
         return;
       }
+      const now = performance.now();
+      const dt = Math.min(0.25, (now - last) / 1000);
+      last = now;
       for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
         const a = this.shapeDataItem(shape)?.animation;
         if (!a || a.type !== "rotate") {
@@ -2227,20 +2387,16 @@ public visualTemplate = (options: any): Group => {
           continue;
         }
         // Turn the shape's CONTENT, not the shape's own transform: Kendo moves
-        // and resizes a shape through that outer transform, and overwriting it
-        // made a dragged shape orbit or snap back. The pivot is the centre of
-        // the content in the shape's local space, so it stays on the shape.
-        // Kendo reuses the shape's group when it redraws, so key the cached
-        // pivot to the current child objects; new children mean a fresh pivot.
+        // and resizes a shape through that outer transform. Kendo also reuses
+        // the shape's group when it redraws, so key the cache to the current
+        // child objects; new children mean fresh bounds.
         const cached = drawing.__spin;
         if (cached && (cached.kids.length !== kids.length || kids.some((kid, i) => kid !== cached.kids[i]))) {
           drawing.__spin = undefined;
         }
         if (!drawing.__spin) {
-          // Use the content's visible box (bbox() includes strokes and text, the
-          // same box fitGroupToSize scaled to the shape size). bbox() is in canvas
-          // space, so map its centre back into the group's own space, where the
-          // turn is applied.
+          // The content's visible box (bbox() is in canvas space), mapped back
+          // into the group's own space, where the turn is applied.
           let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
           for (const kid of kids) {
             const box = kid.bbox?.();
@@ -2255,28 +2411,46 @@ public visualTemplate = (options: any): Group => {
           if (!Number.isFinite(minX)) {
             continue;
           }
-          let pivotX = (minX + maxX) / 2;
-          let pivotY = (minY + maxY) / 2;
           const cm = drawing.currentTransform?.()?.matrix?.() ?? drawing.transform?.()?.matrix?.();
           if (cm && typeof cm.a === "number") {
             const det = cm.a * cm.d - cm.b * cm.c;
             if (Math.abs(det) > 1e-9) {
-              const cx0 = pivotX;
-              const cy0 = pivotY;
-              pivotX = (cm.d * (cx0 - cm.e) - cm.c * (cy0 - cm.f)) / det;
-              pivotY = (-cm.b * (cx0 - cm.e) + cm.a * (cy0 - cm.f)) / det;
+              const toLocal = (px: number, py: number): number[] => [
+                (cm.d * (px - cm.e) - cm.c * (py - cm.f)) / det,
+                (-cm.b * (px - cm.e) + cm.a * (py - cm.f)) / det
+              ];
+              const p1 = toLocal(minX, minY);
+              const p2 = toLocal(maxX, maxY);
+              minX = Math.min(p1[0], p2[0]);
+              maxX = Math.max(p1[0], p2[0]);
+              minY = Math.min(p1[1], p2[1]);
+              maxY = Math.max(p1[1], p2[1]);
             }
           }
-          drawing.__spin = {
-            kids,
-            cx: pivotX,
-            cy: pivotY,
-            bases: kids.map(kid => kid.transform?.() || null)
-          };
+          drawing.__spin = { kids, minX, minY, maxX, maxY, bases: kids.map(kid => kid.transform?.() || null) };
         }
         const spin = drawing.__spin;
-        const angle = a.value !== 0 ? ((Date.now() / 1000) * Number(a.speed || 0)) % 360 : 0;
-        const turn = geometry.transform().rotate(angle, [spin.cx, spin.cy]);
+        const state = this.animState.get(a);
+        if (state && a.rotateMode === "angle") {
+          this.stepDisplay(state, a, dt);
+        }
+        const value = state ? state.display : Number(a.value) || 0;
+        let angle: number;
+        if (a.rotateMode === "angle") {
+          const span = (Number(a.max) || 0) - (Number(a.min) || 0);
+          const ratio = span === 0 ? 0 : Math.max(0, Math.min(1, (value - a.min) / span));
+          angle = ratio * (Number(a.sweep) || 360);
+        } else {
+          angle = value !== 0 ? ((Date.now() / 1000) * Number(a.speed || 0)) % 360 : 0;
+        }
+        const midX = (spin.minX + spin.maxX) / 2;
+        const midY = (spin.minY + spin.maxY) / 2;
+        const pivot = a.pivot === "bottom" ? [midX, spin.maxY]
+          : a.pivot === "top" ? [midX, spin.minY]
+          : a.pivot === "left" ? [spin.minX, midY]
+          : a.pivot === "right" ? [spin.maxX, midY]
+          : [midX, midY];
+        const turn = geometry.transform().rotate(angle, pivot);
         kids.forEach((kid, i) => {
           const base = spin.bases[i];
           kid.transform?.(base ? turn.multiply(base) : turn);
@@ -2296,6 +2470,10 @@ public visualTemplate = (options: any): Group => {
       clearInterval(this.animTimer);
       this.animTimer = null;
     }
+    if (this.animPollTimer !== null) {
+      clearInterval(this.animPollTimer);
+      this.animPollTimer = null;
+    }
   }
 
   private redrawAnimatedShapes(continuousOnly: boolean): void {
@@ -2310,6 +2488,9 @@ public visualTemplate = (options: any): Group => {
       this.redrawAnimated(shape);
     }
   }
+  
+
+
 
   /** Redraw one shape while keeping its bounds/rotation, without persisting. */
   private redrawAnimated(shape: any): void {
@@ -2330,13 +2511,17 @@ public visualTemplate = (options: any): Group => {
   }
 
   /** Picking a type resets Speed to a sensible default for that type. */
-  public onAnimationTypeChange(): void {
+public onAnimationTypeChange(): void {
     // Each type starts from its own sensible colours and speed, so choosing a
     // type never inherits the colours of the previously chosen one.
     const defaults = this.defaultAnimation();
     this.anim.colorA = defaults.colorA;
     this.anim.colorB = defaults.colorB;
     this.anim.axis = defaults.axis;
+    this.anim.changeSpeed = 0;
+    this.anim.rotateMode = "spin";
+    this.anim.sweep = 360;
+    this.anim.pivot = "center";
     switch (this.anim.type) {
       case "rotate":
         this.anim.speed = 90;
@@ -2349,6 +2534,7 @@ public visualTemplate = (options: any): Group => {
       case "analog":
         this.anim.colorA = "#1e88e5";
         this.anim.colorB = "#e53935";
+        this.anim.changeSpeed = 50;
         break;
       case "alarm":
         this.anim.speed = 250;
@@ -2361,20 +2547,32 @@ public visualTemplate = (options: any): Group => {
       case "lamp":
         this.anim.colorA = "#ffeb3b";
         this.anim.colorB = "#424242";
+        this.anim.changeSpeed = 4;
         break;
       case "flip":
         this.anim.axis = "x";
+        this.anim.changeSpeed = 4;
+        break;
+      case "visibility":
+        this.anim.changeSpeed = 4;
         break;
       case "heatmap":
         this.anim.colorA = "#1e88e5";
         this.anim.colorB = "#e53935";
+        this.anim.changeSpeed = 50;
+        break;
+      case "scale":
+      case "move":
+      case "discrete":
+      case "valueText":
+        this.anim.changeSpeed = 50;
         break;
     }
     this.applyAnimation();
   }
 
-  /** Apply the Animation panel settings to every selected shape. */
-  public applyAnimation(): void {
+  /** Save the Animation panel settings on every selected shape. */
+public applyAnimation(): void {
     const shapes = this.selectedShapes();
     if (!shapes.length) {
       this.statusMessage = "Select a shape first, then choose its animation.";
@@ -2386,42 +2584,63 @@ public visualTemplate = (options: any): Group => {
       if (!dataItem) {
         continue;
       }
-      dataItem.animation = this.clonePlain(config);
+      // Update in place so the shape keeps its running state (the polling timer
+      // notices the change and redraws on its next tick).
+      dataItem.animation = Object.assign(dataItem.animation ?? {}, this.clonePlain(config));
       const model = this.modelForShape(shape);
       if (model) {
         model.dataItem ??= {};
         const modelData = model.dataItem?.dataItem ?? model.dataItem;
         modelData.animation = this.clonePlain(config);
       }
-      if (this.animationRunning) {
-        this.redrawAnimated(shape);
-      }
     }
     this.schedulePersistState();
     const label = this.animationTypes.find(t => t.id === config.type)?.label || config.type;
     this.statusMessage = config.type === "none"
       ? "Animation removed from the selected shape(s)."
-      : `Animation "${label}" saved. Press Run Animation to preview it.`;
+      : this.animationRunning
+        ? `Animation "${label}" saved. It is applied at the next update (every ${this.animationPollMs / 1000} s).`
+        : `Animation "${label}" saved. Press Run Animation to preview it.`;
+  }
+public onStagePointerDown(event: PointerEvent): void {
+    this.stagePointerStart = { x: event.clientX, y: event.clientY };
   }
 
   /** While running, clicking a shape with "toggle on click" flips its value. */
-  private handleAnimationClick(selected: any[]): void {
-    for (const shape of selected || []) {
-      const dataItem = this.shapeDataItem(shape);
-      const a = dataItem?.animation;
-      if (!a?.clickToggle) {
-        continue;
-      }
-      a.value = a.value !== 0 ? 0 : (a.max || 1);
-      const model = this.modelForShape(shape);
-      const modelData = model?.dataItem?.dataItem ?? model?.dataItem;
-      if (modelData?.animation) {
-        modelData.animation.value = a.value;
-      }
-      this.redrawAnimated(shape);
+  public onStageClick(event: MouseEvent): void {
+    if (!this.animationRunning || !this.diagram) {
+      return;
+    }
+    const start = this.stagePointerStart;
+    if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 4) {
+      return;
+    }
+    const point = this.pointerToModel(event as any);
+    if (!point) {
+      return;
+    }
+    const hit = [...(this.diagram.diagramShapes as any[])].reverse().find(shape => {
+      const b = shape.bounds();
+      return point.x >= b.x && point.x <= b.x + b.width && point.y >= b.y && point.y <= b.y + b.height;
+    });
+    const a = hit ? this.shapeDataItem(hit)?.animation : null;
+    if (!a?.clickToggle) {
+      return;
+    }
+    a.value = (Number(a.value) || 0) !== 0 ? 0 : (Number(a.max) || 1);
+    const model = this.modelForShape(hit);
+    const modelData = model?.dataItem?.dataItem ?? model?.dataItem;
+    if (modelData?.animation) {
+      modelData.animation.value = a.value;
+    }
+    if (this.selectedShapes().includes(hit)) {
+      this.anim.value = a.value;
     }
     this.schedulePersistState();
   }
+
+  
+
 
   /** White icon polygons (unit box) for the keypad-style push buttons. */
   private readonly NAVIGATION_BUTTON_ICONS: Record<string, number[][][]> = {
@@ -4720,7 +4939,6 @@ public statusMessage = "Select a shape to edit it.";
     { id: "blink", label: "Blinking" },
     { id: "discrete", label: "Discrete colour (Normal/Warning/Alarm)" },
     { id: "analog", label: "Analog colour (blend low to high)" },
-    { id: "analog", label: "Analog colour (gradient)" },
     { id: "scale", label: "Size / Scaling" },
     { id: "move", label: "Position (move)" },
     { id: "rotate", label: "Rotation (spin)" },
@@ -4736,12 +4954,21 @@ public statusMessage = "Select a shape to edit it.";
   public animationRunning = false;
   public anim: ShapeAnimation = this.defaultAnimation();
   private animTimer: any = null;
+  // Tag values are read on a timer (not on every edit): each tick compares the
+  // value with the one last applied and only redraws a shape when it changed.
+  public animationPollMs = 1000;
+  private animPollTimer: any = null;
+  private animState = new WeakMap<object, { sig: string; target: number; display: number }>();
+  private lastAnimTick = 0;
+  private stagePointerStart: { x: number; y: number } | null = null;
 
-  private  defaultAnimation(): ShapeAnimation {
+
+  private defaultAnimation(): ShapeAnimation {
     return {
       type: "none", value: 0, min: 0, max: 100, colorA: "#e53935", colorB: "#1e88e5",
       warn: 50, alarm: 80, axis: "y", distance: 80, speed: 500, unit: "", textOn: "ON", textOff: "OFF",
-      clickToggle: false, imageOn: "", imageOff: ""
+      clickToggle: false, imageOn: "", imageOff: "",
+      changeSpeed: 0, rotateMode: "spin", sweep: 360, pivot: "center"
     };
   }
 public freehandMode = false;
@@ -4951,7 +5178,7 @@ private uniqueShapeId(prefix: string): string {
     this.addLibraryShape("image", { source: source.trim(), width: 180, height: 120, fillColor: "#f6f7f8" });
   }
 
-  public addEllipse():   void { this.armDragTool('Elipse'); }
+  
 
  /**
  * Add one of the keypad-style navigation / push buttons. Mirrors
@@ -4983,6 +5210,18 @@ public addNavigationShape(kind: string): void {
   // component already uses for Rectangle/Polygon/etc.
   this.armDragTool(kind);
 }
+public addText(): void {
+    const text = typeof window !== "undefined"
+      ? window.prompt("Enter the text:", "Text")
+      : "Text";
+    if (text === null) {
+      return;
+    }
+    this.addLibraryShape("text", { text: text.trim() || "Text", width: 160, height: 40, fillColor: "transparent" });
+  }
+
+public addEllipse():   void { this.armDragTool('Elipse'); }
+
 
   /** Line tool: drag on the canvas from the start point to the end point. */
   public addLine(): void {
@@ -5071,6 +5310,8 @@ public addNavigationShape(kind: string): void {
     event.stopPropagation();
     const point = this.pointerToModel(event);
     const stage = this.pointerToStage(event);
+    (document.activeElement as HTMLElement | null)?.blur?.();
+    (event.currentTarget as HTMLElement | null)?.focus?.({ preventScroll: true });
     if (!point || !stage) {
       return;
     }
@@ -5094,6 +5335,43 @@ public addNavigationShape(kind: string): void {
     }
     event.preventDefault();
     event.stopPropagation();
+    this.finishPolyDrawing();
+  }
+
+  /**
+   * Enter (or Space) finishes the shape like a right-click; Escape cancels the
+   * drawing. Registered on the document in the capture phase so nothing else
+   * (a focused dropdown, the diagram) can swallow the key first.
+   */
+  private readonly polyKeyHandler = (event: KeyboardEvent): void => this.onDocumentKeyDown(event);
+
+  public onDocumentKeyDown(event: KeyboardEvent): void {
+    if (!this.polyMode) {
+      return;
+    }
+    const target = event.target as HTMLElement | null;
+    const typing = target && (target.isContentEditable
+      || target.tagName === "INPUT" || target.tagName === "TEXTAREA"
+      || (target.tagName === "SELECT" && !target.classList.contains("menu-select")));
+    if (typing) {
+      return;
+    }
+    if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.finishPolyDrawing();
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      const label = this.polyMode === "polygon" ? "Polygon" : "Polyline";
+      this.resetPolyDrawing();
+      this.statusMessage = `${label} drawing cancelled.`;
+    }
+  }
+
+  private finishPolyDrawing(): void {
+    if (!this.polyMode) {
+      return;
+    }
     const mode = this.polyMode;
     const label = mode === "polygon" ? "Polygon" : "Polyline";
     const minPoints = mode === "polygon" ? 3 : 2;
@@ -5121,6 +5399,59 @@ public addNavigationShape(kind: string): void {
       fillColor: mode === "polygon" ? "#e9defa" : "transparent"
     }, true);
   }
+  /** Toolbar dropdown menus: run the chosen action, then reset the dropdown. */
+  public runMenu(event: Event, menu: "arrange" | "align" | "add" | "button"): void {
+    const select = event.target as HTMLSelectElement;
+    const key = select.value;
+    select.value = "";
+    select.blur();
+    // Browsers can hand focus back to the dropdown after the change event, so
+    // blur again once that has happened (keys then reach the page, not the select).
+    setTimeout(() => select.blur(), 0);
+    const actions: Record<string, Record<string, () => void>> = {
+      arrange: {
+        back: () => this.sendToBack(),
+        front: () => this.bringToFront(),
+        grid: () => this.alignToGrid(),
+        rotateRight: () => this.rotateRight(),
+        rotateLeft: () => this.rotateLeft(),
+        flipH: () => this.flipHorizontal(),
+        flipV: () => this.flipVertical(),
+        group: () => this.groupSelected(),
+        ungroup: () => this.ungroupSelected()
+      },
+      align: {
+        left: () => this.alignSelected("left"),
+        center: () => this.alignSelected("center"),
+        right: () => this.alignSelected("right"),
+        top: () => this.alignSelected("top"),
+        middle: () => this.alignSelected("middle"),
+        bottom: () => this.alignSelected("bottom"),
+        centerPoints: () => this.alignSelected("centerPoints"),
+        spaceH: () => this.distributeSelected("horizontal"),
+        spaceV: () => this.distributeSelected("vertical")
+      },
+      add: {
+        richText: () => this.addRichText(),
+        text: () => this.addText(),
+        image: () => this.addImage(),
+        ellipse: () => this.addEllipse(),
+        line: () => this.addLine(),
+        rectangle: () => this.addRectangle(),
+        terminator: () => this.addRoundedRectangle(),
+        arc: () => this.addArc(),
+        freehand: () => this.toggleFreehandMode(),
+        polygon: () => this.addPolygon(),
+        polyline: () => this.addPolyline(),
+        container: () => this.addContainer()
+      },
+      button: new Proxy({} as Record<string, () => void>, {
+        get: (_target, name: string) => () => this.addButtonShape(name)
+      })
+    };
+    actions[menu]?.[key]?.();
+  }
+
 
   /** Add one of the keypad-style push buttons / arrow indicators. */
   public addButtonShape(kind: string): void {
@@ -5627,7 +5958,26 @@ async onFreehandPointerUp(event: PointerEvent) {
       }
       return group;
     }
-
+    if (kind === "ellipse" && dataItem.animFlow) {
+      const erx = width / 2;
+      const ery = height / 2;
+      const outline: number[][] = [];
+      for (let i = 0; i <= 72; i++) {
+        const t = (i / 72) * Math.PI * 2;
+        outline.push([x + erx + erx * Math.cos(t), y + ery + ery * Math.sin(t)]);
+      }
+      group.append(new Path({
+        data: `M ${outline.map(pt => pt.join(",")).join(" L ")} Z`,
+        stroke: { color: "transparent", width: 0 },
+        fill: { color: fill }
+      }));
+      group.append(new Path({
+        data: this.flowDashData(outline, dataItem.animFlow),
+        stroke: { color: stroke, width: 3 },
+        fill: { color: "transparent" }
+      }));
+      return group;
+    }
     if (kind === "ellipse" || kind === "wedge") {
       const rx = width / 2;
       const ry = height / 2;
@@ -5677,6 +6027,21 @@ async onFreehandPointerUp(event: PointerEvent) {
       //   stroke: { color: stroke, width: dataItem.animFlow ? 4 : 2 },
       //   fill: { color: "transparent" }
       // }));
+    }
+    if ((kind === "roundedRectangle" || kind === "rectangle") && dataItem.animFlow) {
+      const corners = [[x, y], [x + width, y], [x + width, y + height], [x, y + height], [x, y]];
+      group.append(new Rectangle({
+        x, y, width, height,
+        cornerRadius: kind === "roundedRectangle" ? Math.min(22, height / 2) : 0,
+        stroke: { color: "transparent", width: 0 },
+        fill: { color: fill }
+      }));
+      group.append(new Path({
+        data: this.flowDashData(corners, dataItem.animFlow),
+        stroke: { color: stroke, width: 3 },
+        fill: { color: "transparent" }
+      }));
+      return group;
     }
 
     if (kind === "roundedRectangle" || kind === "rectangle") {
@@ -6015,7 +6380,7 @@ private syncRuntimeShapeToModel(shape: any): void {
     this.schedulePersistState();
   }
 
-  
+
 // Add these properties
 public showGrid: boolean = false;
 public snapEnabled: boolean = true;
