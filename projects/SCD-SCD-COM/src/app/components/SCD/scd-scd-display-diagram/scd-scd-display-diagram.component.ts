@@ -1085,7 +1085,7 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
         case 'Button':
           Id = 'Button_Properties';
           break;
-        case 'Bar':
+        case 'BarGraph':
           Id = 'Bar_Graph_Properties';
           break;
         case 'Scale':
@@ -1097,7 +1097,7 @@ await this.scadaIntegration.ensureServersConnected(this.starlib1.myServerConfigs
         case 'Multiple':
           Id = 'Multistate_Indicator_Properties';
           break;
-        case 'List':
+        case 'List Indicator':
           Id = 'List_Indicator_Properties';
           break;
         case 'Backspace':
@@ -2183,10 +2183,9 @@ public visualTemplate = (options: any): Group => {
         const text = a.type === "valueText"
           ? `${Math.round(a.value * 100) / 100}${a.unit}`
           : (a.value !== 0 ? a.textOn : a.textOff);
-        const label = new TextBlock({ text, x: left + 6, y: top + h / 2 - 8, fill: "#000000" });
-        label.options.fontSize = 14;
-        label.options.fontWeight = "bold";
-        group.append(label);
+        group.append(new TextBlock({
+          text, x: left + 6, y: top + h / 2 - 8, fill: "#000000", fontSize: 14, fontWeight: "bold"
+        } as any));
         break;
       }
     }
@@ -2623,6 +2622,19 @@ public onStagePointerDown(event: PointerEvent): void {
       const b = shape.bounds();
       return point.x >= b.x && point.x <= b.x + b.width && point.y >= b.y && point.y <= b.y + b.height;
     });
+    const hitData = hit ? this.shapeDataItem(hit) : null;
+    if (hit && hitData?.libraryKind === "controlList") {
+      // Operator mode: clicking a row of a Control List selects it.
+      const b = hit.bounds();
+      const count = this.listRows(hitData).length;
+      const rowH = (b.height - 18) / count;
+      const row = Math.max(0, Math.min(count - 1, Math.floor((point.y - (b.y + 9)) / rowH)));
+      this.applyListPatchTo(hit, row);
+      if (this.selectedShapes().includes(hit)) {
+        this.selectedListIndex = row;
+      }
+      return;
+    }
     const a = hit ? this.shapeDataItem(hit)?.animation : null;
     if (!a?.clickToggle) {
       return;
@@ -2637,6 +2649,247 @@ public onStagePointerDown(event: PointerEvent): void {
       this.anim.value = a.value;
     }
     this.schedulePersistState();
+  }
+  /** Rows of a List Indicator / Control List (a few blank rows until text is typed). */
+  private listRows(dataItem: any): string[] {
+    const items = Array.isArray(dataItem.listItems) ? dataItem.listItems.map((t: any) => String(t)) : [];
+    return items.length ? items : ["", "", "", ""];
+  }
+
+  private listIndex(dataItem: any, count: number): number {
+    return Math.max(0, Math.min(count - 1, Math.round(Number(dataItem.listIndex) || 0)));
+  }
+
+  /**
+   * A list of rows on the navy panel. The current row (listIndex) is the white
+   * bar; the Control List also shows a small arrow beside it.
+   */
+  private drawListRows(group: Group, x: number, y: number, w: number, h: number, dataItem: any, control: boolean): void {
+    const rows = this.listRows(dataItem);
+    const current = this.listIndex(dataItem, rows.length);
+    const top = y + 9;
+    const rowH = (h - 18) / rows.length;
+    const barH = Math.max(6, rowH * 0.88);
+    const left = control ? x + 30 : x + 9;
+    const textX = control ? x + 34 : x + 14;
+    const fontSize = Number(dataItem.fontSize) > 0 ? Number(dataItem.fontSize) : Math.max(8, Math.min(22, Math.round(barH * 0.62)));
+    const fontFamily = typeof dataItem.fontFamily === "string" && dataItem.fontFamily.length
+      ? dataItem.fontFamily
+      : "Arial, sans-serif";
+    rows.forEach((text, i) => {
+      const rowY = top + i * rowH + (rowH - barH) / 2;
+      if (i === current) {
+        group.append(new Rectangle({
+          x: left, y: rowY, width: Math.max(1, w - (left - x) - 12), height: barH,
+          stroke: { color: "#ffffff", width: 0 },
+          fill: { color: "#ffffff" }
+        }));
+        if (control) {
+          group.append(new Path({
+            data: `M ${x + 10},${rowY} L ${x + 27},${rowY + barH / 2} L ${x + 10},${rowY + barH} Z`,
+            stroke: { color: "#ffffff", width: 1 },
+            fill: { color: "#ffffff" }
+          }));
+        }
+      }
+      if (text.trim()) {
+        // Font in the constructor (TextBlock reads it only once).
+        group.append(new TextBlock({
+          text, x: textX, y: rowY + Math.max(0, (barH - fontSize) / 2 - 1),
+          fill: i === current ? "#000080" : "#ffffff", fontSize, fontFamily
+        } as any));
+      }
+    });
+  }
+
+  /** Level (0-1) of a Container / Bar Graph / Gauge from its value and max. */
+  private levelRatio(dataItem: any): number {
+    const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
+    const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
+    return Math.max(0, Math.min(1, value / max));
+  }
+
+  /**
+   * The six panel instruments: List Indicator, Bar Graph, Gauge, Scale, Control
+   * List and Tag Label. Colours follow an active colour animation (animColor).
+   * Returns true when the kind was one of them and has been drawn.
+   */
+  private drawInstrumentShape(kind: string, group: Group, x: number, y: number, w: number, h: number, dataItem: any): boolean {
+    const accent = dataItem.animColor as string | undefined;
+    // Transparent frame: keeps the shape's box at its full size for line-based art.
+    const addFrame = (): void => {
+      const frame = new Rectangle({
+        x, y, width: w, height: h,
+        stroke: { color: "transparent", width: 0 },
+        fill: { color: "transparent" }
+      });
+      frame.options.opacity = 0.001;
+      group.append(frame);
+    };
+    // Navy 3-D panel with a lighter inner border, as in the reference shapes.
+    const panel = (): void => {
+      group.append(new Rectangle({
+        x, y, width: w, height: h,
+        stroke: { color: "#2020c8", width: 2 },
+        fill: { color: accent || "#000080" }
+      }));
+      group.append(new Rectangle({
+        x: x + 5, y: y + 5, width: Math.max(1, w - 10), height: Math.max(1, h - 10),
+        stroke: { color: "#2a2ae6", width: 1 },
+        fill: { color: "transparent" }
+      }));
+    };
+
+    switch (kind) {
+      case "listIndicator":
+      case "controlList": {
+        panel();
+        this.drawListRows(group, x, y, w, h, dataItem, kind === "controlList");
+        return true;
+      }
+      case "barGraph": {
+        group.append(new Rectangle({
+          x, y, width: w, height: h,
+          stroke: { color: "#00c800", width: 3 },
+          fill: { color: accent || "#00ff00" }
+        }));
+        const ratio = this.levelRatio(dataItem);
+        console.log("barGraph:ratio:",ratio, dataItem)
+        const barH = (h - 8) * ratio;
+        console.log("barGraph:barH:",barH)
+        if (barH > 0) {
+          group.append(new Rectangle({
+            x: x + 4, y: y + h - 4 - barH, width: Math.max(1, w - 8), height: barH,
+            stroke: { color: "#0000a0", width: 1 },
+            fill: { color: "#000080" }
+          }));
+        }
+        return true;
+      }
+      case "gauge": {
+        group.append(new Rectangle({
+          x, y, width: w, height: h,
+          stroke: { color: "transparent", width: 0 },
+          fill: { color: accent || "#c0c0c0" }
+        }));
+        const cx = x + w / 2;
+        const cy = y + h * 0.68;
+        const r = Math.min(w * 0.22, h * 0.4);
+        const black = { color: "#000000", width: 1 };
+        group.append(new Path({
+          data: `M ${cx - r},${cy} A ${r},${r} 0 0 1 ${cx + r},${cy}`,
+          stroke: black, fill: { color: "transparent" }
+        }));
+        // Tick marks every 30 degrees across the dial.
+        for (let deg = 30; deg <= 150; deg += 30) {
+          const a = (deg * Math.PI) / 180;
+          group.append(new Path({
+            data: `M ${cx + r * Math.cos(a)},${cy - r * Math.sin(a)} `
+              + `L ${cx + r * 0.8 * Math.cos(a)},${cy - r * 0.8 * Math.sin(a)}`,
+            stroke: black, fill: { color: "transparent" }
+          }));
+        }
+        const label = (text: string, lx: number, ly: number): void => {
+          const t = new TextBlock({ text, x: lx, y: ly, fill: "#000000", fontSize: 11, textAnchor: "middle" } as any);
+          group.append(t);
+        };
+        label("50", cx, cy - r - 17);
+        label("0", cx - r - 8, cy - 7);
+        label("100", cx + r + 14, cy - 7);
+        // Needle: pointing left at 0, straight up at 50% and right at 100%.
+        const theta = Math.PI * (1 - this.levelRatio(dataItem));
+        const len = r * 0.85;
+        group.append(new Path({
+          data: `M ${cx},${cy} L ${cx + len * Math.cos(theta)},${cy - len * Math.sin(theta)}`,
+          stroke: { color: "#000000", width: 2.5 }, fill: { color: "transparent" }
+        }));
+        return true;
+      }
+      case "scale": {
+        addFrame();
+        const colour = accent || "#00009c";
+        const showNumbers = !!dataItem.scaleShowLabels;
+        const labelWidth = showNumbers ? 40 : 0;
+        const lineX = x + labelWidth;
+        const lineW = Math.max(10, w - labelWidth);
+        const scaleMin = Number.isFinite(Number(dataItem.scaleMin)) ? Number(dataItem.scaleMin) : 0;
+        const scaleMax = Number.isFinite(Number(dataItem.scaleMax)) ? Number(dataItem.scaleMax) : 100;
+        [0, 0.25, 0.5, 0.75, 1].forEach((f, i) => {
+          const len = i % 2 === 0 ? lineW : lineW * 0.5;
+          const ly = y + 1 + f * (h - 2);
+          group.append(new Path({
+            data: `M ${lineX},${ly} L ${lineX + len},${ly}`,
+            stroke: { color: colour, width: 1 }, fill: { color: "transparent" }
+          }));
+          if (showNumbers) {
+            // Top line is the maximum, bottom line the minimum.
+            const value = scaleMax - f * (scaleMax - scaleMin);
+            const text = String(Math.round(value * 100) / 100);
+            const estWidth = text.length * 6.4;
+            group.append(new TextBlock({
+              text, x: Math.max(x, lineX - 6 - estWidth), y: ly - 7, fill: colour, fontSize: 11
+            } as any));
+          }
+        });
+        return true;
+      }
+      case "tagLabel": {
+        addFrame();
+        const colour = accent || "#444444";
+        const text = String(dataItem.labelText ?? "").trim();
+        if (text) {
+          // Font must be given in the constructor: TextBlock builds its CSS font
+          // string once, so setting options.fontSize afterwards does nothing.
+          const fontSize = Number(dataItem.fontSize) > 0 ? Number(dataItem.fontSize) : Math.max(10, Math.round(h * 0.7));
+          const fontFamily = typeof dataItem.fontFamily === "string" && dataItem.fontFamily.length
+            ? dataItem.fontFamily
+            : "Arial, sans-serif";
+          group.append(new TextBlock({
+            text, x: x + 2, y: y + Math.max(0, (h - fontSize) / 2 - 2),
+            fill: accent || "#222222", fontSize, fontFamily
+          }));
+          return true;
+        }
+        const slots = 13;
+        const slot = w / slots;
+        for (let i = 0; i < slots; i++) {
+          const gx = x + i * slot + slot * 0.1;
+          group.append(new Path({
+            data: `M ${gx},${y + h * 0.15} L ${gx},${y + h * 0.9} L ${gx + slot * 0.6},${y + h * 0.9}`,
+            stroke: { color: colour, width: 1.5 }, fill: { color: "transparent" }
+          }));
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Add one of the six panel instruments (Indicators dropdown). */
+  public addIndicatorShape(kind: string,options: Record<string, any> = {}): void {
+    const sizes: Record<string, { width: number; height: number }> = {
+      listIndicator: { width: 260, height: 105 },
+      controlList: { width: 230, height: 105 },
+      barGraph: { width: 235, height: 135 },
+      gauge: { width: 185, height: 125 },
+      scale: { width: 200, height: 120 },
+      tagLabel: { width: 205, height: 20 }
+    };
+    const levelKinds = ["barGraph", "gauge"];
+    console.log("pre addLibraryShape:1:",kind)
+    console.log("kind:",kind)
+    this.addLibraryShape(kind, {
+      ...(sizes[kind] || { width: 200, height: 100 }),
+      fillColor: "transparent",
+      ...(levelKinds.includes(kind)
+        ? { containerValue: kind === "barGraph" ? 25 : 0, containerMax: 100 }
+        : {}),
+      ...(kind === "listIndicator" || kind === "controlList"
+        ? { listItems: [], listIndex: 0 }
+        : {}),
+      // Caller-provided options override everything above
+      ...options
+    });
   }
 
   
@@ -2836,6 +3089,137 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       connect: false // This disables the hover connection dots safely
     }
   };
+  // Text of the selected Tag Label.
+  public selectedLabelText = "";
+  // Number labels of the selected Scale.
+  public selectedScaleShow = false;
+  public selectedScaleMin = 0;
+  public selectedScaleMax = 100;
+
+  public get hasScaleShape(): boolean {
+    return this.selectedShapes().some(shape => this.shapeDataItem(shape)?.libraryKind === "scale");
+  }
+
+  public applySelectedScale(): void {
+    const shapes = this.selectedShapes().filter(shape => this.shapeDataItem(shape)?.libraryKind === "scale");
+    if (!shapes.length) {
+      this.statusMessage = "Select a Scale first.";
+      return;
+    }
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      dataItem.scaleShowLabels = this.selectedScaleShow;
+      dataItem.scaleMin = Number(this.selectedScaleMin) || 0;
+      dataItem.scaleMax = Number.isFinite(Number(this.selectedScaleMax)) ? Number(this.selectedScaleMax) : 100;
+      const model = this.modelForShape(shape);
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.scaleShowLabels = dataItem.scaleShowLabels;
+        modelData.scaleMin = dataItem.scaleMin;
+        modelData.scaleMax = dataItem.scaleMax;
+      }
+      this.refreshCustomShape(shape);
+    }
+    this.statusMessage = this.selectedScaleShow
+      ? `Scale shows ${this.selectedScaleMax} (top) down to ${this.selectedScaleMin} (bottom).`
+      : "Scale numbers hidden.";
+  }
+  // Rows (separated by ;) and current row of the selected List Indicator / Control List.
+  public selectedListItems = "";
+  public selectedListIndex = 0;
+
+  public get hasListShape(): boolean {
+    return this.selectedShapes().some(shape =>
+      ["listIndicator", "controlList"].includes(this.shapeDataItem(shape)?.libraryKind));
+  }
+
+  private applyListPatch(patch: { items?: string[]; text?: string; index?: number }): void {
+    const shapes = this.selectedShapes().filter(shape =>
+      ["listIndicator", "controlList"].includes(this.shapeDataItem(shape)?.libraryKind));
+    if (!shapes.length) {
+      this.statusMessage = "Select a List Indicator or Control List first.";
+      return;
+    }
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      if (patch.items) {
+        dataItem.listItems = patch.items;
+      }
+      if (patch.text !== undefined) {
+        // Keep the text exactly as typed (including a trailing ";") so the box
+        // never rewrites what the user is in the middle of typing.
+        dataItem.listItemsText = patch.text;
+      }
+      if (patch.index !== undefined) {
+        dataItem.listIndex = patch.index;
+      }
+      const model = this.modelForShape(shape);
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.listItems = this.clonePlain(dataItem.listItems ?? []);
+        modelData.listItemsText = dataItem.listItemsText ?? "";
+        modelData.listIndex = dataItem.listIndex ?? 0;
+      }
+      this.refreshCustomShape(shape);
+    }
+  }
+
+  private applyListPatchTo(shape: any, index: number): void {
+    const dataItem = this.shapeDataItem(shape);
+    dataItem.listIndex = index;
+    const model = this.modelForShape(shape);
+    const modelData = model?.dataItem?.dataItem ?? model?.dataItem;
+    if (modelData) {
+      modelData.listIndex = index;
+    }
+    this.refreshCustomShape(shape);
+  }
+
+  public applySelectedListItems(): void {
+    const items = this.selectedListItems.split(";").map(t => t.trim()).filter(t => t.length > 0);
+    this.applyListPatch({ items, text: this.selectedListItems });
+    this.statusMessage = items.length ? `List has ${items.length} row(s).` : "List cleared (4 blank rows shown).";
+  }
+
+  public applySelectedListIndex(): void {
+    const index = Math.max(0, Math.round(Number(this.selectedListIndex) || 0));
+    this.applyListPatch({ index });
+    this.statusMessage = `Current row set to ${index} (0 is the first row).`;
+  }
+
+  public get hasLabelShape(): boolean {
+    return this.selectedShapes().some(shape => this.shapeDataItem(shape)?.libraryKind === "tagLabel");
+  }
+
+  public applySelectedLabelText(): void {
+    const shapes = this.selectedShapes().filter(shape => this.shapeDataItem(shape)?.libraryKind === "tagLabel");
+    if (!shapes.length) {
+      this.statusMessage = "Select a Tag Label first.";
+      return;
+    }
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      dataItem.labelText = this.selectedLabelText;
+      const model = this.modelForShape(shape);
+      if (model) {
+        model.dataItem ??= {};
+        const modelData = model.dataItem?.dataItem ?? model.dataItem;
+        modelData.labelText = this.selectedLabelText;
+      }
+      this.refreshCustomShape(shape);
+    }
+    this.statusMessage = this.selectedLabelText.trim()
+      ? "Tag Label text updated."
+      : "Tag Label text cleared (placeholder marks shown).";
+  }
+
+  /** True when a Container, Bar Graph or Gauge is selected (they use Value / Max). */
+  public get hasLevelShape(): boolean {
+    return this.selectedShapes().some(shape =>
+      ["container", "barGraph", "gauge"].includes(this.shapeDataItem(shape)?.libraryKind));
+  }
   public get hasSelection(): boolean {
     return this.selectedCount > 0;
   }
@@ -3391,8 +3775,8 @@ public lastClickY: number = 0;
         || (shapeType == "Latched") || (shapeType == "Multistate") || (shapeType == "Interlocked")
         || (shapeType == "Ramp Button") || (shapeType == "Navigation Button") || (shapeType == "Time and Date Display")
         || (shapeType == "Tag Label") || (shapeType == "Local Message")|| (shapeType == "Text")
-        || (shapeType == "Bar") || (shapeType == "Gauge")|| (shapeType == "Scale")
-        || (shapeType == "Multiple") || (shapeType == "List") 
+        || (shapeType == "BarGraph") || (shapeType == "Gauge")|| (shapeType == "Scale")
+        || (shapeType == "Multiple") || (shapeType == "List Indicator") 
         || (shapeType == "Backspace")  || (shapeType == "End")  || (shapeType == "Enter") 
         || (shapeType == "Move Left")  || (shapeType == "Move Right")  || (shapeType == "Move Down") 
         || (shapeType == "Move Up")  || (shapeType == "Page Up")  || (shapeType == "Page Down") 
@@ -4450,50 +4834,27 @@ private readonly shapeTablesMap: Record<string, string[]> = {
   'Text':                 ['SCD_TEXT_GENERAL'],
   'Numeric Input':        ['SCD_SHAPE_INPUT_GENERAL', 'SCD_SHAPE_INPUT_APPEARANCE', 'SCD_SHAPE_CONNECTION'],
   'String Input':         ['SCD_SHAPE_INPUT_GENERAL', 'SCD_SHAPE_INPUT_APPEARANCE'],
-
-  'Bar':                  ['SCD_GRAPH_GENERAL', 'SCD_SHAPE_CONNECTION'],
+  'BarGraph':             ['SCD_GRAPH_GENERAL', 'SCD_SHAPE_CONNECTION'],
   'Scale':                ['SCD_GRAPH_GENERAL'],
   'Gauge':                ['SCD_GRAPH_GENERAL', 'SCD_GAUGE_DISPLAY', 'SCD_SHAPE_CONNECTION'],
-
-  'Multiple':             ['SCD_MULTISTATE_INDICATOR_GENERAL',
-                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE',
-                           'SCD_SHAPE_CONNECTION'],
-
-  'List':                 ['SCD_LIST_INDICATOR_GENERAL',
-                           'SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE',
-                           'SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE',
-                           'SCD_SHAPE_CONNECTION'],
-
+  'Multiple':             ['SCD_MULTISTATE_INDICATOR_GENERAL','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE','SCD_SHAPE_CONNECTION'],
+  'ListIndicator':        ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
   'Backspace':            ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
   'End':                  ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
   'Enter':                ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
-
   'Move Left':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
   'Move Right':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
   'Move Down':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
   'Move Up':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
   'Page Up':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
   'Page Down':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
-
-  'Momentry':             ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
-                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
-  'Maintained':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
-                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
-  'Latched':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
-                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
-
-  'Interlocked':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
-                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
-
-  'Multistate':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
-                           'SCD_ARROW_BUTTON_TIMING',
-                           'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
-
-  'Ramp Button':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION',
-                           'SCD_ARROW_BUTTON_TIMING', 'SCD_SHAPE_STATE'],
-
+  'Momentry':             ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Maintained':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Latched':              ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Interlocked':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Multistate':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION','SCD_ARROW_BUTTON_TIMING','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
+  'Ramp Button':          ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_CONNECTION','SCD_ARROW_BUTTON_TIMING', 'SCD_SHAPE_STATE'],
   'Navigation Button':    ['SCD_BUTTON_PUSH_GENERAL', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE'],
-
   'Panel':                ['SCD_SHAPE_GENERAL'],
   'Arc':                  ['SCD_SHAPE_GENERAL'],
   'Elipse':               ['SCD_SHAPE_GENERAL'],
@@ -4506,30 +4867,10 @@ private readonly shapeTablesMap: Record<string, string[]> = {
   'Wedge':                ['SCD_SHAPE_GENERAL'],
   'Arrow Horizontal':     ['SCD_SHAPE_GENERAL'],
   'Arrow Vertical':       ['SCD_SHAPE_GENERAL'],
-
-  'Button':               ['SCD_BUTTON_GENERAL', 'SCD_BUTTON_ACTION',
-                           'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE'],
-
-  'Banner':               ['SCD_ALARM_GENERAL_BANNER',
-                           'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS',
-                           'SCD_ALARM_EVENT_SUBSCRIPTIONS',
-                           'SCD_ALARM_STATES',
-                           'SCD_ALARM_SORT'],
-
-  'Summary':              ['SCD_ALARM_APPEARANCE',
-                           'SCD_ALARM_COLUMNS',
-                           'SCD_ALARM_EVENT_SUBSCRIPTIONS',
-                           'SCD_ALARM_STATES',
-                           'SCD_ALARM_SORT',
-                           'SCD_ALARM_BEHAVIOR'],
-
-  'Log Viewer':           ['SCD_ALARM_GENERAL_LOG_VIEWER',
-                           'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS',
-                           // 'SCD_ALARM_DISPLAY_FILTERS',
-                           // 'SCD_ALARM_DISPLAY_FILTERS_CONDITIONS',
-                           'SCD_ALARM_STATES',
-                           'SCD_ALARM_SORT'],
-
+  'Button':               ['SCD_BUTTON_GENERAL', 'SCD_BUTTON_ACTION','SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE', 'SCD_BUTTON_APPEARANCE'],
+  'Banner':               ['SCD_ALARM_GENERAL_BANNER','SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS','SCD_ALARM_EVENT_SUBSCRIPTIONS','SCD_ALARM_STATES','SCD_ALARM_SORT'],
+  'Summary':              ['SCD_ALARM_APPEARANCE','SCD_ALARM_COLUMNS','SCD_ALARM_EVENT_SUBSCRIPTIONS','SCD_ALARM_STATES','SCD_ALARM_SORT','SCD_ALARM_BEHAVIOR'],
+  'Log Viewer':           ['SCD_ALARM_GENERAL_LOG_VIEWER','SCD_ALARM_COLUMNS', 'SCD_ALARM_COLUMNS','SCD_ALARM_STATES','SCD_ALARM_SORT'],
   'Status Explorer':      ['SCD_ALARM_GENERAL_STATUS_EXPLORER'],
 };
 public getInsertTables(shapeType: string): string[] {
@@ -4636,7 +4977,7 @@ public getInsertTables(shapeType: string): string[] {
               }
               else if ( (shapeType == "Maintained") || (shapeType == "Momentry") || (shapeType == "Latched") 
                 || (shapeType == "Multistate") || (shapeType == "Interlocked") || (shapeType == "Multiple") 
-                || (shapeType == "List") 
+                || (shapeType == "ListIndicator") 
                 ) {
                 if (butApp == 0){
                   object['STATE_NAME'] = "State0";
@@ -5026,6 +5367,12 @@ private uniqueShapeId(prefix: string): string {
       freehand: "FreeHand",
       polygon: "Polygon",
       polyline: "Polyline",
+      listIndicator: "List Indicator",
+      barGraph: "Bar Graph",
+      gauge: "Gauge",
+      scale: "Scale",
+      controlList: "Control List",
+      tagLabel: "Tag Label",
       arrowVertical: "Arrow Vertical",
       arrowHorizontal: "Arrow Horizontal",
       backspace: "Back space",
@@ -5400,7 +5747,7 @@ public addEllipse():   void { this.armDragTool('Elipse'); }
     }, true);
   }
   /** Toolbar dropdown menus: run the chosen action, then reset the dropdown. */
-  public runMenu(event: Event, menu: "arrange" | "align" | "add" | "button"): void {
+  public runMenu(event: Event, menu: "arrange" | "align" | "add" | "button" | "indicator"): void {
     const select = event.target as HTMLSelectElement;
     const key = select.value;
     select.value = "";
@@ -5447,6 +5794,9 @@ public addEllipse():   void { this.armDragTool('Elipse'); }
       },
       button: new Proxy({} as Record<string, () => void>, {
         get: (_target, name: string) => () => this.addButtonShape(name)
+      }),
+      indicator: new Proxy({} as Record<string, () => void>, {
+        get: (_target, name: string) => () => this.addIndicatorShape(name)
       })
     };
     actions[menu]?.[key]?.();
@@ -5819,9 +6169,9 @@ async onFreehandPointerUp(event: PointerEvent) {
       || style.strokeColor || dataItem.strokeColor || "#2f4858";
     const fill = style.fillColor || dataItem.fillColor || "#d9e8f5";
     const kind = dataItem.libraryKind;
-//── NAVIGATION / KEYPAD SHAPES ─────────────────────────────────────
-  // Must come first: otherwise the kind falls through to the empty Group
-  // returned at the end of this method and renders as nothing.
+    if (this.drawInstrumentShape(kind, group, x, y, width, height, dataItem)) {
+      return group;
+    }
   const buttonSpec = this.NAVIGATION_BUTTON_ICONS[kind];
     if (buttonSpec) {
       if (kind === "arrowVertical" || kind === "arrowHorizontal") {
@@ -5913,8 +6263,6 @@ async onFreehandPointerUp(event: PointerEvent) {
      || (kind === "buttonLatched") || (kind === "buttonMultistate") || (kind === "buttonInterlocked")
      || (kind === "rampButton") || (kind === "navButton") || (kind === "timeDateDisplay") || (kind === "tagLabel")
      || (kind === "localMessage") || (kind === "text") || (kind === "stringInput") || (kind === "stringDisplay")
-     || (kind === "bar") || (kind === "gauge") || (kind === "scale")  || (kind === "multiple")
-     || (kind === "list")
      || (kind == "banner") || (kind == "summary") || (kind == "logViewer") || (kind == "statusExplorer")
      ) {
       const background = new Rectangle({
@@ -7307,7 +7655,31 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     this.fillColor = style.fillColor || this.inferFillColor(this.shapeDataItem(shape));
     const dataItem = this.shapeDataItem(shape);
     this.anim = { ...this.defaultAnimation(), ...(dataItem?.animation || {}) };
-    if (dataItem?.libraryKind === "container") {
+    this.selectedLabelText = dataItem?.libraryKind === "tagLabel" ? String(dataItem.labelText ?? "") : "";
+    if (dataItem?.libraryKind === "scale") {
+      this.selectedScaleShow = !!dataItem.scaleShowLabels;
+      this.selectedScaleMin = Number.isFinite(Number(dataItem.scaleMin)) ? Number(dataItem.scaleMin) : 0;
+      this.selectedScaleMax = Number.isFinite(Number(dataItem.scaleMax)) ? Number(dataItem.scaleMax) : 100;
+    }
+    if (["listIndicator", "controlList"].includes(dataItem?.libraryKind)) {
+      this.selectedListItems = typeof dataItem.listItemsText === "string"
+        ? dataItem.listItemsText
+        : (Array.isArray(dataItem.listItems) ? dataItem.listItems : []).join("; ");
+      this.selectedListIndex = Math.round(Number(dataItem.listIndex) || 0);
+    }
+    if (["tagLabel", "listIndicator", "controlList"].includes(dataItem?.libraryKind)) {
+      const family = String(dataItem.fontFamily ?? "").split(",")[0].trim();
+      this.selectedRichTextFontFamily = family || "Arial";
+      const size = Number(dataItem.fontSize) > 0
+        ? Number(dataItem.fontSize)
+        : dataItem.libraryKind === "tagLabel"
+          ? Math.max(10, Math.round((Number(dataItem.height) || 20) * 0.7))
+          : Math.max(8, Math.min(22, Math.round(((Number(dataItem.height) || 105) - 18) / this.listRows(dataItem).length * 0.88 * 0.62)));
+      const sizes = [10, 12, 14, 16, 18, 20, 24, 32];
+      this.selectedRichTextFontSize = sizes.reduce((a, b) => Math.abs(b - size) < Math.abs(a - size) ? b : a);
+    }
+    console.log ("dataItem?.libraryKind):",dataItem?.libraryKind);
+    if (["container", "barGraph", "gauge"].includes(dataItem?.libraryKind)) {
       this.selectedContainerValue = Number(dataItem.containerValue) || 0;
       this.selectedContainerMax = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
     }
@@ -7577,20 +7949,43 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     });
   }
 
-  private applySelectedRichTextFormatting(
+private applySelectedRichTextFormatting(
     patch: { fontFamily?: string; fontSize?: number }
   ): void {
-    const shapes = this.selectedShapes().filter(
-      shape => this.shapeDataItem(shape)?.libraryKind === "richText"
-    );
+    const shapes = this.selectedShapes().filter(shape => {
+      const kind = this.shapeDataItem(shape)?.libraryKind;
+      return kind === "richText" || kind === "text" || kind === "tagLabel" || kind === "listIndicator" || kind === "controlList";
+    });
 
     if (!shapes.length) {
-      this.statusMessage = "Select a Rich Text shape first.";
+      this.statusMessage = "Select a Rich Text, Text, Tag Label or list shape first.";
       return;
     }
 
     for (const shape of shapes) {
       const dataItem = this.shapeDataItem(shape);
+      if (["text", "tagLabel", "listIndicator", "controlList"].includes(dataItem?.libraryKind)) {
+        // Plain Text has no blocks model - just two direct properties read by
+        // drawLibraryShape's "text" branch.
+        if (patch.fontFamily) {
+          dataItem.fontFamily = patch.fontFamily;
+        }
+        if (patch.fontSize) {
+          dataItem.fontSize = patch.fontSize;
+        }
+        const textModel = this.modelForShape(shape);
+        if (textModel) {
+          textModel.dataItem ??= {};
+          const modelData = textModel.dataItem?.dataItem ?? textModel.dataItem;
+          modelData.fontFamily = dataItem.fontFamily;
+          modelData.fontSize = dataItem.fontSize;
+        }
+        // Plain Text has no `content` to redraw() against - it needs the
+        // full custom-visual re-render that refreshCustomShape triggers.
+        this.refreshCustomShape(shape);
+        continue;
+      }
+
       const model = this.modelForShape(shape);
       const blocks = this.clonePlain<any[]>(
         dataItem?.richTextBlocks
@@ -7634,7 +8029,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     }
 
     this.schedulePersistState();
-    this.statusMessage = "Rich Text formatting updated.";
+    this.statusMessage = "Font formatting updated.";
   }
 
   public applySelectedContainerValue(): void {
@@ -7647,11 +8042,11 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
 
   private applySelectedContainerFill(patch: { value?: number; max?: number }): void {
     const shapes = this.selectedShapes().filter(
-      shape => this.shapeDataItem(shape)?.libraryKind === "container"
+      shape => ["container", "barGraph", "gauge"].includes(this.shapeDataItem(shape)?.libraryKind)
     );
 
     if (!shapes.length) {
-      this.statusMessage = "Select a Container shape first.";
+      this.statusMessage = "Select a Container, Bar Graph or Gauge first.";
       return;
     }
 
@@ -7843,11 +8238,11 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       `<path d="M16 13.5 L15.3 14" stroke="#e94560" stroke-width="1.1" stroke-linecap="round"/>` +
       `<path d="M12 16 L15 12.5" stroke="#e94560" stroke-width="1.8" stroke-linecap="round"/>` +
       `<circle cx="12" cy="16" r="1.1" fill="#e94560"/>`,
-    bar:
+    barGraph:
       `<rect x="4" y="12" width="4" height="8" fill="#e94560"/><rect x="10" y="8" width="4" height="12" fill="#e94560"/><rect x="16" y="4" width="4" height="16" fill="#e94560"/>`,
     graph:
       `<path d="M3 20 L9 12 L14 16 L21 6" fill="none" stroke="#e94560" stroke-width="2"/>`,
-    list:
+    listIndicator:
       `<line x1="4" y1="7" x2="20" y2="7" stroke="#e94560" stroke-width="2"/><line x1="4" y1="13" x2="20" y2="13" stroke="#e94560" stroke-width="2"/><line x1="4" y1="19" x2="20" y2="19" stroke="#e94560" stroke-width="2"/>`,
 
     // ── Indicators ──
@@ -7989,9 +8384,9 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     'Data': 'numeric',
     'Scale': 'scale',
     'Gauge': 'gauge',
-    'Bar': 'bar',
+    'BarGraph': 'barGraph',
     'Graph': 'graph',
-    'List': 'list',
+    'List': 'listIndicator',
     'Multiple': 'multiple',
     'Indicator': 'indicator',
     'Page Up': 'pageUp',
@@ -8009,8 +8404,8 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     //'Arrow': 'arrow',
     'Display': 'display',
     'Piloted': 'piloted',
-    'Control': 'button',
-    'List Indicator': 'list',
+    'Control List': 'controlList',
+    'List Indicator': 'listIndicator',
     'String': 'text',
     'Numeric': 'numeric',
     'Time and Date Display': 'timeDateDisplay',
@@ -8245,6 +8640,7 @@ public getButtonVisualStyle(dataItem: any): any {
 
   // State used to resolve database attributes.
   // Hover uses the normal/up attributes.
+  console.log("visualState:",visualState)
   const attributeState: 'up' | 'down' | 'disabled' =
     disabled
       ? 'disabled'
@@ -9739,9 +10135,9 @@ if (imageSource) {
     group.append(text);
   }
 
-  return group;
+  
 }
-
+return group;
 }
 
   public disableButton1023(){
@@ -10300,7 +10696,7 @@ private async insertShapeFromBox(
   await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType);
 
   // Build the options the same way insertShape does, but with the real box.
-  const options: any = {
+  let options: any = {
     x, y, width, height,
     SHAPE_ID:   kendoui_content.id,
     SHAPE_TYPE: shapeType,
@@ -10322,8 +10718,19 @@ private async insertShapeFromBox(
     this.resetFreehandState(false);
     
   }
-  else
-    this.addLibraryShape(kind, options, true);
+  else{
+      const levelKinds = ["barGraph", "gauge"];
+      options = {
+        ...options,
+        ...(levelKinds.includes(kind)
+          ? {
+              containerValue: kind === "barGraph" ? 25 : 0,
+              containerMax: 100
+            }
+          : {})
+      };
+      this.addLibraryShape(kind, options, true);
+  }
 }
 private updateDragBoxPreview(event: PointerEvent): void {
   const start = this.dragBoxStart, end = this.dragBoxCurrent;
