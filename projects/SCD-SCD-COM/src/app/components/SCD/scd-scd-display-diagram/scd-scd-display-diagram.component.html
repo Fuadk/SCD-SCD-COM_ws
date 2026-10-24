@@ -6,15 +6,11 @@
   </style>
 
   <!-- Single line toolbar -->
-  <div class="diagram-toolbar" *ngIf="showDiagramToolBar">
+  <div class="diagram-toolbar" *ngIf="showDiagramToolBar && isEditMode">
     <!-- Mode Controls - Always first -->
     <!-- Run/Stop buttons -->
-    <button class="mode-btn" [class.active]="isEditMode" [class.inactive]="!isEditMode" kendoTooltip
-      [title]="isEditMode ? 'Stop Editing' : 'Start Editing'" (click)="toggleMode()">
-      <span class="mode-icon">{{ isEditMode ? '▶' : '⏹' }}</span>
-
-    </button>
-    <div *ngIf="isEditMode" class="diagram-toolbar">
+    
+    <div  class="diagram-toolbar">
       <kendo-dropdowntree kendoDropDownTreeExpandable [kendoDropDownTreeHierarchyBinding]="ShapeMenu" textField="text"
         valueField="id" childrenField="items" placeholder="Shapes" [filterable]="true"
         (valueChange)="ON_CLICK_CONTEXT_MENU('DROPDOWN', $event)" [(value)]="selectedShape"
@@ -202,7 +198,7 @@
 </div>
 
 
- <div class="toolbar-group animation-group">
+ <div *ngIf="isEditMode" class="toolbar-group animation-group">
       <span class="toolbar-label">Animation</span>
       <label class="field">
         <span>Type</span>

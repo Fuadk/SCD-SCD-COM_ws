@@ -312,7 +312,7 @@ public disableDISPLAY_DATA = false;
       this.componentConfig.updateable = true;       
       this.componentConfig.showToolBar = true;
     //  this.componentConfig.enabled = true;
-    this.toggleMode();
+    this.actEditMode(this.isEditMode);
 
   }
   public scadaData: any = {};
@@ -869,6 +869,9 @@ public printScreen(){
             this.executeQuery(form);
         }, 300);
       }
+      if (typeof ComponentConfig.masterParams.isEditMode != "undefined"){
+              this.actEditMode(ComponentConfig.masterParams.isEditMode);
+        }
    
         
       
@@ -897,7 +900,7 @@ if (array.length > 2) {
       let form: any = {};
       form.DISPLAY_ID = DISPLAY_ID
       this.executeQuery(form);
-      this.toggleMode();
+      this.actEditMode(this.isEditMode);
 
     }, 300);
 
@@ -3719,7 +3722,7 @@ public onItemSelectItem (menuType,event){
   private currentShapeId: string = "";
   public  currentShapeType: string = "";
   private pressTimer: any = null;
-  public isEditMode: boolean = false;
+  public isEditMode: boolean = true;
   public showDiagramToolBar: boolean = true;
   
   // Context Menu properties
@@ -4076,8 +4079,8 @@ public detectPartAtClick(clickX: number, clickY: number, event): void {
 
   }
 
-  public toggleMode(): void {
-  this.isEditMode = !this.isEditMode;
+  public actEditMode(isEditMode): void {
+  this.isEditMode = isEditMode;
   
   if (this.isEditMode) {
       this.isDrag = true;
@@ -8640,7 +8643,6 @@ public getButtonVisualStyle(dataItem: any): any {
 
   // State used to resolve database attributes.
   // Hover uses the normal/up attributes.
-  console.log("visualState:",visualState)
   const attributeState: 'up' | 'down' | 'disabled' =
     disabled
       ? 'disabled'
@@ -10138,6 +10140,7 @@ if (imageSource) {
   
 }
 return group;
+
 }
 
   public disableButton1023(){

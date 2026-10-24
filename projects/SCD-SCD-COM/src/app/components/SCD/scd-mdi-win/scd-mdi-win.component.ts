@@ -75,6 +75,7 @@ declare function getParamConfig(): any;
   public visibleOK_BTNS = true;
   public help_1Config: componentConfigDef;
   public helpOpened = false;
+  public isEditMode: boolean = true;
 
   constructor(
     public router: Router,
@@ -332,7 +333,8 @@ getComponentToRender(shapeType: string): any {
       MENU_ID: MENU_ID,
 	  masterParams:masterParams,
       viewMode: viewMode
-    }
+    },
+  isEditMode: this.isEditMode 
   };
 
   let componentToRender = this.getComponentToRender(winId);
@@ -765,6 +767,26 @@ onComponentConfig_Output(event: { windowId: string, componentConfig: any }): voi
 }
 	trackWindow(index: number, window: WindowInfo): string {
   return window.id;
+}
+  public toggleMode(): void {
+  this.isEditMode = !this.isEditMode;
+
+  for (const window of this.windows) {
+    const instance: any = (window as any).componentInstance;
+    if (!instance || !('setComponentConfig_Input' in instance)) {
+      continue;
+    }
+    const cfg = new componentConfigDef();
+    cfg.masterParams = {
+      isEditMode: this.isEditMode
+      // Deliberately no MDI_ID, no MAXIMIZED, no action → no re-open
+    } as any;
+    try {
+      instance.setComponentConfig_Input = cfg;
+    } catch (err) {
+      console.warn('[toggleMode] push failed for window', window.id, err);
+    }
+  }
 }
 		
 	 //      this.scd-scd-display-diagram0_0Config = new componentConfigDef();

@@ -26,6 +26,58 @@
     border-radius: 0 !important;
     z-index: 9999 !important;
   }
+	.mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    height: 28px;
+    border: 2px solid;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    flex-shrink: 0;
+    
+    /* Run mode (isEditMode = true) */
+    &.active {
+      background: #e94560;
+      border-color: #e94560;
+      color: #ffffff;
+      
+      &:hover {
+        background: #d63851;
+        border-color: #d63851;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(233, 69, 96, 0.3);
+      }
+    }
+    
+    /* Stop mode (isEditMode = false) */
+    &.inactive {
+      background: #2b8a3e;
+      border-color: #2b8a3e;
+      color: #ffffff;
+      
+      &:hover {
+        background: #237a34;
+        border-color: #237a34;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(43, 138, 62, 0.3);
+      }
+    }
+    
+    .mode-icon {
+      font-size: 14px;
+      line-height: 1;
+    }
+    
+    .mode-text {
+      font-size: 12px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+  }
 </style>
 
 <!-- scd-appboard.component.html -->
@@ -52,15 +104,23 @@ style="height: 100vh;  display: flex;  flex-direction: column;" class="form-bord
       New Group
     </button>
     </div>
-    <!-- ===== KENDO DROPDOWN BUTTON ===== -->
-    <kendo-dropdownbutton 
-      [icon]="'window'"
-      [data]="menuItems"
-      (itemClick)="onMenuItemClick($event)"
-      themeColor="secondary"
-      class="window-menu-btn">
-      {{ getTotalWindowCount() }} windows
-    </kendo-dropdownbutton>
+	<div class="wrap">
+      
+		<button *ngIf="getTotalWindowCount()" class="mode-btn" [class.active]="isEditMode" [class.inactive]="!isEditMode" kendoTooltip
+		[title]="isEditMode ? 'Stop Editing' : 'Start Editing'" (click)="toggleMode()">
+		<span class="mode-icon">{{ isEditMode ? '▶' : '⏹' }}</span>
+
+		</button>
+		<!-- ===== KENDO DROPDOWN BUTTON ===== -->
+		<kendo-dropdownbutton 
+			[icon]="'window'"
+			[data]="menuItems"
+			(itemClick)="onMenuItemClick($event)"
+			themeColor="secondary"
+			class="window-menu-btn">
+			{{ getTotalWindowCount() }} windows
+		 </kendo-dropdownbutton>
+	</div>
   
 
   <!-- Tab Host -->
@@ -172,7 +232,6 @@ style="height: 100vh;  display: flex;  flex-direction: column;" class="form-bord
       <div class="empty-state-content">
         <span class="empty-icon">📂</span>
         <h3>No Windows Open</h3>
-        <p>Open a diagram from the buttons above or create a new tab group</p>
       </div>
     </div>
   </div>
