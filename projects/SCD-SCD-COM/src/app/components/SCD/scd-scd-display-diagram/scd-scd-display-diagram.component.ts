@@ -6638,7 +6638,7 @@ public addEllipse():   void { this.armDragTool('Elipse'); }
     }
   }
 
-  private finishPolyDrawing(): void {
+private finishPolyDrawing(): void {
     if (!this.polyMode) {
       return;
     }
@@ -6664,10 +6664,21 @@ public addEllipse():   void { this.armDragTool('Elipse'); }
     const offsetY = (height - (maxY - minY)) / 2;
     const points = pts.map(p => ({ x: p.x - minX + offsetX, y: p.y - minY + offsetY }));
     this.resetPolyDrawing();
-    this.addLibraryShape(mode, {
-      x: minX - offsetX, y: minY - offsetY, width, height, points, pointRef: { w: width, h: height },
-      fillColor: mode === "polygon" ? "#e9defa" : "transparent"
-    }, true);
+    const shapeType = mode === "polygon" ? "Polygon" : "Polyline";
+
+      void this.insertAndAddLibraryShape(
+        shapeType,
+        mode,
+        {
+          x: minX - offsetX,
+          y: minY - offsetY,
+          width,
+          height,
+          points,
+          pointRef: { w: width, h: height },
+          fillColor: mode === "polygon" ? "#e9defa" : "transparent"
+        }
+      );
   }
   /** Toolbar dropdown menus: run the chosen action, then reset the dropdown. */
   public runMenu(event: Event, menu: "arrange" | "align" | "add" | "button" | "indicator"): void {
@@ -6891,7 +6902,14 @@ async onFreehandPointerUp(event: PointerEvent) {
     this.freehandPoints = [];
     this.freehandPreviewPoints = [];
     this.freehandPreviewPath = "";
-    this.addLibraryShape("freehand", { x: minX, y: minY, width, height, points, fillColor: "transparent" }, true);
+    void this.insertAndAddLibraryShape("FreeHand", "freehand", {
+      x: minX,
+      y: minY,
+      width,
+      height,
+      points,
+      fillColor: "transparent"
+    });
   }
 
   /**
@@ -6913,14 +6931,76 @@ async onFreehandPointerUp(event: PointerEvent) {
     const fraction = (value: number, origin: number, size: number): number =>
       Math.max(0, Math.min(1, (value - origin) / size));
 
-    this.addLibraryShape("line", {
-      x, y, width, height,
+    void this.insertAndAddLibraryShape("Line", "line", {
+      x,
+      y,
+      width,
+      height,
       fillColor: "transparent",
-      lineStart: { x: fraction(start.x, x, width), y: fraction(start.y, y, height) },
-      lineEnd: { x: fraction(end.x, x, width), y: fraction(end.y, y, height) }
-    }, true);
+      lineStart: {
+        x: fraction(start.x, x, width),
+        y: fraction(start.y, y, height)
+      },
+      lineEnd: {
+        x: fraction(end.x, x, width),
+        y: fraction(end.y, y, height)
+      }
+    });
   }
 
+private async insertAndAddLibraryShape(
+  shapeType: string,
+  libraryKind: string,
+  options: any
+): Promise<void> {
+  const kendouiContent: any = { id: shapeType };
+
+  const x = Number(options.x) || 0;
+  const y = Number(options.y) || 0;
+  const width = Number(options.width) || 20;
+  const height = Number(options.height) || 20;
+
+  try {
+    // 1. Insert the main SCD_SHAPE record.
+    const inserted = await this.insertSCDShape(
+      kendouiContent,
+      shapeType,
+      x,
+      y,
+      width,
+      height
+    );
+
+    if (inserted?.shapeID == null || !inserted?.id) {
+      console.error(
+        "Shape insertion failed: no generated shape ID.",
+        shapeType,
+        inserted
+      );
+      this.statusMessage = `Could not insert ${shapeType} into the database.`;
+      return;
+    }
+
+    // 2. Insert the associated SCD_SHAPE_GENERAL or other records.
+    await this.insertSCDShapeTables(inserted.shapeID, shapeType);
+
+    // 3. Create the diagram visual using the database-generated ID.
+    const shapeOptions = {
+      ...options,
+      SHAPE_ID: inserted.id,
+      SHAPE_TYPE: shapeType
+    };
+
+    this.addLibraryShape(libraryKind, shapeOptions, true);
+
+  } catch (error) {
+    console.error(
+      `Failed to insert ${shapeType}:`,
+      error
+    );
+    this.statusMessage = `Could not insert ${shapeType}.`;
+  }
+}
 
 
   private pointerToStage(event: PointerEvent): { x: number; y: number } | null {
@@ -11621,60 +11701,24 @@ private armDragTool(shapeType: string): void {
 }
 private async insertShapeFromBox(
   shapeType: string,
-  x: number, y: number, width: number, height: number
+  x: number,
+  y: number,
+  width: number,
+  height: number
 ): Promise<void> {
-  // Choose the library kind that visually represents this SCD shape.
-  const kind = this.shapeToIconKey[shapeType] ?? 'default';
-  console.log("insertShapeFromBox:")
-  let kendoui_content: any = { id: shapeType };
+  const kind = this.shapeToIconKey[shapeType] ?? "default";
 
-  // Reuse the existing SCD pipeline so DB rows are created exactly as before.
-  kendoui_content = await this.insertSCDShape(kendoui_content, shapeType,x,y, width,height );
+  // Preserve copied-shape handling separately.
+  // Preserve shape-specific options and initialization.
 
-  // Store the click position on the kendoui_content object (matches old code).
-  const diagramX = x;
-  const diagramY = y;
-  kendoui_content[diagramX] = diagramX;
-  kendoui_content[diagramY] = diagramY;
-
-  await this.insertSCDShapeTables(kendoui_content.shapeID, shapeType);
-
-  // Build the options the same way insertShape does, but with the real box.
-  let options: any = {
-    x, y, width, height,
-    SHAPE_ID:   kendoui_content.id,
-    SHAPE_TYPE: shapeType,
-    text:       "",
-    fillColor:  "#D3D3D3"
-  };
-
-  if (typeof this.starServices.sessionParams['COPIED_SHAPE'] != "undefined"
-    && this.starServices.sessionParams['COPIED_SHAPE'] != "") {
-    let copiedShape = this.starServices.sessionParams['COPIED_SHAPE'];
-    let kendoui_content = JSON.parse(copiedShape.kendoui_content);
-    console.log("kendoui_content:",kendoui_content)
-    kendoui_content.id = copiedShape.id;
-    this.starServices.sessionParams['COPIED_SHAPE'] = "";
-    let shapeType = "SYMPOL_FACTORY";
-    kendoui_content = await this.insertSCDShape(kendoui_content, shapeType, x, y,  width, height);
-    this.add_new_shape(kendoui_content, copiedShape.type, x, y, width, height);
-    this.updateShapes();
-    this.resetFreehandState(false);
-    
-  }
-  else{
-      const levelKinds = ["barGraph", "gauge"];
-      options = {
-        ...options,
-        ...(levelKinds.includes(kind)
-          ? {
-              containerValue: kind === "barGraph" ? 25 : 0,
-              containerMax: 100
-            }
-          : {})
-      };
-      this.addLibraryShape(kind, options, true);
-  }
+  await this.insertAndAddLibraryShape(shapeType, kind, {
+    x,
+    y,
+    width,
+    height,
+    text: "",
+    fillColor: "#D3D3D3"
+  });
 }
 private updateDragBoxPreview(event: PointerEvent): void {
   const start = this.dragBoxStart, end = this.dragBoxCurrent;
