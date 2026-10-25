@@ -1,3 +1,13 @@
+ export class scdcommandsScdScdCommands{
+	public COMMAND_ID = '';
+	public NAME = '';
+	public DESCRIPTION = '';
+	public SYNTAX = '';
+	public CATEGORY = '';
+	public SUB_CATEGORY = '';
+
+}
+
  export class scdalarmBehaviorScdScdAlarmBehavior{
 	public BEHAVIOR_ID = '';
 	public SHAPE_ID = '';

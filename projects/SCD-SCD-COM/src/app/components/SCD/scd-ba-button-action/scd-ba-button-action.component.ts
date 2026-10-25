@@ -98,7 +98,7 @@ public labelSHAPE_IDVisible=true;
 public labelTAGTop=false;
 public labelTAGVisible=true;
 public labelGET_TAGTop=false;
-public labelGET_TAGVisible=true;
+public labelGET_TAGVisible=false;
 public labelPRESS_ACTIONTop=false;
 public labelPRESS_ACTIONVisible=true;
 public labelPRESS_COMMANDS_BATop=false;
@@ -171,6 +171,7 @@ public variableCONFIGURE_ESIGNATURE;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
@@ -242,26 +243,26 @@ public variableCONFIGURE_ESIGNATURE;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -393,9 +394,13 @@ public variableCONFIGURE_ESIGNATURE;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+      this.FormStepsArr.forEach(item => {
+      (item as any).visible = true;
+    });
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
+ this.lkpArrGET_TAG= this.starlib1.tagsDefinition;
    }
 
   public onNew(e:any): void {
@@ -569,6 +574,8 @@ this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM
 			"lkpArrName":"lkpArrACTION"},
 	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrSHAPE_ID"},
+	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='GET_TAG' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
+			"lkpArrName":"lkpArrGET_TAG"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"E_SIGNATURE_SETTINGS\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrE_SIGNATURE_SETTINGS"}];
  if (this.lookupArrDef.length > 0)
@@ -579,6 +586,8 @@ public lkpArrACTION = [];
 
 public lkpArrSHAPE_ID = [];
 
+public lkpArrGET_TAG = [];
+
 public lkpArrE_SIGNATURE_SETTINGS = [];
 
 public lkpArrGetACTION(CODE: any): any {
@@ -588,6 +597,11 @@ return rec;
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetGET_TAG(CODE: any): any {
+var rec = this.lkpArrGET_TAG.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -786,7 +800,8 @@ public printScreen(){
    
   }
   async  POST_QUERY(formGroup){
-    
+    let action = this.form.value.ACTION;
+    this.set_action(action);
     
   }
   async  PRE_DELETE(formGroup:any){
@@ -826,7 +841,7 @@ async WHEN_VALIDATE_ITEM_ACTION(value) {
  if (typeof this.form.controls['ACTION'] != "undefined" ) 
       this.form.controls['ACTION'].setErrors({invalid: true}); 
  // Code goes here 
- 
+this.set_action(value); 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -886,6 +901,7 @@ async WHEN_VALIDATE_ITEM_GET_TAG(value) {
  if (typeof this.form.controls['GET_TAG'] != "undefined" ) 
       this.form.controls['GET_TAG'].setErrors({invalid: true}); 
  // Code goes here 
+this.form.patchValue({ 'TAG': value.CODE });
  
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
@@ -1176,7 +1192,32 @@ async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }
-
+set_action(value){
+  if (typeof value != "undefined" ){
+    if (value == "Run Command"){
+      this.visibleTAG = false;
+      this.visibleGET_TAG = false;
+      this.visiblePRESS_ACTION = true;
+      this.visiblePRESS_COMMANDS_BA  = true;
+      this.visibleREPEAT_ACTION  = true;
+      this.visibleREPEAT_COMMANDS_BA = true;
+      this.visibleREPEAT_RATE = true;
+      this.visibleRELEASE_ACTION = true;
+      this.visibleRELEASE_COMMANDS_BA = true;
+    }
+    else{
+      this.visibleTAG = true;
+      this.visibleGET_TAG = true;
+      this.visiblePRESS_ACTION = false;
+      this.visiblePRESS_COMMANDS_BA  = false;
+      this.visibleREPEAT_ACTION  = false;
+      this.visibleREPEAT_COMMANDS_BA = false;
+      this.visibleREPEAT_RATE = false;
+      this.visibleRELEASE_ACTION = false;
+      this.visibleRELEASE_COMMANDS_BA = false;
+    }
+  }
+}
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;
@@ -1192,7 +1233,7 @@ public DSP_WEBCAMConfig!: componentConfigDef;
 public att_arr = [];
 public img_arr = [];
 public multiselect_arr = [];
-public multiselect_tree_arr = [];
+public multiselect_tree_arr = ["GET_TAG"];
 public AttDwnUrl = "";
 public uploadimage = false;
 public showIcon=true;
@@ -1200,10 +1241,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

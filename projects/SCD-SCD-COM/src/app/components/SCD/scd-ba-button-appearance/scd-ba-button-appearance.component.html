@@ -236,17 +236,17 @@
      adaptiveMode="auto" ></kendo-textarea>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelTAG_BUTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleTAG_BUT >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleTAG_BUT >
 		<button  (valueChange)="onValueChange_TAG_BUT($event)"  style="margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.TAG_BUT_Hint','Please enter Tag But.')" 
- iconClass="fas fa-tags"  *ngIf=visibleTAG_BUT 		(click)="ON_CLICK_TAG_BUT($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.TAG_BUT_Hint','Please enter Tag But.')" 
+ [icon]="'tags'" 		(click)="ON_CLICK_TAG_BUT($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.TAG_BUT','Tags')}}</button>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelEXPRESSION_BUTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleEXPRESSION_BUT >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleEXPRESSION_BUT >
 		<button  (valueChange)="onValueChange_EXPRESSION_BUT($event)"  style="margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.EXPRESSION_BUT_Hint','Please enter Expression But.')" 
- iconClass="fas fa-equation"  *ngIf=visibleEXPRESSION_BUT 		(click)="ON_CLICK_EXPRESSION_BUT($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.EXPRESSION_BUT_Hint','Please enter Expression But.')" 
+ [icon]="'equation'" 		(click)="ON_CLICK_EXPRESSION_BUT($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.EXPRESSION_BUT','Expression')}}</button>
 	</kendo-formfield>
 
@@ -328,24 +328,24 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_BOLDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_BOLD >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleFONT_BOLD >
 		<button  (valueChange)="onValueChange_FONT_BOLD($event)"  style="font-weight : bold ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_BOLD_Hint','Please enter Font Bold.')" 
- iconClass="fas fa-"  *ngIf=visibleFONT_BOLD 		(click)="ON_CLICK_FONT_BOLD($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_BOLD_Hint','Please enter Font Bold.')" 
+ [icon]="''" 		(click)="ON_CLICK_FONT_BOLD($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_BOLD','B')}}</button>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_ITALICTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_ITALIC >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleFONT_ITALIC >
 		<button  (valueChange)="onValueChange_FONT_ITALIC($event)"  style="font-style : italic ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_ITALIC_Hint','Please enter Font Italic.')" 
- iconClass="fas fa-"  *ngIf=visibleFONT_ITALIC 		(click)="ON_CLICK_FONT_ITALIC($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_ITALIC_Hint','Please enter Font Italic.')" 
+ [icon]="''" 		(click)="ON_CLICK_FONT_ITALIC($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_ITALIC','I')}}</button>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelFONT_UNDERLINETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_UNDERLINE >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleFONT_UNDERLINE >
 		<button  (valueChange)="onValueChange_FONT_UNDERLINE($event)"  style="margin : 4px ;text-decoration: underline;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_UNDERLINE_Hint','Please enter Font Underline.')" 
- iconClass="fas fa-"  *ngIf=visibleFONT_UNDERLINE 		(click)="ON_CLICK_FONT_UNDERLINE($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_UNDERLINE_Hint','Please enter Font Underline.')" 
+ [icon]="''" 		(click)="ON_CLICK_FONT_UNDERLINE($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.FONT_UNDERLINE','U')}}</button>
 	</kendo-formfield>
 
@@ -399,17 +399,17 @@
  kendoTextBox #IMAGE_NAME></textarea>  
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMPORT_BATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMPORT_BA >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleIMPORT_BA >
 		<button  (valueChange)="onValueChange_IMPORT_BA($event)"  style="height : 40px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA_Hint','Please enter Import Ba.')" 
- iconClass="fas fa-upload"  *ngIf=visibleIMPORT_BA 		(click)="ON_CLICK_IMPORT_BA($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA_Hint','Please enter Import Ba.')" 
+ [icon]="'upload'" 		(click)="ON_CLICK_IMPORT_BA($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA','')}}</button>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_SELECT_BATop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_SELECT_BA >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleIMAGE_SELECT_BA >
 		<button  (valueChange)="onValueChange_IMAGE_SELECT_BA($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA_Hint','Please enter Image Select Ba.')" 
- iconClass="fas fa-image"  *ngIf=visibleIMAGE_SELECT_BA 		(click)="ON_CLICK_IMAGE_SELECT_BA($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA_Hint','Please enter Image Select Ba.')" 
+ [icon]="'image'" 		(click)="ON_CLICK_IMAGE_SELECT_BA($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA','Image Select Ba')}}</button>
 	</kendo-formfield>
 
@@ -487,17 +487,17 @@
  kendoTextBox #IMAGE_NAME2></textarea>  
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMPORT_BA2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMPORT_BA2 >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleIMPORT_BA2 >
 		<button  (valueChange)="onValueChange_IMPORT_BA2($event)"  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA2_Hint','Please enter Import Ba2.')" 
- iconClass="fas fa-upload"  *ngIf=visibleIMPORT_BA2 		(click)="ON_CLICK_IMPORT_BA2($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA2_Hint','Please enter Import Ba2.')" 
+ [icon]="'upload'" 		(click)="ON_CLICK_IMPORT_BA2($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMPORT_BA2','')}}</button>
 	</kendo-formfield>
 
-	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_SELECT_BA2Top || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_SELECT_BA2 >
+	<kendo-formfield  [orientation]="'horizontal'"  *ngIf=visibleIMAGE_SELECT_BA2 >
 		<button  (valueChange)="onValueChange_IMAGE_SELECT_BA2($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA2_Hint','Please enter Image Select Ba2.')" 
- iconClass="fas fa-image"  *ngIf=visibleIMAGE_SELECT_BA2 		(click)="ON_CLICK_IMAGE_SELECT_BA2($event)"
+		 [title]="starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA2_Hint','Please enter Image Select Ba2.')" 
+ [icon]="'image'" 		(click)="ON_CLICK_IMAGE_SELECT_BA2($event)"
  >{{starServices.getNLS([],'SCD_BA_BUTTON_APPEARANCE.scdbuttonAppearanceScdBaButtonAppearance.IMAGE_SELECT_BA2','Image Select Ba2')}}</button>
 	</kendo-formfield>
 </div>
