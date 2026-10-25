@@ -3,7 +3,7 @@ import { Component, Input, Output,ViewChild, EventEmitter,
    OnDestroy, ChangeDetectorRef,ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { DialogService } from '@progress/kendo-angular-dialog';
-import { geometry, LinearGradient } from '@progress/kendo-drawing';
+import { geometry, LinearGradient, Path as DrawPath } from '@progress/kendo-drawing';
 import {
   KENDO_DIAGRAM,
   ShapeOptions,
@@ -2049,8 +2049,12 @@ public visualTemplate = (options: any): Group => {
           const dash = 10;
           const gap = 6;
           const travelled = (Date.now() / 1000) * Number(a.speed || 0) * (a.value < 0 ? -1 : 1);
-          style.strokeColor = a.colorA;
-          extra.animFlow = { dash, gap, phase: ((travelled % (dash + gap)) + dash + gap) % (dash + gap) };
+          if (!dataItem.dbShape) {
+            style.strokeColor = a.colorA;
+          }
+          // The dashes carry their own colour, so a shape drawn from its database
+          // attributes keeps its border colour underneath them.
+          extra.animFlow = { dash, gap, color: a.colorA, phase: ((travelled % (dash + gap)) + dash + gap) % (dash + gap) };
         }
         break;
       case "imageSwap": {
@@ -2243,7 +2247,7 @@ public visualTemplate = (options: any): Group => {
       for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
         const a = this.shapeDataItem(shape)?.animation;
         if (a) {
-          const v = Number(a.value) || 0;
+          const v = this.animTarget(a);
           this.animState.set(a, { sig: JSON.stringify(a), target: v, display: v });
         }
       }
@@ -2259,7 +2263,15 @@ public visualTemplate = (options: any): Group => {
       this.statusMessage = "Animation stopped. Shapes are back to their normal look.";
     }
   }
-
+/**
+   * The value an animation glides toward. Visibility, Flip and Lamp are on/off
+   * effects (any non-zero value means "on"), so they glide on the 0-1 range;
+   * otherwise a toggle to Max = 100 would take 25 s to turn back off at 4/s.
+   */
+  private animTarget(a: any): number {
+    const v = Number(a?.value) || 0;
+    return ["visibility", "flip", "lamp"].includes(a?.type) ? Math.min(1, Math.abs(v)) : v;
+  }
 /** Types whose drawn value follows the tag value at the "change speed". */
   private isEased(type: string): boolean {
     return ["scale", "move", "analog", "heatmap", "discrete", "valueText", "visibility", "flip", "lamp", "rotate"]
@@ -2297,7 +2309,7 @@ public visualTemplate = (options: any): Group => {
         continue;
       }
       const sig = JSON.stringify(a);
-      const value = Number(a.value) || 0;
+      const value = this.animTarget(a);
       const state = this.animState.get(a);
       if (!state) {
         this.animState.set(a, { sig, target: value, display: value });
@@ -2653,10 +2665,661 @@ public onStagePointerDown(event: PointerEvent): void {
     }
     this.schedulePersistState();
   }
+  // ================================================================
+  // Drawing from database attributes (dbShape): surface, pattern, border,
+  // line style and the per-shape drawing, using the same helpers as the button.
+  // ================================================================
+
+  private dbKey(value: any): string {
+    return String(value ?? "").toLowerCase().replace(/[\s_-]/g, "");
+  }
+
+  private dbDash(lineStyle: any): string | undefined {
+    switch (this.dbKey(lineStyle)) {
+      case "dash": return "dash";
+      case "dot": return "dot";
+      case "dashdot": return "dashDot";
+      case "dashdotdot": return "longDashDotDot";
+      default: return undefined;
+    }
+  }
+
+  private bevelColors(base: string): { light: string; dark: string } {
+    const hex = this.normalizeColor(base, "#808080");
+    return { light: this.lighten(hex, 0.45), dark: this.darken(hex, 0.45) };
+  }
+
+  /** Back style "Transparent" draws no fill. */
+  private dbTransparent(d: any): boolean {
+    return this.dbKey(d.backStyle) === "transparent";
+  }
+
+  private dbBorderWidth(d: any, w: number, h: number): number {
+    const bw = Number(d.borderWidth) || 0;
+    return Math.max(0, Math.min(bw, Math.min(w, h) / 3));
+  }
+
+  /** Colour the border is built from: the back colour, or the border colour. */
+  private dbBorderBase(d: any, fillColor: string): string {
+    return d.borderUsesBackColor && !this.dbTransparent(d)
+      ? this.normalizeColor(fillColor, "#808080")
+      : this.normalizeColor(d.borderColor, "#000000");
+  }
+
+  /**
+   * Border of a rectangle. Raised / Sunken / RaisedInset / InsetRaised are
+   * two-tone bevels (light and dark shades of the base colour); Solid is a plain
+   * line; None draws nothing.
+   */
+  private drawDbBorder(group: Group, x: number, y: number, w: number, h: number, radius: number,
+                       styleName: any, width: number, base: string): void {
+    const kind = this.dbKey(styleName);
+    if (width <= 0 || kind === "none") {
+      return;
+    }
+    const { light, dark } = this.bevelColors(base);
+    const polygon = (pts: number[][], color: string): void => {
+      group.append(new Path({
+        data: `M ${pts.map(pt => pt.join(",")).join(" L ")} Z`,
+        stroke: { color, width: 0 },
+        fill: { color }
+      }));
+    };
+    const bevel = (inset: number, bw: number, topLeft: string, bottomRight: string): void => {
+      const x0 = x + inset, y0 = y + inset, x1 = x + w - inset, y1 = y + h - inset;
+      polygon([[x0, y0], [x1, y0], [x1 - bw, y0 + bw], [x0 + bw, y0 + bw]], topLeft);
+      polygon([[x0, y0], [x0 + bw, y0 + bw], [x0 + bw, y1 - bw], [x0, y1]], topLeft);
+      polygon([[x0, y1], [x0 + bw, y1 - bw], [x1 - bw, y1 - bw], [x1, y1]], bottomRight);
+      polygon([[x1, y0], [x1, y1], [x1 - bw, y1 - bw], [x1 - bw, y0 + bw]], bottomRight);
+    };
+    const ring = (color: string): void => {
+      group.append(new Rectangle({
+        x: x + width / 2, y: y + width / 2, width: Math.max(1, w - width), height: Math.max(1, h - width),
+        cornerRadius: Math.max(0, radius - width / 2),
+        stroke: { color, width },
+        fill: { color: "transparent" }
+      }));
+    };
+    if (radius > 0) {
+      // Rounded corners cannot be bevelled with straight edges: one dark ring.
+      ring(kind === "solid" ? base : dark);
+      return;
+    }
+    switch (kind) {
+      case "raised": bevel(0, width, light, dark); break;
+      case "sunken": case "inset": case "lowered": bevel(0, width, dark, light); break;
+      case "raisedinset": bevel(0, width / 2, light, dark); bevel(width / 2, width / 2, dark, light); break;
+      case "insetraised": case "sunkenraised": bevel(0, width / 2, dark, light); bevel(width / 2, width / 2, light, dark); break;
+      default: ring(base);
+    }
+  }
+
+  /** Border of an ellipse: light/dark half rings (bevel) or one ring. */
+  private drawDbEllipseBorder(group: Group, x: number, y: number, w: number, h: number,
+                              styleName: any, width: number, base: string): void {
+    const kind = this.dbKey(styleName);
+    if (width <= 0 || kind === "none") {
+      return;
+    }
+    const { light, dark } = this.bevelColors(base);
+    const rx = Math.max(1, w / 2 - width / 2);
+    const ry = Math.max(1, h / 2 - width / 2);
+    const cx = x + w / 2, cy = y + h / 2;
+    const at = (deg: number): string => {
+      const a = (deg * Math.PI) / 180;
+      return `${cx + rx * Math.cos(a)},${cy - ry * Math.sin(a)}`;
+    };
+    const half = (from: number, to: number, color: string): void => {
+      group.append(new Path({
+        data: `M ${at(from)} A ${rx},${ry} 0 0 0 ${at(to)}`,
+        stroke: { color, width }, fill: { color: "transparent" }
+      }));
+    };
+    if (kind === "solid") {
+      group.append(new Path({
+        data: `M ${cx - rx},${cy} A ${rx},${ry} 0 1 0 ${cx + rx},${cy} A ${rx},${ry} 0 1 0 ${cx - rx},${cy} Z`,
+        stroke: { color: base, width }, fill: { color: "transparent" }
+      }));
+      return;
+    }
+    const sunken = kind === "sunken" || kind === "inset" || kind === "lowered";
+    half(45, 225, sunken ? dark : light);
+    half(225, 405, sunken ? light : dark);
+  }
+
+  /**
+   * Pattern (drawPattern) laid over a shape. For non-rectangular shapes the
+   * pattern is drawn in its own group that is clipped to the outline.
+   */
+  private drawDbPattern(group: Group, d: any, x: number, y: number, w: number, h: number,
+                        radius: number, clip?: number[][]): void {
+    if (this.dbKey(d.patternStyle) === "" || this.dbKey(d.patternStyle) === "none") {
+      return;
+    }
+    if (!clip) {
+      this.drawPattern(group, d, x, y, w, h, radius);
+      return;
+    }
+    const sub = new Group();
+    this.drawPattern(sub, d, x, y, w, h, radius);
+    const outline = new DrawPath();
+    clip.forEach((pt, i) => (i === 0 ? outline.moveTo(pt[0], pt[1]) : outline.lineTo(pt[0], pt[1])));
+    outline.close();
+    (sub as any).drawingElement?.clip?.(outline);
+    group.append(sub);
+  }
+
+  /** Face, pattern and border of a rectangular panel. Returns the border width. */
+  private drawDbPanel(group: Group, x: number, y: number, w: number, h: number, radius: number,
+                      d: any, fillColor: string, borderOverride?: string): number {
+    const bw = this.dbBorderWidth(d, w, h);
+    if (!this.dbTransparent(d)) {
+      group.append(new Rectangle({
+        x, y, width: w, height: h, cornerRadius: radius,
+        stroke: { color: fillColor, width: 0 },
+        fill: { color: fillColor }
+      }));
+    }
+    this.drawDbPattern(group, d, x + bw, y + bw, Math.max(1, w - 2 * bw), Math.max(1, h - 2 * bw), radius);
+    this.drawDbBorder(group, x, y, w, h, radius, d.borderStyle, bw, borderOverride ?? this.dbBorderBase(d, fillColor));
+    return bw;
+  }
+
+  /** Points of a closed/open shape drawn with the polygon / polyline / freehand tool. */
+  private dbPoints(kind: string, d: any, x: number, y: number, w: number, h: number): number[][] | null {
+    const pts = Array.isArray(d.points) ? d.points : [];
+    if (kind === "freehand" && pts.length >= 2) {
+      const extX = Math.max(...pts.map((pt: any) => Number(pt.x)));
+      const extY = Math.max(...pts.map((pt: any) => Number(pt.y)));
+      const sx = extX > 0 ? w / extX : 1;
+      const sy = extY > 0 ? h / extY : 1;
+      return pts.map((pt: any) => [x + Number(pt.x) * sx, y + Number(pt.y) * sy]);
+    }
+    if ((kind === "polygon" && pts.length >= 3) || (kind === "polyline" && pts.length >= 2)) {
+      const ref = d.pointRef;
+      const extX = ref?.w > 0 ? ref.w : Math.max(...pts.map((pt: any) => Number(pt.x)));
+      const extY = ref?.h > 0 ? ref.h : Math.max(...pts.map((pt: any) => Number(pt.y)));
+      const sx = extX > 0 ? w / extX : 1;
+      const sy = extY > 0 ? h / extY : 1;
+      return pts.map((pt: any) => [x + Number(pt.x) * sx, y + Number(pt.y) * sy]);
+    }
+    if (kind === "polygon") {
+      return [[x + w / 2, y], [x + w, y + h * 0.38], [x + w * 0.82, y + h], [x + w * 0.18, y + h], [x, y + h * 0.38]];
+    }
+    if (kind === "polyline") {
+      return [[x, y + h], [x + w * 0.28, y + h * 0.08], [x + w * 0.56, y + h * 0.88], [x + w, y]];
+    }
+    return null;
+  }
+
+  /** Level (0-1) from containerValue between the graph minimum and maximum. */
+  private dbLevelRatio(d: any): number {
+    const min = Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0;
+    const max = Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number.isFinite(Number(d.graphMaximum)) ? Number(d.graphMaximum) : 100);
+    const value = Number.isFinite(Number(d.containerValue)) ? Number(d.containerValue) : min;
+    return max === min ? 0 : Math.max(0, Math.min(1, (value - min) / (max - min)));
+  }
+
+  /** Colour of a bar / gauge fill, switching at the thresholds when there are any. */
+  private dbGraphColor(d: any): string {
+    const min = Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0;
+    const max = Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number.isFinite(Number(d.graphMaximum)) ? Number(d.graphMaximum) : 100);
+    const value = Number.isFinite(Number(d.containerValue)) ? Number(d.containerValue) : min;
+    const percent = this.dbKey(d.thresholdType) === "percent";
+    const level = percent ? (max === min ? 0 : ((value - min) / (max - min)) * 100) : value;
+    const count = Number(d.thresholdCount) || 0;
+    let color = this.normalizeColor(d.graphFillColor, "#00008b");
+    if (count >= 1 && level >= Number(d.threshold1)) {
+      color = this.normalizeColor(d.thresholdColor1, color);
+    }
+    if (count >= 2 && level >= Number(d.threshold2)) {
+      color = this.normalizeColor(d.thresholdColor2, color);
+    }
+    return color;
+  }
+
+  private dbFormat(value: number, digits: number): string {
+    return Number(value).toFixed(Math.max(0, Math.min(6, digits || 0)));
+  }
+
+  /**
+   * Draws one shape from its database attributes. Returns false for kinds that
+   * have none (they use the older drawing).
+   */
+  private drawDbShape(kind: string, group: Group, x: number, y: number, w: number, h: number,
+                      d: any, style: ShapeEditorStyle): boolean {
+    const fillColor = this.normalizeColor(style.fillColor || d.fillColor, "#3a753a");
+    const strokeOverride = style.strokeColor;
+    // Appearance "Color" (or a Flow animation colour) becomes the border colour.
+    const borderOverride = strokeOverride ? this.normalizeColor(strokeOverride, "#000000") : undefined;
+    const flow = d.animFlow;
+    const dash = this.dbDash(d.lineStyle);
+
+    const lineStroke = (width?: number): any => ({
+      color: d.animColor || strokeOverride || d.foreColor || d.strokeColor || "#000000",
+      width: width ?? Math.max(1, Number(d.lineWidth) || 1),
+      ...(dash ? { dashType: dash } : {})
+    });
+    const frame = (): void => {
+      const f = new Rectangle({
+        x, y, width: w, height: h,
+        stroke: { color: "transparent", width: 0 },
+        fill: { color: "transparent" }
+      });
+      f.options.opacity = 0.001;
+      group.append(f);
+    };
+    const dashes = (pts: number[][], width: number): void => {
+      group.append(new Path({
+        data: this.flowDashData(pts, flow),
+        stroke: { color: flow?.color || strokeOverride || d.foreColor || "#000000", width },
+        fill: { color: "transparent" }
+      }));
+    };
+
+    switch (kind) {
+      // ---------------- surfaces ----------------
+      case "rectangle":
+      case "roundedRectangle": {
+        const radius = kind === "roundedRectangle" ? Math.min(22, h / 2) : 0;
+        this.drawDbPanel(group, x, y, w, h, radius, d, fillColor, borderOverride);
+        if (flow) {
+          dashes([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], 3);
+        }
+        return true;
+      }
+      case "ellipse": {
+        const bw = this.dbBorderWidth(d, w, h);
+        const rx = w / 2, ry = h / 2, cx = x + rx, cy = y + ry;
+        const outline: number[][] = [];
+        for (let i = 0; i < 72; i++) {
+          const t = (i / 72) * Math.PI * 2;
+          outline.push([cx + rx * Math.cos(t), cy + ry * Math.sin(t)]);
+        }
+        if (!this.dbTransparent(d)) {
+          group.append(new Path({
+            data: `M ${cx - rx},${cy} A ${rx},${ry} 0 1 0 ${cx + rx},${cy} A ${rx},${ry} 0 1 0 ${cx - rx},${cy} Z`,
+            stroke: { color: fillColor, width: 0 },
+            fill: { color: fillColor }
+          }));
+        }
+        this.drawDbPattern(group, d, x, y, w, h, 0, outline);
+        this.drawDbEllipseBorder(group, x, y, w, h, d.borderStyle, bw, borderOverride ?? this.dbBorderBase(d, fillColor));
+        if (flow) {
+          dashes([...outline, outline[0]], 3);
+        }
+        return true;
+      }
+      case "polygon": {
+        const pts = this.dbPoints("polygon", d, x, y, w, h) as number[][];
+        const bw = Math.max(0, Number(d.borderWidth) || 0);
+        const data = `M ${pts.map(pt => pt.join(",")).join(" L ")} Z`;
+        if (!this.dbTransparent(d)) {
+          group.append(new Path({ data, stroke: { color: fillColor, width: 0 }, fill: { color: fillColor } }));
+        }
+        this.drawDbPattern(group, d, x, y, w, h, 0, pts);
+        if (bw > 0 && this.dbKey(d.borderStyle) !== "none") {
+          const { dark } = this.bevelColors(this.dbBorderBase(d, fillColor));
+          group.append(new Path({
+            data,
+            stroke: { color: strokeOverride || (this.dbKey(d.borderStyle) === "solid" ? this.dbBorderBase(d, fillColor) : dark), width: bw },
+            fill: { color: "transparent" }
+          }));
+        }
+        if (flow) {
+          dashes([...pts, pts[0]], 3);
+        }
+        return true;
+      }
+
+      // ---------------- lines ----------------
+      case "line": {
+        const start = d.lineStart, end = d.lineEnd;
+        let pts: number[][];
+        if (start && end) {
+          frame();
+          pts = [[x + Number(start.x) * w, y + Number(start.y) * h], [x + Number(end.x) * w, y + Number(end.y) * h]];
+        } else {
+          pts = [[x + 5, y + h / 2], [x + w - 5, y + h / 2]];
+        }
+        if (flow) {
+          dashes(pts, 4);
+        } else {
+          group.append(new Path({ data: `M ${pts[0].join(",")} L ${pts[1].join(",")}`, stroke: lineStroke(), fill: { color: "transparent" } }));
+        }
+        return true;
+      }
+      case "arc": {
+        const peak = `M ${x},${y + h} Q ${x + w / 2},${y - h} ${x + w},${y + h}`;
+        if (flow) {
+          const pts: number[][] = [];
+          for (let i = 0; i <= 48; i++) {
+            const t = i / 48, u = 1 - t;
+            pts.push([u * u * x + 2 * u * t * (x + w / 2) + t * t * (x + w), u * u * (y + h) + 2 * u * t * (y - h) + t * t * (y + h)]);
+          }
+          dashes(pts, 4);
+        } else {
+          group.append(new Path({ data: peak, stroke: lineStroke(), fill: { color: "transparent" } }));
+        }
+        return true;
+      }
+      case "polyline":
+      case "freehand": {
+        const pts = this.dbPoints(kind, d, x, y, w, h);
+        if (!pts) {
+          return false;
+        }
+        if (flow) {
+          dashes(pts, 4);
+        } else {
+          group.append(new Path({
+            data: `M ${pts.map(pt => pt.join(",")).join(" L ")}`,
+            stroke: lineStroke(), fill: { color: "transparent" }
+          }));
+        }
+        return true;
+      }
+
+      // ---------------- text ----------------
+      case "text": {
+        const fontSize = Math.max(6, Number(d.fontSize) || 10);
+        const fontFamily = this.dbText(d.fontFamily, "Arial");
+        // A transparent text has no outline of its own, so keep the box with an
+        // invisible frame (otherwise Kendo resizes the shape to the text's box).
+        frame();
+        if (!this.dbTransparent(d)) {
+          group.append(new Rectangle({
+            x, y, width: w, height: h, cornerRadius: 0,
+            stroke: { color: fillColor, width: 0 }, fill: { color: fillColor }
+          }));
+        }
+        const align = this.dbText(d.alignment, "MM").toUpperCase();
+        const vertical = align[0] === "T" ? "top" : align[0] === "B" ? "bottom" : "middle";
+        const horizontal = align[1] === "L" ? "left" : align[1] === "R" ? "right" : "middle";
+        const tx = horizontal === "left" ? x + 4 : horizontal === "right" ? x + w - 4 : x + w / 2;
+        const ty = vertical === "top" ? y + 3 : vertical === "bottom" ? y + h - fontSize - 4 : y + (h - fontSize) / 2 - 1;
+        const label = new TextBlock({
+          text: String(d.text || "Text"), x: tx, y: ty,
+          fill: d.animColor || strokeOverride || d.textColor || "#000000", fontSize, fontFamily,
+          fontWeight: d.fontWeight || "normal"
+        } as any);
+        (label.options as any).textAnchor = horizontal === "left" ? "start" : horizontal === "right" ? "end" : "middle";
+        group.append(label);
+        return true;
+      }
+      case "tagLabel": {
+        const frameRect = new Rectangle({
+          x, y, width: w, height: h,
+          stroke: { color: "transparent", width: 0 }, fill: { color: "transparent" }
+        });
+        frameRect.options.opacity = 0.001;
+        group.append(frameRect);
+        const colour = d.animColor || strokeOverride || "#444444";
+        const text = String(d.labelText ?? "").trim();
+        const justify = this.dbKey(d.labelJustification);
+        const marks = Math.max(1, Number(d.labelFieldLength) || 10);
+        if (text) {
+          const fontSize = Number(d.fontSize) > 0 ? Number(d.fontSize) : Math.max(10, Math.round(h * 0.7));
+          const fontFamily = this.dbText(d.fontFamily, "Arial, sans-serif");
+          const tx = justify === "right" ? x + w - 2 : justify === "center" ? x + w / 2 : x + 2;
+          const label = new TextBlock({
+            text, x: tx, y: y + Math.max(0, (h - fontSize) / 2 - 2),
+            fill: colour, fontSize, fontFamily
+          } as any);
+          (label.options as any).textAnchor = justify === "right" ? "end" : justify === "center" ? "middle" : "start";
+          group.append(label);
+        } else {
+          // Field-length placeholder: one mark per character of the field.
+          const slot = Math.min(w / marks, 18);
+          const used = slot * marks;
+          const start = justify === "right" ? x + w - used : justify === "center" ? x + (w - used) / 2 : x;
+          for (let i = 0; i < marks; i++) {
+            const gx = start + i * slot + slot * 0.1;
+            group.append(new Path({
+              data: `M ${gx},${y + h * 0.15} L ${gx},${y + h * 0.9} L ${gx + slot * 0.6},${y + h * 0.9}`,
+              stroke: { color: colour, width: 1.5 }, fill: { color: "transparent" }
+            }));
+          }
+        }
+        return true;
+      }
+
+      // ---------------- graphs ----------------
+      case "barGraph": {
+        const bw = this.drawDbPanel(group, x, y, w, h, 0, d, fillColor, borderOverride);
+        const ratio = this.dbLevelRatio(d);
+        const bx = x + bw, by = y + bw, bwid = Math.max(1, w - 2 * bw), bhei = Math.max(1, h - 2 * bw);
+        const dir = this.dbKey(d.fillDirection);
+        const barColor = this.dbGraphColor(d);
+        let rect: number[] | null = null;
+        if (ratio > 0) {
+          if (dir === "toptobottom") rect = [bx, by, bwid, bhei * ratio];
+          else if (dir === "lefttoright") rect = [bx, by, bwid * ratio, bhei];
+          else if (dir === "righttoleft") rect = [bx + bwid * (1 - ratio), by, bwid * ratio, bhei];
+          else rect = [bx, by + bhei * (1 - ratio), bwid, bhei * ratio];
+        }
+        if (rect) {
+          group.append(new Rectangle({
+            x: rect[0], y: rect[1], width: rect[2], height: rect[3],
+            stroke: { color: barColor, width: 0 }, fill: { color: barColor }
+          }));
+        }
+        return true;
+      }
+      case "gauge": {
+        const bw = this.drawDbPanel(group, x, y, w, h, 0, d, fillColor, borderOverride);
+        const cx = x + w / 2, cy = y + h * 0.68;
+        const r = Math.min(w * 0.22, h * 0.4, (w - 2 * bw) / 2 - 14);
+        const ink = d.foreColor || "#000000";
+        const thin = { color: ink, width: Math.max(1, Number(d.lineWidth) || 1) };
+        const ratio = this.dbLevelRatio(d);
+        const min = Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0;
+        const max = Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number(d.graphMaximum) || 100);
+        const digits = Number(d.digitsAfterDecimal) || 0;
+        const point = (deg: number, radius: number): string => {
+          const a = (deg * Math.PI) / 180;
+          return `${cx + radius * Math.cos(a)},${cy - radius * Math.sin(a)}`;
+        };
+        // Filled sweep up to the value (Sweep style other than Point).
+        if (this.dbKey(d.sweepStyle) !== "point" && ratio > 0) {
+          const end = 180 - 180 * ratio;
+          group.append(new Path({
+            data: `M ${cx},${cy} L ${point(180, r)} A ${r},${r} 0 0 1 ${point(end, r)} Z`,
+            stroke: { color: "transparent", width: 0 }, fill: { color: this.dbGraphColor(d) }
+          }));
+        }
+        group.append(new Path({
+          data: `M ${point(180, r)} A ${r},${r} 0 0 1 ${point(0, r)}`,
+          stroke: thin, fill: { color: "transparent" }
+        }));
+        // Threshold bands along the dial.
+        const count = Number(d.thresholdCount) || 0;
+        if (count >= 1) {
+          const toDeg = (value: number): number => 180 - 180 * (max === min ? 0 : Math.max(0, Math.min(1, (value - min) / (max - min))));
+          const bands: Array<[number, number, string]> = [];
+          const t1 = Number(d.threshold1), t2 = Number(d.threshold2);
+          bands.push([min, t1, this.normalizeColor(d.graphFillColor, "#00008b")]);
+          bands.push([t1, count >= 2 ? t2 : max, this.normalizeColor(d.thresholdColor1, "#ffea00")]);
+          if (count >= 2) {
+            bands.push([t2, max, this.normalizeColor(d.thresholdColor2, "#d70040")]);
+          }
+          bands.forEach(([from, to, color]) => {
+            const a0 = toDeg(from), a1 = toDeg(to);
+            if (a0 > a1) {
+              group.append(new Path({
+                data: `M ${point(a0, r + 3)} A ${r + 3},${r + 3} 0 0 1 ${point(a1, r + 3)}`,
+                stroke: { color, width: 3 }, fill: { color: "transparent" }
+              }));
+            }
+          });
+        }
+        // Ticks: majors every 1/majorTicks of the sweep, minors between them when there is room.
+        const majors = Math.max(1, Math.min(20, Number(d.majorTicks) || 10));
+        const minors = Math.max(1, Number(d.minorTicks) || 5);
+        const majorStep = 180 / majors;
+        const minorStep = majorStep / minors;
+        const drawMinor = (r * Math.PI * minorStep) / 180 >= 3;
+        for (let i = 0; i <= majors; i++) {
+          const deg = 180 - i * majorStep;
+          group.append(new Path({ data: `M ${point(deg, r)} L ${point(deg, r * 0.78)}`, stroke: thin, fill: { color: "transparent" } }));
+          if (drawMinor && i < majors) {
+            for (let j = 1; j < minors; j++) {
+              const mdeg = deg - j * minorStep;
+              group.append(new Path({ data: `M ${point(mdeg, r)} L ${point(mdeg, r * 0.9)}`, stroke: thin, fill: { color: "transparent" } }));
+            }
+          }
+        }
+        const fontSize = Math.max(8, Math.min(Number(d.fontSize) || 12, 12));
+        const label = (text: string, lx: number, ly: number): void => {
+          const t = new TextBlock({ text, x: lx, y: ly, fill: ink, fontSize, fontFamily: this.dbText(d.fontFamily, "Arial") } as any);
+          (t.options as any).textAnchor = "middle";
+          group.append(t);
+        };
+        label(this.dbFormat(min, digits), cx - r - 8, cy - 7);
+        label(this.dbFormat((min + max) / 2, digits), cx, cy - r - fontSize - 6);
+        label(this.dbFormat(max, digits), cx + r + 14, cy - 7);
+        const theta = Math.PI * (1 - ratio);
+        const len = r * 0.85;
+        group.append(new Path({
+          data: `M ${cx},${cy} L ${cx + len * Math.cos(theta)},${cy - len * Math.sin(theta)}`,
+          stroke: { color: d.needleColor || "#000000", width: Math.max(1, Number(d.needleWidth) || 2) },
+          fill: { color: "transparent" }
+        }));
+        if (d.showLegend) {
+          const value = min + ratio * (max - min);
+          const legend = new TextBlock({
+            text: this.dbFormat(value, digits), x: cx, y: cy + 6, fill: d.legendColor || "#0000ff", fontSize
+          } as any);
+          (legend.options as any).textAnchor = "middle";
+          group.append(legend);
+        }
+        return true;
+      }
+      case "scale": {
+        frame();
+        const background = !this.dbTransparent(d);
+        let ink = this.normalizeColor(d.animColor || strokeOverride || d.foreColor, "#000000");
+        const back = this.normalizeColor(fillColor, "#000000");
+        if (background) {
+          group.append(new Rectangle({
+            x, y, width: w, height: h,
+            stroke: { color: back, width: 0 }, fill: { color: back }
+          }));
+          // Ticks in the back colour would vanish: keep them readable.
+          if (ink === back) {
+            ink = this.lighten(back, 1) === back ? "#ffffff" : this.lighten(back, 1);
+          }
+        }
+        const min = Number.isFinite(Number(d.scaleMin)) ? Number(d.scaleMin) : (Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0);
+        const max = Number.isFinite(Number(d.scaleMax)) ? Number(d.scaleMax) : (Number.isFinite(Number(d.graphMaximum)) ? Number(d.graphMaximum) : 100);
+        const major = Math.max(1, Number(d.majorTicks) || 10);
+        const minor = Math.max(0.0001, Number(d.minorTicks) || 5);
+        const showNumbers = !!d.scaleShowLabels;
+        const labelWidth = showNumbers ? 40 : 0;
+        const left = this.dbKey(d.tickDirection) === "left";
+        const lineX = x + labelWidth;
+        const lineW = Math.max(10, w - labelWidth);
+        const span = max - min;
+        const count = span > 0 ? Math.min(400, Math.floor(span / minor + 1e-9)) : 0;
+        const stepPx = count > 0 ? (h - 2) / count : h;
+        const fontSize = Math.max(8, Math.min(Number(d.fontSize) || 12, 12));
+        let lastLabelY = -1e9;
+        for (let i = 0; i <= count; i++) {
+          const value = max - i * minor;
+          const isMajor = Math.abs((value - min) / major - Math.round((value - min) / major)) < 1e-6;
+          const ly = y + 1 + i * stepPx;
+          const len = isMajor ? lineW : lineW * 0.5;
+          const x0 = left ? lineX + lineW - len : lineX;
+          group.append(new Path({
+            data: `M ${x0},${ly} L ${x0 + len},${ly}`,
+            stroke: { color: ink, width: Math.max(1, Number(d.lineWidth) || 1) }, fill: { color: "transparent" }
+          }));
+          if (showNumbers && isMajor && ly - lastLabelY >= fontSize + 2) {
+            lastLabelY = ly;
+            const text = String(Math.round(value * 100) / 100);
+            group.append(new TextBlock({
+              text, x: Math.max(x, lineX - 6 - text.length * 6.4), y: ly - 7, fill: ink, fontSize
+            } as any));
+          }
+        }
+        return true;
+      }
+
+      // ---------------- lists ----------------
+      case "listIndicator":
+      case "controlList": {
+        const bw = this.drawDbPanel(group, x, y, w, h, 0, d, fillColor, borderOverride);
+        this.drawDbListRows(group, x + bw, y + bw, w - 2 * bw, h - 2 * bw, d, kind === "controlList");
+        return true;
+      }
+
+      // ---------------- keypad / arrow buttons ----------------
+      case "backspace": case "endButton": case "enter":
+      case "moveLeft": case "moveRight": case "moveUp": case "moveDown":
+      case "pageUp": case "pageDown": {
+        const spec = this.NAVIGATION_BUTTON_ICONS[kind];
+        if (!spec) {
+          return false;
+        }
+        const bw = this.drawDbPanel(group, x, y, w, h, 0, d, fillColor, borderOverride);
+        const size = Math.min(w - 2 * bw, h - 2 * bw) * 0.5;
+        const ox = x + w / 2 - size / 2, oy = y + h / 2 - size / 2;
+        const icon = this.normalizeColor(d.iconColor, "#ffffff");
+        for (const poly of spec) {
+          const data = poly.map((pt, i) => `${i === 0 ? "M" : "L"} ${ox + pt[0] * size},${oy + pt[1] * size}`).join(" ") + " Z";
+          group.append(new Path({ data, stroke: { color: icon, width: 1 }, fill: { color: icon } }));
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** Rows of a List Indicator / Control List drawn from the database colours and font. */
+  private drawDbListRows(group: Group, x: number, y: number, w: number, h: number, d: any, control: boolean): void {
+    const rows = this.listRows(d);
+    const current = this.listIndex(d, rows.length);
+    const pad = 3;
+    const top = y + pad;
+    const rowH = Math.max(6, (h - 2 * pad) / rows.length);
+    const barH = Math.max(6, rowH * 0.92);
+    const left = control ? x + pad + 18 : x + pad;
+    const textX = left + 5;
+    const fontSize = Number(d.fontSize) > 0 ? Math.min(Number(d.fontSize), Math.max(6, Math.floor(barH * 0.8))) : Math.max(8, Math.floor(barH * 0.6));
+    const fontFamily = this.dbText(d.fontFamily, "Arial");
+    const selBack = this.normalizeColor(d.selectionBackColor, "#ffffff");
+    const selFore = this.normalizeColor(d.selectionForeColor, "#00008b");
+    const caption = this.normalizeColor(d.captionColor, "#ffffff");
+    rows.forEach((text, i) => {
+      const rowY = top + i * rowH + (rowH - barH) / 2;
+      if (i === current) {
+        group.append(new Rectangle({
+          x: left, y: rowY, width: Math.max(1, w - (left - x) - pad), height: barH,
+          stroke: { color: selBack, width: 0 }, fill: { color: selBack }
+        }));
+        if (control) {
+          group.append(new Path({
+            data: `M ${x + pad + 2},${rowY} L ${x + pad + 15},${rowY + barH / 2} L ${x + pad + 2},${rowY + barH} Z`,
+            stroke: { color: selBack, width: 1 }, fill: { color: selBack }
+          }));
+        }
+      }
+      if (text.trim()) {
+        group.append(new TextBlock({
+          text, x: textX, y: rowY + Math.max(0, (barH - fontSize) / 2 - 1),
+          fill: i === current ? selFore : caption, fontSize, fontFamily
+        } as any));
+      }
+    });
+  }
   /** Rows of a List Indicator / Control List (a few blank rows until text is typed). */
   private listRows(dataItem: any): string[] {
     const items = Array.isArray(dataItem.listItems) ? dataItem.listItems.map((t: any) => String(t)) : [];
-    return items.length ? items : ["", "", "", ""];
+    if (items.length) {
+      return items;
+    }
+    const states = Array.isArray(dataItem.listStateNames) ? dataItem.listStateNames.filter((t: any) => String(t).length) : [];
+    return states.length ? states.map((t: any) => String(t)) : ["", "", "", ""];
   }
 
   private listIndex(dataItem: any, count: number): number {
@@ -4877,6 +5540,7 @@ private readonly shapeTablesMap: Record<string, string[]> = {
   'Status Explorer':      ['SCD_ALARM_GENERAL_STATUS_EXPLORER'],
 };
 public getInsertTables(shapeType: string): string[] {
+  let shapeTypeTitle = this.tablesKeyByKind[shapeType] ?? this.libraryShapeTitle(shapeType)
   const tables = this.shapeTablesMap[shapeType] ?? [];
   return tables.map(table => `INSERT_${table}`);
 }
@@ -5143,14 +5807,247 @@ public ShapesInfo = [];
 public ShapesInfoArr = {};
 
 public findRowsByTable(
-  grouped,
-  shapeId: number | string,
+  grouped:any,
+  shapeId:  string,
   table: string
 ) {
-  const bucket = grouped?.[String(shapeId)];
+  console.log ("findRowsByTable:shapeId:",shapeId)
+  let arr = shapeId.split(":");
+  let shapeType = arr[0];
+  let SHAPE_ID = arr[1];
+  const bucket = grouped?.[String(SHAPE_ID)];
   if (!Array.isArray(bucket)) return [];
   return bucket.filter(row => row._TABLE === table);
 }
+
+
+  // ================================================================
+  // Visual attributes of the other shapes, read from the SCD tables
+  // (see "Shapes Visual attributes.xlsx"). Same idea as the button: the values
+  // come from ShapesInfoArr, are copied onto `options`, and the drawing code uses
+  // them. `dbShape: true` marks a shape drawn from these attributes.
+  // ================================================================
+
+  /** Any CSS colour (name, #rgb, #rrggbb, with stray spaces) -> #rrggbb. */
+  private normalizeColor(value: any, fallback: string): string {
+    const text = String(value ?? "").trim();
+    if (!text || text.toLowerCase() === "transparent") {
+      return fallback;
+    }
+    if (/^#[0-9a-f]{6}$/i.test(text)) {
+      return text.toLowerCase();
+    }
+    if (/^#[0-9a-f]{3}$/i.test(text)) {
+      return "#" + text.slice(1).split("").map(c => c + c).join("").toLowerCase();
+    }
+    try {
+      const ctx = document.createElement("canvas").getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#000000";
+        ctx.fillStyle = text;
+        const parsed = String(ctx.fillStyle);
+        if (/^#[0-9a-f]{6}$/i.test(parsed)) {
+          return parsed.toLowerCase();
+        }
+      }
+    } catch {
+      // fall through to the fallback
+    }
+    return fallback;
+  }
+
+  private dbNumber(value: any, fallback: number): number {
+    const n = Number.parseFloat(String(value ?? "").trim());
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  private dbText(value: any, fallback: string): string {
+    const text = String(value ?? "").trim();
+    return text.length ? text : fallback;
+  }
+
+  /** Copy the attributes of one shape (by kind) from its SCD rows onto `options`. */
+  private populateOtherShapeAttributes(options: any, kind: string, shapeID: string): void {
+    const rows = (table: string): any[] => this.findRowsByTable(this.ShapesInfoArr, shapeID, table);
+    const one = (table: string): any => rows(table)[0] ?? {};
+    const yes = (v: any): boolean => this.isDbYes(v);
+    console.log("populateOtherShapeAttributes:", rows,one, this.ShapesInfoArr )
+    const num = (v: any, f: number): number => this.dbNumber(v, f);
+    const col = (v: any, f: string): string => this.normalizeColor(v, f);
+    const txt = (v: any, f: string): string => this.dbText(v, f);
+
+    const lineKinds = ["arc", "line", "polyline", "freehand"];
+    const surfaceKinds = ["rectangle", "roundedRectangle", "ellipse", "polygon"];
+    console.log("populateOtherShapeAttributes:", kind)
+    // ---- Shape_Properties: SCD_SHAPE_GENERAL ----
+    if (lineKinds.includes(kind) || surfaceKinds.includes(kind)) {
+      const g = one("SCD_SHAPE_GENERAL");
+      console.log("populateOtherShapeAttributes:", kind,g)
+      if (!Object.keys(g).length) {
+        return;
+      }
+      
+      const back = col(g.BACK_COLOR, "#3a753a");
+      const fore = col(g.FORE_COLOR, "#000000");
+      const usesBack = yes(g.BORDER_USES_BACK_COLOR);
+      Object.assign(options, {
+        dbShape: true,
+        backStyle: txt(g.BACK_STYLE, "Solid"),
+        fillColor: back,
+        patternStyle: txt(g.PATTERN_STYLE, "None"),
+        patternColor: col(g.PATTERN_COLOR, "#000000"),
+        borderWidth: num(g.BORDER_WIDTH, 2),
+        borderStyle: txt(g.BORDER_STYLE, "Raised"),
+        borderUsesBackColor: usesBack,
+        borderColor: col(g.BORDER_COLOR, "#000000"),
+        foreColor: fore,
+        lineStyle: txt(g.LINE_STYLE, "Solid"),
+        lineWidth: num(g.LINE_WIDTH, 1),
+        blink: yes(g.BLINK)
+      });
+      options.strokeColor = lineKinds.includes(kind)
+        ? fore
+        : (usesBack ? this.darken(back, 0.35) : options.borderColor);
+      return;
+    }
+
+    // ---- Text_Properties: SCD_TEXT_GENERAL ----
+    if (kind === "text") {
+      const g = one("SCD_TEXT_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      Object.assign(options, {
+        dbShape: true,
+        fontFamily: txt(g.FONT_NAME, "Arial"),
+        fontSize: num(g.FONT_SIZE, 10),
+        fillColor: col(g.BACK_COLOR, "#ffffff"),
+        textColor: col(g.FORE_COLOR, "#000000"),
+        backStyle: txt(g.BACK_STYLE, "Transparent"),
+        alignment: txt(g.ALIGNMENT, "MM").toUpperCase(),
+        wordWrap: yes(g.WORD_WRAP),
+        sizeToFit: yes(g.SIZE_TO_FIT)
+      });
+      return;
+    }
+
+    // ---- Tag_Label_Properties: SCD_TAG_LABEL_GENERAL ----
+    if (kind === "tagLabel") {
+      const g = one("SCD_TAG_LABEL_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      Object.assign(options, {
+        dbShape: true,
+        labelJustification: txt(g.JUSTIFICATION, "Left"),
+        labelFieldLength: Math.max(1, Math.round(num(g.FIELD_LENGTH, 10))),
+        tagPriority: txt(g.TAG_PRIORITY, "Tag Name")
+      });
+      return;
+    }
+
+    // ---- Gauge / Scale / Bar graph: SCD_GRAPH_GENERAL (+ SCD_GAUGE_DISPLAY) ----
+    if (kind === "gauge" || kind === "scale" || kind === "barGraph") {
+      const g = one("SCD_GRAPH_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      const display = kind === "gauge" ? one("SCD_GAUGE_DISPLAY") : {};
+      const back = col(g.BACK_COLOR, "#aaff00");
+      const minimum = num(display.MINIMUM_VALUE ?? g.MINIMUM, 0);
+      const maximum = num(display.MAXIMUM_VALUE ?? g.MAXIMUM_VALUE, 100);
+      Object.assign(options, {
+        dbShape: true,
+        backStyle: txt(g.BACK_STYLE, "Solid"),
+        fillColor: back,
+        borderWidth: num(g.BORDER_WIDTH, 4),
+        borderStyle: txt(g.BORDER_STYLE, "Raised"),
+        borderUsesBackColor: yes(g.BORDER_USES_BACK_COLOR),
+        borderColor: col(g.BORDER_COLOR, "#000000"),
+        foreColor: col(g.FORE_COLOR, "#000000"),
+        graphFillColor: col(g.FILL_COLOR, "#00008b"),
+        fillStyle: txt(g.FILL_STYLE, "Solid"),
+        fillDirection: txt(g.FILL_DIRECTION, "Bottom to Top"),
+        graphMinimum: minimum,
+        graphMaximum: maximum,
+        thresholdCount: Math.round(num(display.NUMBER_OF_THRESHOLDS ?? g.NUMBER_OF_THRESHOLDS, 0)),
+        thresholdType: txt(display.THRESHOLD_TYPE ?? g.THRESHOLD_TYPE, "Value"),
+        threshold1: num(display.THRESHOLD_1_VALUE ?? g.THRESHOLD_1_VALUE, 50),
+        threshold2: num(display.THRESHOLD_2_VALUE ?? g.THRESHOLD_2_VALUE, 75),
+        thresholdColor1: col(display.FILL_COLOR_1 ?? g.FILL_COLOR_1, "#ffea00"),
+        thresholdColor2: col(display.FILL_COLOR_2 ?? g.FILL_COLOR_2, "#d70040"),
+        minorTicks: Math.max(1, Math.round(num(g.MINOR_TICKS, 5))),
+        majorTicks: Math.max(1, Math.round(num(g.MAJOR_TICKS, 10))),
+        tickDirection: txt(g.TICK_DIRECTION, "Right"),
+        needleWidth: num(g.NEEDLE_WIDTH, 2),
+        needleColor: col(g.NEEDLE_COLOR, "#000000"),
+        sweepStyle: txt(g.SWEEP_STYLE, "Point"),
+        fontSize: num(g.FONT_SIZE, 12),
+        fontFamily: txt(g.FONT_NAME, "Arial"),
+        lineWidth: num(g.LINE_WIDTH, 1),
+        lineStyle: txt(g.LINE_STYLE, "Solid"),
+        showLegend: yes(display.SHOW_LEGEND),
+        legendColor: col(display.LEGEND_COLOR, "#0000ff"),
+        digitsAfterDecimal: Math.max(0, Math.round(num(display.DIGITS_AFTER_DECIMAL, 0)))
+      });
+      if (options.containerMax === undefined) {
+        options.containerMax = maximum;
+      }
+      return;
+    }
+
+    // ---- List_Indicator_Properties: SCD_LIST_INDICATOR_GENERAL / _STATE ----
+    if (kind === "listIndicator" || kind === "controlList") {
+      const g = one("SCD_LIST_INDICATOR_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      const states = rows("SCD_LIST_INDICATOR_STATE");
+      const count = Math.max(1, Math.round(num(g.NUMBER_OF_STATES, states.length || 1)));
+      Object.assign(options, {
+        dbShape: true,
+        backStyle: txt(g.BACK_STYLE, "Solid"),
+        fillColor: col(g.BACK_COLOR, "#000000"),
+        patternStyle: txt(g.PATTERN_STYLE, "None"),
+        patternColor: col(g.PATTERN_COLOR, "#ffffff"),
+        borderWidth: num(g.BORDER_WIDTH, 8),
+        borderStyle: txt(g.BORDER_STYLE, "RaisedInset"),
+        borderUsesBackColor: yes(g.BORDER_USES_BACK_COLOR),
+        borderColor: col(g.BORDER_COLOR, "#00008b"),
+        selectionBackColor: col(g.SELECTION_BACK_COLOR, "#ffffff"),
+        selectionForeColor: col(g.SELECTION_FORE_COLOR, "#00008b"),
+        fontSize: num(g.FONT_SIZE, 10),
+        fontFamily: txt(g.FONT_NAME, "Arial"),
+        captionColor: col(states[0]?.CAPTION_COLOR, "#ffffff"),
+        listStateNames: states.slice(0, count).map(r => txt(r.STATE_NAME, ""))
+      });
+      return;
+    }
+
+    // ---- Arrow_Button group: SCD_ARROW_BUTTON_GENERAL or SCD_BUTTON_PUSH_GENERAL ----
+    const keypadKinds = ["backspace", "endButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown"];
+    if (keypadKinds.includes(kind)) {
+      const arrow = one("SCD_ARROW_BUTTON_GENERAL");
+      const g = Object.keys(arrow).length ? arrow : one("SCD_BUTTON_PUSH_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      const label = one("SCD_ARROW_BUTTON_LABEL");
+      Object.assign(options, {
+        dbShape: true,
+        backStyle: txt(g.BACK_STYLE, "Solid"),
+        fillColor: col(g.BACK_COLOR, "#00008b"),
+        patternStyle: txt(g.PATTERN_STYLE, "None"),
+        patternColor: col(g.PATTERN_COLOR, "#ffffff"),
+        borderWidth: num(g.BORDER_WIDTH, 4),
+        borderStyle: txt(g.BORDER_STYLE, "Raised"),
+        borderUsesBackColor: yes(g.BORDER_USES_BACK_COLOR),
+        borderColor: col(g.BORDER_COLOR, "#00008b"),
+        iconColor: col(g.FORE_COLOR ?? label.IMAGE_COLOR, "#ffffff")
+      });
+    }
+  }
+
 
 public groupBodyByShapeId(body: any[]) {
   const grouped = {};
@@ -5348,16 +6245,23 @@ private nextInsertPosition(): { x: number; y: number } {
       y: Math.round(((viewport?.y ?? 0) + 90 + step) / this.gridSize) * this.gridSize
     };
   }
-private uniqueShapeId(prefix: string): string {
-    const safePrefix = String(prefix || "shape").replace(/[^a-zA-Z0-9_-]/g, "") || "shape";
-    const existing = new Set((this.shapes as any[]).map(model => String(model?.id ?? "")));
+/**
+   * Shape ids are "<type>:<number>" (e.g. "button:2"). The type itself may contain
+   * underscores (icon shapes), so ":" is the separator. A copy of "rectangle:1"
+   * becomes "rectangle:2" (the old number is dropped before numbering).
+   */
+  private uniqueShapeId(prefix: string): string {
+    const base = String(prefix || "shape").replace(/[^a-zA-Z0-9_:-]/g, "").replace(/:\d+$/, "") || "shape";
+    const existing = new Set(
+      (this.shapes as any[]).map(model => String(model?.id ?? ""))
+    );
     let index = 1;
-    let candidate = safePrefix;
+    let candidate = `${base}:${index}`;
     while (existing.has(candidate)) {
-      candidate = `${safePrefix}_${index++}`;
+      candidate = `${base}:${++index}`;
     }
     return candidate;
-  } 
+  }
   private libraryShapeTitle(kind: string): string {
     const titles: Record<string, string> = {
       richText: "Rich Text",
@@ -5391,7 +6295,23 @@ private uniqueShapeId(prefix: string): string {
     };
     return titles[kind] || "Shape";
   }
-  
+   /**
+ * shapeTablesMap is keyed by the program's shape names ("Elipse", "BarGraph",
+ * "ListIndicator", ...). The kinds used by the editor are different strings, so
+ * this maps each kind to its shapeTablesMap key. (Control List has no entry in
+ * the sheet; it shares the List Indicator tables.)
+ */
+private readonly tablesKeyByKind: Record<string, string> = {
+  rectangle: 'Rectangle', roundedRectangle: 'Rounded Rectangle', ellipse: 'Elipse',
+  arc: 'Arc', line: 'Line', polygon: 'Polygon', polyline: 'Polyline', freehand: 'FreeHand',
+  text: 'Text', richText: 'Text', tagLabel: 'Tag Label',
+  gauge: 'Gauge', scale: 'Scale', barGraph: 'BarGraph',
+  listIndicator: 'ListIndicator', controlList: 'ListIndicator',
+  arrowVertical: 'Arrow Vertical', arrowHorizontal: 'Arrow Horizontal',
+  backspace: 'Backspace', endButton: 'End', enter: 'Enter',
+  moveLeft: 'Move Left', moveRight: 'Move Right', moveUp: 'Move Up', moveDown: 'Move Down',
+  pageUp: 'Page Up', pageDown: 'Page Down', button: 'Button'
+};
   // 
   public addRichText(): void {
     this.richTextHtml = '<p><strong>Rich Text</strong></p>';
@@ -6029,18 +6949,28 @@ async onFreehandPointerUp(event: PointerEvent) {
     }
     return { x: point.x, y: point.y };
   }
-  populateshapeAttributes(options,shapeType,shapeID){
-    let arr = shapeID.split(":");
-      //shapeType = arr[0];
-      let shape_ID = arr[1];
-    console.log ("populateshapeAttributes:shapeType:",shapeType, "shape_ID:",shape_ID);
-  const buttonShapeTypes = [
-      'button'
-    ];
+  populateshapeAttributes(options:any,shapeType:any,shapeID:any){
+      console.log("populateshapeAttributes:options:1:",{...options})
+    const rawId = String(shapeID ?? "");
+  const match = rawId.match(/[:_](\d+)$/);
+  //const shape_ID = match ? match[1] : rawId;
+
+
+  // Every shape has a record in SCD_SHAPE: its tooltip applies to all kinds.
+  if (shapeType !== "button") {
+    const shapeRow = this.findRowsByTable(this.ShapesInfoArr, shapeID, "SCD_SHAPE")[0];
+    if (shapeRow && shapeRow.TOOLTIP_TEXT) {
+      options.tooltipText = shapeRow.TOOLTIP_TEXT;
+      options.tooltip = { "visible": true };
+    }
+    this.populateOtherShapeAttributes(options, shapeType, shapeID);
+  }
+console.log("populateshapeAttributes:options:",{...options})
+  const buttonShapeTypes = ["button"];
     if (buttonShapeTypes.includes(shapeType)) {
-      let tablesArr = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_APPEARANCE" )
+      let tablesArr = this.findRowsByTable(this.ShapesInfoArr, shapeID, "SCD_BUTTON_APPEARANCE" )
       console.log ("tablesArr:",tablesArr);
-      let stateStyles = {};
+      let stateStyles:any = {};
       for (let i=0;i<tablesArr.length;i++){
         let appearance = tablesArr[i];
         if (appearance.BUTTON_APPEARANCE == "UP"){
@@ -6053,21 +6983,19 @@ async onFreehandPointerUp(event: PointerEvent) {
           stateStyles['disabled'] = appearance;
         }
 
-      }console.log ("populateshapeAttributes:stateStyles:",stateStyles);
+      }
       options['stateStyles'] = stateStyles;
-
-      let buttonGeneral = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_BUTTON_GENERAL" )
+      let buttonGeneral = this.findRowsByTable(this.ShapesInfoArr, shapeID, "SCD_BUTTON_GENERAL" );
       options.visual       = options.visual       ?? "button" +buttonGeneral[0].BUTTON_STYLE+ "Visual"; // default variant
       options.buttonState  = options.buttonState  ?? 'normal';
       options.disabled     = options.disabled     ?? false;
       options.allowHover     = buttonGeneral[0].HIGHLIGHT_WHEN_OBJECT_HAS_FOCUS;
       
-      let shape = this.findRowsByTable(this.ShapesInfoArr, shape_ID, "SCD_SHAPE" );
+      let shape = this.findRowsByTable(this.ShapesInfoArr, shapeID, "SCD_SHAPE" );
       if (shape[0].TOOLTIP_TEXT != ""){
         options.tooltipText = shape[0].TOOLTIP_TEXT
         options.tooltip = { "visible": true }
       }
-      console.log ("populateshapeAttributes:options:",options);
       
 
     }
@@ -6086,6 +7014,7 @@ async onFreehandPointerUp(event: PointerEvent) {
     if (typeof options.SHAPE_ID != "undefined" )
       id =   options.SHAPE_ID ;
     this.populateshapeAttributes(options, kind,id);
+    console.log("addLibraryShape:options:",options)
     const dataItem: any = {
       type: "libraryShape",
       title: this.libraryShapeTitle(kind),
@@ -6172,6 +7101,9 @@ async onFreehandPointerUp(event: PointerEvent) {
       || style.strokeColor || dataItem.strokeColor || "#2f4858";
     const fill = style.fillColor || dataItem.fillColor || "#d9e8f5";
     const kind = dataItem.libraryKind;
+    if (dataItem.dbShape && this.drawDbShape(kind, group, x, y, width, height, dataItem, style)) {
+      return group;
+    }
     if (this.drawInstrumentShape(kind, group, x, y, width, height, dataItem)) {
       return group;
     }
@@ -6948,6 +7880,10 @@ public applyStrokeColor(): void {
       const style = this.editorStyleFor(shape);
       style.strokeColor = this.strokeColor;
       this.persistEditorStyle(shape, style);
+      if (this.shapeDataItem(shape)?.dbShape) {
+        this.refreshCustomShape(shape);
+        continue;
+      }
       // Recolor the existing Drawing visual directly. Do NOT redraw the shape:
       // redrawVisual()/refresh() can recalculate bounds from path geometry and
       // collapse Line/Arc/FreeHand shapes to Kendo's 20px minimum size.
@@ -7068,6 +8004,11 @@ public applyStrokeColor(): void {
       const style = this.editorStyleFor(shape);
       style.fillColor = this.fillColor;
       this.persistEditorStyle(shape, style);
+      if (this.shapeDataItem(shape)?.dbShape) {
+        // Bevelled borders / patterns are several nodes: redraw from the attributes.
+        this.refreshCustomShape(shape);
+        continue;
+      }
       // Same rule as stroke: appearance updates are visual-only and must never
       // recreate the shape or modify its logical bounds.
       this.applyColorToRuntimeVisual(shape, "fill", this.fillColor);
