@@ -401,6 +401,7 @@ import { ScdAlarmAppearanceScdScdAlarmAppearanceFormdivsComponent } from '../com
 import { ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent } from '../components/SCD/scd-scd-alarm-behavior/scd-scd-alarm-behavior.component';
 import { ScdAlarmColumnsPropertiesComponent } from '../components/SCD/scd-alarm-columns-properties/scd-alarm-columns-properties.component';
 import { ScdCommandsScdScdCommandsGridComponent } from '../components/SCD/scd-scd-commands/scd-scd-commands.component';
+import { ScdCommandsScdScdCommandsGridGridComponent } from '../components/SCD/scd-scd-commands-grid/scd-scd-commands-grid.component';
 const scdRoutes: Routes = [
  
 
@@ -724,6 +725,7 @@ const scdRoutes: Routes = [
 		{ path: 'scd_scd_alarm_behavior', component: ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent },
 		{ path: 'scd_alarm_columns_properties', component: ScdAlarmColumnsPropertiesComponent },
 		{ path: 'scd_scd_commands', component: ScdCommandsScdScdCommandsGridComponent },
+		{ path: 'scd_scd_commands_grid', component: ScdCommandsScdScdCommandsGridGridComponent },
 ];
 
 
@@ -1051,6 +1053,7 @@ const scdRoutes: Routes = [
 		ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent,
 		ScdAlarmColumnsPropertiesComponent,
 		ScdCommandsScdScdCommandsGridComponent,
+		ScdCommandsScdScdCommandsGridGridComponent,
   ],
   
   imports: [

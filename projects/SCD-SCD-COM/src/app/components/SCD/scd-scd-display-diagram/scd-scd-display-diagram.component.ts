@@ -2712,7 +2712,7 @@ public onStagePointerDown(event: PointerEvent): void {
    * line; None draws nothing.
    */
   private drawDbBorder(group: Group, x: number, y: number, w: number, h: number, radius: number,
-                       styleName: any, width: number, base: string): void {
+                       styleName: any, width: number, base: string, lineColor?: string): void {
     const kind = this.dbKey(styleName);
     if (width <= 0 || kind === "none") {
       return;
@@ -2742,7 +2742,7 @@ public onStagePointerDown(event: PointerEvent): void {
     };
     if (radius > 0) {
       // Rounded corners cannot be bevelled with straight edges: one dark ring.
-      ring(kind === "solid" ? base : dark);
+      ring(kind === "solid" || kind === "line" ? (lineColor ?? base) : dark);
       return;
     }
     switch (kind) {
@@ -2750,7 +2750,7 @@ public onStagePointerDown(event: PointerEvent): void {
       case "sunken": case "inset": case "lowered": bevel(0, width, dark, light); break;
       case "raisedinset": bevel(0, width / 2, light, dark); bevel(width / 2, width / 2, dark, light); break;
       case "insetraised": case "sunkenraised": bevel(0, width / 2, dark, light); bevel(width / 2, width / 2, light, dark); break;
-      default: ring(base);
+      default: ring(lineColor ?? base);
     }
   }
 
@@ -2821,7 +2821,12 @@ public onStagePointerDown(event: PointerEvent): void {
       }));
     }
     this.drawDbPattern(group, d, x + bw, y + bw, Math.max(1, w - 2 * bw), Math.max(1, h - 2 * bw), radius);
-    this.drawDbBorder(group, x, y, w, h, radius, d.borderStyle, bw, borderOverride ?? this.dbBorderBase(d, fillColor));
+        const base = borderOverride ?? this.dbBorderBase(d, fillColor);
+    // A plain "Line" border must stay visible when it takes the back colour: use its dark shade.
+    const lineColor = !borderOverride && d.borderUsesBackColor && !this.dbTransparent(d)
+      ? this.bevelColors(base).dark
+      : base;
+    this.drawDbBorder(group, x, y, w, h, radius, d.borderStyle, bw, base, lineColor);
     return bw;
   }
 
@@ -2923,6 +2928,21 @@ public onStagePointerDown(event: PointerEvent): void {
       case "roundedRectangle": {
         const radius = kind === "roundedRectangle" ? Math.min(22, h / 2) : 0;
         this.drawDbPanel(group, x, y, w, h, radius, d, fillColor, borderOverride);
+        // Outline: FORE_COLOR drawn with LINE_STYLE (None hides it) and LINE_WIDTH.
+        const lineWidth = Math.max(0, Number(d.lineWidth) || 0);
+        if (this.dbKey(d.lineStyle) !== "none" && lineWidth > 0) {
+          group.append(new Rectangle({
+            x: x + lineWidth / 2, y: y + lineWidth / 2,
+            width: Math.max(1, w - lineWidth), height: Math.max(1, h - lineWidth),
+            cornerRadius: Math.max(0, radius - lineWidth / 2),
+            stroke: {
+              color: this.normalizeColor(d.foreColor, "#000000"),
+              width: lineWidth,
+              ...(dash ? { dashType: dash } : {})
+            } as any,
+            fill: { color: "transparent" }
+          }));
+        }
         if (flow) {
           dashes([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], 3);
         }
@@ -3853,6 +3873,80 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     const index = Math.max(0, Math.round(Number(this.selectedListIndex) || 0));
     this.applyListPatch({ index });
     this.statusMessage = `Current row set to ${index} (0 is the first row).`;
+  }
+  // Shape properties of a Rectangle / Rounded Rectangle (the SCD_SHAPE_GENERAL fields).
+  public readonly patternStyleOptions = ["None", "Dots", "Checks", "Small Boxes", "Medium Boxes", "Large Boxes",
+    "Vertical Lines", "Wide Vertical Lines", "Horizontal Lines", "Wide Horizontal Lines", "Right Diagonal",
+    "Wide Right Diagonal", "Left Diagonal", "Wide Left Diagonal", "Hatch", "Bricks", "Ovals", "Diamonds", "Scales", "Waves"];
+  public readonly lineStyleOptions = ["None", "Solid", "Dash", "Dot", "DashDot", "DashDotDot"];
+  public readonly borderStyleOptions = ["None", "Raised", "Inset", "RaisedInset", "Line"];
+  public readonly backStyleOptions = ["Solid", "Transparent"];
+  public shapeProps: any = {
+    foreColor: "#000000", patternStyle: "None", patternColor: "#000000",
+    lineStyle: "Solid", lineWidth: 1,
+    borderStyle: "Raised", borderColor: "#000000", borderUsesBackColor: true, borderWidth: 2,
+    backStyle: "Solid"
+  };
+
+  private rectangleShapes(): any[] {
+    return this.selectedShapes().filter(shape => {
+      const dataItem = this.shapeDataItem(shape);
+      return dataItem?.dbShape && ["rectangle", "roundedRectangle"].includes(dataItem.libraryKind);
+    });
+  }
+
+  public get hasRectangleShape(): boolean {
+    return this.rectangleShapes().length > 0;
+  }
+
+  /** Copy one property of the Shape properties panel onto the selected rectangle(s) and redraw. */
+  public applyShapeProp(key: string): void {
+    const shapes = this.rectangleShapes();
+    if (!shapes.length) {
+      this.statusMessage = "Select a Rectangle first.";
+      return;
+    }
+    let value = this.shapeProps[key];
+    if (key === "lineWidth" || key === "borderWidth") {
+      value = Math.max(0, Number(value) || 0);
+    }
+    const patch: Record<string, any> = { [key]: value };
+    if (key === "borderColor") {
+      // Choosing a border colour only shows when the border no longer uses the back colour.
+      patch["borderUsesBackColor"] = false;
+      this.shapeProps.borderUsesBackColor = false;
+    }
+    for (const shape of shapes) {
+      const dataItem = this.shapeDataItem(shape);
+      const model = this.modelForShape(shape);
+      const modelData = model?.dataItem?.dataItem ?? model?.dataItem;
+      Object.assign(dataItem, patch);
+      if (modelData) {
+        Object.assign(modelData, patch);
+      }
+      this.refreshCustomShape(shape);
+    }
+    this.schedulePersistState();
+    this.statusMessage = `${key} set to ${value}.`;
+  }
+
+  private syncShapeProps(dataItem: any): void {
+    const pick = (value: any, options: string[], fallback: string): string =>
+      options.find(option => option.toLowerCase() === String(value ?? "").toLowerCase()) ?? fallback;
+    const color = (value: any, fallback: string): string =>
+      this.firstColorInputValue([this.normalizeColor(value, fallback)], fallback);
+    this.shapeProps = {
+      foreColor: color(dataItem.foreColor, "#000000"),
+      patternStyle: pick(dataItem.patternStyle, this.patternStyleOptions, "None"),
+      patternColor: color(dataItem.patternColor, "#000000"),
+      lineStyle: pick(dataItem.lineStyle, this.lineStyleOptions, "Solid"),
+      lineWidth: Number.isFinite(Number(dataItem.lineWidth)) ? Number(dataItem.lineWidth) : 1,
+      borderStyle: pick(dataItem.borderStyle, this.borderStyleOptions, "Raised"),
+      borderColor: color(dataItem.borderColor, "#000000"),
+      borderUsesBackColor: !!dataItem.borderUsesBackColor,
+      borderWidth: Number.isFinite(Number(dataItem.borderWidth)) ? Number(dataItem.borderWidth) : 2,
+      backStyle: pick(dataItem.backStyle, this.backStyleOptions, "Solid")
+    };
   }
 
   public get hasLabelShape(): boolean {
@@ -8685,6 +8779,9 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       this.selectedScaleMin = Number.isFinite(Number(dataItem.scaleMin)) ? Number(dataItem.scaleMin) : 0;
       this.selectedScaleMax = Number.isFinite(Number(dataItem.scaleMax)) ? Number(dataItem.scaleMax) : 100;
     }
+    if (dataItem?.dbShape && ["rectangle", "roundedRectangle"].includes(dataItem.libraryKind)) {
+      this.syncShapeProps(dataItem);
+    }
     if (["listIndicator", "controlList"].includes(dataItem?.libraryKind)) {
       this.selectedListItems = typeof dataItem.listItemsText === "string"
         ? dataItem.listItemsText
@@ -11338,7 +11435,7 @@ private drawDiagonalPattern(
       const x1 = Math.max(0, offset);
       const y1 = Math.max(0, -offset);
       const x2 = Math.min(w, offset + h);
-      const y2 = Math.min(h, h - offset);
+      const y2 = Math.min(h, w - offset);
 
       if (x1 <= x2 && y1 <= y2) {
         this.addPatternPath(
@@ -11351,10 +11448,11 @@ private drawDiagonalPattern(
     }
 
     if (drawLeft) {
+      // Lines x + y = offset + h, from the left/bottom edge up to the top/right edge.
       const x1 = Math.max(0, offset);
-      const y1 = Math.min(h, h + offset);
+      const y1 = Math.min(h, offset + h);
       const x2 = Math.min(w, offset + h);
-      const y2 = Math.max(0, -offset);
+      const y2 = Math.max(0, offset + h - w);
 
       if (x1 <= x2 && y2 <= y1) {
         this.addPatternPath(
