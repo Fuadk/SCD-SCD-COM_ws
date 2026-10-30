@@ -140,13 +140,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_DIRECTION($event)"
  (change)="onChange_DIRECTION($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrDIRECTION"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrDIRECTION" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'DIRECTION'"
+		 		 [formControlName]="'DIRECTION'"
 					#DIRECTION ></kendo-radiobutton> 
 				<kendo-label  [for]="DIRECTION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output,Input, EventEmitter, HostListener } from '@angular/core';
-import {  scdshapeScdTpCommonScreen  ,scdarrowGeneralScdAgArrowGeneral  , componentConfigDef} from '@modeldir/model';
+import {  scdshapeScdTpCommonScreen  ,scdshapeGeneralScdSgShapeGeneral  ,scdarrowGeneralScdAgArrowGeneral  , componentConfigDef} from '@modeldir/model';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { starServices } from 'starlib';
@@ -43,11 +43,14 @@ export class ScdArrowPropertiesComponent implements OnInit {
   public componentConfig: componentConfigDef;
 
   public form_0_SCD_SHAPE : scdshapeScdTpCommonScreen;
-  public formdivs_1_SCD_ARROW_GENERAL : scdarrowGeneralScdAgArrowGeneral;
+  public form_1_SCD_SHAPE_GENERAL : scdshapeGeneralScdSgShapeGeneral;
+  public formdivs_2_SCD_ARROW_GENERAL : scdarrowGeneralScdAgArrowGeneral;
   public  SCD_SHAPEForm_0Config : componentConfigDef;
   public  hide_comp_1 = false
-  public  SCD_ARROW_GENERALFormdivs_1Config : componentConfigDef;
+  public  SCD_SHAPE_GENERALForm_1Config : componentConfigDef;
   public  hide_comp_2 = false
+  public  SCD_ARROW_GENERALFormdivs_2Config : componentConfigDef;
+  public  hide_comp_3 = false
   public PDFfileName = this.title + ".PDF";
   public routineAuth = "ScdArrowProperties";
 
@@ -99,15 +102,25 @@ export class ScdArrowPropertiesComponent implements OnInit {
      this.SCD_SHAPEForm_0Config.navigable = false;
      this.SCD_SHAPEForm_0Config.insertable = false;
    }
-   this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef();
-   this.SCD_ARROW_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID2","General");
-   this.SCD_ARROW_GENERALFormdivs_1Config.isChild = true;
-   this.SCD_ARROW_GENERALFormdivs_1Config.masterSelector = 'app-scd-arrow-properties';
-   this.SCD_ARROW_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
+   this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef();
+   this.SCD_SHAPE_GENERALForm_1Config.title = this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID2","General");
+   this.SCD_SHAPE_GENERALForm_1Config.isChild = true;
+   this.SCD_SHAPE_GENERALForm_1Config.masterSelector = 'app-scd-arrow-properties';
+   this.SCD_SHAPE_GENERALForm_1Config.showToolBar = !this.visibleOK_BTNS; 
    if (typeof this['steps']  !== 'undefined') {
-     this.SCD_ARROW_GENERALFormdivs_1Config.navigable = false;
-     //this.SCD_ARROW_GENERALFormdivs_1Config.insertable = true;
-     //this.SCD_ARROW_GENERALFormdivs_1Config.removeable = true;
+     this.SCD_SHAPE_GENERALForm_1Config.navigable = false;
+     //this.SCD_SHAPE_GENERALForm_1Config.insertable = true;
+     //this.SCD_SHAPE_GENERALForm_1Config.removeable = true;
+   }
+   this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef();
+   this.SCD_ARROW_GENERALFormdivs_2Config.title = this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID3","Expression");
+   this.SCD_ARROW_GENERALFormdivs_2Config.isChild = true;
+   this.SCD_ARROW_GENERALFormdivs_2Config.masterSelector = 'app-scd-arrow-properties';
+   this.SCD_ARROW_GENERALFormdivs_2Config.showToolBar = !this.visibleOK_BTNS; 
+   if (typeof this['steps']  !== 'undefined') {
+     this.SCD_ARROW_GENERALFormdivs_2Config.navigable = false;
+     //this.SCD_ARROW_GENERALFormdivs_2Config.insertable = true;
+     //this.SCD_ARROW_GENERALFormdivs_2Config.removeable = true;
    }
   }
   public ngOnDestroy(): void {
@@ -119,27 +132,44 @@ export class ScdArrowPropertiesComponent implements OnInit {
     let masterKeyNameArr = ["SHAPE_ID","DISPLAY_ID"];
      if (this.isSearchScreen == true) 
 	  {
-    	this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef();
-    	this.SCD_ARROW_GENERALFormdivs_1Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef();
+    	this.SCD_SHAPE_GENERALForm_1Config.formattedWhere  = form_SCD_SHAPE;
+    	this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef();
+    	this.SCD_ARROW_GENERALFormdivs_2Config.formattedWhere  = form_SCD_SHAPE;
     	return;
 	  }
-    //this.formdivs_1_SCD_ARROW_GENERAL = new scdarrowGeneralScdAgArrowGeneral();
+    //this.form_1_SCD_SHAPE_GENERAL = new scdshapeGeneralScdSgShapeGeneral();
     //for (let i = 0; i< masterKeyNameArr.length; i++){
-    //   this.formdivs_1_SCD_ARROW_GENERAL[masterKeyNameArr[i]] = masterKeyArr[i];
+    //   this.form_1_SCD_SHAPE_GENERAL[masterKeyNameArr[i]] = masterKeyArr[i];
     //}
-    this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef();
-    this.SCD_ARROW_GENERALFormdivs_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ARROW_GENERALFormdivs_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
-    this.SCD_ARROW_GENERALFormdivs_1Config.masterReadCompleted = true;
+    this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef();
+    this.SCD_SHAPE_GENERALForm_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_GENERALForm_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_SHAPE_GENERALForm_1Config.masterReadCompleted = true;
    if (typeof this['steps'] !== 'undefined') {
-     this.SCD_ARROW_GENERALFormdivs_1Config.queryable = false;
-     //this.SCD_ARROW_GENERALFormdivs_1Config.removeable = true;
-     //this.SCD_ARROW_GENERALFormdivs_1Config.updateable = true;
+     this.SCD_SHAPE_GENERALForm_1Config.queryable = false;
+     //this.SCD_SHAPE_GENERALForm_1Config.removeable = true;
+     //this.SCD_SHAPE_GENERALForm_1Config.updateable = true;
+   }
+    //this.formdivs_2_SCD_ARROW_GENERAL = new scdarrowGeneralScdAgArrowGeneral();
+    //for (let i = 0; i< masterKeyNameArr.length; i++){
+    //   this.formdivs_2_SCD_ARROW_GENERAL[masterKeyNameArr[i]] = masterKeyArr[i];
+    //}
+    this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef();
+    this.SCD_ARROW_GENERALFormdivs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ARROW_GENERALFormdivs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_ARROW_GENERALFormdivs_2Config.masterReadCompleted = true;
+   if (typeof this['steps'] !== 'undefined') {
+     this.SCD_ARROW_GENERALFormdivs_2Config.queryable = false;
+     //this.SCD_ARROW_GENERALFormdivs_2Config.removeable = true;
+     //this.SCD_ARROW_GENERALFormdivs_2Config.updateable = true;
    }
   }
   async clearCompletedHandler( form_SCD_SHAPE) {
      //await this.starServices.sleep(200);
-    this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef();
+    this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef();
+     //await this.starServices.sleep(200);
+    this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef();
   }
   public keyNameArr = ["SHAPE_ID","DISPLAY_ID"];
 
@@ -159,17 +189,26 @@ export class ScdArrowPropertiesComponent implements OnInit {
     }
   public sendToChildren(componentConfig, pageNo){ 
    if ( (pageNo + 1) == 2){
-  	this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef(); 
-  	this.SCD_ARROW_GENERALFormdivs_1Config = componentConfig; 
+  	this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef(); 
+  	this.SCD_SHAPE_GENERALForm_1Config = componentConfig; 
+   }
+   if ( (pageNo + 1) == 3){
+  	this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef(); 
+  	this.SCD_ARROW_GENERALFormdivs_2Config = componentConfig; 
    }
  } 
   public saveCompletedHandler( form_SCD_SHAPE) {
  let key:any = [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID]; 
  if ( key != '') { 
-    this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef();
-    this.SCD_ARROW_GENERALFormdivs_1Config.masterSaved = form_SCD_SHAPE;
-    this.SCD_ARROW_GENERALFormdivs_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
-    this.SCD_ARROW_GENERALFormdivs_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+    this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef();
+    this.SCD_SHAPE_GENERALForm_1Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_SHAPE_GENERALForm_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_SHAPE_GENERALForm_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
+  
+    this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef();
+    this.SCD_ARROW_GENERALFormdivs_2Config.masterSaved = form_SCD_SHAPE;
+    this.SCD_ARROW_GENERALFormdivs_2Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
+    this.SCD_ARROW_GENERALFormdivs_2Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
   
     this.saveTriggerOutput.emit(form_SCD_SHAPE);
   } 
@@ -238,28 +277,35 @@ export class ScdArrowPropertiesComponent implements OnInit {
              this.SCD_SHAPEForm_0Config = new componentConfigDef();
              this.SCD_SHAPEForm_0Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID1","Common");
-             this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef();
-             this.SCD_ARROW_GENERALFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_ARROW_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID2","General");
+             this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef();
+             this.SCD_SHAPE_GENERALForm_1Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_SHAPE_GENERALForm_1Config.title = this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID2","General");
+             this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef();
+             this.SCD_ARROW_GENERALFormdivs_2Config.languageChanged = ComponentConfig.languageChanged;
+             this.SCD_ARROW_GENERALFormdivs_2Config.title = this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID3","Expression");
            this.setSteps(this);
            }, 500);
        }
   
        this.SCD_SHAPEForm_0Config = new componentConfigDef();
-       this.SCD_ARROW_GENERALFormdivs_1Config = new componentConfigDef();
+       this.SCD_SHAPE_GENERALForm_1Config = new componentConfigDef();
+       this.SCD_ARROW_GENERALFormdivs_2Config = new componentConfigDef();
    		
        if (ComponentConfig.masterParams != null) {
               this.SCD_SHAPEForm_0Config.masterParams = ComponentConfig.masterParams;
-              this.SCD_ARROW_GENERALFormdivs_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_SHAPE_GENERALForm_1Config.masterParams = ComponentConfig.masterParams;
+              this.SCD_ARROW_GENERALFormdivs_2Config.masterParams = ComponentConfig.masterParams;
    		
        }
        if (ComponentConfig.showToolBar != null) {
               this.SCD_SHAPEForm_0Config.showToolBar = ComponentConfig.showToolBar;
-              this.SCD_ARROW_GENERALFormdivs_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_SHAPE_GENERALForm_1Config.showToolBar = ComponentConfig.showToolBar;
+              this.SCD_ARROW_GENERALFormdivs_2Config.showToolBar = ComponentConfig.showToolBar;
        }
        if (ComponentConfig.masterSelector != null) {
               this.SCD_SHAPEForm_0Config.masterSelector = ComponentConfig.masterSelector;
-              this.SCD_ARROW_GENERALFormdivs_1Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_SHAPE_GENERALForm_1Config.masterSelector = ComponentConfig.masterSelector;
+              this.SCD_ARROW_GENERALFormdivs_2Config.masterSelector = ComponentConfig.masterSelector;
        }
       if (ComponentConfig.masterSaved != null)//here1
       {
@@ -268,12 +314,14 @@ export class ScdArrowPropertiesComponent implements OnInit {
       if (ComponentConfig.newRec != null)
       {
        this.SCD_SHAPEForm_0Config.newRec = ComponentConfig.newRec;
-       this.SCD_ARROW_GENERALFormdivs_1Config.newRec = ComponentConfig.newRec;
+       this.SCD_SHAPE_GENERALForm_1Config.newRec = ComponentConfig.newRec;
+       this.SCD_ARROW_GENERALFormdivs_2Config.newRec = ComponentConfig.newRec;
       }
       if (ComponentConfig.clearScreen != null)
       {
        this.SCD_SHAPEForm_0Config.clearScreen = ComponentConfig.clearScreen;
-       this.SCD_ARROW_GENERALFormdivs_1Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_SHAPE_GENERALForm_1Config.clearScreen = ComponentConfig.clearScreen;
+       this.SCD_ARROW_GENERALFormdivs_2Config.clearScreen = ComponentConfig.clearScreen;
 	   }
       if ((ComponentConfig.masterKeyArr != null) && (ComponentConfig.masterKeyNameArr != null) )
       {
@@ -285,22 +333,36 @@ export class ScdArrowPropertiesComponent implements OnInit {
          {
              this.SCD_SHAPEForm_0Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
-         this.SCD_ARROW_GENERALFormdivs_1Config.masterKeyArr = ComponentConfig.masterKeyArr;
-         this.SCD_ARROW_GENERALFormdivs_1Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         this.SCD_SHAPE_GENERALForm_1Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_SHAPE_GENERALForm_1Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
          if (ComponentConfig.masterReadCompleted != null) 
          {
-             this.SCD_ARROW_GENERALFormdivs_1Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+             this.SCD_SHAPE_GENERALForm_1Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
+          }
+         this.SCD_ARROW_GENERALFormdivs_2Config.masterKeyArr = ComponentConfig.masterKeyArr;
+         this.SCD_ARROW_GENERALFormdivs_2Config.masterKeyNameArr = ComponentConfig.masterKeyNameArr;
+         if (ComponentConfig.masterReadCompleted != null) 
+         {
+             this.SCD_ARROW_GENERALFormdivs_2Config.masterReadCompleted = ComponentConfig.masterReadCompleted;
           }
        }
       }
     }
   }
-   public formdivs_1_SCD_ARROW_GENERALOpened = false;
-  public  formdivs_1_SCD_ARROW_GENERALClose() { 
-    this.formdivs_1_SCD_ARROW_GENERALOpened = false;  
+   public form_1_SCD_SHAPE_GENERALOpened = false;
+  public  form_1_SCD_SHAPE_GENERALClose() { 
+    this.form_1_SCD_SHAPE_GENERALOpened = false;  
   }
-  public  formdivs_1_SCD_ARROW_GENERALOpen() { 
-    this.formdivs_1_SCD_ARROW_GENERALOpened = true;  
+  public  form_1_SCD_SHAPE_GENERALOpen() { 
+    this.form_1_SCD_SHAPE_GENERALOpened = true;  
+  }
+  
+  public formdivs_2_SCD_ARROW_GENERALOpened = false;
+  public  formdivs_2_SCD_ARROW_GENERALClose() { 
+    this.formdivs_2_SCD_ARROW_GENERALOpened = false;  
+  }
+  public  formdivs_2_SCD_ARROW_GENERALOpen() { 
+    this.formdivs_2_SCD_ARROW_GENERALOpened = true;  
   }
   
  

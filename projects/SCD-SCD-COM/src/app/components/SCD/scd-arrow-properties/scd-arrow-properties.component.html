@@ -23,11 +23,25 @@
       <legend>{{ this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID2","General") }}</legend>
        </ng-template>
        <ng-template kendoTabContent>
-        <app-scd-ag-arrow-general [detail_Input]="formdivs_1_SCD_ARROW_GENERAL"  
+        <app-scd-sg-shape-general [detail_Input]="form_1_SCD_SHAPE_GENERAL"  
                       (formValidationChangedOutput)="formValidationChangedMD($event, 2)"
                       (saveCompletedOutput)="saveCompletedHandler2($event)"
                       (setComponentConfig_Output)="onComponentConfig_Output($event)"
-                      [setComponentConfig_Input]="SCD_ARROW_GENERALFormdivs_1Config">
+                      [setComponentConfig_Input]="SCD_SHAPE_GENERALForm_1Config">
+        </app-scd-sg-shape-general >
+
+</ng-template>
+</kendo-tabstrip-tab>
+       <kendo-tabstrip-tab>
+       <ng-template   kendoTabTitle>
+      <legend>{{ this.starServices.getNLS([],"scd_arrow_properties.scd_arrow_properties.compsTitleID3","Expression") }}</legend>
+       </ng-template>
+       <ng-template kendoTabContent>
+        <app-scd-ag-arrow-general [detail_Input]="formdivs_2_SCD_ARROW_GENERAL"  
+                      (formValidationChangedOutput)="formValidationChangedMD($event, 3)"
+                      (saveCompletedOutput)="saveCompletedHandler2($event)"
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD_ARROW_GENERALFormdivs_2Config">
         </app-scd-ag-arrow-general >
 
 </ng-template>
