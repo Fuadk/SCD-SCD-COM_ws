@@ -1236,7 +1236,13 @@ if (
     dataItem?.visual === 'buttonNoneVisual';
     
     
-    
+    if (!isCustomButton && this.animationRunning && dataItem?.libraryKind && !this.isDbYes(dataItem.disabled)) {
+      // Every other shape gets the same hover look as the Button while the animation runs.
+      this.setRuntimeFlag(shape, "__hover", type === "mouseEnter");
+      if (type === "mouseLeave") {
+        this.setRuntimeFlag(shape, "__pressed", false);
+      }
+    }
     if (isCustomButton) {
 
       // Disabled buttons don't react
@@ -2494,7 +2500,12 @@ public visualTemplate = (options: any): Group => {
       if (focused) {
         (d as any).__focus = false;
       }
-      if (focused || this.hasBlink(d)) {
+      const touched = !!((d as any).__hover || (d as any).__pressed);
+      if (touched) {
+        (d as any).__hover = false;
+        (d as any).__pressed = false;
+      }
+      if (focused || touched || this.hasBlink(d)) {
         this.redrawAnimated(shape);
       }
     }
@@ -2801,6 +2812,9 @@ public onStagePointerDown(event: PointerEvent): void {
     this.stopKeypadRepeat();
     this.keypadHeld = null;
     const d = this.shapeDataItem(held.shape);
+    // HIGHLIGHT_COLOR is the outline shown only while the button is pressed.
+    (d as any).__focus = false;
+    this.redrawAnimated(held.shape);
     const action = this.dbKey(d.buttonAction);
     const momentary = !(action.includes("maintained") || action.includes("toggle") || action.includes("latch")
       || action.includes("ramp") || action.includes("multi") || action.includes("navig"));
@@ -3137,10 +3151,10 @@ public onStagePointerDown(event: PointerEvent): void {
   }
 
   /**
-   * Draws one shape from its database attributes. Returns false for kinds that
-   * have none (they use the older drawing).
+   * The single drawing function: draws every kind of library shape (surfaces, lines, text, graphs,
+   * lists, indicators, buttons, arrows, container, rich text, image) from its attributes.
    */
-  private drawDbShape(kind: string, group: Group, x: number, y: number, w: number, h: number,
+  private drawShape(kind: string, group: Group, x: number, y: number, w: number, h: number,
                       d: any, style: ShapeEditorStyle): boolean {
     const fillColor = this.normalizeColor(style.fillColor || d.fillColor, "#3a753a");
     const strokeOverride = style.strokeColor;
@@ -3148,6 +3162,9 @@ public onStagePointerDown(event: PointerEvent): void {
     const borderOverride = strokeOverride ? this.normalizeColor(strokeOverride, "#000000") : undefined;
     const flow = d.animFlow;
     const dash = this.dbDash(d.lineStyle);
+    // Shapes without a table (container, rich text, image, button) keep their own stroke and fill.
+    const legacyStroke = style.strokeColor || d.strokeColor || "#2f4858";
+    const legacyFill = style.fillColor || d.fillColor || "#d9e8f5";
 
     const lineStroke = (width?: number): any => ({
       color: d.animColor || strokeOverride || d.foreColor || d.strokeColor || "#000000",
@@ -3187,7 +3204,9 @@ public onStagePointerDown(event: PointerEvent): void {
     switch (kind) {
       // ---------------- surfaces ----------------
       case "rectangle":
-      case "roundedRectangle": {
+      case "roundedRectangle":
+      case "arrowVertical":
+      case "arrowHorizontal": {
         const radius = kind === "roundedRectangle" ? Math.min(22, h / 2) : 0;
         this.drawDbPanel(group, x, y, w, h, radius, d, fillColor, borderOverride);
         // Outline: FORE_COLOR drawn with LINE_STYLE (None hides it) and LINE_WIDTH.
@@ -3204,6 +3223,9 @@ public onStagePointerDown(event: PointerEvent): void {
             } as any,
             fill: { color: "transparent" }
           }));
+        }
+        if (kind === "arrowVertical" || kind === "arrowHorizontal") {
+          this.drawArrowGlyph(group, kind, x, y, w, h, this.normalizeColor(d.foreColor, "#000000"));
         }
         if (flow) {
           dashes([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], 3);
@@ -3653,6 +3675,151 @@ public onStagePointerDown(event: PointerEvent): void {
         return true;
       }
 
+      // ---------------- shapes without a table ----------------
+      case "container": {
+        const width = w, height = h, stroke = legacyStroke, fill = legacyFill, dataItem = d;
+      // Fill percent = value / max, clamped to 0-100%. Drawn as a rounded tank
+      // body on a base band with two feet (matching the reference artwork):
+      // an always-visible header holds the "NN% full" label and a gauge line,
+      // and the liquid gauge fills the region below that from the bottom up.
+      const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
+      const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
+      const ratio = Math.max(0, Math.min(1, value / max));
+
+      const bodyColor = "#0d1fa8";
+      const liquidBorder = "#e53935";
+      const bandHeight = Math.min(height * 0.14, 34);
+      const bodyHeight = Math.max(10, height - bandHeight);
+      const radius = Math.min(width, height) * 0.22;
+      const inset = 6;
+      const headerHeight = Math.max(18, bodyHeight * 0.16);
+
+      // Body: rounded top corners, flat bottom (sits flush on the base band).
+      // Rectangle only supports one uniform cornerRadius on all four corners,
+      // so a mixed rounded-top/flat-bottom silhouette needs a hand-built path.
+      const bodyPath = radius > 0
+        ? `M ${x},${y + radius} A ${radius},${radius} 0 0 1 ${x + radius},${y} `
+          + `L ${x + width - radius},${y} A ${radius},${radius} 0 0 1 ${x + width},${y + radius} `
+          + `L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`
+        : `M ${x},${y} L ${x + width},${y} L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`;
+      group.append(new Path({
+        data: bodyPath,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: bodyColor }
+      }));
+
+      // Base band: rounded bottom corners, flat top (sits flush under the body).
+      const bandY = y + bodyHeight;
+      const bandRadius = Math.min(radius, bandHeight);
+      const bandPath = bandRadius > 0
+        ? `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight - bandRadius} `
+          + `A ${bandRadius},${bandRadius} 0 0 1 ${x + width - bandRadius},${bandY + bandHeight} `
+          + `L ${x + bandRadius},${bandY + bandHeight} A ${bandRadius},${bandRadius} 0 0 1 ${x},${bandY + bandHeight - bandRadius} Z`
+        : `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight} L ${x},${bandY + bandHeight} Z`;
+      group.append(new Path({
+        data: bandPath,
+        stroke: { color: stroke, width: 2 },
+        fill: { color: bodyColor }
+      }));
+
+      // Two feet tabs on the band.
+      const footWidth = Math.max(6, width * 0.09);
+      const footHeight = Math.max(4, bandHeight * 0.45);
+      const footY = bandY + bandHeight - footHeight * 0.5;
+      [x + width * 0.28 - footWidth / 2, x + width * 0.72 - footWidth / 2].forEach(footX => {
+        group.append(new Rectangle({
+          x: footX, y: footY, width: footWidth, height: footHeight,
+          cornerRadius: 2,
+          stroke: { color: stroke, width: 1.5 },
+          fill: { color: bodyColor }
+        }));
+      });
+
+      // Gauge line separating the header from the liquid area, then the liquid
+      // itself, inset within the body and anchored to the body's flat bottom.
+      const gaugeTop = y + headerHeight;
+      group.append(new Path({
+        data: `M ${x + 4},${gaugeTop} L ${x + width - 4},${gaugeTop}`,
+        stroke: { color: stroke, width: 1.5 },
+        fill: { color: "transparent" }
+      }));
+
+      const gaugeBottom = y + bodyHeight - inset;
+      const gaugeHeight = Math.max(0, gaugeBottom - gaugeTop);
+      if (ratio > 0 && gaugeHeight > 0) {
+        const fillHeight = gaugeHeight * ratio;
+        group.append(new Rectangle({
+          x: x + inset,
+          y: gaugeBottom - fillHeight,
+          width: Math.max(0, width - inset * 2),
+          height: fillHeight,
+          stroke: { color: liquidBorder, width: 2 },
+          fill: { color: fill }
+        }));
+      }
+
+      const label = new TextBlock({
+        text: `${Math.round(ratio * 100)}% full`,
+        x: x + width / 2,
+        y: y + 6,
+        fill: "#ffffff"
+      });
+      label.options.fontSize = 13;
+      label.options.fontWeight = "bold";
+      label.options.textAnchor = "middle";
+      group.append(label);
+
+      return true;
+      }
+      case "richText": {
+        // Only the shape background is drawn here; Kendo draws the text from model.content.blocks.
+        group.append(new Rectangle({
+          x, y, width: w, height: h, cornerRadius: 4,
+          stroke: { color: legacyStroke, width: 1 }, fill: { color: legacyFill }
+        }));
+        return true;
+      }
+      case "image": {
+        group.append(new Rectangle({
+          x, y, width: w, height: h, stroke: { color: legacyStroke, width: 1 }, fill: { color: legacyFill }
+        }));
+        if (d.source) {
+          group.append(new DiagramImage({ source: d.source, x, y, width: w, height: h }));
+        } else {
+          const label = new TextBlock({ text: "Image", x: x + 12, y: y + h / 2 - 8, fill: "#555555", fontSize: 15 } as any);
+          group.append(label);
+        }
+        return true;
+      }
+      case "button": {
+        group.append(new Rectangle({
+          x, y, width: w, height: h, stroke: { color: legacyStroke, width: 2 }, fill: { color: legacyFill }
+        }));
+        return true;
+      }
+
+      // ---------------- multistate indicator ----------------
+      case "multistateIndicator": {
+        // The current state (picked by the tag value and TRIGGER_TYPE) decides the colour, pattern and caption.
+        const states: any[] = Array.isArray(d.multiStates) && d.multiStates.length ? d.multiStates : [{}];
+        const current = states[this.listIndex(d, states.length)] ?? states[0];
+        if (blinkOff && current.blink) {
+          frame();
+          return true;
+        }
+        const stateFill = this.normalizeColor(style.fillColor || current.backColor, "#000000");
+        const stateData = { ...d, patternStyle: current.patternStyle, patternColor: current.patternColor,
+          borderColor: current.borderColor ?? d.borderColor };
+        const shapeKey = this.dbKey(d.shapeType);
+        const cornerRadius = shapeKey.includes("ellipse") || shapeKey.includes("oval") ? Math.min(w, h) / 2
+          : shapeKey.includes("round") ? Math.min(22, h / 2) : 0;
+        const bw = this.drawDbPanel(group, x, y, w, h, cornerRadius, stateData, stateFill, borderOverride);
+        if (String(current.caption ?? "").trim() && !(current.captionBlink && blinkOff)) {
+          this.drawDbCaption(group, x + bw, y + bw, Math.max(1, w - 2 * bw), Math.max(1, h - 2 * bw), current);
+        }
+        return true;
+      }
+
       // ---------------- keypad / arrow buttons ----------------
       case "backspace": case "endButton": case "enter":
       case "moveLeft": case "moveRight": case "moveUp": case "moveDown":
@@ -3757,6 +3924,83 @@ public onStagePointerDown(event: PointerEvent): void {
     }
     return false;
   }
+   /** The arrow of Arrow Vertical / Arrow Horizontal, drawn in the Fore color on top of the panel. */
+  private drawArrowGlyph(group: Group, kind: string, x: number, y: number, w: number, h: number, ink: string): void {
+    const line = { color: ink, width: 2.5 };
+    if (kind === "arrowVertical") {
+      const cx = x + w / 2;
+      group.append(new Path({ data: `M ${cx},${y + h} L ${cx},${y + 10}`, stroke: line, fill: { color: "transparent" } }));
+      group.append(new Path({
+        data: `M ${cx},${y + 4} L ${cx - 5},${y + 20} L ${cx + 5},${y + 20} Z`,
+        stroke: { color: ink, width: 1 }, fill: { color: ink }
+      }));
+      return;
+    }
+    const cy = y + h / 2;
+    group.append(new Path({ data: `M ${x},${cy} L ${x + w},${cy}`, stroke: line, fill: { color: "transparent" } }));
+    // Probe-style pointer: a tall block followed by a stepped taper, as fractions of the panel size.
+    const steps: Array<[number, number]> = [[0.5, 0.1], [0.545, 0.082], [0.65, 0.06], [0.74, 0.04], [0.84, 0.02], [0.94, 0.008]];
+    const end = 0.95;
+    const top: string[] = [];
+    const bottom: string[] = [];
+    steps.forEach(([f, half], i) => {
+      const next = i + 1 < steps.length ? steps[i + 1][0] : end;
+      top.push(`${x + w * f},${cy - h * half} ${x + w * next},${cy - h * half}`);
+      bottom.unshift(`${x + w * next},${cy + h * half} ${x + w * f},${cy + h * half}`);
+    });
+    group.append(new Path({
+      data: `M ${top.join(" L ")} L ${bottom.join(" L ")} Z`,
+      stroke: { color: ink, width: 0.5 }, fill: { color: ink }
+    }));
+  }
+
+  /** Caption of a state: wrapped, aligned and clipped inside the given area, on its own back colour. */
+  private drawDbCaption(group: Group, ax: number, ay: number, aw: number, ah: number, st: any): void {
+    if (this.dbKey(st.captionBackStyle) === "solid") {
+      group.append(new Rectangle({
+        x: ax, y: ay, width: aw, height: ah,
+        stroke: { color: "transparent", width: 0 }, fill: { color: this.normalizeColor(st.captionBackColor, "#000000") }
+      }));
+    }
+    const family = this.dbText(st.fontFamily, "Arial");
+    const size = Math.max(6, Number(st.fontSize) || 10);
+    const measure = (line: string): number => this.measureTextWidth(line, size, family);
+    const lines: string[] = [];
+    for (const paragraph of String(st.caption ?? "").split(/\r?\n/)) {
+      if (!st.captionWordWrap) {
+        lines.push(paragraph);
+        continue;
+      }
+      let line = "";
+      for (const word of paragraph.split(/\s+/)) {
+        const next = line ? `${line} ${word}` : word;
+        if (!line || measure(next) <= aw - 4) {
+          line = next;
+        } else {
+          lines.push(line);
+          line = word;
+        }
+      }
+      lines.push(line);
+    }
+    const align = this.dbText(st.captionAlignment, "MM").toUpperCase();
+    const lineHeight = size * 1.2, total = lines.length * lineHeight;
+    const top = align[0] === "T" ? ay + 2 : align[0] === "B" ? ay + ah - total - 2 : ay + (ah - total) / 2;
+    const captionGroup = new Group();
+    lines.forEach((line, i) => {
+      const width = measure(line);
+      const lx = align[1] === "L" ? ax + 2 : align[1] === "R" ? ax + aw - 2 - width : ax + (aw - width) / 2;
+      captionGroup.append(new TextBlock({
+        text: line, x: lx, y: top + i * lineHeight,
+        fill: this.normalizeColor(st.captionColor, "#ffffff"), fontSize: size, fontFamily: family
+      } as any));
+    });
+    const clip = new DrawPath();
+    clip.moveTo(ax, ay).lineTo(ax + aw, ay).lineTo(ax + aw, ay + ah).lineTo(ax, ay + ah).close();
+    (captionGroup as any).drawingElement?.clip?.(clip);
+    group.append(captionGroup);
+  }
+  
   /** Phase of the blink timer (true = blinking parts are hidden). Only changes while animation runs. */
   private blinkPhase = false;
   private blinkTimer: any = null;
@@ -3781,6 +4025,12 @@ public onStagePointerDown(event: PointerEvent): void {
       return false;
     }
     const index = this.dbThresholdIndex(d);
+    if (Array.isArray(d.multiStates) && d.multiStates.length) {
+      const current = d.multiStates[this.listIndex(d, d.multiStates.length)];
+      if (current && (current.blink || current.captionBlink)) {
+        return true;
+      }
+    }
     return !!(d.blink || d.captionBlink || d.imageBlink || (index === 1 && d.blink1) || (index === 2 && d.blink2)
       || (Array.isArray(d.listStates) && d.listStates.some((state: any) => state?.captionBlink)));
   }
@@ -3909,7 +4159,13 @@ public onStagePointerDown(event: PointerEvent): void {
       return items;
     }
     const states = Array.isArray(dataItem.listStateNames) ? dataItem.listStateNames.filter((t: any) => String(t).length) : [];
-    return states.length ? states.map((t: any) => String(t)) : ["", "", "", ""];
+    const rows: string[] = items.length ? items : (states.length ? states.map((t: any) => String(t)) : ["", "", "", ""]);
+    // NUMBER_OF_STATES: the list always shows that many rows (blank rows are added, extra rows are cut).
+    const count = Math.round(Number(dataItem.numberOfStates));
+    if (dataItem.dbShape && Number.isFinite(count) && count >= 1) {
+      return Array.from({ length: count }, (_, i) => rows[i] ?? "");
+    }
+    return rows;
   }
 
   private listIndex(dataItem: any, count: number): number {
@@ -3930,216 +4186,14 @@ public onStagePointerDown(event: PointerEvent): void {
     return Math.max(0, Math.min(count - 1, Math.round(Number(dataItem.listIndex) || 0)));
   }
 
-  /**
-   * A list of rows on the navy panel. The current row (listIndex) is the white
-   * bar; the Control List also shows a small arrow beside it.
-   */
-  private drawListRows(group: Group, x: number, y: number, w: number, h: number, dataItem: any, control: boolean): void {
-    const rows = this.listRows(dataItem);
-    const current = this.listIndex(dataItem, rows.length);
-    const top = y + 9;
-    const rowH = (h - 18) / rows.length;
-    const barH = Math.max(6, rowH * 0.88);
-    const left = control ? x + 30 : x + 9;
-    const textX = control ? x + 34 : x + 14;
-    const fontSize = Number(dataItem.fontSize) > 0 ? Number(dataItem.fontSize) : Math.max(8, Math.min(22, Math.round(barH * 0.62)));
-    const fontFamily = typeof dataItem.fontFamily === "string" && dataItem.fontFamily.length
-      ? dataItem.fontFamily
-      : "Arial, sans-serif";
-    rows.forEach((text, i) => {
-      const rowY = top + i * rowH + (rowH - barH) / 2;
-      if (i === current) {
-        group.append(new Rectangle({
-          x: left, y: rowY, width: Math.max(1, w - (left - x) - 12), height: barH,
-          stroke: { color: "#ffffff", width: 0 },
-          fill: { color: "#ffffff" }
-        }));
-        if (control) {
-          group.append(new Path({
-            data: `M ${x + 10},${rowY} L ${x + 27},${rowY + barH / 2} L ${x + 10},${rowY + barH} Z`,
-            stroke: { color: "#ffffff", width: 1 },
-            fill: { color: "#ffffff" }
-          }));
-        }
-      }
-      if (text.trim()) {
-        // Font in the constructor (TextBlock reads it only once).
-        group.append(new TextBlock({
-          text, x: textX, y: rowY + Math.max(0, (barH - fontSize) / 2 - 1),
-          fill: i === current ? "#000080" : "#ffffff", fontSize, fontFamily
-        } as any));
-      }
-    });
-  }
-
-  /** Level (0-1) of a Container / Bar Graph / Gauge from its value and max. */
-  private levelRatio(dataItem: any): number {
-    const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
-    const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
-    return Math.max(0, Math.min(1, value / max));
-  }
-
-  /**
-   * The six panel instruments: List Indicator, Bar Graph, Gauge, Scale, Control
-   * List and Tag Label. Colours follow an active colour animation (animColor).
-   * Returns true when the kind was one of them and has been drawn.
-   */
-  private drawInstrumentShape(kind: string, group: Group, x: number, y: number, w: number, h: number, dataItem: any): boolean {
-    const accent = dataItem.animColor as string | undefined;
-    // Transparent frame: keeps the shape's box at its full size for line-based art.
-    const addFrame = (): void => {
-      const frame = new Rectangle({
-        x, y, width: w, height: h,
-        stroke: { color: "transparent", width: 0 },
-        fill: { color: "transparent" }
-      });
-      frame.options.opacity = 0.001;
-      group.append(frame);
-    };
-    // Navy 3-D panel with a lighter inner border, as in the reference shapes.
-    const panel = (): void => {
-      group.append(new Rectangle({
-        x, y, width: w, height: h,
-        stroke: { color: "#2020c8", width: 2 },
-        fill: { color: accent || "#000080" }
-      }));
-      group.append(new Rectangle({
-        x: x + 5, y: y + 5, width: Math.max(1, w - 10), height: Math.max(1, h - 10),
-        stroke: { color: "#2a2ae6", width: 1 },
-        fill: { color: "transparent" }
-      }));
-    };
-
-    switch (kind) {
-      case "listIndicator":
-      case "controlList": {
-        panel();
-        this.drawListRows(group, x, y, w, h, dataItem, kind === "controlList");
-        return true;
-      }
-      case "barGraph": {
-        group.append(new Rectangle({
-          x, y, width: w, height: h,
-          stroke: { color: "#00c800", width: 3 },
-          fill: { color: accent || "#00ff00" }
-        }));
-        const ratio = this.levelRatio(dataItem);
-        console.log("barGraph:ratio:",ratio, dataItem)
-        const barH = (h - 8) * ratio;
-        console.log("barGraph:barH:",barH)
-        if (barH > 0) {
-          group.append(new Rectangle({
-            x: x + 4, y: y + h - 4 - barH, width: Math.max(1, w - 8), height: barH,
-            stroke: { color: "#0000a0", width: 1 },
-            fill: { color: "#000080" }
-          }));
-        }
-        return true;
-      }
-      case "gauge": {
-        group.append(new Rectangle({
-          x, y, width: w, height: h,
-          stroke: { color: "transparent", width: 0 },
-          fill: { color: accent || "#c0c0c0" }
-        }));
-        const cx = x + w / 2;
-        const cy = y + h * 0.68;
-        const r = Math.min(w * 0.22, h * 0.4);
-        const black = { color: "#000000", width: 1 };
-        group.append(new Path({
-          data: `M ${cx - r},${cy} A ${r},${r} 0 0 1 ${cx + r},${cy}`,
-          stroke: black, fill: { color: "transparent" }
-        }));
-        // Tick marks every 30 degrees across the dial.
-        for (let deg = 30; deg <= 150; deg += 30) {
-          const a = (deg * Math.PI) / 180;
-          group.append(new Path({
-            data: `M ${cx + r * Math.cos(a)},${cy - r * Math.sin(a)} `
-              + `L ${cx + r * 0.8 * Math.cos(a)},${cy - r * 0.8 * Math.sin(a)}`,
-            stroke: black, fill: { color: "transparent" }
-          }));
-        }
-        const label = (text: string, lx: number, ly: number): void => {
-          const t = new TextBlock({ text, x: lx, y: ly, fill: "#000000", fontSize: 11, textAnchor: "middle" } as any);
-          group.append(t);
-        };
-        label("50", cx, cy - r - 17);
-        label("0", cx - r - 8, cy - 7);
-        label("100", cx + r + 14, cy - 7);
-        // Needle: pointing left at 0, straight up at 50% and right at 100%.
-        const theta = Math.PI * (1 - this.levelRatio(dataItem));
-        const len = r * 0.85;
-        group.append(new Path({
-          data: `M ${cx},${cy} L ${cx + len * Math.cos(theta)},${cy - len * Math.sin(theta)}`,
-          stroke: { color: "#000000", width: 2.5 }, fill: { color: "transparent" }
-        }));
-        return true;
-      }
-      case "scale": {
-        addFrame();
-        const colour = accent || "#00009c";
-        const showNumbers = !!dataItem.scaleShowLabels;
-        const labelWidth = showNumbers ? 40 : 0;
-        const lineX = x + labelWidth;
-        const lineW = Math.max(10, w - labelWidth);
-        const scaleMin = Number.isFinite(Number(dataItem.scaleMin)) ? Number(dataItem.scaleMin) : 0;
-        const scaleMax = Number.isFinite(Number(dataItem.scaleMax)) ? Number(dataItem.scaleMax) : 100;
-        [0, 0.25, 0.5, 0.75, 1].forEach((f, i) => {
-          const len = i % 2 === 0 ? lineW : lineW * 0.5;
-          const ly = y + 1 + f * (h - 2);
-          group.append(new Path({
-            data: `M ${lineX},${ly} L ${lineX + len},${ly}`,
-            stroke: { color: colour, width: 1 }, fill: { color: "transparent" }
-          }));
-          if (showNumbers) {
-            // Top line is the maximum, bottom line the minimum.
-            const value = scaleMax - f * (scaleMax - scaleMin);
-            const text = String(Math.round(value * 100) / 100);
-            const estWidth = text.length * 6.4;
-            group.append(new TextBlock({
-              text, x: Math.max(x, lineX - 6 - estWidth), y: ly - 7, fill: colour, fontSize: 11
-            } as any));
-          }
-        });
-        return true;
-      }
-      case "tagLabel": {
-        addFrame();
-        const colour = accent || "#444444";
-        const text = String(dataItem.labelText ?? "").trim();
-        if (text) {
-          // Font must be given in the constructor: TextBlock builds its CSS font
-          // string once, so setting options.fontSize afterwards does nothing.
-          const fontSize = Number(dataItem.fontSize) > 0 ? Number(dataItem.fontSize) : Math.max(10, Math.round(h * 0.7));
-          const fontFamily = typeof dataItem.fontFamily === "string" && dataItem.fontFamily.length
-            ? dataItem.fontFamily
-            : "Arial, sans-serif";
-          group.append(new TextBlock({
-            text, x: x + 2, y: y + Math.max(0, (h - fontSize) / 2 - 2),
-            fill: accent || "#222222", fontSize, fontFamily
-          }));
-          return true;
-        }
-        const slots = 13;
-        const slot = w / slots;
-        for (let i = 0; i < slots; i++) {
-          const gx = x + i * slot + slot * 0.1;
-          group.append(new Path({
-            data: `M ${gx},${y + h * 0.15} L ${gx},${y + h * 0.9} L ${gx + slot * 0.6},${y + h * 0.9}`,
-            stroke: { color: colour, width: 1.5 }, fill: { color: "transparent" }
-          }));
-        }
-        return true;
-      }
-    }
-    return false;
-  }
+  
 
   /** Add one of the six panel instruments (Indicators dropdown). */
   public addIndicatorShape(kind: string,options: Record<string, any> = {}): void {
     const sizes: Record<string, { width: number; height: number }> = {
       listIndicator: { width: 260, height: 105 },
       controlList: { width: 230, height: 105 },
+      multistateIndicator: { width: 230, height: 135 },
       barGraph: { width: 235, height: 135 },
       gauge: { width: 185, height: 125 },
       scale: { width: 200, height: 120 },
@@ -4469,13 +4523,14 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   };
 // Shapes drawn from SCD_SHAPE_GENERAL: surfaces use every property, line shapes only
   // Fore color, Line style and Line width.
-  private  readonly SURFACE_KINDS = ["rectangle", "roundedRectangle", "ellipse", "polygon"];
-  private  readonly LINE_KINDS = ["line", "arc", "polyline", "freehand"];
+  private readonly SURFACE_KINDS = ["rectangle", "roundedRectangle", "ellipse", "polygon", "arrowVertical", "arrowHorizontal"];
+  private readonly LINE_KINDS = ["line", "arc", "polyline", "freehand"];
   // Keypad / arrow buttons use the same panel; their Fore color is the icon colour.
-  private  readonly KEYPAD_KINDS = ["backspace", "endButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown"];
+  private readonly KEYPAD_KINDS = ["backspace", "endButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown"];
 
-  private  readonly GRAPH_KINDS = ["barGraph", "gauge", "scale"];
-  private  readonly LIST_KINDS = ["listIndicator", "controlList"];
+  private readonly GRAPH_KINDS = ["barGraph", "gauge", "scale"];
+  private readonly LIST_KINDS = ["listIndicator", "controlList"];
+  private readonly MULTI_KINDS = ["multistateIndicator"];
 
   private propertyShapes(): any[] {
     return this.selectedShapes().filter(shape => {
@@ -4533,6 +4588,17 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       if (modelData) {
         Object.assign(modelData, patch);
       }
+      if (key === "foreColor" && this.MULTI_KINDS.includes(dataItem.libraryKind)) {
+        // On a multistate indicator Fore color is the caption colour of every state.
+        const multiPatch = {
+          multiStates: (Array.isArray(dataItem.multiStates) ? dataItem.multiStates : [{}])
+            .map((state: any) => ({ ...state, captionColor: value }))
+        };
+        Object.assign(dataItem, multiPatch);
+        if (modelData) {
+          Object.assign(modelData, this.clonePlain(multiPatch));
+        }
+      }
       if (key === "foreColor" && this.LIST_KINDS.includes(dataItem.libraryKind)) {
         // On a list Fore color is the caption colour of every row.
         const listPatch = {
@@ -4572,10 +4638,12 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       this.firstColorInputValue([this.normalizeColor(value, fallback)], fallback);
     const keypad = this.KEYPAD_KINDS.includes(dataItem.libraryKind);
     const list = this.LIST_KINDS.includes(dataItem.libraryKind);
+    const multi = this.MULTI_KINDS.includes(dataItem.libraryKind);
     this.shapeProps = {
       ...this.shapeProps,
-      foreColor: color(keypad ? dataItem.iconColor : list ? dataItem.captionColor : dataItem.foreColor,
-        keypad || list ? "#ffffff" : "#000000"),
+      foreColor: color(keypad ? dataItem.iconColor : list ? dataItem.captionColor
+        : multi ? dataItem.multiStates?.[0]?.captionColor : dataItem.foreColor,
+        keypad || list || multi ? "#ffffff" : "#000000"),
       patternStyle: pick(dataItem.patternStyle, this.patternStyleOptions, "None"),
       patternColor: color(dataItem.patternColor, "#000000"),
       lineStyle: pick(dataItem.lineStyle, this.lineStyleOptions, "Solid"),
@@ -4618,6 +4686,19 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
 
   public nextToolbarPage(): void {
     this.setToolbarPage(this.toolbarPage + 1);
+  }
+  /** Disabled: the shape is drawn dimmed and ignores the mouse while the animation runs. */
+  public get selectedDisabled(): boolean {
+    return this.selectedShapes().some(shape => this.isDbYes(this.shapeDataItem(shape)?.disabled));
+  }
+
+  public get canDisable(): boolean {
+    return this.selectedShapes().some(shape => !!this.shapeDataItem(shape)?.libraryKind);
+  }
+
+  public onDisabledChange(value: boolean): void {
+    const shapes = this.selectedShapes().filter(shape => !!this.shapeDataItem(shape)?.libraryKind);
+    this.patchShapes(shapes, { disabled: !!value });
   }
 
   /** Write a patch onto the data item and model of each shape, then redraw it. */
@@ -4828,7 +4909,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   public listProps: any = {
     selectionBackColor: "#ffffff", selectionForeColor: "#00008b",
     captionTruncate: "Word", captionAlignment: "Left", captionBackStyle: "Transparent", captionBackColor: "#00008b",
-    captionBlink: false, triggerType: "Value", listTagValue: "", connValue: ""
+    captionBlink: false, triggerType: "Value", listTagValue: "", connValue: "", numberOfStates: 5
   };
 
   public applyListProp(key: string): void {
@@ -4838,6 +4919,16 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       return;
     }
     let value = this.listProps[key];
+    if (key === "numberOfStates") {
+      value = Math.max(1, Math.min(20, Math.round(Number(value) || 1)));
+      for (const shape of shapes) {
+        const current: any[] = this.shapeDataItem(shape).listStates ?? [];
+        const states = Array.from({ length: value }, (_, i) => ({ ...(current[i] ?? current[current.length - 1] ?? {}) }));
+        this.patchShapes([shape], { numberOfStates: value, listStates: states });
+      }
+      this.statusMessage = `The list now shows ${value} rows.`;
+      return;
+    }
     if (key === "listTagValue") {
       // An empty box means "no tag value": the Current row is used again.
       value = String(value).trim() === "" || !Number.isFinite(Number(value)) ? undefined : Number(value);
@@ -4858,13 +4949,118 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     }
     this.statusMessage = `${key} set to ${value ?? "(none)"}.`;
   }
+   // ---- Multistate Indicator (SCD_MULTISTATE_INDICATOR_GENERAL and one SCD_SHAPE_STATE per state) ----
+  public readonly multiShapeTypeOptions = ["rectangle", "rounded rectangle", "ellipse"];
+  public multiStateNumbers: number[] = [1, 2, 3, 4];
+  public multiProps: any = {
+    numberOfStates: 4, triggerType: "Value", listTagValue: "", shapeType: "rectangle", stateIndex: 0,
+    backColor: "#000000", patternStyle: "None", patternColor: "#ffffff", caption: "", captionColor: "#ffffff",
+    captionAlignment: "MM", captionBackStyle: "Transparent", captionBackColor: "#000000", captionWordWrap: true,
+    captionBlink: false, fontFamily: "Arial", fontSize: 10, blink: false
+  };
 
+  public get hasMultiShape(): boolean {
+    return this.graphShapes(this.MULTI_KINDS).length > 0;
+  }
+
+  /** General settings of the whole indicator (state count, trigger type, tag value, shape type). */
+  public applyMultiGeneralProp(key: string): void {
+    const shapes = this.graphShapes(this.MULTI_KINDS);
+    if (!shapes.length) {
+      this.statusMessage = "Select a Multistate Indicator first.";
+      return;
+    }
+    let value = this.multiProps[key];
+    if (key === "listTagValue") {
+      value = String(value).trim() === "" || !Number.isFinite(Number(value)) ? undefined : Number(value);
+    }
+    if (key === "numberOfStates") {
+      const wanted = Math.max(1, Math.min(20, Math.round(Number(value) || 1)));
+      for (const shape of shapes) {
+        const current: any[] = this.shapeDataItem(shape).multiStates ?? [];
+        const states = Array.from({ length: wanted }, (_, i) => {
+          const source = current[i] ?? { ...current[current.length - 1], caption: "", name: `State${i}` };
+          return { ...source };
+        });
+        this.patchShapes([shape], { multiStates: states, numberOfStates: wanted });
+      }
+      this.multiProps.numberOfStates = wanted;
+      this.multiProps.stateIndex = Math.min(this.multiProps.stateIndex, wanted - 1);
+      this.multiStateNumbers = Array.from({ length: wanted }, (_, i) => i + 1);
+    } else {
+      this.patchShapes(shapes, { [key]: value });
+    }
+    this.statusMessage = `Multistate ${key} set to ${value ?? "(none)"}.`;
+  }
+
+  /** Settings of the state chosen in "State to edit". */
+  public applyMultiStateProp(key: string): void {
+    const shapes = this.graphShapes(this.MULTI_KINDS);
+    if (!shapes.length) {
+      this.statusMessage = "Select a Multistate Indicator first.";
+      return;
+    }
+    let value = this.multiProps[key];
+    if (key === "fontSize") {
+      value = Math.max(6, Number(value) || 10);
+    }
+    const index = Math.max(0, Number(this.multiProps.stateIndex) || 0);
+    for (const shape of shapes) {
+      const states: any[] = (this.shapeDataItem(shape).multiStates ?? []).map((state: any) => ({ ...state }));
+      if (states[index]) {
+        states[index][key] = value;
+        this.patchShapes([shape], { multiStates: states });
+      }
+    }
+    this.statusMessage = `State ${index + 1}: ${key} set to ${value}.`;
+  }
+
+  /** Choosing another state to edit loads its values into the boxes. */
+  public onMultiStateChosen(): void {
+    const item = this.shapeDataItem(this.graphShapes(this.MULTI_KINDS)[0]);
+    if (item) {
+      this.loadMultiState(item);
+    }
+  }
+
+  private loadMultiState(dataItem: any): void {
+    const color = (value: any, fallback: string): string =>
+      this.firstColorInputValue([this.normalizeColor(value, fallback)], fallback);
+    const states: any[] = dataItem.multiStates ?? [];
+    const index = Math.max(0, Math.min(states.length - 1, Number(this.multiProps.stateIndex) || 0));
+    const st = states[index] ?? {};
+    this.multiStateNumbers = Array.from({ length: Math.max(1, states.length) }, (_, i) => i + 1);
+    this.multiProps = {
+      ...this.multiProps,
+      numberOfStates: states.length || 1,
+      triggerType: this.triggerOptions.find(o => o.toLowerCase() === String(dataItem.triggerType ?? "").toLowerCase()) ?? "Value",
+      listTagValue: dataItem.listTagValue === undefined || dataItem.listTagValue === null ? "" : dataItem.listTagValue,
+      shapeType: this.multiShapeTypeOptions.find(o => o === String(dataItem.shapeType ?? "").toLowerCase()) ?? "rectangle",
+      stateIndex: index,
+      backColor: color(st.backColor, "#000000"),
+      patternStyle: this.patternStyleOptions.find(o => o.toLowerCase() === String(st.patternStyle ?? "").toLowerCase()) ?? "None",
+      patternColor: color(st.patternColor, "#ffffff"),
+      caption: String(st.caption ?? ""),
+      captionColor: color(st.captionColor, "#ffffff"),
+      captionAlignment: this.alignmentOptions.find(o => o.value === String(st.captionAlignment ?? "MM").toUpperCase())?.value ?? "MM",
+      captionBackStyle: this.backStyleOptions.find(o => o.toLowerCase() === String(st.captionBackStyle ?? "").toLowerCase()) ?? "Transparent",
+      captionBackColor: color(st.captionBackColor, "#000000"),
+      captionWordWrap: !!st.captionWordWrap,
+      captionBlink: !!st.captionBlink,
+      fontFamily: String(st.fontFamily ?? "Arial"),
+      fontSize: Number(st.fontSize) || 10,
+      blink: !!st.blink
+    };
+  }
   /** Fill the Tag Label and keypad panels from the selected shape. */
   private syncExtraProps(dataItem: any): void {
     const color = (value: any, fallback: string): string =>
       this.firstColorInputValue([this.normalizeColor(value, fallback)], fallback);
     const pick = (value: any, options: string[], fallback: string): string =>
       options.find(option => option.toLowerCase() === String(value ?? "").toLowerCase()) ?? fallback;
+    if (dataItem?.dbShape && this.MULTI_KINDS.includes(dataItem.libraryKind)) {
+      this.loadMultiState(dataItem);
+    }
     if (dataItem?.dbShape && this.GRAPH_KINDS.includes(dataItem.libraryKind)) {
       this.graphProps = {
         fillDirection: pick(dataItem.fillDirection, this.fillDirectionOptions, "Bottom to Top"),
@@ -4907,7 +5103,8 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
         captionBlink: !!state.captionBlink,
         triggerType: pick(dataItem.triggerType, this.triggerOptions, "Value"),
         listTagValue: dataItem.listTagValue === undefined || dataItem.listTagValue === null ? "" : dataItem.listTagValue,
-        connValue: String(dataItem.connValue ?? "")
+        connValue: String(dataItem.connValue ?? ""),
+        numberOfStates: Number(dataItem.numberOfStates) || this.listRows(dataItem).length
       };
     }
     if (dataItem?.libraryKind === "tagLabel") {
@@ -6980,7 +7177,7 @@ public findRowsByTable(
     const txt = (v: any, f: string): string => this.dbText(v, f);
 
     const lineKinds = ["arc", "line", "polyline", "freehand"];
-    const surfaceKinds = ["rectangle", "roundedRectangle", "ellipse", "polygon"];
+    const surfaceKinds = ["rectangle", "roundedRectangle", "ellipse", "polygon", "arrowVertical", "arrowHorizontal"];
     console.log("populateOtherShapeAttributes:", kind)
     // ---- Shape_Properties: SCD_SHAPE_GENERAL ----
     if (lineKinds.includes(kind) || surfaceKinds.includes(kind)) {
@@ -7104,6 +7301,47 @@ public findRowsByTable(
       }
       return;
     }
+     // ---- Multistate_Indicator_Properties: SCD_MULTISTATE_INDICATOR_GENERAL + one SCD_SHAPE_STATE per state ----
+    if (kind === "multistateIndicator") {
+      const g = one("SCD_MULTISTATE_INDICATOR_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      const stateRows = rows("SCD_SHAPE_STATE");
+      const count = Math.max(1, Math.round(num(g.NUMBER_OF_STATES, stateRows.length || 1)));
+      const makeState = (r: any, i: number): any => ({
+        name: txt(r?.STATE_NAME, `State${i}`),
+        backColor: col(r?.BACK_COLOR, "#000000"),
+        borderColor: col(r?.BORDER_COLOR, "#000000"),
+        blink: yes(r?.BLINK),
+        caption: "",
+        captionColor: col(r?.CAPTION_COLOR, "#ffffff"),
+        captionBackStyle: txt(r?.CAPTION_BACK_STYLE, "Transparent"),
+        captionBackColor: col(r?.CAPTION_BACK_COLOR, "#000000"),
+        captionAlignment: txt(r?.CAPTION_ALIGNMENT, "MM"),
+        captionWordWrap: yes(r?.CAPTION_WORD_WRAP),
+        captionBlink: yes(r?.CAPTION_BLINK),
+        fontFamily: txt(r?.FONT_NAME, "Arial"),
+        fontSize: num(r?.FONT_SIZE, 10),
+        patternStyle: txt(r?.PATTERN_STYLE, "None"),
+        patternColor: col(r?.PATTERN_COLOR, "#ffffff")
+      });
+      const states = Array.from({ length: count }, (_, i) => makeState(stateRows[i] ?? stateRows[stateRows.length - 1], i));
+      Object.assign(options, {
+        dbShape: true,
+        triggerType: txt(g.TRIGGER_TYPE, "Value"),
+        numberOfStates: count,
+        shapeType: txt(g.SHAPE_TYPE, "rectangle"),
+        backStyle: txt(g.BACK_STYLE, "Solid"),
+        fillColor: states[0].backColor,
+        borderWidth: num(g.BORDER_WIDTH, 8),
+        borderStyle: txt(g.BORDER_STYLE, "RaisedInset"),
+        borderUsesBackColor: yes(g.BORDER_USES_BACK_COLOR),
+        borderColor: states[0].borderColor,
+        multiStates: states
+      });
+      return;
+    }
 
     // ---- List_Indicator_Properties: SCD_LIST_INDICATOR_GENERAL / _STATE ----
     if (kind === "listIndicator" || kind === "controlList") {
@@ -7129,6 +7367,7 @@ public findRowsByTable(
         fontFamily: txt(g.FONT_NAME, "Arial"),
         captionColor: col(states[0]?.CAPTION_COLOR, "#ffffff"),
         captionTruncate: txt(g.CAPTION_TRUNCATE, "Word"),
+        numberOfStates: count,
         blink: yes(g.BLINK),
         triggerType: txt(g.TRIGGER_TYPE, "Value"),
         // One entry per state row (SCD_LIST_INDICATOR_STATE): caption colour, back and alignment.
@@ -7431,6 +7670,7 @@ private nextInsertPosition(): { x: number; y: number } {
       polygon: "Polygon",
       polyline: "Polyline",
       listIndicator: "List Indicator",
+      multistateIndicator: "Multistate Indicator",
       barGraph: "Bar Graph",
       gauge: "Gauge",
       scale: "Scale",
@@ -7462,7 +7702,7 @@ private readonly tablesKeyByKind: Record<string, string> = {
   arc: 'Arc', line: 'Line', polygon: 'Polygon', polyline: 'Polyline', freehand: 'FreeHand',
   text: 'Text', richText: 'Text', tagLabel: 'Tag Label',
   gauge: 'Gauge', scale: 'Scale', barGraph: 'BarGraph',
-  listIndicator: 'ListIndicator', controlList: 'ListIndicator',
+  listIndicator: 'ListIndicator', controlList: 'ListIndicator', multistateIndicator: 'Multiple',
   arrowVertical: 'Arrow Vertical', arrowHorizontal: 'Arrow Horizontal',
   backspace: 'Backspace', endButton: 'End', enter: 'Enter',
   moveLeft: 'Move Left', moveRight: 'Move Right', moveUp: 'Move Up', moveDown: 'Move Down',
@@ -8320,467 +8560,113 @@ console.log("populateshapeAttributes:options:",{...options})
         this.updateShapes();
       }, 100);
     }
+  /**
+   * The one entry point that draws a library shape. It resolves the shape's attributes (shapes saved
+   * before the database layer get the table defaults), applies the run-time state look (hover,
+   * pressed, disabled) and then calls drawShape, the single drawing function.
+   */
   private drawLibraryShape(dataItem: any, offsetX: number = 0, offsetY: number = 0, parentStyle?: ShapeEditorStyle): Group {
     const group = new Group();
     const width = Math.max(20, Number(dataItem.width) || 140);
     const height = Math.max(20, Number(dataItem.height) || 90);
-    const x = offsetX;
-    const y = offsetY;
+    const kind = dataItem.libraryKind;
     const style: ShapeEditorStyle = {
       ...(dataItem.editorStyle || {}),
       ...(parentStyle?.strokeColor ? { strokeColor: parentStyle.strokeColor } : {}),
       ...(parentStyle?.fillColor ? { fillColor: parentStyle.fillColor } : {})
     };
-    const strokeOnly = dataItem.libraryKind === "line" || dataItem.libraryKind === "polyline"
-      || dataItem.libraryKind === "freehand" || dataItem.libraryKind === "arc";
-    const stroke = (strokeOnly && dataItem.animColor)
-      || style.strokeColor || dataItem.strokeColor || "#2f4858";
-    const fill = style.fillColor || dataItem.fillColor || "#d9e8f5";
-    const kind = dataItem.libraryKind;
-    if (dataItem.dbShape && this.drawDbShape(kind, group, x, y, width, height, dataItem, style)) {
-      return group;
+    const d = this.withTableDefaults(kind, dataItem);
+    const state = this.runtimeStateOf(dataItem);
+    let drawStyle = style;
+    const baseFill = style.fillColor || d.fillColor;
+    if ((state === "hover" || state === "pressed") && baseFill && String(baseFill).toLowerCase() !== "transparent") {
+      // Same cue as the Button: lighter on hover, darker when pressed.
+      const hex = this.normalizeColor(baseFill, "#808080");
+      drawStyle = { ...style, fillColor: state === "pressed" ? this.darken(hex, 0.12) : this.lighten(hex, 0.2) };
     }
-    if (this.drawInstrumentShape(kind, group, x, y, width, height, dataItem)) {
-      return group;
-    }
-  const buttonSpec = this.NAVIGATION_BUTTON_ICONS[kind];
-    if (buttonSpec) {
-      if (kind === "arrowVertical" || kind === "arrowHorizontal") {
-        // Teal indicator panel with a black arrow (matches the reference diagram).
-        group.append(new Rectangle({
-          x, y, width, height,
-          stroke: { color: "#1f2933", width: 1 },
-          fill: { color: dataItem.animColor || "#008080" }
-        }));
-        const black = { color: "#000000", width: 2.5 };
-        if (kind === "arrowVertical") {
-          const cx = x + width / 2;
-          group.append(new Path({ data: `M ${cx},${y + height} L ${cx},${y + 10}`, stroke: black, fill: { color: "transparent" } }));
-          group.append(new Path({
-            data: `M ${cx},${y + 4} L ${cx - 5},${y + 20} L ${cx + 5},${y + 20} Z`,
-            stroke: { color: "#000000", width: 1 }, fill: { color: "#000000" }
-          }));
-        } else {
-          const cy = y + height / 2;
-          group.append(new Path({ data: `M ${x},${cy} L ${x + width},${cy}`, stroke: black, fill: { color: "transparent" } }));
-          // Probe-style pointer measured from the reference diagram: a tall block
-          // followed by a stepped taper, all as fractions of the panel size.
-          const steps: Array<[number, number]> = [
-            [0.5, 0.1], [0.545, 0.082], [0.65, 0.06], [0.74, 0.04], [0.84, 0.02], [0.94, 0.008]
-          ];
-          const end = 0.95;
-          const top: string[] = [];
-          const bottom: string[] = [];
-          steps.forEach(([f, half], i) => {
-            const next = i + 1 < steps.length ? steps[i + 1][0] : end;
-            top.push(`${x + width * f},${cy - height * half} ${x + width * next},${cy - height * half}`);
-            bottom.unshift(`${x + width * next},${cy + height * half} ${x + width * f},${cy + height * half}`);
-          });
-          group.append(new Path({
-            data: `M ${top.join(" L ")} L ${bottom.join(" L ")} Z`,
-            stroke: { color: "#000000", width: 0.5 }, fill: { color: "#000000" }
-          }));
-        }
-        return group;
-      }
-
-      // Navy 3-D push button: lighter top/left edge, darker bottom/right edge.
-      group.append(new Rectangle({ x, y, width, height, stroke: { color: "#00003c", width: 1 }, fill: { color: dataItem.animColor || "#000080" } }));
+    console.log("pre this.drawShape:kind:",kind)
+    this.drawShape(kind, group, offsetX, offsetY, width, height, d, drawStyle);
+    if (state === "pressed") {
+      // A short dark line under the top edge reads as "pushed in".
       group.append(new Path({
-        data: `M ${x + 1},${y + height - 1} L ${x + 1},${y + 1} L ${x + width - 1},${y + 1}`,
-        stroke: { color: "#2a2ae0", width: 3 }, fill: { color: "transparent" }
+        data: `M ${offsetX + 3},${offsetY + 2} L ${offsetX + width - 3},${offsetY + 2}`,
+        stroke: { color: "#000000", width: 2, opacity: 0.4 } as any, fill: { color: "transparent" }
       }));
-      group.append(new Path({
-        data: `M ${x + width - 1},${y + 2} L ${x + width - 1},${y + height - 1} L ${x + 2},${y + height - 1}`,
-        stroke: { color: "#00002a", width: 2 }, fill: { color: "transparent" }
-      }));
-      const size = Math.min(width, height) * 0.5;
-      const ox = x + width / 2 - size / 2;
-      const oy = y + height / 2 - size / 2;
-      for (const poly of buttonSpec) {
-        const data = poly
-          .map((pt, i) => `${i === 0 ? "M" : "L"} ${ox + pt[0] * size},${oy + pt[1] * size}`)
-          .join(" ") + " Z";
-        group.append(new Path({ data, stroke: { color: "#ffffff", width: 1 }, fill: { color: "#ffffff" } }));
-      }
-      return group;
+    } else if (state === "disabled") {
+      (group.options as any).opacity = 0.45;
     }
-
-
-    if (kind === "richText") {
-      group.append(new Rectangle({
-        x, y, width, height, cornerRadius: 4,
-        stroke: { color: stroke},
-        fill: { color: fill }
-      }));
-
-      // The supplied project is on Kendo UI 21.x (Angular 18). Native Diagram
-      // rich-text blocks were introduced later, so keep the exact Kendo
-      // blocks model in model.content AND render those same blocks here for
-      // backwards-compatible visual output. When the project is upgraded, the
-      // stored data is already in the official ShapeRichTextContent format.
-      this.appendRichTextBlocks(
-        group,
-        Array.isArray(dataItem.richTextBlocks) ? dataItem.richTextBlocks : [],
-        x + 10,
-        y + 10,
-        Math.max(20, width - 20),
-        Math.max(20, height - 20)
-      );
-      return group;
-    }
-    if ( (kind === "Text")||(kind === "numeric")||(kind === "numericInput")
-     ||(kind === "button") ||(kind === "buttonmomentry") || (kind === "buttonMaintained") 
-     || (kind === "buttonLatched") || (kind === "buttonMultistate") || (kind === "buttonInterlocked")
-     || (kind === "rampButton") || (kind === "navButton") || (kind === "timeDateDisplay") || (kind === "tagLabel")
-     || (kind === "localMessage") || (kind === "text") || (kind === "stringInput") || (kind === "stringDisplay")
-     || (kind == "banner") || (kind == "summary") || (kind == "logViewer") || (kind == "statusExplorer")
-     ) {
-      const background = new Rectangle({
-        x, y, width, height, cornerRadius: 4,
-        stroke: { color: stroke},
-        fill: { color: fill }
-      });
-      const fontSize = Math.max(8, Number(dataItem.fontSize) || 16);
-      const fontFamily = typeof dataItem.fontFamily === "string" && dataItem.fontFamily.length
-        ? dataItem.fontFamily
-        : "Arial, sans-serif";
-      const textColor = style.strokeColor || dataItem.textColor || "#1f2937";
-      const text = new TextBlock({
-        text: String(dataItem.text ),
-        x: x + 10,
-        y: y + 12,
-        fill: textColor,
-        fontSize,
-        fontFamily,
-        fontWeight: dataItem.fontWeight || "normal"
-      });
-      group.append(background);
-      group.append(text);
-      return group;
-      
-    }
-
-    if (kind === "image") {
-      const background = new Rectangle({
-        x, y, width, height,
-        stroke: { color: stroke},
-        fill: { color: fill }
-      });
-      group.append(background);
-      if (dataItem.source) {
-        group.append(new DiagramImage({ source: dataItem.source, x, y, width, height }));
-      } else {
-        const label = new TextBlock({ text: "Image", x: x + 12, y: y + height / 2 - 8, fill: "#555555" });
-        label.options.fontSize = 15;
-        group.append(label);
-      }
-      return group;
-    }
-    if (kind === "ellipse" && dataItem.animFlow) {
-      const erx = width / 2;
-      const ery = height / 2;
-      const outline: number[][] = [];
-      for (let i = 0; i <= 72; i++) {
-        const t = (i / 72) * Math.PI * 2;
-        outline.push([x + erx + erx * Math.cos(t), y + ery + ery * Math.sin(t)]);
-      }
-      group.append(new Path({
-        data: `M ${outline.map(pt => pt.join(",")).join(" L ")} Z`,
-        stroke: { color: "transparent", width: 0 },
-        fill: { color: fill }
-      }));
-      group.append(new Path({
-        data: this.flowDashData(outline, dataItem.animFlow),
-        stroke: { color: stroke, width: 3 },
-        fill: { color: "transparent" }
-      }));
-      return group;
-    }
-    if (kind === "ellipse" || kind === "wedge") {
-      const rx = width / 2;
-      const ry = height / 2;
-      const cx = x + rx;
-      const cy = y + ry;
-      group.append(new Path({
-        data: `M ${cx - rx},${cy} A ${rx},${ry} 0 1 0 ${cx + rx},${cy} A ${rx},${ry} 0 1 0 ${cx - rx},${cy} Z`,
-        stroke: { color: stroke, width: 2 },
-        fill: { color: fill }
-      }));
-      return group;
-    }
-
-    if (kind === "line") {
-      const lineStart = dataItem.lineStart;
-      const lineEnd = dataItem.lineEnd;
-      if (lineStart && lineEnd) {
-        // User-drawn line: the transparent frame keeps the drawing bbox equal
-        // to the full shape box (a horizontal/vertical line has no extent on
-        // one axis), so selection and resizing match the shape bounds.
-        const frame = new Rectangle({
-          x, y, width, height,
-          stroke: { color: "transparent", width: 0 },
-          fill: { color: "transparent" }
-        });
-        frame.options.opacity = 0.001;
-        group.append(frame);
-        const linePts = [
-          [x + Number(lineStart.x) * width, y + Number(lineStart.y) * height],
-          [x + Number(lineEnd.x) * width, y + Number(lineEnd.y) * height]
-        ];
-        group.append(new Path({
-          data: dataItem.animFlow
-            ? this.flowDashData(linePts, dataItem.animFlow)
-            : `M ${linePts[0][0]},${linePts[0][1]} L ${linePts[1][0]},${linePts[1][1]}`,
-          stroke: { color: stroke, width: dataItem.animFlow ? 4 : 2 },
-          fill: { color: "transparent" }
-        }));
-        return group;
-      }
-      // Legacy line (saved before start/end points existed): horizontal, centered.
-      // const centerY = y + height / 2;
-      // group.append(new Path({
-            //   data: dataItem.animFlow
-      //     ? this.flowDashData([[x + 5, centerY], [x + width - 5, centerY]], dataItem.animFlow)
-      //     : `M ${x + 5},${centerY} L ${x + width - 5},${centerY}`,
-      //   stroke: { color: stroke, width: dataItem.animFlow ? 4 : 2 },
-      //   fill: { color: "transparent" }
-      // }));
-    }
-    if ((kind === "roundedRectangle" || kind === "rectangle") && dataItem.animFlow) {
-      const corners = [[x, y], [x + width, y], [x + width, y + height], [x, y + height], [x, y]];
-      group.append(new Rectangle({
-        x, y, width, height,
-        cornerRadius: kind === "roundedRectangle" ? Math.min(22, height / 2) : 0,
-        stroke: { color: "transparent", width: 0 },
-        fill: { color: fill }
-      }));
-      group.append(new Path({
-        data: this.flowDashData(corners, dataItem.animFlow),
-        stroke: { color: stroke, width: 3 },
-        fill: { color: "transparent" }
-      }));
-      return group;
-    }
-
-    if (kind === "roundedRectangle" || kind === "rectangle") {
-      group.append(new Rectangle({
-        x, y, width, height,
-        cornerRadius: kind === "roundedRectangle" ? Math.min(22, height / 2) : 0,
-        stroke: { color: stroke, width: 2 },
-        fill: { color: fill }
-      }));
-      return group;
-    }
-    if (kind === "container") {
-      // Fill percent = value / max, clamped to 0-100%. Drawn as a rounded tank
-      // body on a base band with two feet (matching the reference artwork):
-      // an always-visible header holds the "NN% full" label and a gauge line,
-      // and the liquid gauge fills the region below that from the bottom up.
-      const max = Number(dataItem.containerMax) > 0 ? Number(dataItem.containerMax) : 100;
-      const value = Number.isFinite(Number(dataItem.containerValue)) ? Number(dataItem.containerValue) : 0;
-      const ratio = Math.max(0, Math.min(1, value / max));
-
-      const bodyColor = "#0d1fa8";
-      const liquidBorder = "#e53935";
-      const bandHeight = Math.min(height * 0.14, 34);
-      const bodyHeight = Math.max(10, height - bandHeight);
-      const radius = Math.min(width, height) * 0.22;
-      const inset = 6;
-      const headerHeight = Math.max(18, bodyHeight * 0.16);
-
-      // Body: rounded top corners, flat bottom (sits flush on the base band).
-      // Rectangle only supports one uniform cornerRadius on all four corners,
-      // so a mixed rounded-top/flat-bottom silhouette needs a hand-built path.
-      const bodyPath = radius > 0
-        ? `M ${x},${y + radius} A ${radius},${radius} 0 0 1 ${x + radius},${y} `
-          + `L ${x + width - radius},${y} A ${radius},${radius} 0 0 1 ${x + width},${y + radius} `
-          + `L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`
-        : `M ${x},${y} L ${x + width},${y} L ${x + width},${y + bodyHeight} L ${x},${y + bodyHeight} Z`;
-      group.append(new Path({
-        data: bodyPath,
-        stroke: { color: stroke, width: 2 },
-        fill: { color: bodyColor }
-      }));
-
-      // Base band: rounded bottom corners, flat top (sits flush under the body).
-      const bandY = y + bodyHeight;
-      const bandRadius = Math.min(radius, bandHeight);
-      const bandPath = bandRadius > 0
-        ? `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight - bandRadius} `
-          + `A ${bandRadius},${bandRadius} 0 0 1 ${x + width - bandRadius},${bandY + bandHeight} `
-          + `L ${x + bandRadius},${bandY + bandHeight} A ${bandRadius},${bandRadius} 0 0 1 ${x},${bandY + bandHeight - bandRadius} Z`
-        : `M ${x},${bandY} L ${x + width},${bandY} L ${x + width},${bandY + bandHeight} L ${x},${bandY + bandHeight} Z`;
-      group.append(new Path({
-        data: bandPath,
-        stroke: { color: stroke, width: 2 },
-        fill: { color: bodyColor }
-      }));
-
-      // Two feet tabs on the band.
-      const footWidth = Math.max(6, width * 0.09);
-      const footHeight = Math.max(4, bandHeight * 0.45);
-      const footY = bandY + bandHeight - footHeight * 0.5;
-      [x + width * 0.28 - footWidth / 2, x + width * 0.72 - footWidth / 2].forEach(footX => {
-        group.append(new Rectangle({
-          x: footX, y: footY, width: footWidth, height: footHeight,
-          cornerRadius: 2,
-          stroke: { color: stroke, width: 1.5 },
-          fill: { color: bodyColor }
-        }));
-      });
-
-      // Gauge line separating the header from the liquid area, then the liquid
-      // itself, inset within the body and anchored to the body's flat bottom.
-      const gaugeTop = y + headerHeight;
-      group.append(new Path({
-        data: `M ${x + 4},${gaugeTop} L ${x + width - 4},${gaugeTop}`,
-        stroke: { color: stroke, width: 1.5 },
-        fill: { color: "transparent" }
-      }));
-
-      const gaugeBottom = y + bodyHeight - inset;
-      const gaugeHeight = Math.max(0, gaugeBottom - gaugeTop);
-      if (ratio > 0 && gaugeHeight > 0) {
-        const fillHeight = gaugeHeight * ratio;
-        group.append(new Rectangle({
-          x: x + inset,
-          y: gaugeBottom - fillHeight,
-          width: Math.max(0, width - inset * 2),
-          height: fillHeight,
-          stroke: { color: liquidBorder, width: 2 },
-          fill: { color: fill }
-        }));
-      }
-
-      const label = new TextBlock({
-        text: `${Math.round(ratio * 100)}% full`,
-        x: x + width / 2,
-        y: y + 6,
-        fill: "#ffffff"
-      });
-      label.options.fontSize = 13;
-      label.options.fontWeight = "bold";
-      label.options.textAnchor = "middle";
-      group.append(label);
-
-      return group;
-    }
-
-    if (kind === "arc") {
-      // Sample the curve so Flow can lay dashes along it.
-      const arcPoints: number[][] = [];
-      for (let i = 0; i <= 48; i++) {
-        const t = i / 48;
-        const u = 1 - t;
-        arcPoints.push([
-          u * u * x + 2 * u * t * (x + width / 2) + t * t * (x + width),
-          u * u * (y + height) + 2 * u * t * (y - height) + t * t * (y + height)
-        ]);
-      }
-      group.append(new Path({
-        // Peak of this curve is exactly the top of the box (control point at y - height).
-        data: dataItem.animFlow
-          ? this.flowDashData(arcPoints, dataItem.animFlow)
-          : `M ${x},${y + height} Q ${x + width / 2},${y - height} ${x + width},${y + height}`,
-        stroke: { color: stroke, width: dataItem.animFlow ? 4 : 3 },
-        fill: { color: "transparent" }
-      }));
-      return group;
-    }
-
-    const points = Array.isArray(dataItem.points) ? dataItem.points : [];
-    if (kind === "freehand" && points.length >= 2) {
-      // Points are stored in the pixels of the original drawing. Scale them to
-      // the shape's current width/height so a resized FreeHand keeps its size
-      // when it is redrawn, restored from saved state or ungrouped.
-      const extentX = Math.max(...points.map((point: any) => Number(point.x)));
-      const extentY = Math.max(...points.map((point: any) => Number(point.y)));
-      const pointScaleX = extentX > 0 ? width / extentX : 1;
-      const pointScaleY = extentY > 0 ? height / extentY : 1;
-      const pathData = dataItem.animFlow
-        ? this.flowDashData(points.map((point: any) => [x + Number(point.x) * pointScaleX, y + Number(point.y) * pointScaleY]), dataItem.animFlow)
-        : points.map((point: any, index: number) =>
-          `${index === 0 ? "M" : "L"} ${x + Number(point.x) * pointScaleX},${y + Number(point.y) * pointScaleY}`
-        ).join(" ");
-      group.append(new Path({
-        data: pathData,
-        stroke: { color: stroke, width: dataItem.animFlow ? 4 : 3 },
-        fill: { color: "transparent" }
-      }));
-      return group;
-    }
-
-    if ((kind === "polygon" && points.length >= 3) || (kind === "polyline" && points.length >= 2)) {
-      const ref = dataItem.pointRef;
-      const extX = ref?.w > 0 ? ref.w : Math.max(...points.map((point: any) => Number(point.x)));
-      const extY = ref?.h > 0 ? ref.h : Math.max(...points.map((point: any) => Number(point.y)));
-      const sx = extX > 0 ? width / extX : 1;
-      const sy = extY > 0 ? height / extY : 1;
-      const drawn = points.map((point: any, index: number) =>
-        `${index === 0 ? "M" : "L"} ${x + Number(point.x) * sx},${y + Number(point.y) * sy}`
-      ).join(" ");
-      const flowPts = points.map((point: any) => [x + Number(point.x) * sx, y + Number(point.y) * sy]);
-      if (kind === "polygon" && dataItem.animFlow) {
-        // Keep the filled body, and run dashes along the closed outline.
-        group.append(new Path({ data: `${drawn} Z`, stroke: { color: "transparent", width: 0 }, fill: { color: fill } }));
-        group.append(new Path({
-          data: this.flowDashData([...flowPts, flowPts[0]], dataItem.animFlow),
-          stroke: { color: stroke, width: 3 },
-          fill: { color: "transparent" }
-        }));
-        return group;
-      }
-      group.append(new Path({
-        data: kind === "polyline" && dataItem.animFlow
-          ? this.flowDashData(flowPts, dataItem.animFlow)
-          : (kind === "polygon" ? `${drawn} Z` : drawn),
-        stroke: { color: stroke, width: kind === "polygon" ? 2 : (dataItem.animFlow ? 4 : 3) },
-        fill: { color: kind === "polygon" ? fill : "transparent" }
-      }));
-      return group;
-    }
-    if (kind === "polygon" && dataItem.animFlow) {
-      const outline = [
-        [x + width / 2, y], [x + width, y + height * 0.38], [x + width * 0.82, y + height],
-        [x + width * 0.18, y + height], [x, y + height * 0.38]
-      ];
-      group.append(new Path({
-        data: `M ${outline.map(pt => pt.join(",")).join(" L ")} Z`,
-        stroke: { color: "transparent", width: 0 },
-        fill: { color: fill }
-      }));
-      group.append(new Path({
-        data: this.flowDashData([...outline, outline[0]], dataItem.animFlow),
-        stroke: { color: stroke, width: 3 },
-        fill: { color: "transparent" }
-      }));
-      return group;
-    }
-    // if (kind === "polygon") {
-    //   group.append(new Path({
-    //     data: `M ${x + width / 2},${y} L ${x + width},${y + height * 0.38} L ${x + width * 0.82},${y + height} L ${x + width * 0.18},${y + height} L ${x},${y + height * 0.38} Z`,
-    //     stroke: { color: stroke, width: 2 },
-    //     fill: { color: fill }
-    //   }));
-    //   return group;
-    // }
-
-    // if (kind === "polyline") {
-    //   group.append(new Path({
-    //     // The outline spans the full box top-to-bottom (y fractions 1, 0.08, 0.88,
-    //     // 0). A path that fills only part of its box makes Kendo shrink the box
-    //     // to the outline, and the outline shrinks again on every recreate.
-    //     data: `M ${x},${y + height} L ${x + width * 0.28},${y + height * 0.08} L ${x + width * 0.56},${y + height * 0.88} L ${x + width},${y}`,
-    //     stroke: { color: stroke, width: 3 },
-    //     fill: { color: "transparent" }
-    //   }));
-    //   return group;
-    // }
-
     return group;
   }
-// Add these helper methods for model synchronization
+
+  
+ /** Cache of the table defaults of each kind, used for shapes saved before the database layer existed. */
+  private tableDefaultCache: Record<string, any> = {};
+
+  private tableDefaultsFor(kind: string): any | null {
+    if (kind in this.tableDefaultCache) {
+      return this.tableDefaultCache[kind];
+    }
+    const tempId = `__defaults:${kind}`;
+    const options: any = {};
+    try {
+      this.insertSCDShapeTables(tempId, kind);
+      this.populateOtherShapeAttributes(options, kind, tempId);
+    } catch {
+      // no table for this kind
+    } finally {
+      this.ShapesInfo = (this.ShapesInfo as any[]).filter(row => row.SHAPE_ID !== tempId);
+      delete this.ShapesInfoArr[tempId];
+    }
+    this.tableDefaultCache[kind] = options.dbShape ? options : null;
+    return this.tableDefaultCache[kind];
+  }
+
+  /** A shape saved before the database attributes existed is drawn from its table defaults. */
+  private withTableDefaults(kind: string, dataItem: any): any {
+    if (dataItem.dbShape || !this.tablesKeyByKind[kind] || ["richText", "button"].includes(kind)) {
+      return dataItem;
+    }
+    const defaults = this.tableDefaultsFor(kind);
+    if (!defaults) {
+      return dataItem;
+    }
+    const merged = { ...defaults, ...dataItem, dbShape: true };
+    if ((dataItem as any).__focus) {
+      Object.defineProperty(merged, "__focus", { value: true, enumerable: false, writable: true, configurable: true });
+    }
+    return merged;
+  }
+
+  /** Run-time look of a shape: hover and pressed only while animation runs, disabled any time. */
+  private runtimeStateOf(dataItem: any): "normal" | "hover" | "pressed" | "disabled" {
+    if (dataItem?.libraryKind === "button" || String(dataItem?.visual ?? "").startsWith("button")) {
+      return "normal"; // the Button draws its own states
+    }
+    if (this.isDbYes(dataItem?.disabled)) {
+      return "disabled";
+    }
+    if (this.animationRunning) {
+      if ((dataItem as any).__pressed) {
+        return "pressed";
+      }
+      if ((dataItem as any).__hover) {
+        return "hover";
+      }
+    }
+    return "normal";
+  }
+
+  /** Set a run-time flag (not saved with the diagram) and redraw the shape. */
+  private setRuntimeFlag(shape: any, flag: "__hover" | "__pressed", value: boolean): void {
+    const d: any = this.shapeDataItem(shape);
+    if (!d || !!d[flag] === value) {
+      return;
+    }
+    Object.defineProperty(d, flag, { value, enumerable: false, writable: true, configurable: true });
+    this.redrawAnimated(shape);
+  }
+
+  // Add these helper methods for model synchronization
 private runtimeShapeId(shape: any): string {
   const id = shape?.id
     ?? shape?.options?.id
@@ -9843,7 +9729,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     }
     if (dataItem?.dbShape && [...this.SURFACE_KINDS, ...this.LINE_KINDS,
         ...this.KEYPAD_KINDS, ...this.GRAPH_KINDS,
-        ...this.LIST_KINDS].includes(dataItem.libraryKind)) {
+        ...this.LIST_KINDS, ...this.MULTI_KINDS].includes(dataItem.libraryKind)) {
       this.syncShapeProps(dataItem);
     }
     if (dataItem?.dbShape && dataItem.libraryKind === "text") {
@@ -10435,7 +10321,7 @@ private applySelectedRichTextFormatting(
       `<line x1="4" y1="7" x2="20" y2="7" stroke="#e94560" stroke-width="2"/><line x1="4" y1="13" x2="20" y2="13" stroke="#e94560" stroke-width="2"/><line x1="4" y1="19" x2="20" y2="19" stroke="#e94560" stroke-width="2"/>`,
 
     // ── Indicators ──
-    multiple:
+    multistateIndicator:
           `<line x1="4"  y1="5"  x2="16" y2="5"  stroke="#e94560" stroke-width="2"/>
           <line x1="4"  y1="11" x2="16" y2="11" stroke="#e94560" stroke-width="2"/>
           <line x1="4"  y1="17" x2="16" y2="17" stroke="#e94560" stroke-width="2"/>
@@ -10576,7 +10462,7 @@ private applySelectedRichTextFormatting(
     'BarGraph': 'barGraph',
     'Graph': 'graph',
     'List': 'listIndicator',
-    'Multiple': 'multiple',
+    'Multiple': 'multistateIndicator',
     'Indicator': 'indicator',
     'Page Up': 'pageUp',
     'Page Down': 'pageDown',
@@ -12776,15 +12662,26 @@ console.log('ButtonSensor: dataItem:', dataItem);
   ].includes(type);
 
   if (!isButton) {
-    console.log('ButtonSensor: current shape is not a button', type);
+    // Other shapes show the pushed-in look while the mouse is down (animation running only).
+    if (this.animationRunning && type && !this.isDbYes(dataItem.disabled)) {
+      this.pressedOtherId = shapeId;
+      this.setRuntimeFlag(shape, "__pressed", true);
+    }
     return;
   }
 
   this.pressedShapeId = shapeId;
   this.setButtonState(shapeId, 'pressed');
 }
-
+private pressedOtherId: string | null = null;
 private releasePressedButton(): void {
+  if (this.pressedOtherId) {
+    const other = this.diagram?.getShapeById(this.pressedOtherId);
+    this.pressedOtherId = null;
+    if (other) {
+      this.setRuntimeFlag(other, "__pressed", false);
+    }
+  }
   if (!this.pressedShapeId) {
     return;
   }
