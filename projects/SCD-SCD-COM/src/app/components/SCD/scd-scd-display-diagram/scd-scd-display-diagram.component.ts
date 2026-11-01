@@ -1235,14 +1235,15 @@ if (
     dataItem?.visual === 'buttonRecessedVisual'||
     dataItem?.visual === 'buttonNoneVisual';
     
-    
-    if (!isCustomButton && this.animationRunning && dataItem?.libraryKind && !this.isDbYes(dataItem.disabled)) {
-      // Every other shape gets the same hover look as the Button while the animation runs.
+    if (!isCustomButton && dataItem?.libraryKind && !this.isDbYes(dataItem.disabled)) {
+      // Every other shape gets the same hover look as the Button, in edit and run mode alike.
       this.setRuntimeFlag(shape, "__hover", type === "mouseEnter");
       if (type === "mouseLeave") {
         this.setRuntimeFlag(shape, "__pressed", false);
       }
     }
+    
+    
     if (isCustomButton) {
 
       // Disabled buttons don't react
@@ -2500,6 +2501,10 @@ public visualTemplate = (options: any): Group => {
       if (focused) {
         (d as any).__focus = false;
       }
+      if ((d as any).__value !== undefined) {
+        Object.defineProperty(d, "__value", { value: undefined, enumerable: false, writable: true, configurable: true });
+        this.redrawAnimated(shape);
+      }
       const touched = !!((d as any).__hover || (d as any).__pressed);
       if (touched) {
         (d as any).__hover = false;
@@ -2658,7 +2663,8 @@ public onStagePointerDown(event: PointerEvent): void {
     this.stagePointerStart = { x: event.clientX, y: event.clientY };
     if (this.animationRunning && event.button === 0) {
       const hit = this.shapeAtPointer(event);
-      if (hit && this.KEYPAD_KEYS[this.shapeDataItem(hit)?.libraryKind]) {
+      const hitKind = hit ? this.shapeDataItem(hit)?.libraryKind : undefined;
+      if (hit && (this.KEYPAD_KEYS[hitKind] || this.PUSH_KINDS.includes(hitKind)) && !this.isDbYes(this.shapeDataItem(hit)?.disabled)) {
         this.keypadPress(hit);
       }
     }
@@ -2683,6 +2689,21 @@ public onStagePointerDown(event: PointerEvent): void {
       const b = shape.bounds();
       return point.x >= b.x && point.x <= b.x + b.width && point.y >= b.y && point.y <= b.y + b.height;
     }) ?? null;
+  }
+  /**
+   * Kendo sends no mouseLeave when the pointer moves from a shape onto empty canvas, so the hover look of
+   * the other shapes is cleared here as soon as the pointer is no longer over the shape.
+   */
+  public onStagePointerMove(event: PointerEvent): void {
+    if (!this.diagram) {
+      return;
+    }
+    const over = this.shapeAtPointer(event);
+    for (const shape of this.diagram.diagramShapes as any[]) {
+      if (shape !== over && (this.shapeDataItem(shape) as any)?.__hover) {
+        this.setRuntimeFlag(shape, "__hover", false);
+      }
+    }
   }
 
   /** AUDIO: a short beep when the button is pressed. */
@@ -2746,7 +2767,13 @@ public onStagePointerDown(event: PointerEvent): void {
     let note = "";
     if (action.includes("closed")) {
       value = 0;
-    } else if (action.includes("maintained") || action.includes("toggle") || action.includes("latch")) {
+    } else if (action.includes("latch")) {
+      // A latched button stays on once pressed. Only "Press again" resets it here; the other reset types
+      // (None-zero value / Zero value) wait for a tag value, which is not connected yet.
+      if (first) {
+        value = this.dbKey(d.latchResetType).includes("pressagain") && value ? 0 : 1;
+      }
+    } else if (action.includes("maintained") || action.includes("toggle")) {
       if (first) {
         value = value ? 0 : 1;
       }
@@ -2764,12 +2791,16 @@ public onStagePointerDown(event: PointerEvent): void {
       value = 1; // Normally Open: on while the button is held
     }
     this.buttonValues[id] = value;
-    const keyNote = this.sendKeypadKey(d.libraryKind, d, focusEl);
+    Object.defineProperty(d, "__value", { value, enumerable: false, writable: true, configurable: true });
+    const keyNote = this.KEYPAD_KEYS[d.libraryKind] ? this.sendKeypadKey(d.libraryKind, d, focusEl) : "No key is sent by this button";
     this.statusMessage = `${this.libraryShapeTitle(d.libraryKind)} (${String(d.buttonAction ?? "Normally Open")}): value ${value}. ${keyNote}.${note}`;
   }
+  /** Pending "return to idle" of a released momentary button; a new press cancels it. */
+  private holdResetTimers: Record<string, any> = {};
 
   private keypadPress(shape: any): void {
     this.stopKeypadRepeat();
+    clearTimeout(this.holdResetTimers[String(shape.id)]);
     const d = this.shapeDataItem(shape);
     const focusEl = document.activeElement;
     for (const other of (this.diagram?.diagramShapes || []) as any[]) {
@@ -2819,12 +2850,38 @@ public onStagePointerDown(event: PointerEvent): void {
     const momentary = !(action.includes("maintained") || action.includes("toggle") || action.includes("latch")
       || action.includes("ramp") || action.includes("multi") || action.includes("navig"));
     if (momentary) {
-      setTimeout(() => {
+      this.holdResetTimers[String(held.shape.id)] = setTimeout(() => {
         if (this.animationRunning) {
-          this.buttonValues[String(held.shape.id)] = action.includes("closed") ? 1 : 0;
+          const idle = action.includes("closed") ? 1 : 0;
+          this.buttonValues[String(held.shape.id)] = idle;
+          Object.defineProperty(d, "__value", { value: idle, enumerable: false, writable: true, configurable: true });
+          this.redrawAnimated(held.shape);
         }
       }, Math.max(0, Number(d.holdTime) || 0));
     }
+  }
+
+   /** Run mode: clicking a Numeric / String Input asks for a new value (a number inside Minimum and Maximum). */
+  private editInputValue(shape: any, d: any): void {
+    const numeric = d.libraryKind === "numericInput";
+    const entered = window.prompt(numeric ? "Enter a number" : "Enter text", String(d.inputValue ?? ""));
+    if (entered === null) {
+      return;
+    }
+    let value: string = entered;
+    if (numeric) {
+      let n = Number(entered);
+      if (entered.trim() === "" || !Number.isFinite(n)) {
+        this.statusMessage = "Numeric Input needs a number.";
+        return;
+      }
+      const min = Number(d.connMin), max = Number(d.connMax);
+      if (String(d.connMin ?? "").trim() !== "" && Number.isFinite(min)) { n = Math.max(min, n); }
+      if (String(d.connMax ?? "").trim() !== "" && Number.isFinite(max)) { n = Math.min(max, n); }
+      value = String(n);
+    }
+    this.patchShapes([shape], { inputValue: value });
+    this.statusMessage = `${this.libraryShapeTitle(d.libraryKind)} set to ${value}.`;
   }
 
 
@@ -2856,6 +2913,11 @@ public onStagePointerDown(event: PointerEvent): void {
       if (this.selectedShapes().includes(hit)) {
         this.selectedListIndex = row;
       }
+      return;
+    }
+    if (hit && this.INPUT_KINDS.includes(hitData?.libraryKind) && this.dbKey(hitData.expressionTrueState) !== "disable"
+        && !this.isDbYes(hitData.disabled)) {
+      this.editInputValue(hit, hitData);
       return;
     }
     const a = hit ? this.shapeDataItem(hit)?.animation : null;
@@ -3150,7 +3212,7 @@ public onStagePointerDown(event: PointerEvent): void {
     return Number(value).toFixed(Math.max(0, Math.min(6, digits || 0)));
   }
 
-  /**
+    /**
    * The single drawing function: draws every kind of library shape (surfaces, lines, text, graphs,
    * lists, indicators, buttons, arrows, container, rich text, image) from its attributes.
    */
@@ -3205,6 +3267,7 @@ public onStagePointerDown(event: PointerEvent): void {
       // ---------------- surfaces ----------------
       case "rectangle":
       case "roundedRectangle":
+      case "panel":
       case "arrowVertical":
       case "arrowHorizontal": {
         const radius = kind === "roundedRectangle" ? Math.min(22, h / 2) : 0;
@@ -3437,10 +3500,14 @@ public onStagePointerDown(event: PointerEvent): void {
         frameRect.options.opacity = 0.001;
         group.append(frameRect);
         const colour = d.animColor || strokeOverride || "#444444";
-        // TAG_PRIORITY: show the tag's name or its description, whichever comes first; otherwise the typed text.
-        const tagNameText = String(d.tagName ?? "").trim(), tagDescriptionText = String(d.tagDescription ?? "").trim();
-        const fromTag = this.dbKey(d.tagPriority).includes("desc")
-          ? (tagDescriptionText || tagNameText) : (tagNameText || tagDescriptionText);
+        // TAG_PROPERTY: which value of the tag the label shows. Contact Value is the live value and is
+        // redrawn whenever it changes; the others are shown as they are when the diagram is displayed.
+        const tagValues: Record<string, any> = {
+          "low eu": d.lowEu, "high eu": d.highEu, "contact value": d.contactValue,
+          "engineering units (eu)": d.engineeringUnits, "tag name": d.tagName, "tag description": d.tagDescription,
+          "contact close label": d.contactCloseLabel, "contact open label": d.contactOpenLabel
+        };
+        const fromTag = String(tagValues[this.tagPropertyOf(d.tagProperty ?? d.tagPriority).toLowerCase()] ?? "").trim();
         const text = fromTag || String(d.labelText ?? "").trim();
         const justify = this.dbKey(d.labelJustification);
         const marks = Math.max(1, Number(d.labelFieldLength) || 10);
@@ -3797,6 +3864,40 @@ public onStagePointerDown(event: PointerEvent): void {
         }));
         return true;
       }
+      // ---------------- wedge: a quarter pie with its corner at the bottom left ----------------
+      case "wedge": {
+        const pts: number[][] = [[x, y + h]];
+        for (let i = 0; i <= 24; i++) {
+          const angle = (i / 24) * Math.PI / 2;
+          pts.push([x + Math.sin(angle) * w, y + h - Math.cos(angle) * h]);
+        }
+        const wedgePath = `M ${pts.map(pt => pt.join(",")).join(" L ")} Z`;
+        if (!this.dbTransparent(d)) {
+          group.append(new Path({ data: wedgePath, stroke: { color: "transparent", width: 0 }, fill: { color: fillColor } }));
+        }
+        this.drawDbPattern(group, d, x, y, w, h, 0, pts);
+        const wedgeLine = Math.max(0, Number(d.lineWidth) || 0);
+        if (!lineHidden && wedgeLine > 0) {
+          group.append(new Path({ data: wedgePath, stroke: outlineStroke(wedgeLine), fill: { color: "transparent" } }));
+        }
+        if (flow) {
+          dashes([...pts, pts[0]], 3);
+        }
+        frame();
+        return true;
+      }
+
+      // ---------------- displays, messages and inputs ----------------
+      case "numericDisplay": case "stringDisplay":
+      case "timeDateDisplay": case "localMessage":
+      case "numericInput": case "stringInput": {
+        if (blinkOff && d.blink) {
+          frame();
+          return true;
+        }
+        this.drawFieldShape(kind, group, x, y, w, h, d, fillColor, borderOverride);
+        return true;
+      }
 
       // ---------------- multistate indicator ----------------
       case "multistateIndicator": {
@@ -3823,16 +3924,27 @@ public onStagePointerDown(event: PointerEvent): void {
       // ---------------- keypad / arrow buttons ----------------
       case "backspace": case "endButton": case "enter":
       case "moveLeft": case "moveRight": case "moveUp": case "moveDown":
-      case "pageUp": case "pageDown": {
+      case "pageUp": case "pageDown":
+      case "momentary": case "maintained": case "latched": case "interlocked":
+      case "multistateButton": case "rampButton": case "navigationButton": {
         const spec = this.NAVIGATION_BUTTON_ICONS[kind];
         if (!spec) {
           return false;
         }
+        // Push buttons show the look of their current state (back colour and caption).
+        const push = this.PUSH_KINDS.includes(kind);
+        const pushValue = Number((d as any).__value) || 0;
+        const pushStates: any[] = push && Array.isArray(d.pushStates) && d.pushStates.length ? d.pushStates : [];
+        const pushIndex = !push ? 0
+          : kind === "momentary" || kind === "maintained" || kind === "latched" ? (pushValue ? 1 : 0)
+            : kind === "rampButton" || kind === "navigationButton" ? 0 : pushValue % Math.max(1, pushStates.length);
+        const pushState = pushStates[Math.min(pushIndex, Math.max(0, pushStates.length - 1))];
+        const panelFill = pushState && !style.fillColor ? this.normalizeColor(pushState.backColor, fillColor) : fillColor;
         // SHAPE_TYPE: rectangle (default), rounded rectangle or ellipse (a fully rounded box).
         const shapeType = this.dbKey(d.shapeType);
         const radius = shapeType.includes("ellipse") || shapeType.includes("oval") ? Math.min(w, h) / 2
           : shapeType.includes("round") ? Math.min(22, h / 2) : 0;
-        const bw = this.drawDbPanel(group, x, y, w, h, radius, d, fillColor, borderOverride);
+        const bw = this.drawDbPanel(group, x, y, w, h, radius, d, panelFill, borderOverride);
         // The icon sits inside the margins; IMAGE_ALIGNMENT places it, SCALE_IMAGE enlarges it.
         const marginX = Math.max(0, Number(d.horizontalMargin) || 0);
         const marginY = Math.max(0, Number(d.verticalMargin) || 0);
@@ -3864,7 +3976,10 @@ public onStagePointerDown(event: PointerEvent): void {
           }
         }
         // Caption text (CAPTION_* and FONT_*): drawn inside the same area, wrapped when CAPTION_WORD_WRAP is on.
-        const captionText = String(d.caption ?? "");
+        const stateCaption = String(d.stateCaptions ?? "").split(";")[pushIndex]?.trim();
+        const captionText = push
+          ? (kind === "rampButton" && (d as any).__value !== undefined ? String(pushValue) : (stateCaption || String(d.caption ?? "")))
+          : String(d.caption ?? "");
         if (captionText.trim()) {
           if (this.dbKey(d.captionBackStyle) === "solid") {
             group.append(new Rectangle({
@@ -3924,7 +4039,110 @@ public onStagePointerDown(event: PointerEvent): void {
     }
     return false;
   }
-   /** The arrow of Arrow Vertical / Arrow Horizontal, drawn in the Fore color on top of the panel. */
+
+  /** Numeric text of a display / input: FORMAT, decimals, digit grouping, FIELD_LENGTH, overflow and leading zeros. */
+  private formatDbNumber(d: any, raw: any): string {
+    const n = Number(raw);
+    if (raw === "" || raw === undefined || raw === null || !Number.isFinite(n)) {
+      return String(raw ?? "");
+    }
+    const format = this.dbKey(d.format);
+    const decimals = Math.max(0, Math.min(10, Math.round(Number(d.fixedDecimalPlaces) || 0)));
+    let text: string;
+    if (format.startsWith("hex")) {
+      text = Math.round(n).toString(16).toUpperCase();
+    } else if (format.startsWith("oct")) {
+      text = Math.round(n).toString(8);
+    } else if (format.startsWith("bin")) {
+      text = Math.round(n).toString(2);
+    } else if (format.startsWith("exp") || format.startsWith("sci")) {
+      text = n.toExponential(decimals);
+    } else if (d.dynamicDecimalPlaces) {
+      text = String(parseFloat(n.toFixed(6)));
+    } else {
+      text = n.toFixed(decimals);
+    }
+    if (d.showDigitGrouping && /^-?\d+(\.\d+)?$/.test(text)) {
+      const [whole, fraction] = text.split(".");
+      text = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (fraction !== undefined ? "." + fraction : "");
+    }
+    const length = Math.max(1, Math.round(Number(d.fieldLength) || 8));
+    if (text.length > length) {
+      text = this.dbKey(d.overflow).includes("exp") ? n.toExponential(Math.max(0, length - 6)) : "*".repeat(length);
+    }
+    if (this.dbKey(d.leadingCharacter).includes("zero") && /^-?\d+(\.\d+)?$/.test(text)) {
+      const negative = text.startsWith("-");
+      text = (negative ? "-" : "") + (negative ? text.slice(1) : text).padStart(length - (negative ? 1 : 0), "0");
+    }
+    return text;
+  }
+
+  /** Current time and date in one of the TIME_AND_DATE_FORMAT codes (D1..D3, T1, T2, DT1). */
+  private formatTimeDate(code: any): string {
+    const now = new Date();
+    const two = (v: number): string => String(v).padStart(2, "0");
+    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][now.getMonth()];
+    const longMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][now.getMonth()];
+    const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][now.getDay()];
+    const date: Record<string, string> = {
+      d1: `${two(now.getMonth() + 1)}/${two(now.getDate())}/${now.getFullYear()}`,
+      d2: `${two(now.getDate())}-${month}-${now.getFullYear()}`,
+      d3: `${weekday}, ${longMonth} ${now.getDate()}, ${now.getFullYear()}`
+    };
+    const time24 = `${two(now.getHours())}:${two(now.getMinutes())}:${two(now.getSeconds())}`;
+    const time12 = `${two(now.getHours() % 12 || 12)}:${two(now.getMinutes())}:${two(now.getSeconds())} ${now.getHours() < 12 ? "AM" : "PM"}`;
+    const key = String(code ?? "D1").trim().toLowerCase();
+    if (key === "t1") { return time24; }
+    if (key === "t2") { return time12; }
+    if (key === "dt1") { return `${date["d1"]} ${time24}`; }
+    return date[key] ?? date["d1"];
+  }
+
+  /** The look of the displays, messages and inputs: a field with its text (and a navy panel for messages). */
+  private drawFieldShape(kind: string, group: Group, x: number, y: number, w: number, h: number,
+                         d: any, fillColor: string, borderOverride?: string): void {
+    const isMessage = this.MESSAGE_KINDS.includes(kind);
+    const isInput = this.INPUT_KINDS.includes(kind);
+    let text: string;
+    switch (kind) {
+      case "numericDisplay": text = this.formatDbNumber(d, d.displayValue); break;
+      case "stringDisplay": text = String(d.displayValue ?? ""); break;
+      case "timeDateDisplay": text = this.formatTimeDate(d.timeAndDateFormat); break;
+      case "localMessage": text = String(d.messageText ?? ""); break;
+      case "numericInput": text = this.formatDbNumber(d, d.inputValue); break;
+      default: text = String(d.inputValue ?? "");
+    }
+    let areaX = x, areaY = y, areaW = w, areaH = h;
+    let ink = "#000000";
+    if (isMessage) {
+      const bw = this.drawDbPanel(group, x, y, w, h, 0, d, fillColor, borderOverride);
+      areaX += bw; areaY += bw; areaW = Math.max(1, w - 2 * bw); areaH = Math.max(1, h - 2 * bw);
+      ink = this.normalizeColor(d.foreColor, "#ffffff");
+    } else if (isInput) {
+      group.append(new Rectangle({
+        x, y, width: w, height: h, stroke: { color: "transparent", width: 0 },
+        fill: { color: this.dbKey(d.expressionTrueState) === "disable" ? "#e0e0e0" : this.normalizeColor(fillColor, "#ffffff") }
+      }));
+      this.drawDbBorder(group, x, y, w, h, 0, "Sunken", 2, "#c0c0c0");
+      areaX += 2; areaY += 2; areaW = Math.max(1, w - 4); areaH = Math.max(1, h - 4);
+    } else {
+      // A display only draws its text; a faint frame keeps its box selectable.
+      const frameRect = new Rectangle({ x, y, width: w, height: h, stroke: { color: "transparent", width: 0 }, fill: { color: "transparent" } });
+      frameRect.options.opacity = 0.001;
+      group.append(frameRect);
+    }
+    const justify = this.dbKey(d.justification);
+    const align = isMessage ? this.dbText(d.alignment, "MM").toUpperCase()
+      : "M" + (justify === "right" ? "R" : justify === "center" ? "M" : "L");
+    const size = Number(d.fontSize) > 0 && isMessage ? Number(d.fontSize) : Math.max(8, Math.min(24, Math.round(areaH * 0.6)));
+    if (text.length) {
+      this.drawDbCaption(group, areaX, areaY, areaW, areaH, {
+        caption: text, captionColor: ink, captionAlignment: align, captionWordWrap: isMessage ? !!d.wordWrap : false,
+        captionBackStyle: "Transparent", fontFamily: this.dbText(d.fontFamily, "Arial"), fontSize: size
+      });
+    }
+  }
+  /** The arrow of Arrow Vertical / Arrow Horizontal, drawn in the Fore color on top of the panel. */
   private drawArrowGlyph(group: Group, kind: string, x: number, y: number, w: number, h: number, ink: string): void {
     const line = { color: ink, width: 2.5 };
     if (kind === "arrowVertical") {
@@ -4000,7 +4218,8 @@ public onStagePointerDown(event: PointerEvent): void {
     (captionGroup as any).drawingElement?.clip?.(clip);
     group.append(captionGroup);
   }
-  
+
+
   /** Phase of the blink timer (true = blinking parts are hidden). Only changes while animation runs. */
   private blinkPhase = false;
   private blinkTimer: any = null;
@@ -4041,7 +4260,9 @@ public onStagePointerDown(event: PointerEvent): void {
     this.blinkTimer = setInterval(() => {
       this.blinkPhase = !this.blinkPhase;
       for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
-        if (this.hasBlink(this.shapeDataItem(shape))) {
+        const item = this.shapeDataItem(shape);
+        // Time and Date shapes also redraw so the clock keeps running.
+        if (this.hasBlink(item) || item?.libraryKind === "timeDateDisplay") {
           this.redrawAnimated(shape);
         }
       }
@@ -4225,7 +4446,8 @@ public onStagePointerDown(event: PointerEvent): void {
     moveUp: [[[0.05, 0.85], [0.5, 0.15], [0.95, 0.85]]],
     moveDown: [[[0.05, 0.15], [0.5, 0.85], [0.95, 0.15]]],
     pageUp: [[[0.1, 0.45], [0.5, 0.05], [0.9, 0.45]], [[0.1, 0.9], [0.5, 0.5], [0.9, 0.9]]],
-    pageDown: [[[0.1, 0.1], [0.5, 0.5], [0.9, 0.1]], [[0.1, 0.55], [0.5, 0.95], [0.9, 0.55]]]
+    pageDown: [[[0.1, 0.1], [0.5, 0.5], [0.9, 0.1]], [[0.1, 0.55], [0.5, 0.95], [0.9, 0.55]]],
+    momentary: [], maintained: [], latched: [], interlocked: [], multistateButton: [], rampButton: [], navigationButton: []
   };
   // ---------------- EOF Animation engine ----------------
  
@@ -4523,20 +4745,33 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   };
 // Shapes drawn from SCD_SHAPE_GENERAL: surfaces use every property, line shapes only
   // Fore color, Line style and Line width.
-  private readonly SURFACE_KINDS = ["rectangle", "roundedRectangle", "ellipse", "polygon", "arrowVertical", "arrowHorizontal"];
+  private readonly SURFACE_KINDS = ["rectangle", "roundedRectangle", "ellipse", "polygon", "arrowVertical", "arrowHorizontal", "panel", "wedge"];
   private readonly LINE_KINDS = ["line", "arc", "polyline", "freehand"];
   // Keypad / arrow buttons use the same panel; their Fore color is the icon colour.
-  private readonly KEYPAD_KINDS = ["backspace", "endButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown"];
+  // Push buttons (SCD_BUTTON_PUSH_GENERAL + one SCD_SHAPE_STATE per state) share the keypad button panel and runtime.
+  private readonly PUSH_KINDS = ["momentary", "maintained", "latched", "interlocked", "multistateButton", "rampButton", "navigationButton"];
+  private readonly PUSH_ACTIONS: Record<string, string> = {
+    momentary: "Normally Open", maintained: "Maintained", latched: "Latched", interlocked: "Multistate",
+    multistateButton: "Multistate", rampButton: "Ramp", navigationButton: "Navigation"
+  };
+  private readonly KEYPAD_KINDS = ["backspace", "endButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown",
+    ...this.PUSH_KINDS];
+  // Numeric / String Display, Time and Date, Local Message and the two Inputs.
+  private readonly DISPLAY_KINDS = ["numericDisplay", "stringDisplay"];
+  private readonly MESSAGE_KINDS = ["timeDateDisplay", "localMessage"];
+  private readonly INPUT_KINDS = ["numericInput", "stringInput"];
+  private readonly FIELD_KINDS = [...this.DISPLAY_KINDS, ...this.MESSAGE_KINDS, ...this.INPUT_KINDS];
 
   private readonly GRAPH_KINDS = ["barGraph", "gauge", "scale"];
   private readonly LIST_KINDS = ["listIndicator", "controlList"];
   private readonly MULTI_KINDS = ["multistateIndicator"];
 
+
   private propertyShapes(): any[] {
     return this.selectedShapes().filter(shape => {
       const dataItem = this.shapeDataItem(shape);
       return dataItem?.dbShape && [...this.SURFACE_KINDS, ...this.LINE_KINDS,
-        ...this.KEYPAD_KINDS, ...this.GRAPH_KINDS, ...this.LIST_KINDS]
+        ...this.KEYPAD_KINDS, ...this.GRAPH_KINDS, ...this.LIST_KINDS, ...this.MULTI_KINDS, ...this.MESSAGE_KINDS]
         .includes(dataItem.libraryKind);
     });
   }
@@ -4554,7 +4789,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   /** Line style and line width draw the outline of a surface and the stroke of a line (not of a keypad button). */
   public get hasOutlineProps(): boolean {
     // Not used by keypad buttons, bar graphs and lists (they have no outline or line).
-    const without = [...this.KEYPAD_KINDS, "barGraph", ...this.LIST_KINDS];
+    const without = [...this.KEYPAD_KINDS, "barGraph", ...this.LIST_KINDS, ...this.MULTI_KINDS, ...this.MESSAGE_KINDS];
     return this.propertyShapes().some(shape => !without.includes(this.shapeDataItem(shape).libraryKind));
   }
 
@@ -4687,7 +4922,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   public nextToolbarPage(): void {
     this.setToolbarPage(this.toolbarPage + 1);
   }
-  /** Disabled: the shape is drawn dimmed and ignores the mouse while the animation runs. */
+    /** Disabled: the shape is drawn dimmed and ignores the mouse while the animation runs. */
   public get selectedDisabled(): boolean {
     return this.selectedShapes().some(shape => this.isDbYes(this.shapeDataItem(shape)?.disabled));
   }
@@ -4764,11 +4999,81 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       backStyle: this.backStyleOptions.find(o => o.toLowerCase() === String(dataItem.backStyle ?? "").toLowerCase()) ?? "Transparent"
     };
   }
+  // ---- Numeric / String Display, Time and Date, Local Message, Numeric / String Input ----
+  public readonly numberFormatOptions = ["Decimal", "Hexadecimal", "Octal", "Binary", "Exponential"];
+  public readonly overflowOptions = ["Show exponent", "Show asterisks"];
+  public readonly leadingOptions = ["Blanks", "Zeros"];
+  public readonly timeFormatOptions = [
+    { value: "D1", label: "D1  MM/DD/YYYY" }, { value: "D2", label: "D2  DD-Mon-YYYY" },
+    { value: "D3", label: "D3  Weekday, Month D, YYYY" }, { value: "T1", label: "T1  HH:MM:SS (24 h)" },
+    { value: "T2", label: "T2  HH:MM:SS AM/PM" }, { value: "DT1", label: "DT1  date and time" }
+  ];
+  public readonly expressionStateOptions = ["Enable", "Disable"];
+  public fieldProps: any = {
+    displayValue: "", format: "Decimal", fixedDecimalPlaces: 0, fieldLength: 8, justification: "Left",
+    leadingCharacter: "Blanks", showDigitGrouping: false, overflow: "Show exponent", dynamicDecimalPlaces: false,
+    timeAndDateFormat: "D1", messageText: "", inputValue: "", expressionTrueState: "Enable",
+    connValue: "", connMin: "", connMax: "", stateCaptions: ""
+  };
+
+  private fieldShapes(): any[] {
+    return this.selectedShapes().filter(shape => {
+      const dataItem = this.shapeDataItem(shape);
+      return dataItem?.dbShape && this.FIELD_KINDS.includes(dataItem.libraryKind);
+    });
+  }
+
+  private hasFieldKind(kinds: string[]): boolean {
+    return this.fieldShapes().some(shape => kinds.includes(this.shapeDataItem(shape).libraryKind));
+  }
+
+  public get hasFieldShape(): boolean { return this.fieldShapes().length > 0; }
+  public get hasNumberField(): boolean { return this.hasFieldKind(["numericDisplay", "numericInput"]); }
+  public get hasDisplayField(): boolean { return this.hasFieldKind(this.DISPLAY_KINDS); }
+  public get hasInputField(): boolean { return this.hasFieldKind(this.INPUT_KINDS); }
+  public get hasTimeField(): boolean { return this.hasFieldKind(["timeDateDisplay"]); }
+  public get hasLocalMessage(): boolean { return this.hasFieldKind(["localMessage"]); }
+  public get hasFieldJustification(): boolean { return this.hasFieldKind([...this.DISPLAY_KINDS, ...this.INPUT_KINDS]); }
+  public get hasPushShape(): boolean {
+    return this.propertyShapes().some(shape => this.PUSH_KINDS.includes(this.shapeDataItem(shape).libraryKind));
+  }
+
+  public applyFieldProp(key: string): void {
+    const shapes = this.fieldShapes();
+    if (!shapes.length) {
+      this.statusMessage = "Select a display, message or input shape first.";
+      return;
+    }
+    let value = this.fieldProps[key];
+    if (key === "fixedDecimalPlaces") {
+      value = Math.max(0, Math.min(10, Math.round(Number(value) || 0)));
+    } else if (key === "fieldLength") {
+      value = Math.max(1, Math.min(60, Math.round(Number(value) || 1)));
+    }
+    this.patchShapes(shapes, { [key]: value });
+    if (key.startsWith("conn")) {
+      this.updateConnectionTooltip(shapes);
+    }
+    this.statusMessage = `${key} set to ${value}.`;
+  }
 
   // ---- Tag Label (SCD_TAG_LABEL_GENERAL) ----
   public readonly justificationOptions = ["Left", "Center", "Right"];
-  public readonly tagPriorityOptions = ["Tag Name", "Description"];
-  public tagProps: any = { labelJustification: "Left", labelFieldLength: 10, tagPriority: "Tag Name", tagName: "", tagDescription: "" };
+  public readonly tagPropertyOptions = [
+    "Low EU", "High EU", "Contact Value", "Engineering Units (EU)", "Tag Name", "Tag Description",
+    "Contact Close Label", "Contact Open Label"
+  ];
+  public tagProps: any = {
+    labelJustification: "Left", labelFieldLength: 10, tagProperty: "Tag Name", tagName: "", tagDescription: "",
+    lowEu: "", highEu: "", engineeringUnits: "", contactValue: "", contactCloseLabel: "", contactOpenLabel: ""
+  };
+
+  /** Older diagrams stored "Description"; map it onto the lookup value. */
+  private tagPropertyOf(value: any): string {
+    const key = String(value ?? "").trim().toLowerCase();
+    return this.tagPropertyOptions.find(o => o.toLowerCase() === key)
+      ?? (key === "description" ? "Tag Description" : "Tag Name");
+  }
 
   public applyTagProp(key: string): void {
     const shapes = this.selectedShapes().filter(shape => this.shapeDataItem(shape)?.libraryKind === "tagLabel");
@@ -4817,7 +5122,19 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       "autoRepeatDelay", "autoRepeatRate"].includes(key)) {
       value = Math.max(key === "fontSize" ? 6 : key === "numberOfStates" ? 2 : 0, Number(value) || 0);
     }
+    if (key === "numberOfStates") {
+      for (const shape of shapes) {
+        const current: any[] = this.shapeDataItem(shape).pushStates ?? [];
+        if (current.length) {
+          const states = Array.from({ length: value }, (_, i) => ({ ...(current[i] ?? current[current.length - 1]) }));
+          this.patchShapes([shape], { numberOfStates: value, pushStates: states });
+        }
+      }
+    }
     this.patchShapes(shapes, { [key]: value });
+    if (key === "connValue") {
+      this.updateConnectionTooltip(shapes);
+    }
     this.statusMessage = `Button ${key} set to ${value}.`;
   }
 
@@ -4826,14 +5143,14 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   public readonly fillStyleOptions = ["Solid", "Transparent", ...this.patternStyleOptions.filter(p => p !== "None")];
   public readonly thresholdTypeOptions = ["Value", "Percent"];
   public readonly sweepStyleOptions = ["Point", "Fill"];
-  public readonly tickDirectionOptions = ["Right", "Left"];
+  public readonly tickDirectionOptions = ["Left", "Right"];
   public graphProps: any = {
     fillDirection: "Bottom to Top", fillStyle: "Solid", graphFillColor: "#00008b",
     graphMinimum: 0, graphMaximum: 100,
     thresholdCount: 0, thresholdType: "Value", threshold1: 50, threshold2: 75,
     thresholdColor1: "#ffea00", thresholdColor2: "#d70040",
     sweepStyle: "Point", needleColor: "#000000", needleWidth: 2,
-    majorTicks: 10, minorTicks: 5, tickDirection: "Right",
+    majorTicks: 10, minorTicks: 5, tickDirection: "Left",
     showLegend: true, legendColor: "#0000ff", digitsAfterDecimal: 0, blink1: false, blink2: false,
     connValue: "", connMin: "", connMax: ""
   };
@@ -4949,7 +5266,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     }
     this.statusMessage = `${key} set to ${value ?? "(none)"}.`;
   }
-   // ---- Multistate Indicator (SCD_MULTISTATE_INDICATOR_GENERAL and one SCD_SHAPE_STATE per state) ----
+  // ---- Multistate Indicator (SCD_MULTISTATE_INDICATOR_GENERAL and one SCD_SHAPE_STATE per state) ----
   public readonly multiShapeTypeOptions = ["rectangle", "rounded rectangle", "ellipse"];
   public multiStateNumbers: number[] = [1, 2, 3, 4];
   public multiProps: any = {
@@ -5052,6 +5369,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       blink: !!st.blink
     };
   }
+
   /** Fill the Tag Label and keypad panels from the selected shape. */
   private syncExtraProps(dataItem: any): void {
     const color = (value: any, fallback: string): string =>
@@ -5080,7 +5398,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
         needleWidth: Number(dataItem.needleWidth) || 2,
         majorTicks: Number(dataItem.majorTicks) || 10,
         minorTicks: Number(dataItem.minorTicks) || 5,
-        tickDirection: pick(dataItem.tickDirection, this.tickDirectionOptions, "Right"),
+        tickDirection: pick(dataItem.tickDirection, this.tickDirectionOptions, "Left"),
         showLegend: !!dataItem.showLegend,
         legendColor: color(dataItem.legendColor, "#0000ff"),
         digitsAfterDecimal: Number(dataItem.digitsAfterDecimal) || 0,
@@ -5111,13 +5429,40 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       this.tagProps = {
         labelJustification: this.justificationOptions.find(o => o.toLowerCase() === String(dataItem.labelJustification ?? "").toLowerCase()) ?? "Left",
         labelFieldLength: Math.max(1, Math.round(Number(dataItem.labelFieldLength) || 10)),
-        tagPriority: this.tagPriorityOptions.find(o => o.toLowerCase() === String(dataItem.tagPriority ?? "").toLowerCase()) ?? "Tag Name",
+        tagProperty: this.tagPropertyOf(dataItem.tagProperty ?? dataItem.tagPriority),
         tagName: String(dataItem.tagName ?? ""),
-        tagDescription: String(dataItem.tagDescription ?? "")
+        tagDescription: String(dataItem.tagDescription ?? ""),
+        lowEu: String(dataItem.lowEu ?? ""),
+        highEu: String(dataItem.highEu ?? ""),
+        engineeringUnits: String(dataItem.engineeringUnits ?? ""),
+        contactValue: String(dataItem.contactValue ?? ""),
+        contactCloseLabel: String(dataItem.contactCloseLabel ?? ""),
+        contactOpenLabel: String(dataItem.contactOpenLabel ?? "")
+      };
+    }
+    if (dataItem?.dbShape && this.FIELD_KINDS.includes(dataItem.libraryKind)) {
+      this.fieldProps = {
+        displayValue: String(dataItem.displayValue ?? ""),
+        format: this.numberFormatOptions.find(o => o.toLowerCase() === String(dataItem.format ?? "").toLowerCase()) ?? "Decimal",
+        fixedDecimalPlaces: Number(dataItem.fixedDecimalPlaces) || 0,
+        fieldLength: Number(dataItem.fieldLength) || 8,
+        justification: this.justificationOptions.find(o => o.toLowerCase() === String(dataItem.justification ?? "").toLowerCase()) ?? "Left",
+        leadingCharacter: this.leadingOptions.find(o => o.toLowerCase() === String(dataItem.leadingCharacter ?? "").toLowerCase()) ?? "Blanks",
+        showDigitGrouping: !!dataItem.showDigitGrouping,
+        overflow: this.overflowOptions.find(o => o.toLowerCase() === String(dataItem.overflow ?? "").toLowerCase()) ?? "Show exponent",
+        dynamicDecimalPlaces: !!dataItem.dynamicDecimalPlaces,
+        timeAndDateFormat: this.timeFormatOptions.find(o => o.value === String(dataItem.timeAndDateFormat ?? "").toUpperCase())?.value ?? "D1",
+        messageText: String(dataItem.messageText ?? ""),
+        inputValue: String(dataItem.inputValue ?? ""),
+        expressionTrueState: this.expressionStateOptions.find(o => o.toLowerCase() === String(dataItem.expressionTrueState ?? "").toLowerCase()) ?? "Enable",
+        connValue: String(dataItem.connValue ?? ""), connMin: String(dataItem.connMin ?? ""), connMax: String(dataItem.connMax ?? ""),
+        stateCaptions: ""
       };
     }
     if (dataItem?.dbShape && this.KEYPAD_KINDS.includes(dataItem.libraryKind)) {
       this.keypadProps = {
+        stateCaptions: String(dataItem.stateCaptions ?? ""),
+        connValue: String(dataItem.connValue ?? ""),
         shapeType: this.shapeTypeOptions.find(o => o === String(dataItem.shapeType ?? "").toLowerCase()) ?? "rectangle",
         verticalMargin: Number(dataItem.verticalMargin) || 0,
         horizontalMargin: Number(dataItem.horizontalMargin) || 0,
@@ -6804,7 +7149,8 @@ private readonly shapeTablesMap: Record<string, string[]> = {
   'Scale':                ['SCD_GRAPH_GENERAL'],
   'Gauge':                ['SCD_GRAPH_GENERAL', 'SCD_GAUGE_DISPLAY', 'SCD_SHAPE_CONNECTION'],
   'Multiple':             ['SCD_MULTISTATE_INDICATOR_GENERAL','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE','SCD_SHAPE_CONNECTION'],
-  'ListIndicator':        ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
+  'List Indicator':       ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
+  'Control List':         ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
   'Backspace':            ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
   'End':                  ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
   'Enter':                ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
@@ -6944,7 +7290,7 @@ public getInsertTables(shapeType: string): string[] {
               }
               else if ( (shapeType == "Maintained") || (shapeType == "Momentry") || (shapeType == "Latched") 
                 || (shapeType == "Multistate") || (shapeType == "Interlocked") || (shapeType == "Multiple") 
-                || (shapeType == "ListIndicator") 
+                || (shapeType == "multistateIndicator") || (shapeType == "ListIndicator") 
                 ) {
                 if (butApp == 0){
                   object['STATE_NAME'] = "State0";
@@ -6958,13 +7304,13 @@ public getInsertTables(shapeType: string): string[] {
                 }
                 else if (butApp == 2){
                   object['STATE_NAME'] = "Error";
-                  if (shapeType == "Multiple") 
+                  if (shapeType == "Multiple" || shapeType == "multistateIndicator")
                     object['STATE_NAME'] = "State2";
                   object['STATE_ID'] = "2";
                   object['VALUE'] = "2";
                 }
                 else if (butApp == 3){
-                  object['STATE_NAME'] = "Error";
+                  object['STATE_NAME'] = shapeType == "multistateIndicator" ? "State3" : "Error";
                   object['STATE_ID'] = "3";
                   object['VALUE'] = "3";
                 }
@@ -7177,7 +7523,7 @@ public findRowsByTable(
     const txt = (v: any, f: string): string => this.dbText(v, f);
 
     const lineKinds = ["arc", "line", "polyline", "freehand"];
-    const surfaceKinds = ["rectangle", "roundedRectangle", "ellipse", "polygon", "arrowVertical", "arrowHorizontal"];
+    const surfaceKinds = ["rectangle", "roundedRectangle", "ellipse", "polygon", "arrowVertical", "arrowHorizontal", "panel", "wedge"];
     console.log("populateOtherShapeAttributes:", kind)
     // ---- Shape_Properties: SCD_SHAPE_GENERAL ----
     if (lineKinds.includes(kind) || surfaceKinds.includes(kind)) {
@@ -7241,10 +7587,11 @@ public findRowsByTable(
         dbShape: true,
         labelJustification: txt(g.JUSTIFICATION, "Left"),
         labelFieldLength: Math.max(1, Math.round(num(g.FIELD_LENGTH, 10))),
-        tagPriority: txt(g.TAG_PRIORITY, "Tag Name"),
-        // The label shows the tag's name or its description, whichever TAG_PRIORITY names first.
+        tagProperty: this.tagPropertyOf(g.TAG_PROPERTY),
+        // The label shows the value of the tag that TAG_PROPERTY names.
         tagName: "",
-        tagDescription: ""
+        tagDescription: "",
+        lowEu: "", highEu: "", engineeringUnits: "", contactValue: "", contactCloseLabel: "", contactOpenLabel: ""
       });
       return;
     }
@@ -7281,7 +7628,7 @@ public findRowsByTable(
         thresholdColor2: col(display.FILL_COLOR_2 ?? g.FILL_COLOR_2, "#d70040"),
         minorTicks: Math.max(1, Math.round(num(g.MINOR_TICKS, 5))),
         majorTicks: Math.max(1, Math.round(num(g.MAJOR_TICKS, 10))),
-        tickDirection: txt(g.TICK_DIRECTION, "Right"),
+        tickDirection: txt(g.TICK_DIRECTION, "Left"),
         needleWidth: num(g.NEEDLE_WIDTH, 2),
         needleColor: col(g.NEEDLE_COLOR, "#000000"),
         sweepStyle: txt(g.SWEEP_STYLE, "Point"),
@@ -7301,7 +7648,7 @@ public findRowsByTable(
       }
       return;
     }
-     // ---- Multistate_Indicator_Properties: SCD_MULTISTATE_INDICATOR_GENERAL + one SCD_SHAPE_STATE per state ----
+    // ---- Multistate_Indicator_Properties: SCD_MULTISTATE_INDICATOR_GENERAL + one SCD_SHAPE_STATE per state ----
     if (kind === "multistateIndicator") {
       const g = one("SCD_MULTISTATE_INDICATOR_GENERAL");
       if (!Object.keys(g).length) {
@@ -7309,9 +7656,17 @@ public findRowsByTable(
       }
       const stateRows = rows("SCD_SHAPE_STATE");
       const count = Math.max(1, Math.round(num(g.NUMBER_OF_STATES, stateRows.length || 1)));
+      // Each state takes the SCD_SHAPE_STATE row whose STATE_ID equals its number (0, 1, ...), like a push
+      // button takes its UP / DOWN look; rows without a STATE_ID fall back to their position in the table.
+      const rowForState = (i: number): any => stateRows.find(r => String(r?.STATE_ID ?? "").trim() !== ""
+        && Number(r.STATE_ID) === i) ?? stateRows[i] ?? stateRows[stateRows.length - 1];
+      // The table has one default look, so the later states are made lighter until the rows really differ.
+      const baseBack = col(rowForState(0)?.BACK_COLOR, "#000000");
+      const sameLook = stateRows.every(r => String(r.BACK_COLOR) === String(stateRows[0]?.BACK_COLOR));
       const makeState = (r: any, i: number): any => ({
+        stateId: i,
         name: txt(r?.STATE_NAME, `State${i}`),
-        backColor: col(r?.BACK_COLOR, "#000000"),
+        backColor: sameLook && i > 0 ? this.lighten(baseBack, Math.min(0.75, 0.25 * i)) : col(r?.BACK_COLOR, "#000000"),
         borderColor: col(r?.BORDER_COLOR, "#000000"),
         blink: yes(r?.BLINK),
         caption: "",
@@ -7326,7 +7681,7 @@ public findRowsByTable(
         patternStyle: txt(r?.PATTERN_STYLE, "None"),
         patternColor: col(r?.PATTERN_COLOR, "#ffffff")
       });
-      const states = Array.from({ length: count }, (_, i) => makeState(stateRows[i] ?? stateRows[stateRows.length - 1], i));
+      const states = Array.from({ length: count }, (_, i) => makeState(rowForState(i), i));
       Object.assign(options, {
         dbShape: true,
         triggerType: txt(g.TRIGGER_TYPE, "Value"),
@@ -7382,10 +7737,89 @@ public findRowsByTable(
       });
       return;
     }
+    // ---- Numeric Display / String Display: SCD_SHAPE_DISPLAY_GENERAL ----
+    if (this.DISPLAY_KINDS.includes(kind)) {
+      const g = one("SCD_SHAPE_DISPLAY_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      Object.assign(options, {
+        dbShape: true,
+        showDigitGrouping: yes(g.SHOW_DIGIT_GROUPING),
+        fieldLength: Math.max(1, Math.round(num(g.FIELD_LENGTH, 8))),
+        overflow: txt(g.OVERFLOW, "Show exponent"),
+        format: txt(g.FORMAT, "Decimal"),
+        dynamicDecimalPlaces: yes(g.DYNAMIC_DECIMAL_PLACES),
+        fixedDecimalPlaces: Math.max(0, Math.round(num(g.FIXED_DECIMAL_PLACES, 0))),
+        leadingCharacter: txt(g.LEADING_CHARACTER, "Blanks"),
+        justification: txt(g.JUSTIFICATION, "Left"),
+        displayValue: kind === "numericDisplay" ? "0" : "Text",
+        fillColor: "transparent",
+        connValue: ""
+      });
+      return;
+    }
 
-    // ---- Arrow_Button group: SCD_ARROW_BUTTON_GENERAL or SCD_BUTTON_PUSH_GENERAL ----
-    const keypadKinds = ["backspace", "endButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown"];
-    if (keypadKinds.includes(kind)) {
+    // ---- Time and Date Display / Local Message: SCD_MESSAGE_GENERAL ----
+    if (this.MESSAGE_KINDS.includes(kind)) {
+      const g = one("SCD_MESSAGE_GENERAL");
+      if (!Object.keys(g).length) {
+        return;
+      }
+      const back = col(g.BACK_COLOR, "#000000");
+      Object.assign(options, {
+        dbShape: true,
+        timeAndDateFormat: txt(g.TIME_AND_DATE_FORMAT, "D1"),
+        wordWrap: yes(g.WORD_WRAP),
+        alignment: txt(g.ALIGNMENT, "MM").toUpperCase(),
+        fontSize: num(g.FONT_SIZE, 10),
+        fontFamily: txt(g.FONT_NAME, "Arial"),
+        blink: yes(g.BLINK),
+        selectionBackColor: col(g.SELECTION_BACK_COLOR, "#000000"),
+        selectionForeColor: col(g.SELECTION_FORE_COLOR, "#ffffff"),
+        patternColor: col(g.PATTERN_COLOR, "#ffffff"),
+        patternStyle: txt(g.PATTERN_STYLE, "None"),
+        backStyle: txt(g.BACK_STYLE, "Solid"),
+        fillColor: back,
+        borderColor: col(g.BORDER_COLOR, "#000000"),
+        borderUsesBackColor: yes(g.BORDER_USES_BACK_COLOR),
+        borderWidth: num(g.BORDER_WIDTH, 8),
+        borderStyle: txt(g.BORDER_STYLE, "RaisedInset"),
+        foreColor: "#ffffff",
+        messageText: kind === "localMessage" ? "Local message" : "",
+        connValue: ""
+      });
+      return;
+    }
+
+    // ---- Numeric Input / String Input: SCD_SHAPE_INPUT_GENERAL + SCD_SHAPE_INPUT_APPEARANCE ----
+    if (this.INPUT_KINDS.includes(kind)) {
+      const g = one("SCD_SHAPE_INPUT_GENERAL");
+      const a = one("SCD_SHAPE_INPUT_APPEARANCE");
+      if (!Object.keys(g).length && !Object.keys(a).length) {
+        return;
+      }
+      Object.assign(options, {
+        dbShape: true,
+        continuouslyUpdate: yes(g.CONTINUOUSLY_UPDATE),
+        onScreenKeyboard: yes(g.DISPLAY_ON_SCREEN_KEYBOARD),
+        format: txt(a.FORMAT, "Decimal"),
+        fixedDecimalPlaces: Math.max(0, Math.round(num(a.FIXED_DECIMAL_PLACES, 0))),
+        dynamicDecimalPlaces: this.dbKey(a.DECIMAL_PLACES).includes("dynamic"),
+        fieldLength: Math.max(1, Math.round(num(a.FIELD_LENGTH, 12))),
+        expressionTrueState: txt(a.EXPRESSION_TRUE_STATE, "Enable"),
+        leadingCharacter: txt(a.LEADING_CHARACTER, "Blanks"),
+        justification: txt(a.JUSTIFICATION, "Left"),
+        overflow: "Show asterisks",
+        inputValue: kind === "numericInput" ? "0" : "",
+        fillColor: "#ffffff",
+        connValue: "", connMin: "", connMax: ""
+      });
+      return;
+    }
+
+    // ---- Arrow_Button group: SCD_ARROW_BUTTON_GENERAL or SCD_BUTTON_PUSH_GENERAL (also the push buttons) ----
+    if (this.KEYPAD_KINDS.includes(kind)) {
       const arrow = one("SCD_ARROW_BUTTON_GENERAL");
       const g = Object.keys(arrow).length ? arrow : one("SCD_BUTTON_PUSH_GENERAL");
       if (!Object.keys(g).length) {
@@ -7675,6 +8109,21 @@ private nextInsertPosition(): { x: number; y: number } {
       gauge: "Gauge",
       scale: "Scale",
       controlList: "Control List",
+      panel: "Panel",
+      wedge: "Wedge",
+      numericDisplay: "Numeric Display",
+      stringDisplay: "String Display",
+      timeDateDisplay: "Time and Date Display",
+      localMessage: "Local Message",
+      numericInput: "Numeric Input",
+      stringInput: "String Input",
+      momentary: "Momentary Button",
+      maintained: "Maintained Button",
+      latched: "Latched Button",
+      interlocked: "Interlocked Button",
+      multistateButton: "Multistate Button",
+      rampButton: "Ramp Button",
+      navigationButton: "Navigation Button",
       tagLabel: "Tag Label",
       arrowVertical: "Arrow Vertical",
       arrowHorizontal: "Arrow Horizontal",
@@ -7706,7 +8155,12 @@ private readonly tablesKeyByKind: Record<string, string> = {
   arrowVertical: 'Arrow Vertical', arrowHorizontal: 'Arrow Horizontal',
   backspace: 'Backspace', endButton: 'End', enter: 'Enter',
   moveLeft: 'Move Left', moveRight: 'Move Right', moveUp: 'Move Up', moveDown: 'Move Down',
-  pageUp: 'Page Up', pageDown: 'Page Down', button: 'Button'
+  pageUp: 'Page Up', pageDown: 'Page Down', button: 'Button',
+  panel: 'Panel', wedge: 'Wedge',
+  numericDisplay: 'Numeric Display', stringDisplay: 'String Display', timeDateDisplay: 'Time and Date Display',
+  localMessage: 'Local Message', numericInput: 'Numeric Input', stringInput: 'String Input',
+  momentary: 'Momentry', maintained: 'Maintained', latched: 'Latched', interlocked: 'Interlocked',
+  multistateButton: 'Multistate', rampButton: 'Ramp Button', navigationButton: 'Navigation Button'
 };
   // 
   public addRichText(): void {
@@ -8077,7 +8531,7 @@ private finishPolyDrawing(): void {
       );
   }
   /** Toolbar dropdown menus: run the chosen action, then reset the dropdown. */
-  public runMenu(event: Event, menu: "arrange" | "align" | "add" | "button" | "indicator"): void {
+  public runMenu(event: Event, menu: "arrange" | "align" | "add" | "button" | "indicator" | "field"): void {
     const select = event.target as HTMLSelectElement;
     const key = select.value;
     select.value = "";
@@ -8120,13 +8574,22 @@ private finishPolyDrawing(): void {
         freehand: () => this.toggleFreehandMode(),
         polygon: () => this.addPolygon(),
         polyline: () => this.addPolyline(),
-        container: () => this.addContainer()
+        container: () => this.addContainer(),
+        panel: () => this.addLibraryShape("panel", { width: 160, height: 100, fillColor: "#d9e8f5" }),
+        wedge: () => this.addLibraryShape("wedge", { width: 140, height: 140, fillColor: "#d9e8f5" })
       },
       button: new Proxy({} as Record<string, () => void>, {
         get: (_target, name: string) => () => this.addButtonShape(name)
       }),
       indicator: new Proxy({} as Record<string, () => void>, {
         get: (_target, name: string) => () => this.addIndicatorShape(name)
+      }),
+      field: new Proxy({} as Record<string, () => void>, {
+        get: (_target, name: string) => () => this.addLibraryShape(name, {
+          width: name === "localMessage" || name === "timeDateDisplay" ? 200 : 140,
+          height: name === "localMessage" ? 60 : 36,
+          fillColor: "#ffffff"
+        })
       })
     };
     actions[menu]?.[key]?.();
@@ -8560,7 +9023,7 @@ console.log("populateshapeAttributes:options:",{...options})
         this.updateShapes();
       }, 100);
     }
-  /**
+   /**
    * The one entry point that draws a library shape. It resolves the shape's attributes (shapes saved
    * before the database layer get the table defaults), applies the run-time state look (hover,
    * pressed, disabled) and then calls drawShape, the single drawing function.
@@ -8584,7 +9047,6 @@ console.log("populateshapeAttributes:options:",{...options})
       const hex = this.normalizeColor(baseFill, "#808080");
       drawStyle = { ...style, fillColor: state === "pressed" ? this.darken(hex, 0.12) : this.lighten(hex, 0.2) };
     }
-    console.log("pre this.drawShape:kind:",kind)
     this.drawShape(kind, group, offsetX, offsetY, width, height, d, drawStyle);
     if (state === "pressed") {
       // A short dark line under the top edge reads as "pushed in".
@@ -8593,13 +9055,22 @@ console.log("populateshapeAttributes:options:",{...options})
         stroke: { color: "#000000", width: 2, opacity: 0.4 } as any, fill: { color: "transparent" }
       }));
     } else if (state === "disabled") {
-      (group.options as any).opacity = 0.45;
+      // Kendo draws opacity only through the drawing elements (as the Visibility animation does), so
+      // every drawn element is dimmed, not the group.
+      const dim = (element: any): void => {
+        const kids = Array.from(element?.children || []) as any[];
+        if (kids.length) {
+          kids.forEach(dim);
+        } else {
+          element?.opacity?.(0.45 * (Number(element?.opacity?.()) || 1));
+        }
+      };
+      dim((group as any).drawingElement);
     }
     return group;
-  }
-
   
- /** Cache of the table defaults of each kind, used for shapes saved before the database layer existed. */
+  }
+/** Cache of the table defaults of each kind, used for shapes saved before the database layer existed. */
   private tableDefaultCache: Record<string, any> = {};
 
   private tableDefaultsFor(kind: string): any | null {
@@ -8645,13 +9116,11 @@ console.log("populateshapeAttributes:options:",{...options})
     if (this.isDbYes(dataItem?.disabled)) {
       return "disabled";
     }
-    if (this.animationRunning) {
-      if ((dataItem as any).__pressed) {
-        return "pressed";
-      }
-      if ((dataItem as any).__hover) {
-        return "hover";
-      }
+    if ((dataItem as any).__pressed) {
+      return "pressed";
+    }
+    if ((dataItem as any).__hover) {
+      return "hover";
     }
     return "normal";
   }
@@ -8665,8 +9134,7 @@ console.log("populateshapeAttributes:options:",{...options})
     Object.defineProperty(d, flag, { value, enumerable: false, writable: true, configurable: true });
     this.redrawAnimated(shape);
   }
-
-  // Add these helper methods for model synchronization
+// Add these helper methods for model synchronization
 private runtimeShapeId(shape: any): string {
   const id = shape?.id
     ?? shape?.options?.id
@@ -9729,7 +10197,7 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     }
     if (dataItem?.dbShape && [...this.SURFACE_KINDS, ...this.LINE_KINDS,
         ...this.KEYPAD_KINDS, ...this.GRAPH_KINDS,
-        ...this.LIST_KINDS, ...this.MULTI_KINDS].includes(dataItem.libraryKind)) {
+        ...this.LIST_KINDS, ...this.MULTI_KINDS, ...this.MESSAGE_KINDS].includes(dataItem.libraryKind)) {
       this.syncShapeProps(dataItem);
     }
     if (dataItem?.dbShape && dataItem.libraryKind === "text") {
@@ -10233,34 +10701,33 @@ private applySelectedRichTextFormatting(
       `<path d="M3 18 C6 10 9 20 12 12 C15 4 18 16 21 10" fill="none" stroke="#e94560" stroke-width="2"/>`,
     vector:
       `<path d="M4 18 L14 6" stroke="#e94560" stroke-width="2"/><circle cx="14" cy="6" r="2" fill="#e94560"/>`,
-
     // ── Buttons ──
     button:
       `<rect x="3" y="7" width="18" height="12" rx="6" ry="6" fill="none" stroke="#e94560" stroke-width="2"/><circle cx="12" cy="13" r="2" fill="#e94560"/>`,
-    navButton:
+    navigationButton:
       `<circle cx="12" cy="13" r="9" fill="none" stroke="#e94560" stroke-width="2"/><path d="M9 13 L15 13 M13 10 L16 13 L13 16" stroke="#e94560" stroke-width="2" fill="none"/>`,
     rampButton:
       `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>`,
     pushbutton:
       `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>`,
-    buttonmomentry:
+    momentary:
       `<rect x="3" y="9" width="18" height="11" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
         `<path d="M12 3 L12 7 M9 5 L12 8 L15 5" fill="none" stroke="#7945e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
-    buttonMaintained:
+    maintained:
       `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
       `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
       `<circle cx="19" cy="13" r="1.5" fill="#e94560"/>`,
-    buttonLatched:
+    latched:
       `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
       `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
       `<path d="M19 10 L21 10 L21 13" fill="none" stroke="#e94560" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`,
-    buttonMultistate:
+    multistateButton:
       `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
       `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
       `<circle cx="8" cy="16" r="1" fill="#e94560"/>` +
       `<circle cx="12" cy="16" r="1" fill="#e94560"/>` +
       `<circle cx="16" cy="16" r="1" fill="#e94560"/>`,
-    buttonInterlocked:
+    interlocked:
         `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
         `<path d="M5 17 L19 9" stroke="#e94560" stroke-width="2"/>` +
         `<circle cx="17" cy="13" r="1.8" fill="none" stroke="#e94560" stroke-width="1.3"/>` +
@@ -10290,7 +10757,7 @@ private applySelectedRichTextFormatting(
       // vertical arrow pointing UP, sitting outside the lower-right corner
       `<path d="M20 22 L20 17 M20 17 L18 19 M20 17 L22 19" fill="none" stroke="#e94560" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
 
-    numeric:
+    numericDisplay:
       `<rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="#e94560" stroke-width="2"/><text x="12" y="15" font-size="9" text-anchor="middle" fill="#e94560" font-family="monospace">#</text>`,
     scale:
       `<rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#e94560" stroke-width="2"/>` +
@@ -10441,13 +10908,13 @@ private applySelectedRichTextFormatting(
     'Polyline': 'polyline',
     'Polygon': 'polygon',
     'Line': 'line',
-     'Interlocked': 'buttonInterlocked',
-    'Multistate': 'buttonMultistate',
-    'Latched': 'buttonLatched',
-    'Maintained': 'button',
-    'Momentry': 'buttonmomentry',
+     'Interlocked': 'interlocked',
+    'Multistate': 'multistateButton',
+    'Latched': 'latched',
+    'Maintained': 'maintained',
+    'Momentry': 'momentary',
     'Push Button': 'pushbutton',
-    'Navigation Button': 'navButton',
+    'Navigation Button': 'navigationButton',
     'Ramp Button': 'rampButton',
     'Button': 'button',
     'Buttons': 'button',
@@ -10455,7 +10922,7 @@ private applySelectedRichTextFormatting(
     'String Display': 'stringDisplay',
     'String Input': 'stringInput',
     'Numeric Input': 'numericInput',
-    'Numeric Display': 'numeric',
+    'Numeric Display': 'numericDisplay',
     'Data': 'numeric',
     'Scale': 'scale',
     'Gauge': 'gauge',
@@ -12662,8 +13129,8 @@ console.log('ButtonSensor: dataItem:', dataItem);
   ].includes(type);
 
   if (!isButton) {
-    // Other shapes show the pushed-in look while the mouse is down (animation running only).
-    if (this.animationRunning && type && !this.isDbYes(dataItem.disabled)) {
+    // Other shapes show the pushed-in look while the mouse is down, like the Button.
+    if (type && !this.isDbYes(dataItem.disabled)) {
       this.pressedOtherId = shapeId;
       this.setRuntimeFlag(shape, "__pressed", true);
     }
