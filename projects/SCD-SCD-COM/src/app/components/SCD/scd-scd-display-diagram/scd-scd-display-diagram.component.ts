@@ -322,6 +322,7 @@ public disableDISPLAY_DATA = false;
   public ngAfterViewInit() {
     if (typeof document !== "undefined") {
       document.addEventListener("keydown", this.polyKeyHandler, true);
+      document.addEventListener("keydown", this.editorKeyHandler, true);
     }
     this.starServices.setRTL();
     this.disableFields();
@@ -430,6 +431,7 @@ public disableDISPLAY_DATA = false;
     // Unsubscribe the event once not needed.
     if (typeof document !== "undefined") {
       document.removeEventListener("keydown", this.polyKeyHandler, true);
+      document.removeEventListener("keydown", this.editorKeyHandler, true);
     }
     this.stopAnimationTimer();
     if (typeof this.componentConfigChangeEvent !== "undefined") this.componentConfigChangeEvent.unsubscribe();
@@ -2671,8 +2673,8 @@ public onStagePointerDown(event: PointerEvent): void {
   }
 
   // ---- Keypad / arrow buttons in run mode ----
-  private  readonly KEYPAD_KEYS: Record<string, string> = {
-    backspace: "Backspace", endButton: "End", enter: "Enter", moveLeft: "ArrowLeft", moveRight: "ArrowRight",
+  private readonly KEYPAD_KEYS: Record<string, string> = {
+    backspace: "Backspace", endButton: "End", homeButton: "Home", enter: "Enter", moveLeft: "ArrowLeft", moveRight: "ArrowRight",
     moveUp: "ArrowUp", moveDown: "ArrowDown", pageUp: "PageUp", pageDown: "PageDown"
   };
   /** Value of each button's tag while animation runs (Normally Open = 1 while held, Maintained toggles, ...). */
@@ -2747,7 +2749,7 @@ public onStagePointerDown(event: PointerEvent): void {
         caret(end + 1);
       } else if (key === "End" || key === "ArrowDown" || key === "PageDown") {
         caret(length);
-      } else if (key === "ArrowUp" || key === "PageUp") {
+      } else if (key === "Home" || key === "ArrowUp" || key === "PageUp") {
         caret(0);
       } else if (key === "Enter" && target.tagName === "TEXTAREA") {
         target.setRangeText("\n", start, end, "end");
@@ -2793,7 +2795,8 @@ public onStagePointerDown(event: PointerEvent): void {
     this.buttonValues[id] = value;
     Object.defineProperty(d, "__value", { value, enumerable: false, writable: true, configurable: true });
     const keyNote = this.KEYPAD_KEYS[d.libraryKind] ? this.sendKeypadKey(d.libraryKind, d, focusEl) : "No key is sent by this button";
-    this.statusMessage = `${this.libraryShapeTitle(d.libraryKind)} (${String(d.buttonAction ?? "Normally Open")}): value ${value}. ${keyNote}.${note}`;
+    const pilotNote = this.pilotListsWith(d.libraryKind);
+    this.statusMessage = `${this.libraryShapeTitle(d.libraryKind)} (${String(d.buttonAction ?? "Normally Open")}): value ${value}. ${keyNote}.${note}${pilotNote}`;
   }
   /** Pending "return to idle" of a released momentary button; a new press cancels it. */
   private holdResetTimers: Record<string, any> = {};
@@ -2883,10 +2886,32 @@ public onStagePointerDown(event: PointerEvent): void {
     this.patchShapes([shape], { inputValue: value });
     this.statusMessage = `${this.libraryShapeTitle(d.libraryKind)} set to ${value}.`;
   }
+/**
+   * A shape is redrawn with its pressed look when the mouse goes down on it, and the browser then drops the click
+   * (its mouse-down element no longer exists). So while the animation runs, a release that is not followed by
+   * a click is treated as the click.
+   */
+  private pendingClick: PointerEvent | null = null;
+
+  public onStagePointerUp(event: PointerEvent): void {
+    if (!this.animationRunning || event.button !== 0) {
+      return;
+    }
+    this.pendingClick = event;
+    setTimeout(() => {
+      const missed = this.pendingClick;
+      this.pendingClick = null;
+      if (missed) {
+        this.onStageClick(missed);
+      }
+    }, 0);
+  }
+
 
 
   /** While running, clicking a shape with "toggle on click" flips its value. */
   public onStageClick(event: MouseEvent): void {
+    this.pendingClick = null;
     if (!this.animationRunning || !this.diagram) {
       return;
     }
@@ -2914,6 +2939,10 @@ public onStagePointerDown(event: PointerEvent): void {
         this.selectedListIndex = row;
       }
       return;
+    }
+    if (hit && (hitData?.libraryKind === "pilotedList" || hitData?.libraryKind === "displayList")) {
+      // These two ignore clicks: the Piloted one is moved by the keypad buttons, the Display one only shows its value.
+      this.statusMessage = this.listSelectorHint(hitData.libraryKind);
     }
     if (hit && this.INPUT_KINDS.includes(hitData?.libraryKind) && this.dbKey(hitData.expressionTrueState) !== "disable"
         && !this.isDbYes(hitData.disabled)) {
@@ -3736,9 +3765,12 @@ public onStagePointerDown(event: PointerEvent): void {
 
       // ---------------- lists ----------------
       case "listIndicator":
-      case "controlList": {
+      case "controlList":
+      case "pilotedList":
+      case "displayList": {
         const bw = this.drawDbPanel(group, x, y, w, h, 0, d, fillColor, borderOverride);
-        this.drawDbListRows(group, x + bw, y + bw, w - 2 * bw, h - 2 * bw, d, kind === "controlList");
+        // The three selectors show the pointer triangle beside the current row; the List Indicator does not.
+        this.drawDbListRows(group, x + bw, y + bw, w - 2 * bw, h - 2 * bw, d, kind !== "listIndicator");
         return true;
       }
 
@@ -3922,7 +3954,7 @@ public onStagePointerDown(event: PointerEvent): void {
       }
 
       // ---------------- keypad / arrow buttons ----------------
-      case "backspace": case "endButton": case "enter":
+      case "backspace": case "endButton": case "homeButton": case "enter":
       case "moveLeft": case "moveRight": case "moveUp": case "moveDown":
       case "pageUp": case "pageDown":
       case "momentary": case "maintained": case "latched": case "interlocked":
@@ -4414,6 +4446,8 @@ public onStagePointerDown(event: PointerEvent): void {
     const sizes: Record<string, { width: number; height: number }> = {
       listIndicator: { width: 260, height: 105 },
       controlList: { width: 230, height: 105 },
+      pilotedList: { width: 240, height: 120 },
+      displayList: { width: 225, height: 100 },
       multistateIndicator: { width: 230, height: 135 },
       barGraph: { width: 235, height: 135 },
       gauge: { width: 185, height: 125 },
@@ -4427,7 +4461,7 @@ public onStagePointerDown(event: PointerEvent): void {
       fillColor: "transparent",
       // The maximum comes from the database defaults (MAXIMUM_VALUE), not a fixed 100.
       ...(levelKinds.includes(kind) ? { containerValue: kind === "barGraph" ? 25 : 0 } : {}),
-      ...(kind === "listIndicator" || kind === "controlList" ? { listItems: [], listIndex: 0 } : {})
+      ...(this.LIST_KINDS.includes(kind) ? { listItems: [], listIndex: 0 } : {})
     });
   }
 
@@ -4439,7 +4473,10 @@ public onStagePointerDown(event: PointerEvent): void {
     arrowVertical: [],
     arrowHorizontal: [],
     backspace: [[[0.05, 0.5], [0.4, 0.2], [0.4, 0.4], [0.95, 0.4], [0.95, 0.6], [0.4, 0.6], [0.4, 0.8]]],
-    endButton: [[[0.1, 0.1], [0.9, 0.1], [0.5, 0.6]], [[0.1, 0.72], [0.9, 0.72], [0.9, 0.9], [0.1, 0.9]]],
+    // End and Home are small centred symbols on a plain button (as in the reference picture).
+    endButton: [[[0.34, 0.3], [0.66, 0.3], [0.5, 0.52]], [[0.34, 0.58], [0.66, 0.58], [0.66, 0.68], [0.34, 0.68]]],
+    // Home is the End button turned upside down: a bar on top and a triangle pointing up under it.
+    homeButton: [[[0.34, 0.7], [0.66, 0.7], [0.5, 0.48]], [[0.34, 0.32], [0.66, 0.32], [0.66, 0.42], [0.34, 0.42]]],
     enter: [[[0.9, 0.15], [0.9, 0.65], [0.4, 0.65], [0.4, 0.85], [0.05, 0.57], [0.4, 0.3], [0.4, 0.5], [0.72, 0.5], [0.72, 0.15]]],
     moveLeft: [[[0.85, 0.05], [0.15, 0.5], [0.85, 0.95]]],
     moveRight: [[[0.15, 0.05], [0.85, 0.5], [0.15, 0.95]]],
@@ -4671,14 +4708,14 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
 
   public get hasListShape(): boolean {
     return this.selectedShapes().some(shape =>
-      ["listIndicator", "controlList"].includes(this.shapeDataItem(shape)?.libraryKind));
+      this.LIST_KINDS.includes(this.shapeDataItem(shape)?.libraryKind));
   }
 
   private applyListPatch(patch: { items?: string[]; text?: string; index?: number }): void {
     const shapes = this.selectedShapes().filter(shape =>
-      ["listIndicator", "controlList"].includes(this.shapeDataItem(shape)?.libraryKind));
+      this.LIST_KINDS.includes(this.shapeDataItem(shape)?.libraryKind));
     if (!shapes.length) {
-      this.statusMessage = "Select a List Indicator or Control List first.";
+      this.statusMessage = "Select a List Indicator or a List Selector first.";
       return;
     }
     for (const shape of shapes) {
@@ -4705,6 +4742,44 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       this.refreshCustomShape(shape);
     }
   }
+  /** Status line text for the two list selectors that do not react to clicks (also shown while one is selected). */
+  private listSelectorHint(kind: string): string {
+    if (kind === "pilotedList") {
+      return "Piloted List Selector: click does nothing - use Move Up / Move Down / Page Up / Page Down / Home / End buttons, or its Tag value.";
+    }
+    if (kind === "displayList") {
+      return "Display List Selector: it only shows the row of its Tag value - clicks and buttons do not change it.";
+    }
+    return "";
+  }
+
+  /**
+   * Piloted List Selector: its highlighted row is piloted by the keypad buttons - Move Up / Move Down move it one
+   * row, Page Up / Page Down three rows, Home goes to the first row and End to the last. Returns a note for the status line.
+   */
+  private pilotListsWith(kind: string): string {
+    const moves: Record<string, (row: number, count: number) => number> = {
+      moveUp: row => row - 1, moveDown: row => row + 1, pageUp: row => row - 3, pageDown: row => row + 3,
+      homeButton: () => 0, endButton: (_row, count) => count - 1
+    };
+    const move = moves[kind];
+    if (!move) {
+      return "";
+    }
+    let note = "";
+    for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
+      const data = this.shapeDataItem(shape);
+      if (data?.libraryKind !== "pilotedList") {
+        continue;
+      }
+      const count = this.listRows(data).length;
+      const row = Math.max(0, Math.min(count - 1, move(this.listIndex(data, count), count)));
+      this.applyListPatchTo(shape, row);
+      note = ` Piloted List Selector moved to row ${row + 1}.`;
+    }
+    return note;
+  }
+
 
   private applyListPatchTo(shape: any, index: number): void {
     const dataItem = this.shapeDataItem(shape);
@@ -4754,7 +4829,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     momentary: "Normally Open", maintained: "Maintained", latched: "Latched", interlocked: "Multistate",
     multistateButton: "Multistate", rampButton: "Ramp", navigationButton: "Navigation"
   };
-  private readonly KEYPAD_KINDS = ["backspace", "endButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown",
+  private readonly KEYPAD_KINDS = ["backspace", "endButton", "homeButton", "enter", "moveLeft", "moveRight", "moveUp", "moveDown", "pageUp", "pageDown",
     ...this.PUSH_KINDS];
   // Numeric / String Display, Time and Date, Local Message and the two Inputs.
   private readonly DISPLAY_KINDS = ["numericDisplay", "stringDisplay"];
@@ -4763,7 +4838,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
   private readonly FIELD_KINDS = [...this.DISPLAY_KINDS, ...this.MESSAGE_KINDS, ...this.INPUT_KINDS];
 
   private readonly GRAPH_KINDS = ["barGraph", "gauge", "scale"];
-  private readonly LIST_KINDS = ["listIndicator", "controlList"];
+  private readonly LIST_KINDS = ["listIndicator", "controlList", "pilotedList", "displayList"];
   private readonly MULTI_KINDS = ["multistateIndicator"];
 
 
@@ -4891,7 +4966,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
       blink: !!dataItem.blink
     };
   }
-  // The toolbar is shown one page at a time, with Back / Next arrows and a page number.
+  // The toolbar is shown one tab at a time (like the ribbon of Word or a CAD program).
   public readonly toolbarPageTitles = [
     "Edit and add shapes", "Values and animation", "Shape look", "Text and Tag Label", "Buttons", "Graphs and lists"
   ];
@@ -4913,6 +4988,10 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     } catch {
       // the page just is not remembered
     }
+  }
+  /** Click on one of the toolbar tabs. */
+  public selectToolbarPage(page: number): void {
+    this.setToolbarPage(page);
   }
 
   public prevToolbarPage(): void {
@@ -7151,8 +7230,11 @@ private readonly shapeTablesMap: Record<string, string[]> = {
   'Multiple':             ['SCD_MULTISTATE_INDICATOR_GENERAL','SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE', 'SCD_SHAPE_STATE','SCD_SHAPE_CONNECTION'],
   'List Indicator':       ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
   'Control List':         ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
+  'Piloted':              ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
+  'Display':              ['SCD_LIST_INDICATOR_GENERAL','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE','SCD_LIST_INDICATOR_STATE', 'SCD_LIST_INDICATOR_STATE','SCD_SHAPE_CONNECTION'],
   'Backspace':            ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
   'End':                  ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
+  'Home':                 ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
   'Enter':                ['SCD_ARROW_BUTTON_GENERAL', 'SCD_ARROW_BUTTON_LABEL'],
   'Move Left':            ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
   'Move Right':           ['SCD_BUTTON_PUSH_GENERAL', 'SCD_ARROW_BUTTON_LABEL', 'SCD_ARROW_BUTTON_TIMING'],
@@ -7364,6 +7446,14 @@ public getInsertTables(shapeType: string): string[] {
                 else if (butApp == 2)
                   object['BUTTON_APPEARANCE'] = "DISABLED";
                 butApp++;
+            }
+            // End and Home are plain navy buttons (no pattern), as in the reference picture.
+            if (tables[i] == "INSERT_SCD_ARROW_BUTTON_GENERAL" && (shapeType == "endButton" || shapeType == "homeButton")) {
+              object['PATTERN_STYLE'] = "None";
+            }
+            // The three list selectors are navy blue like the reference picture; the List Indicator keeps its table colour.
+            if (tables[i] == "INSERT_SCD_LIST_INDICATOR_GENERAL" && ["controlList", "pilotedList", "displayList"].includes(shapeType)) {
+              object['BACK_COLOR'] = "#00008B";
             }
             if (tables[i] == "INSERT_SCD_GRAPH_GENERAL") {
               if (shapeType == "Gauge"){
@@ -7699,7 +7789,7 @@ public findRowsByTable(
     }
 
     // ---- List_Indicator_Properties: SCD_LIST_INDICATOR_GENERAL / _STATE ----
-    if (kind === "listIndicator" || kind === "controlList") {
+    if (this.LIST_KINDS.includes(kind)) {
       const g = one("SCD_LIST_INDICATOR_GENERAL");
       if (!Object.keys(g).length) {
         return;
@@ -8108,7 +8198,9 @@ private nextInsertPosition(): { x: number; y: number } {
       barGraph: "Bar Graph",
       gauge: "Gauge",
       scale: "Scale",
-      controlList: "Control List",
+      controlList: "Control List Selector",
+      pilotedList: "Piloted List Selector",
+      displayList: "Display List Selector",
       panel: "Panel",
       wedge: "Wedge",
       numericDisplay: "Numeric Display",
@@ -8129,6 +8221,7 @@ private nextInsertPosition(): { x: number; y: number } {
       arrowHorizontal: "Arrow Horizontal",
       backspace: "Back space",
       endButton: "End Button",
+      homeButton: "Home Button",
       enter: "Enter",
       moveLeft: "Move Left",
       moveRight: "Move Right",
@@ -8151,9 +8244,10 @@ private readonly tablesKeyByKind: Record<string, string> = {
   arc: 'Arc', line: 'Line', polygon: 'Polygon', polyline: 'Polyline', freehand: 'FreeHand',
   text: 'Text', richText: 'Text', tagLabel: 'Tag Label',
   gauge: 'Gauge', scale: 'Scale', barGraph: 'BarGraph',
-  listIndicator: 'ListIndicator', controlList: 'ListIndicator', multistateIndicator: 'Multiple',
+  listIndicator: 'ListIndicator', controlList: 'ListIndicator', pilotedList: 'ListIndicator', displayList: 'ListIndicator',
+  multistateIndicator: 'Multiple',
   arrowVertical: 'Arrow Vertical', arrowHorizontal: 'Arrow Horizontal',
-  backspace: 'Backspace', endButton: 'End', enter: 'Enter',
+  backspace: 'Backspace', endButton: 'End', homeButton: 'Home', enter: 'Enter',
   moveLeft: 'Move Left', moveRight: 'Move Right', moveUp: 'Move Up', moveDown: 'Move Down',
   pageUp: 'Page Up', pageDown: 'Page Down', button: 'Button',
   panel: 'Panel', wedge: 'Wedge',
@@ -8600,6 +8694,7 @@ private finishPolyDrawing(): void {
   public addButtonShape(kind: string): void {
     const size = kind === "arrowVertical" ? { width: 80, height: 60 }
       : kind === "arrowHorizontal" ? { width: 170, height: 60 }
+      : kind === "homeButton" || kind === "endButton" ? { width: 100, height: 80 }
       : { width: 80, height: 40 };
     const isArrow = kind === "arrowVertical" || kind === "arrowHorizontal";
     this.addLibraryShape(kind, { ...size, fillColor: isArrow ? "#008080" : "#000080" });
@@ -10204,13 +10299,13 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
       this.syncTextProps(dataItem);
     }
     this.syncExtraProps(dataItem);
-    if (["listIndicator", "controlList"].includes(dataItem?.libraryKind)) {
+    if (this.LIST_KINDS.includes(dataItem?.libraryKind)) {
       this.selectedListItems = typeof dataItem.listItemsText === "string"
         ? dataItem.listItemsText
         : (Array.isArray(dataItem.listItems) ? dataItem.listItems : []).join("; ");
       this.selectedListIndex = Math.round(Number(dataItem.listIndex) || 0);
     }
-    if (["tagLabel", "listIndicator", "controlList"].includes(dataItem?.libraryKind)) {
+    if (["tagLabel", ...this.LIST_KINDS].includes(dataItem?.libraryKind)) {
       const family = String(dataItem.fontFamily ?? "").split(",")[0].trim();
       this.selectedRichTextFontFamily = family || "Arial";
       const size = Number(dataItem.fontSize) > 0
@@ -10228,9 +10323,11 @@ private persistEditorStyle(shape: any, style:ShapeEditorStyle): void {
     }
 
     if (updateStatus) {
-      this.statusMessage = shapes.length === 1
+      const hint = shapes.length === 1 && this.animationRunning
+        ? this.listSelectorHint(this.shapeDataItem(shapes[0])?.libraryKind) : "";
+      this.statusMessage = hint || (shapes.length === 1
         ? "1 shape selected."
-        : `${shapes.length} shapes selected.`;
+        : `${shapes.length} shapes selected.`);
     }
   }
     private inferStrokeColor(dataItem: any): string {
@@ -10497,7 +10594,7 @@ private applySelectedRichTextFormatting(
   ): void {
     const shapes = this.selectedShapes().filter(shape => {
       const kind = this.shapeDataItem(shape)?.libraryKind;
-      return kind === "richText" || kind === "text" || kind === "tagLabel" || kind === "listIndicator" || kind === "controlList";
+      return kind === "richText" || kind === "text" || kind === "tagLabel" || this.LIST_KINDS.includes(kind);
     });
 
     if (!shapes.length) {
@@ -10507,7 +10604,7 @@ private applySelectedRichTextFormatting(
 
     for (const shape of shapes) {
       const dataItem = this.shapeDataItem(shape);
-      if (["text", "tagLabel", "listIndicator", "controlList"].includes(dataItem?.libraryKind)) {
+      if (["text", "tagLabel", ...this.LIST_KINDS].includes(dataItem?.libraryKind)) {
         // Plain Text has no blocks model - just two direct properties read by
         // drawLibraryShape's "text" branch.
         if (patch.fontFamily) {
@@ -10939,14 +11036,18 @@ private applySelectedRichTextFormatting(
     'Move Left': 'moveLeft',
     'Enter': 'enter',
     'End': 'endButton',
+    'Home': 'homeButton',
     'Backspace': 'backspace',
     'Arrow Horizontal': 'arrowHorizontal',
     'Arrow Vertical':   'arrowVertical',
     //'Navigation': 'navButton',
     //'Arrow': 'arrow',
-    'Display': 'display',
-    'Piloted': 'piloted',
+    //'Display': 'display',
+    //'Piloted': 'piloted',
     'Control List': 'controlList',
+    //'Control List Selector': 'controlList',
+    'Piloted': 'pilotedList',
+    'Display': 'displayList',
     'List Indicator': 'listIndicator',
     'String': 'text',
     'Numeric': 'numeric',
@@ -13084,6 +13185,36 @@ onWindowBlur(): void {
   console.log('ButtonSensor: window blur - releasing button');
   this.releasePressedButton();
 }
+/**
+ * Keyboard shortcuts of the toolbar buttons: Ctrl+C (Copy), Ctrl+V (Paste), Delete (Delete).
+ * It runs first (capture phase on the document) and stops the key there, because the Kendo diagram has
+ * shortcuts of its own for these keys when the canvas has the focus - otherwise Ctrl+V would paste twice.
+ * Ignored while typing in a box, while drawing and while the animation runs.
+ */
+private readonly editorKeyHandler = (event: KeyboardEvent): void => {
+  const target = event.target as HTMLElement | null;
+  const typing = !!target && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+  if (typing || event.defaultPrevented || !this.diagram || this.animationRunning || this.polyMode || this.freehandMode) {
+    return;
+  }
+  const ctrl = event.ctrlKey || event.metaKey;
+  const key = String(event.key ?? "").toLowerCase();
+  const plain = !event.altKey && !event.shiftKey;
+  let handled = true;
+  if (ctrl && plain && key === "c" && this.hasSelection) {
+    this.copySelected();
+  } else if (ctrl && plain && key === "v") {
+    this.paste();
+  } else if (!ctrl && plain && key === "delete" && this.hasSelection) {
+    this.deleteSelected();
+  } else {
+    handled = false;
+  }
+  if (handled) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+};
 
 @HostListener('document:pointerdown', ['$event'])
 onPointerDown(event: PointerEvent): void {
