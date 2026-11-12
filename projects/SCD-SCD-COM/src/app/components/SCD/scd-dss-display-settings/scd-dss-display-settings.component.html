@@ -41,8 +41,8 @@
     <form class="form-layout" class="k-form k-form-horizontal" [formGroup]="form" (click)="ON_CLICK(form.value)">
     <!--fieldset class="form-fieldset"  class="k-form-fieldset" [disabled]="!componentConfig.enabled "-->
     <fieldset class="form-fieldset"  class="k-form-fieldset" >
-    <kendo-tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
-      <kendo-tabstrip-tab  [selected]="true" >
+    <kendo-tabstrip  #tabstrip  [keepTabContent]="true" [tabAlignment]="alignment">
+      <kendo-tabstrip-tab   *ngIf="FormStepsArr[1].visible" >
         <ng-template   kendoTabTitle>
          <legend>{{FormStepsArr.length > 0   ? FormStepsArr[1].CODETEXT_LANG 
 			:  this.starServices.getNLS([],"SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.component_title","Display Settings") }}
@@ -89,13 +89,15 @@
 		<ul class="k-radio-list" 		(click)="ON_CLICK_DISPLAY_TYPE($event)"
  (change)="onChange_DISPLAY_TYPE($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrDISPLAY_TYPE"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrDISPLAY_TYPE" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'DISPLAY_TYPE'"
+		 		 [formControlName]="'DISPLAY_TYPE'"
 					#DISPLAY_TYPE ></kendo-radiobutton> 
 				<kendo-label  [for]="DISPLAY_TYPE " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -130,13 +132,15 @@
 		<ul class="k-radio-list" 		(click)="ON_CLICK_DISPLAY_SIZE($event)"
  (change)="onChange_DISPLAY_SIZE($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrDISPLAY_SIZE"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrDISPLAY_SIZE" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'DISPLAY_SIZE'"
+		 		 [formControlName]="'DISPLAY_SIZE'"
 					#DISPLAY_SIZE ></kendo-radiobutton> 
 				<kendo-label  [for]="DISPLAY_SIZE " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -179,13 +183,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_WHEN_RESIZED($event)"
  (change)="onChange_WHEN_RESIZED($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrWHEN_RESIZED"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrWHEN_RESIZED" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'WHEN_RESIZED'"
+		 		 [formControlName]="'WHEN_RESIZED'"
 					#WHEN_RESIZED ></kendo-radiobutton> 
 				<kendo-label  [for]="WHEN_RESIZED " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -210,13 +216,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_CACHE_AFTER_DISPLAYING($event)"
  (change)="onChange_CACHE_AFTER_DISPLAYING($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrCACHE_AFTER_DISPLAYING"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrCACHE_AFTER_DISPLAYING" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'CACHE_AFTER_DISPLAYING'"
+		 		 [formControlName]="'CACHE_AFTER_DISPLAYING'"
 					#CACHE_AFTER_DISPLAYING ></kendo-radiobutton> 
 				<kendo-label  [for]="CACHE_AFTER_DISPLAYING " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -246,21 +254,25 @@
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<div class="form-field"  [ngClass]="(labelSCREEN_STATISTICSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSCREEN_STATISTICS >
 		<button  (valueChange)="onValueChange_SCREEN_STATISTICS($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SCREEN_STATISTICS_Hint','Please enter Screen Statistics.')" 
- iconClass="fas fa-chart-bar"  *ngIf=visibleSCREEN_STATISTICS 		(click)="ON_CLICK_SCREEN_STATISTICS($event)"
+		 [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SCREEN_STATISTICS_Hint','Please enter Screen Statistics.')" 
+ [icon]="'chart-bar'" 		(click)="ON_CLICK_SCREEN_STATISTICS($event)"
  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SCREEN_STATISTICS','Screen Statistics')}}</button>
+	</div>
 
+	<div class="form-field"  [ngClass]="(labelSET_AS_DEFAULTTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSET_AS_DEFAULT >
 		<button  (valueChange)="onValueChange_SET_AS_DEFAULT($event)"  style="margin-left : 13px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SET_AS_DEFAULT_Hint','Please enter Set As Default.')" 
- iconClass="fas fa-check-double"  *ngIf=visibleSET_AS_DEFAULT 		(click)="ON_CLICK_SET_AS_DEFAULT($event)"
+		 [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SET_AS_DEFAULT_Hint','Please enter Set As Default.')" 
+ [icon]="'check-double'" 		(click)="ON_CLICK_SET_AS_DEFAULT($event)"
  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SET_AS_DEFAULT','Set As Default')}}</button>
+	</div>
 
 
 </div>
 	</ng-template   >
 </kendo-tabstrip-tab>
-<kendo-tabstrip-tab   >
+<kendo-tabstrip-tab  *ngIf="FormStepsArr[2].visible"  >
 	<ng-template   kendoTabTitle> 
 		<legend>{{FormStepsArr[2].CODETEXT_LANG}}</legend>
 	</ng-template>
@@ -275,10 +287,12 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_STARTUP($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
+	<div class="form-field"  [ngClass]="(labelSTARTUP_COMMANDSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSTARTUP_COMMANDS >
 		<button  (valueChange)="onValueChange_STARTUP_COMMANDS($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP_COMMANDS_Hint','Please enter Startup Commands.')" 
- iconClass="fas fa-play"  *ngIf=visibleSTARTUP_COMMANDS 		(click)="ON_CLICK_STARTUP_COMMANDS($event)"
+		 [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP_COMMANDS_Hint','Please enter Startup Commands.')" 
+ [icon]="'play'" 		(click)="ON_CLICK_STARTUP_COMMANDS($event)"
  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.STARTUP_COMMANDS','...')}}</button>
+	</div>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelBEEP_ON_PRESSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleBEEP_ON_PRESS >
 		<kendo-label *ngIf="(!labelBEEP_ON_PRESSTop && !isPhonePortrait) && labelBEEP_ON_PRESSVisible" class="form-label" [for]="BEEP_ON_PRESS" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.BEEP_ON_PRESS','Beep On Press')"></kendo-label>
@@ -303,10 +317,12 @@
 [ngClass]="customerFacing ?  'summaryClass' : 'form-input' " (change)="onChange_SHUTDOWN($event)"      adaptiveMode="auto"  />
 	</kendo-formfield>
 
+	<div class="form-field"  [ngClass]="(labelSHUTDOWN_COMMANDSTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleSHUTDOWN_COMMANDS >
 		<button  (valueChange)="onValueChange_SHUTDOWN_COMMANDS($event)"      adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN_COMMANDS_Hint','Please enter Shutdown Commands.')" 
- iconClass="fas fa-stop"  *ngIf=visibleSHUTDOWN_COMMANDS 		(click)="ON_CLICK_SHUTDOWN_COMMANDS($event)"
+		 [title]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN_COMMANDS_Hint','Please enter Shutdown Commands.')" 
+ [icon]="'stop'" 		(click)="ON_CLICK_SHUTDOWN_COMMANDS($event)"
  >{{starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.SHUTDOWN_COMMANDS','...')}}</button>
+	</div>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelHIGHLIGHT_WHEN_CURSOR_PASSES_OVER_ITTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleHIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT >
 		<kendo-label *ngIf="(!labelHIGHLIGHT_WHEN_CURSOR_PASSES_OVER_ITTop && !isPhonePortrait) && labelHIGHLIGHT_WHEN_CURSOR_PASSES_OVER_ITVisible" class="form-label" [for]="HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT" [text]="starServices.getNLS([],'SCD_DSS_DISPLAY_SETTINGS.scddisplaySettingScdDssDisplaySettings.HIGHLIGHT_WHEN_CURSOR_PASSES_OVER_IT','Highlight When Cursor Passes Over It')"></kendo-label>
@@ -501,7 +517,7 @@
 </div>
 	</ng-template   >
 </kendo-tabstrip-tab>
-<kendo-tabstrip-tab   >
+<kendo-tabstrip-tab  *ngIf="FormStepsArr[3].visible"  >
 	<ng-template   kendoTabTitle> 
 		<legend>{{FormStepsArr[3].CODETEXT_LANG}}</legend>
 	</ng-template>
@@ -513,13 +529,15 @@
 		<ul class="k-radio-list" 		(click)="ON_CLICK_POSITION($event)"
  (change)="onChange_POSITION($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrPOSITION"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrPOSITION" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'POSITION'"
+		 		 [formControlName]="'POSITION'"
 					#POSITION ></kendo-radiobutton> 
 				<kendo-label  [for]="POSITION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 

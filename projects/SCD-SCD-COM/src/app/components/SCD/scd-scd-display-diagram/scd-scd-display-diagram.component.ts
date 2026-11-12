@@ -2257,6 +2257,7 @@ public visualTemplate = (options: any): Group => {
 
   public toggleAnimationRun(): void {
     this.animationRunning = !this.animationRunning;
+    this.closeInputEdit("");
     this.animState = new WeakMap();
     if (this.animationRunning) {
       for (const shape of (this.diagram?.diagramShapes || []) as any[]) {
@@ -2667,7 +2668,11 @@ public onStagePointerDown(event: PointerEvent): void {
       const hit = this.shapeAtPointer(event);
       const hitKind = hit ? this.shapeDataItem(hit)?.libraryKind : undefined;
       if (hit && (this.KEYPAD_KEYS[hitKind] || this.PUSH_KINDS.includes(hitKind)) && !this.isDbYes(this.shapeDataItem(hit)?.disabled)) {
+        this.keepInputFocus = !!this.inputEdit;
         this.keypadPress(hit);
+      } else if (this.inputEdit && !(event.target as HTMLElement | null)?.hasAttribute?.("data-input-editor")) {
+        // Kendo stops a press on the canvas from moving the focus, so pressing elsewhere accepts the value here.
+        this.acceptInputEdit(true);
       }
     }
   }
@@ -2864,18 +2869,117 @@ public onStagePointerDown(event: PointerEvent): void {
     }
   }
 
-   /** Run mode: clicking a Numeric / String Input asks for a new value (a number inside Minimum and Maximum). */
+   
+  /** Run mode: the Numeric / String Input being typed into. A text box is laid over the shape while it is edited. */
+  public inputEdit: {
+    shape: any; d: any; numeric: boolean; text: string; original: string;
+    left: number; top: number; width: number; height: number; fontSize: number; maxLength: number;
+  } | null = null;
+  @ViewChild("inputEditor") private inputEditorRef?: ElementRef<HTMLInputElement>;
+  /** Set when a keypad button is pressed, so that the text box keeps the focus instead of accepting the value. */
+  private keepInputFocus = false;
+  private inputEditOpenedAt = 0;
+
+  /** Run mode: clicking a Numeric / String Input opens its text box (Enter accepts, Esc cancels). */
   private editInputValue(shape: any, d: any): void {
-    const numeric = d.libraryKind === "numericInput";
-    const entered = window.prompt(numeric ? "Enter a number" : "Enter text", String(d.inputValue ?? ""));
-    if (entered === null) {
+    const stage = document.querySelector(".diagram-stage") as HTMLElement | null;
+    if (!this.diagram || !stage) {
       return;
     }
-    let value: string = entered;
+    const b = shape.bounds();
+    const topLeft = this.diagram.modelToDocument(b.topLeft());
+    const bottomRight = this.diagram.modelToDocument(b.bottomRight());
+    const rect = stage.getBoundingClientRect();
+    const left = topLeft.x - (rect.left + window.scrollX), top = topLeft.y - (rect.top + window.scrollY);
+    const width = bottomRight.x - topLeft.x, height = bottomRight.y - topLeft.y;
+    const numeric = d.libraryKind === "numericInput";
+    this.inputEdit = {
+      shape, d, numeric, text: String(d.inputValue ?? ""), original: String(d.inputValue ?? ""), left, top, width, height,
+      fontSize: Math.max(8, Math.min(24, Math.round(height * 0.55))),
+      maxLength: Math.max(1, Math.round(Number(d.fieldLength) || 12))
+    };
+    this.inputEditOpenedAt = performance.now();
+    this.statusMessage = `${this.libraryShapeTitle(d.libraryKind)}: type ${numeric ? "a number" : "text"}, then press Enter to accept or Esc to cancel.`;
+    setTimeout(() => {
+      const box = this.inputEditorRef?.nativeElement;
+      box?.focus();
+      box?.select();
+    }, 0);
+  }
+
+  /** Typing in the text box: a Numeric Input only takes digits, a minus sign and a decimal point. */
+  public onInputEditorInput(event: Event): void {
+    const edit = this.inputEdit;
+    if (!edit) {
+      return;
+    }
+    const box = event.target as HTMLInputElement;
+    if (edit.numeric) {
+      const clean = box.value.replace(/[^0-9.\-]/g, "");
+      if (clean !== box.value) {
+        const at = Math.max(0, (box.selectionStart ?? clean.length) - (box.value.length - clean.length));
+        box.value = clean;
+        box.setSelectionRange(at, at);
+      }
+    }
+    edit.text = box.value;
+    if (edit.d.continuouslyUpdate) {
+      this.acceptInputEdit(false);
+    }
+  }
+
+  public onInputEditorKeydown(event: KeyboardEvent): void {
+    if (event.key === "Enter" || event.key === "Tab") {
+      event.preventDefault();
+      this.acceptInputEdit(true);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      const edit = this.inputEdit;
+      // With "continuously update" the typed value is already stored: put the old one back.
+      if (edit && String(this.shapeDataItem(edit.shape)?.inputValue ?? "") !== edit.original) {
+        this.patchShapes([edit.shape], { inputValue: edit.original });
+      }
+      this.closeInputEdit("cancelled");
+    }
+  }
+
+  /**
+   * Leaving the text box accepts the value, except when the focus only went to a keypad button of the diagram
+   * or to the diagram itself right after the click that opened the box (Kendo focuses its canvas on a tap).
+   */
+  public onInputEditorBlur(event: FocusEvent): void {
+    const toDiagram = !!(event.relatedTarget as HTMLElement | null)?.closest?.("kendo-diagram");
+    if (this.keepInputFocus || toDiagram || performance.now() - this.inputEditOpenedAt < 600) {
+      this.keepInputFocus = false;
+      setTimeout(() => this.inputEditorRef?.nativeElement.focus(), 0);
+      return;
+    }
+    this.acceptInputEdit(true);
+  }
+
+  private closeInputEdit(note: string): void {
+    const edit = this.inputEdit;
+    this.inputEdit = null;
+    if (edit && note) {
+      this.statusMessage = `${this.libraryShapeTitle(edit.d.libraryKind)} ${note}.`;
+    }
+  }
+
+  /** Stores the typed value in the shape (a number is kept inside Minimum and Maximum) and, when asked, closes the box. */
+  private acceptInputEdit(close: boolean): void {
+    const edit = this.inputEdit;
+    if (!edit) {
+      return;
+    }
+    const { shape, numeric, text } = edit;
+    const d = this.shapeDataItem(shape) ?? edit.d;
+    let value = text;
     if (numeric) {
-      let n = Number(entered);
-      if (entered.trim() === "" || !Number.isFinite(n)) {
-        this.statusMessage = "Numeric Input needs a number.";
+      let n = Number(text);
+      if (text.trim() === "" || !Number.isFinite(n)) {
+        if (close) {
+          this.closeInputEdit("needs a number, so the old value was kept");
+        }
         return;
       }
       const min = Number(d.connMin), max = Number(d.connMax);
@@ -2883,9 +2987,15 @@ public onStagePointerDown(event: PointerEvent): void {
       if (String(d.connMax ?? "").trim() !== "" && Number.isFinite(max)) { n = Math.min(max, n); }
       value = String(n);
     }
-    this.patchShapes([shape], { inputValue: value });
-    this.statusMessage = `${this.libraryShapeTitle(d.libraryKind)} set to ${value}.`;
+    if (String(d.inputValue ?? "") !== value) {
+      this.patchShapes([shape], { inputValue: value });
+    }
+    if (close) {
+      this.closeInputEdit(`set to ${value}`);
+    }
   }
+
+
 /**
    * A shape is redrawn with its pressed look when the mouse goes down on it, and the browser then drops the click
    * (its mouse-down element no longer exists). So while the animation runs, a release that is not followed by
@@ -2912,7 +3022,7 @@ public onStagePointerDown(event: PointerEvent): void {
   /** While running, clicking a shape with "toggle on click" flips its value. */
   public onStageClick(event: MouseEvent): void {
     this.pendingClick = null;
-    if (!this.animationRunning || !this.diagram) {
+    if (!this.animationRunning || !this.diagram || (event.target as HTMLElement | null)?.hasAttribute?.("data-input-editor")) {
       return;
     }
     const start = this.stagePointerStart;

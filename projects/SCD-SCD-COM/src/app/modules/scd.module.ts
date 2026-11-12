@@ -402,6 +402,7 @@ import { ScdAlarmBehaviorScdScdAlarmBehaviorFormComponent } from '../components/
 import { ScdAlarmColumnsPropertiesComponent } from '../components/SCD/scd-alarm-columns-properties/scd-alarm-columns-properties.component';
 import { ScdCommandsScdScdCommandsGridComponent } from '../components/SCD/scd-scd-commands/scd-scd-commands.component';
 import { ScdCommandsScdScdCommandsGridGridComponent } from '../components/SCD/scd-scd-commands-grid/scd-scd-commands-grid.component';
+import { ScdCommandWizrdScdCweCommandWizardFormtabsComponent } from '../components/SCD/scd-cwe-command-wizard/scd-cwe-command-wizard.component';
 const scdRoutes: Routes = [
  
 
@@ -726,6 +727,7 @@ const scdRoutes: Routes = [
 		{ path: 'scd_alarm_columns_properties', component: ScdAlarmColumnsPropertiesComponent },
 		{ path: 'scd_scd_commands', component: ScdCommandsScdScdCommandsGridComponent },
 		{ path: 'scd_scd_commands_grid', component: ScdCommandsScdScdCommandsGridGridComponent },
+		{ path: 'scd_cwe_command_wizard', component: ScdCommandWizrdScdCweCommandWizardFormtabsComponent },
 ];
 
 
@@ -1054,6 +1056,7 @@ const scdRoutes: Routes = [
 		ScdAlarmColumnsPropertiesComponent,
 		ScdCommandsScdScdCommandsGridComponent,
 		ScdCommandsScdScdCommandsGridGridComponent,
+		ScdCommandWizrdScdCweCommandWizardFormtabsComponent,
   ],
   
   imports: [

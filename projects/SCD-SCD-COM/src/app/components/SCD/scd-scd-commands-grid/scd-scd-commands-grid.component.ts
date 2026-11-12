@@ -718,13 +718,21 @@ this.executeQuery(this.grid);
 	}
 
 
+//this.grid.data = this.gridDataStatic.data;
+
 }
 async KEY_COMMIT(){
    
 
 }
   async ON_CLICK(formGroup:any, P_INDEX:any){
-     
+     this.formtabs_1_SCD2_COMMAND_WIZRDOpen();
+this.SCD2_COMMAND_WIZRDFormtabs_1Config = new componentConfigDef();
+let masterParams = {
+    data: formGroup
+}
+this.SCD2_COMMAND_WIZRDFormtabs_1Config.masterParams = masterParams;
+
 
 }
    async PRE_INSERT(formGroup:any, P_INDEX:any){
@@ -901,7 +909,640 @@ async WHEN_VALIDATE_ITEM_SUB_CATEGORY(formGroup) {
  async onBlur_SUB_CATEGORY() { 
   await this.WHEN_VALIDATE_ITEM_SUB_CATEGORY(this.formGroup); if ( this.FORM_TRIGGER_FAILURE) return;  
  }
-
+public formtabs_1_SCD2_COMMAND_WIZRDOpened = false;
+public  SCD2_COMMAND_WIZRDFormtabs_1Config : componentConfigDef;
+  public  formtabs_1_SCD2_COMMAND_WIZRDClose() { 
+    this.formtabs_1_SCD2_COMMAND_WIZRDOpened = false;  
+  }
+  public  formtabs_1_SCD2_COMMAND_WIZRDOpen() { 
+    this.formtabs_1_SCD2_COMMAND_WIZRDOpened = true;  
+  }
+public onComponentConfig_Output(ComponentConfig)
+  {
+  if (typeof ComponentConfig !== 'undefined'){
+    this.setComponentConfig_Output.emit(ComponentConfig);
+    if (ComponentConfig.hideComponents != null) { 
+      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+      }
+    }
+  }
+}
+public gridDataStatic = {
+  "data": [
+    {
+      "COMMAND_ID": 1,
+      "NAME": "=",
+      "DESCRIPTION": "Writes the value resulting from an expression to a tag.",
+      "SYNTAX": "[&&]<tag> = <expression>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Tag and Database"
+    },
+    {
+      "COMMAND_ID": 2,
+      "NAME": "Abort",
+      "DESCRIPTION": "Closes the specified item.",
+      "SYNTAX": "Abort [Me | display | * [/D]]",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 3,
+      "NAME": "AE_Acknowledge",
+      "DESCRIPTION": "Acknowledges one or more alarms.",
+      "SYNTAX": "AE_Acknowledge <alarms_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 4,
+      "NAME": "AE_ClearCount",
+      "DESCRIPTION": "Clears alarms count of one or more alarms.",
+      "SYNTAX": "AE_ClearCount <alarms_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 5,
+      "NAME": "AE_Disable",
+      "DESCRIPTION": "Disables one or more alarms.",
+      "SYNTAX": "AE_Disable <alarm_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 6,
+      "NAME": "AE_Enable",
+      "DESCRIPTION": "Enables one or more alarms.",
+      "SYNTAX": "AE_Enable <alarm_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 7,
+      "NAME": "AE_Remark",
+      "DESCRIPTION": "Adds a remark to Factory Talk Alarm and Event history log.",
+      "SYNTAX": "AE_Remark <alarm server> [/Ccomment] [/Ttag_name] [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 8,
+      "NAME": "AE_Reset",
+      "DESCRIPTION": "Resets one or more alarms.",
+      "SYNTAX": "AE_Reset <alarm_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 9,
+      "NAME": "AE_Shelve",
+      "DESCRIPTION": "Shelves one or more alarms.",
+      "SYNTAX": "AE_Shelve <alarm_source> </Dduration> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 10,
+      "NAME": "AE_Suppress",
+      "DESCRIPTION": "Suppresses one or more alarms.",
+      "SYNTAX": "AE_Suppress <alarm_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 11,
+      "NAME": "AE_Unshelve",
+      "DESCRIPTION": "Unshelves one or more alarms.",
+      "SYNTAX": "AE_Unshelve <alarm_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 12,
+      "NAME": "AE_Unsuppress",
+      "DESCRIPTION": "Unsuppresses one or more alarms.",
+      "SYNTAX": "AE_Unsuppress <alarm_source> [/P]",
+      "CATEGORY": "Alarm and Event",
+      "SUB_CATEGORY": null
+    },
+    {
+      "COMMAND_ID": 13,
+      "NAME": "AppAbort",
+      "DESCRIPTION": "Closes the specified Windows application.",
+      "SYNTAX": "AppAbort <program>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "External Applications"
+    },
+    {
+      "COMMAND_ID": 14,
+      "NAME": "AppActivate",
+      "DESCRIPTION": "Activates (pulls forward) the specified Windows application.",
+      "SYNTAX": "AppActivate <program>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "External Applications"
+    },
+    {
+      "COMMAND_ID": 15,
+      "NAME": "AppStart",
+      "DESCRIPTION": "Runs the specified Windows application.",
+      "SYNTAX": "AppStart <program>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "External Applications"
+    },
+    {
+      "COMMAND_ID": 16,
+      "NAME": "Beep",
+      "DESCRIPTION": "Plays the wave file assigned in Windows to the default sound event.",
+      "SYNTAX": "Beep",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Multimedia"
+    },
+    {
+      "COMMAND_ID": 17,
+      "NAME": "DataLogChangeRate",
+      "DESCRIPTION": "Changes the periodic logging interval.",
+      "SYNTAX": "DataLogChangeRate <file> <value> [units]",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 18,
+      "NAME": "DataLogMergeToPrimary",
+      "DESCRIPTION": "Merges data in the secondary path to the primary path.",
+      "SYNTAX": "DataLogMergeToPrimary <file> or *",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 19,
+      "NAME": "DataLogNewFile",
+      "DESCRIPTION": "Creates a new data log file in the specified model.",
+      "SYNTAX": "DataLogNewFile <file> or *",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 20,
+      "NAME": "DataLogOff",
+      "DESCRIPTION": "Stops data logging for the specified Model.",
+      "SYNTAX": "DataLogOff <file>",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 21,
+      "NAME": "DataLogOn",
+      "DESCRIPTION": "Starts data logging for the specified Model.",
+      "SYNTAX": "DataLogOn <file>",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 22,
+      "NAME": "DataLogRenameFile",
+      "DESCRIPTION": "Specifies a new name for the logged files.",
+      "SYNTAX": "DataLogRenameFile <file> <LogFileIDString>",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 23,
+      "NAME": "DataLogSnapshot",
+      "DESCRIPTION": "Logs tag values to the data log file for the specified Model.",
+      "SYNTAX": "DataLogSnapshot <file> or *",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 24,
+      "NAME": "DataLogSwitchBack",
+      "DESCRIPTION": "Switches from logging in the secondary path back to the primary path.",
+      "SYNTAX": "DataLogSwitchBack <file> or *",
+      "CATEGORY": "Data Log",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 25,
+      "NAME": "DDEExecute",
+      "DESCRIPTION": "Sends a command or series of commands to an application through a DDE channel.",
+      "SYNTAX": "DDEExecute <application>|<topic> <command>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "External Applications"
+    },
+    {
+      "COMMAND_ID": 26,
+      "NAME": "Define",
+      "DESCRIPTION": "Creates a symbol.",
+      "SYNTAX": "Define <symbol> [string]",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Framework"
+    },
+    {
+      "COMMAND_ID": 27,
+      "NAME": "DerivedOff",
+      "DESCRIPTION": "Stops running the specified derived tag file.",
+      "SYNTAX": "DerivedOff <file>",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Derived Tags"
+    },
+    {
+      "COMMAND_ID": 28,
+      "NAME": "DerivedOn",
+      "DESCRIPTION": "Starts running the specified derived tag file.",
+      "SYNTAX": "DerivedOn <file>",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Derived Tags"
+    },
+    {
+      "COMMAND_ID": 29,
+      "NAME": "Display",
+      "DESCRIPTION": "Opens and runs the specified graphic display file.",
+      "SYNTAX": "Display <display> [/B][/E] [/U] [/0][/Z][/ZA] [/Pfile] [/T <tag>,<tag>....] [/Hnnn] [/Wnnn] [/Min] [/Max] [/M] [position]",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 30,
+      "NAME": "DisplayClientClose",
+      "DESCRIPTION": "Close the specified Active Display Client window.",
+      "SYNTAX": "DisplayClientClose <parameter>",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Display Client"
+    },
+    {
+      "COMMAND_ID": 31,
+      "NAME": "DisplayClientOpen",
+      "DESCRIPTION": "Open the specified Active Display Client window.",
+      "SYNTAX": "DisplayClientOpen <[display_station_path]filename>",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Display Client"
+    },
+    {
+      "COMMAND_ID": 32,
+      "NAME": "DisplayNavigationHistory",
+      "DESCRIPTION": "Displays a list of previously opened screens.",
+      "SYNTAX": "DisplayNavigationHistory",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 33,
+      "NAME": "DisplayNextScreen",
+      "DESCRIPTION": "Opens the next graphic display in navigation history.",
+      "SYNTAX": "DisplayNextScreen",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 34,
+      "NAME": "DisplayPreviousScreen",
+      "DESCRIPTION": "Opens the previous graphic display in navigation history.",
+      "SYNTAX": "DisplayPreviousScreen",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 35,
+      "NAME": "Download",
+      "DESCRIPTION": "Writes the value in the selected input field of the active graphic display to the programmable controller.",
+      "SYNTAX": "Download",
+      "CATEGORY": "Legacy Recipes",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 36,
+      "NAME": "DownloadAll",
+      "DESCRIPTION": "Writes the values in all input fields of the active graphic display to the programmable controller.",
+      "SYNTAX": "DownloadAll",
+      "CATEGORY": "Legacy Recipes",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 37,
+      "NAME": "EventOff",
+      "DESCRIPTION": "Stops running the specified event file.",
+      "SYNTAX": "EventOff <file>",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Events"
+    },
+    {
+      "COMMAND_ID": 38,
+      "NAME": "EventOn",
+      "DESCRIPTION": "Starts running the specified event file.",
+      "SYNTAX": "EventOn <file>",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Events"
+    },
+    {
+      "COMMAND_ID": 39,
+      "NAME": "FlushCache",
+      "DESCRIPTION": "Unloads graphic displays from the display cache.",
+      "SYNTAX": "FlushCache [file]",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Cache"
+    },
+    {
+      "COMMAND_ID": 40,
+      "NAME": "Help",
+      "DESCRIPTION": "Displays the help file and word requested.",
+      "SYNTAX": "Help [search word] [/Ffile]",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Framework"
+    },
+    {
+      "COMMAND_ID": 41,
+      "NAME": "IF",
+      "DESCRIPTION": "Execute command conditionally based on the result of an expression.",
+      "SYNTAX": "IF <expression> THEN <command>; <command>;.. [ELSE <command>; <command>;...] ENDIF",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Flow Control"
+    },
+    {
+      "COMMAND_ID": 42,
+      "NAME": "Invoke",
+      "DESCRIPTION": "Invokes a method on the specified ActiveX control.",
+      "SYNTAX": "Invoke <parameters>",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Object Methods"
+    },
+    {
+      "COMMAND_ID": 43,
+      "NAME": "Key",
+      "DESCRIPTION": "Starts or stops running a client key file.",
+      "SYNTAX": "Key <file or /R>",
+      "CATEGORY": "Logic and Control",
+      "SUB_CATEGORY": "Client Keys"
+    },
+    {
+      "COMMAND_ID": 44,
+      "NAME": "Language",
+      "DESCRIPTION": "Changes a client's language.",
+      "SYNTAX": "Language <Language ID>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Languages"
+    },
+    {
+      "COMMAND_ID": 45,
+      "NAME": "Login",
+      "DESCRIPTION": "Displays the Login dialog box so a user can log onto the system.",
+      "SYNTAX": "Login [username] [password]",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Security"
+    },
+    {
+      "COMMAND_ID": 46,
+      "NAME": "Logout",
+      "DESCRIPTION": "Signs the current user off the system.",
+      "SYNTAX": "Logout",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Security"
+    },
+    {
+      "COMMAND_ID": 47,
+      "NAME": "NextPosition",
+      "DESCRIPTION": "Moves focus to the object with the next highest index number.",
+      "SYNTAX": "NextPosition",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Cursor Movement"
+    },
+    {
+      "COMMAND_ID": 48,
+      "NAME": "NextWindow",
+      "DESCRIPTION": "Moves focus to another open graphic display.",
+      "SYNTAX": "NextWindow",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 49,
+      "NAME": "OpenRSLogix5000",
+      "DESCRIPTION": "Opens the RSLogix 5000 program and displays the specified routine.",
+      "SYNTAX": "OpenRSLogix5000 <project> <program> <routine> [/RNrung_number] [/Rlrung_identifier]",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "External Applications"
+    },
+    {
+      "COMMAND_ID": 50,
+      "NAME": "Password",
+      "DESCRIPTION": "Displays the Password dialog box so a user can change password.",
+      "SYNTAX": "Password",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Security"
+    },
+    {
+      "COMMAND_ID": 51,
+      "NAME": "Pause",
+      "DESCRIPTION": "Pauses Macro and Command execution for the specified time.",
+      "SYNTAX": "Pause <Seconds>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Framework"
+    },
+    {
+      "COMMAND_ID": 52,
+      "NAME": "Pin",
+      "DESCRIPTION": "Pins the active window on top.",
+      "SYNTAX": "Pin",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 53,
+      "NAME": "PlayWave",
+      "DESCRIPTION": "Plays the specified wave file.",
+      "SYNTAX": "PlayWave <file>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Multimedia"
+    },
+    {
+      "COMMAND_ID": 54,
+      "NAME": "Position",
+      "DESCRIPTION": "Moves focus to the object with the specified index number.",
+      "SYNTAX": "Position <n>",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Cursor Movement"
+    },
+    {
+      "COMMAND_ID": 55,
+      "NAME": "PrevPosition",
+      "DESCRIPTION": "Moves focus to the object with the previous index number.",
+      "SYNTAX": "PrevPosition",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Cursor Movement"
+    },
+    {
+      "COMMAND_ID": 56,
+      "NAME": "PrevWindow",
+      "DESCRIPTION": "Moves focus to another open graphic display.",
+      "SYNTAX": "PrevWindow",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 57,
+      "NAME": "PrintDisplay",
+      "DESCRIPTION": "Prints the graphic display.",
+      "SYNTAX": "PrintDisplay <Meldisplay> [/Wait=ttt] [/U][/P<component>][/T<tag>,<tag>...] [/F<file>]",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Framework"
+    },
+    {
+      "COMMAND_ID": 58,
+      "NAME": "PullForward",
+      "DESCRIPTION": "Moves the specified file in front of all other windows.",
+      "SYNTAX": "PullForward <file>",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 59,
+      "NAME": "PushBack",
+      "DESCRIPTION": "Moves the specified file behind all other windows.",
+      "SYNTAX": "PushBack <file>",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 60,
+      "NAME": "Ramp",
+      "DESCRIPTION": "Increases or decreases an analog tag's value by a particular value or by another tag's value.",
+      "SYNTAX": "Ramp [/V] <tag> <valuetag>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Tag and Database"
+    },
+    {
+      "COMMAND_ID": 61,
+      "NAME": "RecipeProDownload",
+      "DESCRIPTION": "Downloads specified recipe.",
+      "SYNTAX": "RecipeProDownload <recipe_file> | <variable_recipe> [/Sstatus_tag] [/Rrecipename_tag]",
+      "CATEGORY": "RecipesPro+",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 62,
+      "NAME": "RecipeProEdit",
+      "DESCRIPTION": "Opens the RecipePro + editor.",
+      "SYNTAX": "RecipeProEdit [/Rrecipename_tag]",
+      "CATEGORY": "RecipesPro+",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 63,
+      "NAME": "RecipeProList",
+      "DESCRIPTION": "Opens the RecipePro+ List.",
+      "SYNTAX": "RecipeProList [/Ffile_filter] [/Rrecipename_tag]",
+      "CATEGORY": "RecipesPro+",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 64,
+      "NAME": "RecipeProUpload",
+      "DESCRIPTION": "Uploads specified recipe.",
+      "SYNTAX": "RecipeProUpload <recipe_file> | <variable_recipe> [/Sstatus_tag]",
+      "CATEGORY": "RecipesPro+",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 65,
+      "NAME": "RecipeRestore",
+      "DESCRIPTION": "Reads the tag values from a recipe file into all input fields in the active graphic display.",
+      "SYNTAX": "RecipeRestore <file>",
+      "CATEGORY": "Legacy Recipes",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 66,
+      "NAME": "RecipeSave",
+      "DESCRIPTION": "Saves the values in all input fields of the active graphic display to a recipe file.",
+      "SYNTAX": "RecipeSave <file>",
+      "CATEGORY": "Legacy Recipes",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 67,
+      "NAME": "Remark",
+      "DESCRIPTION": "Logs text to an activity log file.",
+      "SYNTAX": "Remark <comment>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Activity Log"
+    },
+    {
+      "COMMAND_ID": 68,
+      "NAME": "ScreenPrint",
+      "DESCRIPTION": "Generates a screen print on the printer specified in Windows.",
+      "SYNTAX": "ScreenPrint [/F <file>]",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Framework"
+    },
+    {
+      "COMMAND_ID": 69,
+      "NAME": "SendKeys",
+      "DESCRIPTION": "Sends the specified keystrokes to the active window, whether a graphic display, a command line, an RSView32 VBA Scripting Integrated Development Environment Windows or another application.",
+      "SYNTAX": "SendKeys <keystring>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Framework"
+    },
+    {
+      "COMMAND_ID": 70,
+      "NAME": "Set",
+      "DESCRIPTION": "Writes a value to a tag.",
+      "SYNTAX": "[&&]Set [/V] <tag> <valuetag>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Tag and Database"
+    },
+    {
+      "COMMAND_ID": 71,
+      "NAME": "SetFocus",
+      "DESCRIPTION": "Sets the focus to the specified graphic display.",
+      "SYNTAX": "SetFocus <file>",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 72,
+      "NAME": "Toggle",
+      "DESCRIPTION": "Reads the specified tag's value and writes back a 1 or 0.",
+      "SYNTAX": "Toggle [/V] <tag>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Tag and Database"
+    },
+    {
+      "COMMAND_ID": 73,
+      "NAME": "Undefine",
+      "DESCRIPTION": "Deletes a symbol definition.",
+      "SYNTAX": "Undefine <symbol>",
+      "CATEGORY": "System",
+      "SUB_CATEGORY": "Framework"
+    },
+    {
+      "COMMAND_ID": 74,
+      "NAME": "Unpin",
+      "DESCRIPTION": "Unpins one or more windows from top.",
+      "SYNTAX": "Unpin [*]",
+      "CATEGORY": "Graphics Display",
+      "SUB_CATEGORY": "Navigation"
+    },
+    {
+      "COMMAND_ID": 75,
+      "NAME": "Upload",
+      "DESCRIPTION": "Reads a value from the programmable controller and displays it in the selected input field of the active graphic display.",
+      "SYNTAX": "Upload",
+      "CATEGORY": "Legacy Recipes",
+      "SUB_CATEGORY": ""
+    },
+    {
+      "COMMAND_ID": 76,
+      "NAME": "UploadAll",
+      "DESCRIPTION": "Reads values from the programmable controller and displays them in all input fields of the active graphic display.",
+      "SYNTAX": "UploadAll",
+      "CATEGORY": "Legacy Recipes",
+      "SUB_CATEGORY": ""
+    }
+  ],
+  "total": 76
+}
 // For Adding new CODE
   public  grid_som_tabs_codes={};
   public SOM_TABS_CODESConfig!: componentConfigDef;

@@ -15,8 +15,7 @@
     [columnMenu]="isColumnMenu"
     (dataStateChange)="dataStateChange($event)"
     [resizable]="true"
-	 [groupable]="true"
-	  [group]="group"
+    
     [sortable]="true">
 
     
@@ -34,7 +33,7 @@
             <button  kendoButton [icon]="'cancel'" title="Cancel" title="{{starServices.getNLS([],'CANCEL','Cancel')}}"  (click)="cancelHandler()" ></button >
         
 
-            <button  [icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
+            <button  [disabled]="(isChild == true && masterKeyArr.length == 0)"[icon]="'plus'" title="{{starServices.getNLS([],'INSERT_RECORD','Insert Record')}}"  kendoGridAddCommand *ngIf="componentConfig.insertable && !isSearch"></button >
             <button  kendoButton [disabled]="isSearch" [icon]="'save'" title="{{starServices.getNLS([],'SAVE','Save')}}" (click)="saveChanges(grid);" *ngIf="!isSearch && (componentConfig.updateable || componentConfig.insertable) "></button >
             <button title="{{starServices.getNLS([],'DELETE_RECORD','Delete Record')}}"  kendoButton [icon]="'trash'" (click)="removeHandler($event)"  *ngIf="componentConfig.removeable && !isSearch"></button >
 
@@ -51,26 +50,6 @@
 
     
     </ng-template>
-
-		<kendo-grid-column
-  field="CATEGORY"
-  title="CATEGORY"
-  [hidden]="true">
-
-  <ng-template kendoGridGroupHeaderTemplate let-value="value">
-    {{ value }}
-  </ng-template>
-</kendo-grid-column>
-
-<kendo-grid-column
-  field="SUB_CATEGORY"
-  title="SUB_CATEGORY"
-  [hidden]="true">
-
-  <ng-template kendoGridGroupHeaderTemplate let-value="value">
-    {{ value }}
-  </ng-template>
-</kendo-grid-column>
 
 
 	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="COMMAND_ID"
@@ -113,6 +92,25 @@
 		</ng-template>
 		</kendo-grid-column>
 
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="CATEGORY"
+ *ngIf=visibleCATEGORY  [editable]=" !(disabledColumns.indexOf('CATEGORY') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('CATEGORY') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_COMMANDS.scdcommandsScdScdCommands.CATEGORY','Category')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.CATEGORY}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_CATEGORY()"      [formControl]="formGroup.get('CATEGORY')" [placeholder]="starServices.getNLS([],'SCD_SCD_COMMANDS.scdcommandsScdScdCommands.CATEGORY_Hint','Please enter Category.')" />
+		</ng-template>
+		</kendo-grid-column>
+
+	<kendo-grid-column [headerStyle]="{'white-space': 'pre-wrap'}" field="SUB_CATEGORY"
+ *ngIf=visibleSUB_CATEGORY  [editable]=" !(disabledColumns.indexOf('SUB_CATEGORY') > -1)  "
+
+ [hidden]="hiddenColumns.indexOf('SUB_CATEGORY') > -1" 		 title="{{starServices.getNLS([],'SCD_SCD_COMMANDS.scdcommandsScdScdCommands.SUB_CATEGORY','Sub Category')}}"  [width]="100">
+		 <ng-template kendoGridCellTemplate let-dataItem><span     >{{dataItem.SUB_CATEGORY}}</span></ng-template>
+		<ng-template kendoGridEditTemplate let-dataItem let-formGroup="formGroup">
+		<input  (blur)="onBlur_SUB_CATEGORY()"      [formControl]="formGroup.get('SUB_CATEGORY')" [placeholder]="starServices.getNLS([],'SCD_SCD_COMMANDS.scdcommandsScdScdCommands.SUB_CATEGORY_Hint','Please enter Sub Category.')" />
+		</ng-template>
+		</kendo-grid-column>
 
 
 
@@ -155,4 +153,14 @@
   
 	</kendo-dialog>
   </div>
+<kendo-window [hidden]="!formtabs_1_SCD2_COMMAND_WIZRDOpened" class="form-borders" 
+ 			[themeColor]="'primary'"
+			[top]="0" [left]="0"  title=""   (close)="formtabs_1_SCD2_COMMAND_WIZRDClose()" > 
+        <app-scd-cwe-command-wizard 
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD2_COMMAND_WIZRDFormtabs_1Config">
+        </app-scd-cwe-command-wizard >
 
+
+			<button kendoButton [icon]="'close'" (click)="formtabs_1_SCD2_COMMAND_WIZRDOpened=!formtabs_1_SCD2_COMMAND_WIZRDOpened"> {{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+</kendo-window>

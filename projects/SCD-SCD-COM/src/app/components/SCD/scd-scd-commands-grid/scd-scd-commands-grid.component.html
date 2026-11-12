@@ -153,4 +153,14 @@
   
 	</kendo-dialog>
   </div>
+<kendo-window [hidden]="!formtabs_1_SCD2_COMMAND_WIZRDOpened" class="form-borders" 
+ 			[themeColor]="'primary'"
+			[top]="0" [left]="0"  title=""   (close)="formtabs_1_SCD2_COMMAND_WIZRDClose()" > 
+        <app-scd-cwe-command-wizard 
+                      (setComponentConfig_Output)="onComponentConfig_Output($event)"
+                      [setComponentConfig_Input]="SCD2_COMMAND_WIZRDFormtabs_1Config">
+        </app-scd-cwe-command-wizard >
 
+
+			<button kendoButton [icon]="'close'" (click)="formtabs_1_SCD2_COMMAND_WIZRDOpened=!formtabs_1_SCD2_COMMAND_WIZRDOpened"> {{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+</kendo-window>
