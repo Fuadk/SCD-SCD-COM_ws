@@ -2038,24 +2038,24 @@
  
 
 <div style="padding: 12px 0; margin-top: 8px;">
-    <kendo-formfield class="form-field" [orientation]="'horizontal'"
+    <kendo-formfield  [orientation]="'horizontal'"
         [ngClass]="(isPhonePortrait && !customerFacing) ? 'displayBlock' : 'standard'">
         <kendo-label class="form-label" [for]="commandStringInput"
-            [text]="starServices.getNLS([],'SCD_CWE_COMMAND_WIZARD.scd2commandWizrdScd2CweCommandWizard.COMMAND_STRING','Command String')">
+            [text]="'Command String'">
         </kendo-label>
         <input #commandStringInput kendoTextBox [(ngModel)]="commandString"
             [readonly]="true"
-            
+            [style.color]="commandError ? 'red !important' : null"
             [ngClass]="customerFacing ? 'summaryClass' : 'form-input'"
-            
+
             adaptiveMode="auto" />
     </kendo-formfield>
 </div>
 
 <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; margin-top: 8px;">
-		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'OK','Ok')"
-			iconClass="fas fa-save" *ngIf=visibleOK_BTNS
-			(click)="ON_CLICK_OK($event)">{{starServices.getNLS([],'OK','Ok')}}</button>
+		<button adaptiveMode="auto" class="k-button " kendoButton title="Ok"
+			iconClass="fas fa-save" *ngIf=visibleOK_BTNS [disabled]="commandError"
+			(click)="ON_CLICK_OK($event)">Ok</button>
 
 		<button adaptiveMode="auto" class="k-button " kendoButton title="starServices.getNLS([],'CANCEL','Cancel')"
 			iconClass="fas fa-ban" *ngIf=visibleOK_BTNS
@@ -2072,6 +2072,14 @@
 		</app-dsp-upload>
 	
 	</kendo-window>
+
+    <div *ngIf="helpOpened" data-wizard-help style="border: 1px solid #ccc; padding: 8px 12px; margin-top: 4px;">
+		<b>{{currentCommand || 'Command Wizard'}}</b><br>
+		Fill in the fields, then press Ok. The Command String shows what will be added to the button;
+		red text means a required field is missing.<br>
+		<span *ngIf="commandString && !commandError">Current Command String: <code>{{commandString}}</code></span>
+		<div style="text-align: right;"><button kendoButton (click)="closeHelp()">Close help</button></div>
+	</div>
 
 
 

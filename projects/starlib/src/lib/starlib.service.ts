@@ -5035,7 +5035,7 @@ convertSvgToKendoSVGIcon(
 
 convertSvgToKendoIcon(object, svgContent: string, iconName: string, column) {
   if ( (typeof iconName === 'undefined') || iconName === null ) iconName = column;
-  console.log("convertSvgToKendoIcon:svgContent:", svgContent, "iconName:", iconName, "column:", column);
+ // console.log("convertSvgToKendoIcon:svgContent:", svgContent, "iconName:", iconName, "column:", column);
     try {
         // Extract viewBox
         const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/);

@@ -60,7 +60,7 @@ export class ScdCommandsScdScdCommandsGridGridComponent implements OnInit,OnDest
  public grid!: GridComponent;
  
  //@Input()    
- public showToolBar = true;
+ public showToolBar = false;
   public removedRec=[];
   public groups: GroupDescriptor[] = [];
   public view!: any[];
@@ -138,8 +138,8 @@ public compSelector = 'app-scd-scd-commands-grid';
       this.componentConfig.queryable  = true;
       this.componentConfig.insertable = true;
       this.componentConfig.removeable = true;
-      this.componentConfig.updateable = true;       
-      this.componentConfig.showToolBar = true;
+      this.componentConfig.updateable = false;       
+      this.componentConfig.showToolBar = false;
       this.componentConfig.enabled = true;
       this.title = this.componentConfig.title ? this.componentConfig.title :this.starServices.getNLS([],"SCD_SCD_COMMANDS_GRID.scdcommandsScdScdCommandsGrid.component_title","SCD COMMANDS GRID");
   }

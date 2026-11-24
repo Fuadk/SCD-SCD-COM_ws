@@ -1423,29 +1423,84 @@ if (type === "shapeBoundsChange") {
 }
   private ON_RECEIVED(changes: any): void {
       this.latestTime = Date.now();
-    function formatChanges(changes){
-      let eventsArr ={};
-      for (let i =0;i< changes.length;i++){
-        let change = changes[i];
-        //console.log("change:change:",change.type)
-        if (change.type == "tag"){
-          let key = change.tagName;
-          let value = change.newValue.value;
-          if (typeof value == "undefined"){
-            value = change.oldValue.value;
-            if (typeof value == "undefined"){
-              value = 0;
-            }
-          }
-          change.value = value;
-          eventsArr[key] = change;
-        }
+function formatChanges(changes) {
+  let eventsArr = {};
 
-      }
-      //console.log("change:eventsArr:",eventsArr)
-      return eventsArr;
+  console.log("=== formatChanges called ===");
+  console.log("typeof changes:", typeof changes);
+  console.log("Array.isArray(changes):", Array.isArray(changes));
+  console.log("changes?.length:", changes && changes.length);
 
+  // Guard: if changes isn't an array, bail early with a clear message
+  if (!Array.isArray(changes)) {
+    console.warn("changes is NOT an array. Full payload:", changes);
+    return eventsArr;
+  }
+
+  if (changes.length === 0) {
+    console.warn("changes array is EMPTY — nothing to process.");
+    return eventsArr;
+  }
+
+  // Show the raw shape of the first element so you can see the real field names
+  console.log("First raw change object:", JSON.stringify(changes[0], null, 2));
+
+  function normalizeValue(v) {
+    if (v === null || v === undefined) return v;
+    if (Array.isArray(v)) return v.map(normalizeValue);
+    if (typeof v === "object") {
+      const keys = Object.keys(v);
+      const isArrayLike =
+        keys.length > 0 && keys.every((k, i) => String(i) === k);
+      if (isArrayLike) return keys.map((k) => normalizeValue(v[k]));
     }
+    return v;
+  }
+
+  for (let i = 0; i < changes.length; i++) {
+    const change = changes[i];
+    console.log(`--- change[${i}] ---`);
+    console.log("  keys:", change && Object.keys(change));
+    console.log("  type:", change && change.type);
+    console.log("  tagName:", change && change.tagName);
+    console.log("  newValue:", change && change.newValue);
+    console.log("  oldValue:", change && change.oldValue);
+
+    // Some simulator versions put type under different names — try a few
+    const type = change && (change.type ?? change.changeType ?? change.kind);
+    if (type !== "tag") {
+      console.log(`  SKIPPED (type "${type}" !== "tag")`);
+      continue;
+    }
+
+    // tagName might be nested or renamed in new version
+    const key =
+      change.tagName ??
+      change.tag ??
+      change.name ??
+      change.nodeId;
+    if (!key) {
+      console.warn(`  SKIPPED: no tagName/tag/name found on change[${i}]`);
+      continue;
+    }
+
+    let value =
+      change.newValue && change.newValue.value !== undefined
+        ? change.newValue.value
+        : change.oldValue && change.oldValue.value !== undefined
+          ? change.oldValue.value
+          : 0;
+
+    change.value = normalizeValue(value);
+    eventsArr[key] = change;
+    console.log(`  ADDED -> key="${key}", value=`, change.value);
+  }
+
+  console.log("=== formatChanges result ===");
+  console.log("eventsArr keys:", Object.keys(eventsArr));
+  console.log("Final eventsArr:", eventsArr);
+  return eventsArr;
+}
     if (typeof this.diagram == "undefined") {
             return;
         }
@@ -1497,7 +1552,7 @@ if (type === "shapeBoundsChange") {
             const liveShape = this.diagram.getShapeById(shape_id);
             if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :pre shape_id:", shape_id, 
                             "liveShape:",liveShape);
-            liveShape.dataItem.dataItem.text = value.toString();
+            liveShape.dataItem.dataItem.displayValue = value.toString();
                           if(this.paramConfig.DEBUG_FLAG) console.log("opcua:on received data from scada :post shape_id:", shape_id, "liveShape:",liveShape);
                           liveShape.redrawVisual();
 
@@ -4073,20 +4128,38 @@ public onStagePointerDown(event: PointerEvent): void {
         if (!spec) {
           return false;
         }
-        // Push buttons show the look of their current state (back colour and caption).
+        // Push buttons show the look of their current state: the SCD_SHAPE_STATE record whose STATE_ID is the
+        // button's current state (see pushStateId), with its colours, border, pattern, caption, font and image.
         const push = this.PUSH_KINDS.includes(kind);
         const pushValue = Number((d as any).__value) || 0;
         const pushStates: any[] = push && Array.isArray(d.pushStates) && d.pushStates.length ? d.pushStates : [];
-        const pushIndex = !push ? 0
-          : kind === "momentary" || kind === "maintained" || kind === "latched" ? (pushValue ? 1 : 0)
-            : kind === "rampButton" || kind === "navigationButton" ? 0 : pushValue % Math.max(1, pushStates.length);
-        const pushState = pushStates[Math.min(pushIndex, Math.max(0, pushStates.length - 1))];
+        const pushIndex = push ? this.pushStateId(kind, d, pushStates.length) : 0;
+        const pushState = pushStates.find(s => Number(s.stateId) === pushIndex)
+          ?? pushStates[Math.min(pushIndex, Math.max(0, pushStates.length - 1))];
+        if (pushState?.blink && blinkOff) {
+          frame();
+          return true;
+        }
         const panelFill = pushState && !style.fillColor ? this.normalizeColor(pushState.backColor, fillColor) : fillColor;
+        const pick = (stateValue: any, own: any): any => (stateValue === undefined || stateValue === null || stateValue === "" ? own : stateValue);
+        // The button with the look of the current state laid over its own settings.
+        const cd: any = !pushState ? d : {
+          ...d,
+          patternStyle: pick(pushState.patternStyle, d.patternStyle), patternColor: pick(pushState.patternColor, d.patternColor),
+          borderColor: pick(pushState.borderColor, d.borderColor),
+          iconColor: pick(pushState.imageColor, d.iconColor), imageAlignment: pick(pushState.imageAlignment, d.imageAlignment),
+          imageBackColor: pick(pushState.imageBackColor, d.imageBackColor), scaleImage: pick(pushState.scaleImage, d.scaleImage),
+          imageBlink: pick(pushState.imageBlink, d.imageBlink),
+          captionColor: pick(pushState.captionColor, d.captionColor), captionBackStyle: pick(pushState.captionBackStyle, d.captionBackStyle),
+          captionBackColor: pick(pushState.captionBackColor, d.captionBackColor), captionAlignment: pick(pushState.captionAlignment, d.captionAlignment),
+          captionWordWrap: pick(pushState.captionWordWrap, d.captionWordWrap), captionBlink: pick(pushState.captionBlink, d.captionBlink),
+          fontFamily: pick(pushState.fontFamily, d.fontFamily), fontSize: pick(pushState.fontSize, d.fontSize)
+        };
         // SHAPE_TYPE: rectangle (default), rounded rectangle or ellipse (a fully rounded box).
         const shapeType = this.dbKey(d.shapeType);
         const radius = shapeType.includes("ellipse") || shapeType.includes("oval") ? Math.min(w, h) / 2
           : shapeType.includes("round") ? Math.min(22, h / 2) : 0;
-        const bw = this.drawDbPanel(group, x, y, w, h, radius, d, panelFill, borderOverride);
+        const bw = this.drawDbPanel(group, x, y, w, h, radius, cd, panelFill, borderOverride);
         // The icon sits inside the margins; IMAGE_ALIGNMENT places it, SCALE_IMAGE enlarges it.
         const marginX = Math.max(0, Number(d.horizontalMargin) || 0);
         const marginY = Math.max(0, Number(d.verticalMargin) || 0);
@@ -4095,19 +4168,19 @@ public onStagePointerDown(event: PointerEvent): void {
         if (this.dbKey(d.imageBackStyle) === "solid") {
           group.append(new Rectangle({
             x: areaX, y: areaY, width: areaW, height: areaH,
-            stroke: { color: "transparent", width: 0 }, fill: { color: this.normalizeColor(d.imageBackColor, "#00008b") }
+            stroke: { color: "transparent", width: 0 }, fill: { color: this.normalizeColor(cd.imageBackColor, "#00008b") }
           }));
         }
-        const size = Math.min(areaW, areaH) * (d.scaleImage ? 0.9 : 0.5);
-        const imageAlign = this.dbText(d.imageAlignment, "MM").toUpperCase();
+        const size = Math.min(areaW, areaH) * (cd.scaleImage ? 0.9 : 0.5);
+        const imageAlign = this.dbText(cd.imageAlignment, "MM").toUpperCase();
         const ox = imageAlign[1] === "L" ? areaX : imageAlign[1] === "R" ? areaX + areaW - size : areaX + areaW / 2 - size / 2;
         const oy = imageAlign[0] === "T" ? areaY : imageAlign[0] === "B" ? areaY + areaH - size : areaY + areaH / 2 - size / 2;
-        const icon = this.normalizeColor(d.iconColor, "#ffffff");
+        const icon = this.normalizeColor(cd.iconColor, "#ffffff");
         // IMAGE_TYPE: "No image" keeps the built-in arrow, "Hidden" removes it, "Image file" shows imageSource.
         const imageType = this.dbKey(d.imageType);
         const imageHidden = imageType === "hidden" || imageType === "none";
         const imageFile = (imageType === "imagefile" || imageType === "image") && !!String(d.imageSource ?? "").trim();
-        if (!(d.imageBlink && blinkOff) && !imageHidden) {
+        if (!(cd.imageBlink && blinkOff) && !imageHidden) {
           if (imageFile) {
             group.append(new DiagramImage({ source: String(d.imageSource).trim(), x: ox, y: oy, width: size, height: size } as any));
           } else {
@@ -4123,19 +4196,19 @@ public onStagePointerDown(event: PointerEvent): void {
           ? (kind === "rampButton" && (d as any).__value !== undefined ? String(pushValue) : (stateCaption || String(d.caption ?? "")))
           : String(d.caption ?? "");
         if (captionText.trim()) {
-          if (this.dbKey(d.captionBackStyle) === "solid") {
+          if (this.dbKey(cd.captionBackStyle) === "solid") {
             group.append(new Rectangle({
               x: areaX, y: areaY, width: areaW, height: areaH,
-              stroke: { color: "transparent", width: 0 }, fill: { color: this.normalizeColor(d.captionBackColor, "#00008b") }
+              stroke: { color: "transparent", width: 0 }, fill: { color: this.normalizeColor(cd.captionBackColor, "#00008b") }
             }));
           }
-          if (!(d.captionBlink && blinkOff)) {
-            const family = this.dbText(d.fontFamily, "Arial");
-            const size = Math.max(6, Number(d.fontSize) || 10);
+          if (!(cd.captionBlink && blinkOff)) {
+            const family = this.dbText(cd.fontFamily, "Arial");
+            const size = Math.max(6, Number(cd.fontSize) || 10);
             const measureCaption = (line: string): number => this.measureTextWidth(line, size, family);
             const lines: string[] = [];
             for (const paragraph of captionText.split(/\r?\n/)) {
-              if (!d.captionWordWrap) {
+              if (!cd.captionWordWrap) {
                 lines.push(paragraph);
                 continue;
               }
@@ -4151,7 +4224,7 @@ public onStagePointerDown(event: PointerEvent): void {
               }
               lines.push(line);
             }
-            const align = this.dbText(d.captionAlignment, "MM").toUpperCase();
+            const align = this.dbText(cd.captionAlignment, "MM").toUpperCase();
             const lineHeight = size * 1.2, total = lines.length * lineHeight;
             const topY = align[0] === "T" ? areaY + 2 : align[0] === "B" ? areaY + areaH - total - 2 : areaY + (areaH - total) / 2;
             const captionGroup = new Group();
@@ -4160,7 +4233,7 @@ public onStagePointerDown(event: PointerEvent): void {
               const lx = align[1] === "L" ? areaX + 2 : align[1] === "R" ? areaX + areaW - 2 - width : areaX + (areaW - width) / 2;
               captionGroup.append(new TextBlock({
                 text: line, x: lx, y: topY + i * lineHeight,
-                fill: this.normalizeColor(d.captionColor, "#ffffff"), fontSize: size, fontFamily: family
+                fill: this.normalizeColor(cd.captionColor, "#ffffff"), fontSize: size, fontFamily: family
               } as any));
             });
             const clipBox = new DrawPath();
@@ -4181,7 +4254,24 @@ public onStagePointerDown(event: PointerEvent): void {
     }
     return false;
   }
-
+  /**
+   * The STATE_ID a push button is in now; its look is the SCD_SHAPE_STATE record with that STATE_ID.
+   * Momentary, Maintained and Latched: 0 or 1 by their value. Interlocked and Multistate: the state they stepped to.
+   * Navigation: 0 (ACTIVE) or 1 (INACTIVE, while the button is disabled). Ramp has one record, 0.
+   */
+  private pushStateId(kind: string, d: any, count: number): number {
+    const value = Number(d.__value) || 0;
+    switch (kind) {
+      case "momentary": case "maintained": case "latched":
+        return value ? 1 : 0;
+      case "interlocked": case "multistateButton":
+        return value % Math.max(1, count);
+      case "navigationButton":
+        return this.isDbYes(d.disabled) ? 1 : 0;
+      default:
+        return 0;
+    }
+  }
   /** Numeric text of a display / input: FORMAT, decimals, digit grouping, FIELD_LENGTH, overflow and leading zeros. */
   private formatDbNumber(d: any, raw: any): string {
     const n = Number(raw);
@@ -5314,8 +5404,10 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     if (key === "numberOfStates") {
       for (const shape of shapes) {
         const current: any[] = this.shapeDataItem(shape).pushStates ?? [];
-        if (current.length) {
-          const states = Array.from({ length: value }, (_, i) => ({ ...(current[i] ?? current[current.length - 1]) }));
+        const kindOfShape = this.shapeDataItem(shape).libraryKind;
+        // Ramp keeps its one record and Navigation its two (ACTIVE / INACTIVE).
+        if (current.length && kindOfShape !== "rampButton" && kindOfShape !== "navigationButton") {
+          const states = Array.from({ length: value }, (_, i) => ({ ...(current[i] ?? current[current.length - 1]), stateId: i }));
           this.patchShapes([shape], { numberOfStates: value, pushStates: states });
         }
       }
@@ -7473,10 +7565,14 @@ public getInsertTables(shapeType: string): string[] {
             console.log("insertSCDShapeTables:object:", object)
             if (tables[i] == "INSERT_SCD_SHAPE_STATE") {
               if (shapeType == "Navigation Button") {
-                if (butApp == 0)
+                if (butApp == 0) {
                   object['STATE_NAME'] = "ACTIVE";
-                else if (butApp == 1)
+                  object['STATE_ID'] = "0";
+                }
+                else if (butApp == 1) {
                   object['STATE_NAME'] = "INACTIVE";
+                  object['STATE_ID'] = "1";
+                }
                 console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
                 butApp++;
               }
@@ -7511,8 +7607,10 @@ public getInsertTables(shapeType: string): string[] {
                 butApp++;
               }
               else if (shapeType == "Ramp Button") {
-                if (butApp == 0)
+                if (butApp == 0) {
                   object['STATE_NAME'] = "LABEL";
+                  object['STATE_ID'] = "0";
+                }
                 console.log("insertSCDShapeTables:shapeType:", butApp, shapeType, tables[i], object['BUTTON_APPEARANCE'], )
                 butApp++;
               }
@@ -8074,6 +8172,54 @@ public findRowsByTable(
         autoRepeatDelay: num(String(one("SCD_ARROW_BUTTON_TIMING").AUTO_REPEAT_DELAY ?? "").replace(/[^0-9.]/g, ""), 400),
         autoRepeatRate: num(String(one("SCD_ARROW_BUTTON_TIMING").AUTO_REPEAT_RATE ?? "").replace(/[^0-9.]/g, ""), 0)
       });
+      if (this.PUSH_KINDS.includes(kind)) {
+        // One SCD_SHAPE_STATE record per state. The button shows the record whose STATE_ID is its current state
+        // (like the Multistate Indicator): back colour, border colour, blink, caption, font, pattern and image.
+        // A record without a STATE_ID takes the state number of its position in the table.
+        const stateRows = rows("SCD_SHAPE_STATE");
+        const requested = Math.max(2, Math.round(num(g.NUMBER_OF_STATES, 2)));
+        // Ramp has one record (its label) and Navigation two (ACTIVE and INACTIVE); the others follow NUMBER_OF_STATES.
+        const count = kind === "rampButton" ? 1 : kind === "navigationButton" ? Math.max(2, stateRows.length) : requested;
+        const rowForState = (i: number): any => stateRows.find(r => String(r?.STATE_ID ?? "").trim() !== ""
+          && Number(r.STATE_ID) === i) ?? stateRows[i] ?? stateRows[stateRows.length - 1] ?? {};
+        const base = col(rowForState(0).BACK_COLOR ?? g.BACK_COLOR, "#00008b");
+        const identical = stateRows.every(row => String(row.BACK_COLOR) === String(stateRows[0]?.BACK_COLOR));
+        const pushStates = Array.from({ length: count }, (_, i) => {
+          const r = rowForState(i);
+          // The default table has the same colour in every record: tell the states apart until the records differ.
+          const own = !identical && stateRows.length > 1 ? col(r.BACK_COLOR, base)
+            : (i === 0 ? base : this.lighten(base, Math.min(0.6, 0.3 * i)));
+          return {
+            stateId: String(r.STATE_ID ?? "").trim() !== "" ? Number(r.STATE_ID) : i,
+            name: txt(r.STATE_NAME, `State${i}`),
+            backColor: own,
+            borderColor: col(r.BORDER_COLOR, "#000000"),
+            blink: yes(r.BLINK),
+            captionColor: col(r.CAPTION_COLOR, "#ffffff"),
+            captionBackStyle: txt(r.CAPTION_BACK_STYLE, "Transparent"),
+            captionBackColor: col(r.CAPTION_BACK_COLOR, "#000000"),
+            captionAlignment: txt(r.CAPTION_ALIGNMENT, "MM"),
+            captionWordWrap: yes(r.CAPTION_WORD_WRAP),
+            captionBlink: yes(r.CAPTION_BLINK),
+            fontFamily: txt(r.FONT_NAME, "Arial"),
+            fontSize: num(r.FONT_SIZE, 10),
+            patternStyle: txt(r.PATTERN_STYLE, "None"),
+            patternColor: col(r.PATTERN_COLOR, "#ffffff"),
+            imageAlignment: txt(r.IMAGE_ALIGNMENT, "MM"),
+            scaleImage: yes(r.SCALE_IMAGE),
+            imageBlink: yes(r.IMAGE_BLINK),
+            imageBackColor: col(r.IMAGE_BACK_COLOR, "#000000"),
+            imageColor: col(r.IMAGE_COLOR, "#ffffff")
+          };
+        });
+        Object.assign(options, {
+          pushStates,
+          numberOfStates: requested,
+          stateCaptions: "",
+          buttonAction: this.PUSH_ACTIONS[kind],
+          connValue: ""
+        });
+      }
     }
   }
 
@@ -9017,12 +9163,48 @@ private async insertAndAddLibraryShape(
   libraryKind: string,
   options: any
 ): Promise<void> {
-  const kendouiContent: any = { id: shapeType };
-
   const x = Number(options.x) || 0;
   const y = Number(options.y) || 0;
   const width = Number(options.width) || 20;
   const height = Number(options.height) || 20;
+
+  // ------------------------------------------------------------------
+  // Branch 1: a shape was copied — paste it instead of inserting a new one.
+  // This mirrors the original insertShapeFromBox behaviour and bypasses
+  // the normal insertSCDShape / insertSCDShapeTables / addLibraryShape path.
+  // ------------------------------------------------------------------
+  const copiedShape = this.starServices.sessionParams["COPIED_SHAPE"];
+  if (typeof copiedShape !== "undefined" && copiedShape !== "") {
+    try {
+      let kendouiContent = JSON.parse(copiedShape.kendoui_content);
+      console.log("kendoui_content:", kendouiContent);
+      kendouiContent.id = copiedShape.id;
+      this.starServices.sessionParams["COPIED_SHAPE"] = "";
+
+      const copiedShapeType = "SYMPOL_FACTORY";
+      kendouiContent = await this.insertSCDShape(
+        kendouiContent,
+        copiedShapeType,
+        x,
+        y,
+        width,
+        height
+      );
+
+      this.add_new_shape(kendouiContent, copiedShape.type, x, y, width, height);
+      this.updateShapes();
+      this.resetFreehandState(false);
+    } catch (error) {
+      console.error("Failed to paste copied shape:", error);
+      this.statusMessage = `Could not paste copied shape.`;
+    }
+    return;
+  }
+
+  // ------------------------------------------------------------------
+  // Branch 2: normal insertion path.
+  // ------------------------------------------------------------------
+  const kendouiContent: any = { id: shapeType };
 
   try {
     // 1. Insert the main SCD_SHAPE record.
@@ -9056,12 +9238,8 @@ private async insertAndAddLibraryShape(
     };
 
     this.addLibraryShape(libraryKind, shapeOptions, true);
-
   } catch (error) {
-    console.error(
-      `Failed to insert ${shapeType}:`,
-      error
-    );
+    console.error(`Failed to insert ${shapeType}:`, error);
     this.statusMessage = `Could not insert ${shapeType}.`;
   }
 }
@@ -9246,7 +9424,16 @@ console.log("populateshapeAttributes:options:",{...options})
     const d = this.withTableDefaults(kind, dataItem);
     const state = this.runtimeStateOf(dataItem);
     let drawStyle = style;
-    const baseFill = style.fillColor || d.fillColor;
+    let baseFill = style.fillColor || d.fillColor;
+    if (!style.fillColor && this.PUSH_KINDS.includes(kind) && Array.isArray(d.pushStates) && d.pushStates.length) {
+      // A push button is lighter or darker than the colour of the state it is in, not than its own base colour.
+      const stateId = this.pushStateId(kind, dataItem, d.pushStates.length);
+      const current = d.pushStates.find((s: any) => Number(s.stateId) === stateId)
+        ?? d.pushStates[Math.min(stateId, d.pushStates.length - 1)];
+      if (current?.backColor) {
+        baseFill = current.backColor;
+      }
+    }
     if ((state === "hover" || state === "pressed") && baseFill && String(baseFill).toLowerCase() !== "transparent") {
       // Same cue as the Button: lighter on hover, darker when pressed.
       const hex = this.normalizeColor(baseFill, "#808080");

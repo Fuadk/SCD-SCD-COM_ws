@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener,ViewChild } from '@angular/core';
+import { TabStripComponent} from "@progress/kendo-angular-layout";
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -32,6 +33,7 @@ declare function getParamConfig():any;
 
 
 export class ScdApplicationScdScdApplicationFormFormComponent {
+  @ViewChild("tabstrip") public tabstrip: TabStripComponent;
   public title =  this.starServices.getNLS([],"SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm.component_title","SCD APPLICATION FORM");
   public compTitleMsg =  "SCD_SCD_APPLICATION_FORM.scdapplicationScdScdApplicationForm";
   public routineName = "ScdApplicationScdScdApplicationFormForm";
@@ -85,7 +87,7 @@ export class ScdApplicationScdScdApplicationFormFormComponent {
   public customerFacing = false;
   public FormStepsArr = [] ;
 public labelAPPLICATION_NAMETop=true;
-public labelAPPLICATION_NAMEVisible=true;
+public labelAPPLICATION_NAMEVisible=false;
 public labelHIDE_BUTTop=true;
 public labelHIDE_BUTVisible=false;
 public labelAPPLICATION_IDTop=true;
@@ -359,9 +361,11 @@ public variableSTATUS_NOT_OK;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
-      this.FormStepsArr.forEach(item => {
-      (item as any).visible = true;
-    });
+    //  this.FormStepsArr.forEach(item => {
+    //  (item as any).visible = true;
+    //});
+    let nextTab = 1;
+    this.tabstrip.selectTab(nextTab);
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       

@@ -4685,7 +4685,7 @@ class starServices {
     convertSvgToKendoIcon(object, svgContent, iconName, column) {
         if ((typeof iconName === 'undefined') || iconName === null)
             iconName = column;
-        console.log("convertSvgToKendoIcon:svgContent:", svgContent, "iconName:", iconName, "column:", column);
+        // console.log("convertSvgToKendoIcon:svgContent:", svgContent, "iconName:", iconName, "column:", column);
         try {
             // Extract viewBox
             const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/);

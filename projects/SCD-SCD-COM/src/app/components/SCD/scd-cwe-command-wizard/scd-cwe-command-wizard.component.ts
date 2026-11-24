@@ -1210,7 +1210,7 @@ this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM
 			"lkpArrName":"lkpArrSET_TO"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"RAMP_BY\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrRAMP_BY"},
-	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"DIRECTION\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"DIRECTION_RAMP\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrDIRECTION"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"TAG_LIST\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrOTHER_TAG_INPUT"},
@@ -1262,7 +1262,7 @@ this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM
 			"lkpArrName":"lkpArrDATALOG_UNITS"},
 	{"statment":"SELECT CODE, CODETEXT_LANG, CODEVALUE_LANG FROM SOM_TABS_CODES WHERE CODENAME ='FILE_COMMAND' and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG",
 			"lkpArrName":"lkpArrFILE_COMMAND"},
-	{"statment":"SELECT  DISPLAY_ID CODE,  DISPLAY_NAME CODETEXT_LANG FROM SCD_DISPLAY ",
+	{"statment":"SELECT  DISPLAY_ID CODE,  DISPLAY_NAME CODETEXT_LANG FROM SCD_DISPLAY",
 			"lkpArrName":"lkpArrPROGRAM"}];
  if (this.lookupArrDef.length > 0)
    this.starServices.fetchLookups(this, this.lookupArrDef);
@@ -1735,13 +1735,22 @@ public printScreen(){
     let syntax = masterParams.data['SYNTAX'];
 
     console.log("WHEN_NOTIFY Name:", Name, masterParams);
-    let nextTab = 0;
-    switch (Name) {
-        case "Abort": nextTab = 12; break;
-        default: break;
+    // The tab (index in FormStepsArr) that is the Wizard screen of the selected function; 0 = no tab for it.
+    let nextTab = this.COMMAND_TAB[Name] ?? 0;
+    // Only the tab of the selected function is shown: hide the tabs of the one selected before.
+    this.FormStepsArr.forEach(item => { item.visible = false; });
+    if (Name == "Abort") {
+        this.visibleDISPLAY_ABORT = false;
     }
     this.FormStepsArr[nextTab].visible = true;
     this.FormStepsArr[nextTab].CODETEXT_LANG = syntax;
+    // Start from empty fields, show only the fields this function needs and build its commandString.
+    this.currentCommand = Name;
+    this.helpOpened = false;
+    this.stopRecordingKeys();
+    this.resetFieldValues();
+    this.refreshCommand();
+    console.log("this.commandString:", this.commandString);
 
     setTimeout(() => {
         // The visible tab is now the FIRST (and only) rendered tab → index 0
@@ -1758,35 +1767,10 @@ this.FormStepsArr.forEach(item => {
     (item as any).visible = false;
 });
 
-this.lkpArrPRINTDISPLAY_DISPLAY_FILE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "", "_QUERY": "" }, { "CODE": "Logix_ALM", "CODETEXT_LANG": "Logix_ALM", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMA", "CODETEXT_LANG": "Logix_ALMA", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMA_Config", "CODETEXT_LANG": "Logix_ALMA_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMA_Status", "CODETEXT_LANG": "Logix_ALMA_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMD", "CODETEXT_LANG": "Logix_ALMD", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMD_Config", "CODETEXT_LANG": "Logix_ALMD_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMD_Status", "CODETEXT_LANG": "Logix_ALMD_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALM_Config", "CODETEXT_LANG": "Logix_ALM_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALM_Status", "CODETEXT_LANG": "Logix_ALM_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC", "CODETEXT_LANG": "Logix_CC", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_AutoTune", "CODETEXT_LANG": "Logix_CC_AutoTune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_AutoTune_CV", "CODETEXT_LANG": "Logix_CC_AutoTune_CV", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Config", "CODETEXT_LANG": "Logix_CC_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Status", "CODETEXT_LANG": "Logix_CC_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Trend", "CODETEXT_LANG": "Logix_CC_Trend", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Tune", "CODETEXT_LANG": "Logix_CC_Tune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D2SD", "CODETEXT_LANG": "Logix_D2SD", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D2SD_Status", "CODETEXT_LANG": "Logix_D2SD_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D3SD", "CODETEXT_LANG": "Logix_D3SD", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D3SD_Status", "CODETEXT_LANG": "Logix_D3SD_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ESEL", "CODETEXT_LANG": "Logix_ESEL", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ESEL_Status", "CODETEXT_LANG": "Logix_ESEL_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_Help_Browser", "CODETEXT_LANG": "Logix_Help_Browser", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC", "CODETEXT_LANG": "Logix_IMC", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_AutoTune", "CODETEXT_LANG": "Logix_IMC_AutoTune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Config", "CODETEXT_LANG": "Logix_IMC_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Status", "CODETEXT_LANG": "Logix_IMC_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Trend", "CODETEXT_LANG": "Logix_IMC_Trend", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Tune", "CODETEXT_LANG": "Logix_IMC_Tune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE", "CODETEXT_LANG": "Logix_PIDE", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Autotune", "CODETEXT_LANG": "Logix_PIDE_Autotune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Config", "CODETEXT_LANG": "Logix_PIDE_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Status", "CODETEXT_LANG": "Logix_PIDE_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Trend", "CODETEXT_LANG": "Logix_PIDE_Trend", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Tune", "CODETEXT_LANG": "Logix_PIDE_Tune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PhaseManager", "CODETEXT_LANG": "Logix_PhaseManager", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_RMPS", "CODETEXT_LANG": "Logix_RMPS", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_RMPS_Config", "CODETEXT_LANG": "Logix_RMPS_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_RMPS_Status", "CODETEXT_LANG": "Logix_RMPS_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_TOT", "CODETEXT_LANG": "Logix_TOT", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_TOT_Config", "CODETEXT_LANG": "Logix_TOT_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_TOT_Status", "CODETEXT_LANG": "Logix_TOT_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "me", "CODETEXT_LANG": "me", "PARTCODE": "", "_QUERY": "GET_STMT" }]
-this.lkpArrPRINTDISPLAY_DISPLAY_FILE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "", "_QUERY": "" }, { "CODE": "Logix_ALM", "CODETEXT_LANG": "Logix_ALM", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMA", "CODETEXT_LANG": "Logix_ALMA", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMA_Config", "CODETEXT_LANG": "Logix_ALMA_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMA_Status", "CODETEXT_LANG": "Logix_ALMA_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMD", "CODETEXT_LANG": "Logix_ALMD", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMD_Config", "CODETEXT_LANG": "Logix_ALMD_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALMD_Status", "CODETEXT_LANG": "Logix_ALMD_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALM_Config", "CODETEXT_LANG": "Logix_ALM_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ALM_Status", "CODETEXT_LANG": "Logix_ALM_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC", "CODETEXT_LANG": "Logix_CC", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_AutoTune", "CODETEXT_LANG": "Logix_CC_AutoTune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_AutoTune_CV", "CODETEXT_LANG": "Logix_CC_AutoTune_CV", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Config", "CODETEXT_LANG": "Logix_CC_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Status", "CODETEXT_LANG": "Logix_CC_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Trend", "CODETEXT_LANG": "Logix_CC_Trend", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_CC_Tune", "CODETEXT_LANG": "Logix_CC_Tune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D2SD", "CODETEXT_LANG": "Logix_D2SD", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D2SD_Status", "CODETEXT_LANG": "Logix_D2SD_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D3SD", "CODETEXT_LANG": "Logix_D3SD", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_D3SD_Status", "CODETEXT_LANG": "Logix_D3SD_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ESEL", "CODETEXT_LANG": "Logix_ESEL", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_ESEL_Status", "CODETEXT_LANG": "Logix_ESEL_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_Help_Browser", "CODETEXT_LANG": "Logix_Help_Browser", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC", "CODETEXT_LANG": "Logix_IMC", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_AutoTune", "CODETEXT_LANG": "Logix_IMC_AutoTune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Config", "CODETEXT_LANG": "Logix_IMC_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Status", "CODETEXT_LANG": "Logix_IMC_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Trend", "CODETEXT_LANG": "Logix_IMC_Trend", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_IMC_Tune", "CODETEXT_LANG": "Logix_IMC_Tune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE", "CODETEXT_LANG": "Logix_PIDE", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Autotune", "CODETEXT_LANG": "Logix_PIDE_Autotune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Config", "CODETEXT_LANG": "Logix_PIDE_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Status", "CODETEXT_LANG": "Logix_PIDE_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Trend", "CODETEXT_LANG": "Logix_PIDE_Trend", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PIDE_Tune", "CODETEXT_LANG": "Logix_PIDE_Tune", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_PhaseManager", "CODETEXT_LANG": "Logix_PhaseManager", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_RMPS", "CODETEXT_LANG": "Logix_RMPS", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_RMPS_Config", "CODETEXT_LANG": "Logix_RMPS_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_RMPS_Status", "CODETEXT_LANG": "Logix_RMPS_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_TOT", "CODETEXT_LANG": "Logix_TOT", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_TOT_Config", "CODETEXT_LANG": "Logix_TOT_Config", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "Logix_TOT_Status", "CODETEXT_LANG": "Logix_TOT_Status", "PARTCODE": "", "_QUERY": "GET_STMT" }, { "CODE": "me", "CODETEXT_LANG": "me", "PARTCODE": "", "_QUERY": "GET_STMT" }]
-this.lkpArrPARAMETER_TAGS_LKP = []
-this.lkpArrPARAMETER_FILE_LKP = []
-this.lkpArrDISPLAY_DISPLAY_FILE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Logix_ALM", "CODETEXT_LANG": "Logix_ALM", "PARTCODE": "" }, { "CODE": "Logix_ALMA", "CODETEXT_LANG": "Logix_ALMA", "PARTCODE": "" }, { "CODE": "Logix_ALMA_Config", "CODETEXT_LANG": "Logix_ALMA_Config", "PARTCODE": "" }, { "CODE": "Logix_ALMA_Status", "CODETEXT_LANG": "Logix_ALMA_Status", "PARTCODE": "" }, { "CODE": "Logix_ALMD", "CODETEXT_LANG": "Logix_ALMD", "PARTCODE": "" }, { "CODE": "Logix_ALMD_Config", "CODETEXT_LANG": "Logix_ALMD_Config", "PARTCODE": "" }, { "CODE": "Logix_ALMD_Status", "CODETEXT_LANG": "Logix_ALMD_Status", "PARTCODE": "" }, { "CODE": "Logix_ALM_Config", "CODETEXT_LANG": "Logix_ALM_Config", "PARTCODE": "" }, { "CODE": "Logix_ALM_Status", "CODETEXT_LANG": "Logix_ALM_Status", "PARTCODE": "" }, { "CODE": "Logix_CC", "CODETEXT_LANG": "Logix_CC", "PARTCODE": "" }, { "CODE": "Logix_CC_AutoTune", "CODETEXT_LANG": "Logix_CC_AutoTune", "PARTCODE": "" }, { "CODE": "Logix_CC_AutoTune_CV", "CODETEXT_LANG": "Logix_CC_AutoTune_CV", "PARTCODE": "" }, { "CODE": "Logix_CC_Config", "CODETEXT_LANG": "Logix_CC_Config", "PARTCODE": "" }, { "CODE": "Logix_CC_Status", "CODETEXT_LANG": "Logix_CC_Status", "PARTCODE": "" }, { "CODE": "Logix_CC_Trend", "CODETEXT_LANG": "Logix_CC_Trend", "PARTCODE": "" }, { "CODE": "Logix_CC_Tune", "CODETEXT_LANG": "Logix_CC_Tune", "PARTCODE": "" }, { "CODE": "Logix_D2SD", "CODETEXT_LANG": "Logix_D2SD", "PARTCODE": "" }, { "CODE": "Logix_D2SD_Status", "CODETEXT_LANG": "Logix_D2SD_Status", "PARTCODE": "" }, { "CODE": "Logix_D3SD", "CODETEXT_LANG": "Logix_D3SD", "PARTCODE": "" }, { "CODE": "Logix_D3SD_Status", "CODETEXT_LANG": "Logix_D3SD_Status", "PARTCODE": "" }, { "CODE": "Logix_ESEL", "CODETEXT_LANG": "Logix_ESEL", "PARTCODE": "" }, { "CODE": "Logix_ESEL_Status", "CODETEXT_LANG": "Logix_ESEL_Status", "PARTCODE": "" }, { "CODE": "Logix_Help_Browser", "CODETEXT_LANG": "Logix_Help_Browser", "PARTCODE": "" }, { "CODE": "Logix_IMC", "CODETEXT_LANG": "Logix_IMC", "PARTCODE": "" }, { "CODE": "Logix_IMC_AutoTune", "CODETEXT_LANG": "Logix_IMC_AutoTune", "PARTCODE": "" }, { "CODE": "Logix_IMC_Config", "CODETEXT_LANG": "Logix_IMC_Config", "PARTCODE": "" }, { "CODE": "Logix_IMC_Status", "CODETEXT_LANG": "Logix_IMC_Status", "PARTCODE": "" }, { "CODE": "Logix_IMC_Trend", "CODETEXT_LANG": "Logix_IMC_Trend", "PARTCODE": "" }, { "CODE": "Logix_IMC_Tune", "CODETEXT_LANG": "Logix_IMC_Tune", "PARTCODE": "" }, { "CODE": "Logix_PIDE", "CODETEXT_LANG": "Logix_PIDE", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Autotune", "CODETEXT_LANG": "Logix_PIDE_Autotune", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Config", "CODETEXT_LANG": "Logix_PIDE_Config", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Status", "CODETEXT_LANG": "Logix_PIDE_Status", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Trend", "CODETEXT_LANG": "Logix_PIDE_Trend", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Tune", "CODETEXT_LANG": "Logix_PIDE_Tune", "PARTCODE": "" }, { "CODE": "Logix_PhaseManager", "CODETEXT_LANG": "Logix_PhaseManager", "PARTCODE": "" }, { "CODE": "Logix_RMPS", "CODETEXT_LANG": "Logix_RMPS", "PARTCODE": "" }, { "CODE": "Logix_RMPS_Config", "CODETEXT_LANG": "Logix_RMPS_Config", "PARTCODE": "" }, { "CODE": "Logix_RMPS_Status", "CODETEXT_LANG": "Logix_RMPS_Status", "PARTCODE": "" }, { "CODE": "Logix_TOT", "CODETEXT_LANG": "Logix_TOT", "PARTCODE": "" }, { "CODE": "Logix_TOT_Config", "CODETEXT_LANG": "Logix_TOT_Config", "PARTCODE": "" }, { "CODE": "Logix_TOT_Status", "CODETEXT_LANG": "Logix_TOT_Status", "PARTCODE": "" }, { "CODE": "me", "CODETEXT_LANG": "me", "PARTCODE": "" }]
-this.lkpArrDISPLAY_POSITION = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Bottom left corner", "CODETEXT_LANG": "Bottom left corner", "PARTCODE": "" }, { "CODE": "Bottom right corner", "CODETEXT_LANG": "Bottom right corner", "PARTCODE": "" }, { "CODE": "Centered in the bottom half", "CODETEXT_LANG": "Centered in the bottom half", "PARTCODE": "" }, { "CODE": "Centered in the top half", "CODETEXT_LANG": "Centered in the top half", "PARTCODE": "" }, { "CODE": "Centered of the screen", "CODETEXT_LANG": "Centered of the screen", "PARTCODE": "" }, { "CODE": "Centered on the left side", "CODETEXT_LANG": "Centered on the left side", "PARTCODE": "" }, { "CODE": "Centered on the right side", "CODETEXT_LANG": "Centered on the right side", "PARTCODE": "" }, { "CODE": "Docked to the bottom", "CODETEXT_LANG": "Docked to the bottom", "PARTCODE": "" }, { "CODE": "Docked to the left", "CODETEXT_LANG": "Docked to the left", "PARTCODE": "" }, { "CODE": "Docked to the right", "CODETEXT_LANG": "Docked to the right", "PARTCODE": "" }, { "CODE": "Docked to the top", "CODETEXT_LANG": "Docked to the top", "PARTCODE": "" }, { "CODE": "Relative to the calling position", "CODETEXT_LANG": "Relative to the calling position", "PARTCODE": "" }, { "CODE": "Top left corner", "CODETEXT_LANG": "Top left corner", "PARTCODE": "" }, { "CODE": "Top right corner", "CODETEXT_LANG": "Top right corner", "PARTCODE": "" }]
-this.lkpArrMONITOR_INDEX_VALUE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Monitor 1", "CODETEXT_LANG": "Monitor 1", "PARTCODE": "" }, { "CODE": "Monitor 2", "CODETEXT_LANG": "Monitor 2", "PARTCODE": "" }, { "CODE": "Monitor 3", "CODETEXT_LANG": "Monitor 3", "PARTCODE": "" }, { "CODE": "Monitor 4", "CODETEXT_LANG": "Monitor 4", "PARTCODE": "" }, { "CODE": "Monitor 5", "CODETEXT_LANG": "Monitor 5", "PARTCODE": "" }, { "CODE": "Monitor 6", "CODETEXT_LANG": "Monitor 6", "PARTCODE": "" }]
-this.lkpArrTAG_LIST2 = []
-this.lkpArrDISPLAY_PARAMETER_FILE = []
-this.lkpArrCLOSE_MODE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Close active window", "CODETEXT_LANG": "Close active window", "PARTCODE": "" }, { "CODE": "Close all windows", "CODETEXT_LANG": "Close all windows", "PARTCODE": "" }, { "CODE": "Close display Me", "CODETEXT_LANG": "Close display Me", "PARTCODE": "" }, { "CODE": "Close graphic display", "CODETEXT_LANG": "Close graphic display", "PARTCODE": "" }]
-this.lkpArrDISPLAY_ABORT = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Logix_ALM", "CODETEXT_LANG": "Logix_ALM", "PARTCODE": "" }, { "CODE": "Logix_ALMA", "CODETEXT_LANG": "Logix_ALMA", "PARTCODE": "" }, { "CODE": "Logix_ALMA_Config", "CODETEXT_LANG": "Logix_ALMA_Config", "PARTCODE": "" }, { "CODE": "Logix_ALMA_Status", "CODETEXT_LANG": "Logix_ALMA_Status", "PARTCODE": "" }, { "CODE": "Logix_ALMD", "CODETEXT_LANG": "Logix_ALMD", "PARTCODE": "" }, { "CODE": "Logix_ALMD_Config", "CODETEXT_LANG": "Logix_ALMD_Config", "PARTCODE": "" }, { "CODE": "Logix_ALMD_Status", "CODETEXT_LANG": "Logix_ALMD_Status", "PARTCODE": "" }, { "CODE": "Logix_ALM_Config", "CODETEXT_LANG": "Logix_ALM_Config", "PARTCODE": "" }, { "CODE": "Logix_ALM_Status", "CODETEXT_LANG": "Logix_ALM_Status", "PARTCODE": "" }, { "CODE": "Logix_CC", "CODETEXT_LANG": "Logix_CC", "PARTCODE": "" }, { "CODE": "Logix_CC_AutoTune", "CODETEXT_LANG": "Logix_CC_AutoTune", "PARTCODE": "" }, { "CODE": "Logix_CC_AutoTune_CV", "CODETEXT_LANG": "Logix_CC_AutoTune_CV", "PARTCODE": "" }, { "CODE": "Logix_CC_Config", "CODETEXT_LANG": "Logix_CC_Config", "PARTCODE": "" }, { "CODE": "Logix_CC_Status", "CODETEXT_LANG": "Logix_CC_Status", "PARTCODE": "" }, { "CODE": "Logix_CC_Trend", "CODETEXT_LANG": "Logix_CC_Trend", "PARTCODE": "" }, { "CODE": "Logix_CC_Tune", "CODETEXT_LANG": "Logix_CC_Tune", "PARTCODE": "" }, { "CODE": "Logix_D2SD", "CODETEXT_LANG": "Logix_D2SD", "PARTCODE": "" }, { "CODE": "Logix_D2SD_Status", "CODETEXT_LANG": "Logix_D2SD_Status", "PARTCODE": "" }, { "CODE": "Logix_D3SD", "CODETEXT_LANG": "Logix_D3SD", "PARTCODE": "" }, { "CODE": "Logix_D3SD_Status", "CODETEXT_LANG": "Logix_D3SD_Status", "PARTCODE": "" }, { "CODE": "Logix_ESEL", "CODETEXT_LANG": "Logix_ESEL", "PARTCODE": "" }, { "CODE": "Logix_ESEL_Status", "CODETEXT_LANG": "Logix_ESEL_Status", "PARTCODE": "" }, { "CODE": "Logix_Help_Browser", "CODETEXT_LANG": "Logix_Help_Browser", "PARTCODE": "" }, { "CODE": "Logix_IMC", "CODETEXT_LANG": "Logix_IMC", "PARTCODE": "" }, { "CODE": "Logix_IMC_AutoTune", "CODETEXT_LANG": "Logix_IMC_AutoTune", "PARTCODE": "" }, { "CODE": "Logix_IMC_Config", "CODETEXT_LANG": "Logix_IMC_Config", "PARTCODE": "" }, { "CODE": "Logix_IMC_Status", "CODETEXT_LANG": "Logix_IMC_Status", "PARTCODE": "" }, { "CODE": "Logix_IMC_Trend", "CODETEXT_LANG": "Logix_IMC_Trend", "PARTCODE": "" }, { "CODE": "Logix_IMC_Tune", "CODETEXT_LANG": "Logix_IMC_Tune", "PARTCODE": "" }, { "CODE": "Logix_PIDE", "CODETEXT_LANG": "Logix_PIDE", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Autotune", "CODETEXT_LANG": "Logix_PIDE_Autotune", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Config", "CODETEXT_LANG": "Logix_PIDE_Config", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Status", "CODETEXT_LANG": "Logix_PIDE_Status", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Trend", "CODETEXT_LANG": "Logix_PIDE_Trend", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Tune", "CODETEXT_LANG": "Logix_PIDE_Tune", "PARTCODE": "" }, { "CODE": "Logix_PhaseManager", "CODETEXT_LANG": "Logix_PhaseManager", "PARTCODE": "" }, { "CODE": "Logix_RMPS", "CODETEXT_LANG": "Logix_RMPS", "PARTCODE": "" }, { "CODE": "Logix_RMPS_Config", "CODETEXT_LANG": "Logix_RMPS_Config", "PARTCODE": "" }, { "CODE": "Logix_RMPS_Status", "CODETEXT_LANG": "Logix_RMPS_Status", "PARTCODE": "" }, { "CODE": "Logix_TOT", "CODETEXT_LANG": "Logix_TOT", "PARTCODE": "" }, { "CODE": "Logix_TOT_Config", "CODETEXT_LANG": "Logix_TOT_Config", "PARTCODE": "" }, { "CODE": "Logix_TOT_Status", "CODETEXT_LANG": "Logix_TOT_Status", "PARTCODE": "" }, { "CODE": "me", "CODETEXT_LANG": "me", "PARTCODE": "" }]
-this.lkpArrUNPIN_MODE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Unpin active window", "CODETEXT_LANG": "Unpin active window", "PARTCODE": "" }, { "CODE": "Unpin all windows", "CODETEXT_LANG": "Unpin all windows", "PARTCODE": "" }]
-this.lkpArrTAG = [{ "CODE": "", "CODETEXT_LANG": "", "CODEVALUE_LANG": "" }, { "CODE": "TAG0", "CODETEXT_LANG": "TAG0", "CODEVALUE_LANG": "" }, { "CODE": "TAG1", "CODETEXT_LANG": "TAG1", "CODEVALUE_LANG": "" }]
-this.lkpArrSET_TO = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Other tag", "CODETEXT_LANG": "Other tag", "PARTCODE": "" }, { "CODE": "Percentage", "CODETEXT_LANG": "Percentage", "PARTCODE": "" }, { "CODE": "String", "CODETEXT_LANG": "String", "PARTCODE": "" }, { "CODE": "Value or Label", "CODETEXT_LANG": "Value or Label", "PARTCODE": "" }]
-this.lkpArrRAMP_BY = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Other tag", "CODETEXT_LANG": "Other tag", "PARTCODE": "" }, { "CODE": "Percentage", "CODETEXT_LANG": "Percentage", "PARTCODE": "" }, { "CODE": "Value", "CODETEXT_LANG": "Value", "PARTCODE": "" }]
-this.lkpArrDIRECTION = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Down", "CODETEXT_LANG": "Down", "PARTCODE": "" }, { "CODE": "Up", "CODETEXT_LANG": "Up", "PARTCODE": "" }]
-this.lkpArrOTHER_TAG_INPUT = []
-this.lkpArrLANGUAGE_ID = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "English", "CODETEXT_LANG": "English", "PARTCODE": "" }]
-this.lkpArrKEY_MODE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "File", "CODETEXT_LANG": "File", "PARTCODE": "" }, { "CODE": "Stop", "CODETEXT_LANG": "Stop", "PARTCODE": "" }]
-this.lkpArrKEY_FILE = [{ "CODE": "", "CODETEXT_LANG": "", "CODEVALUE_LANG": "" }, { "CODE": "KEY_FILE0", "CODETEXT_LANG": "KEY_FILE0", "CODEVALUE_LANG": "" }, { "CODE": "KEY_FILE1", "CODETEXT_LANG": "KEY_FILE1", "CODEVALUE_LANG": "" }]
-this.lkpArrDISPLAY_CLIENT_CLOSE_MODE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Current Display", "CODETEXT_LANG": "Current Display", "PARTCODE": "" }, { "CODE": "FileName", "CODETEXT_LANG": "FileName", "PARTCODE": "" }, { "CODE": "Title Bar", "CODETEXT_LANG": "Title Bar", "PARTCODE": "" }]
-this.lkpArrRECIPE_NAME_TAG = [{ "CODE": "", "CODETEXT_LANG": "", "CODEVALUE_LANG": "" }, { "CODE": "RECIPE_NAME_TAG0", "CODETEXT_LANG": "RECIPE_NAME_TAG0", "CODEVALUE_LANG": "" }, { "CODE": "RECIPE_NAME_TAG1", "CODETEXT_LANG": "RECIPE_NAME_TAG1", "CODEVALUE_LANG": "" }]
-this.lkpArrINVOKE_DISPLAY_FILE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Logix_ALM", "CODETEXT_LANG": "Logix_ALM", "PARTCODE": "" }, { "CODE": "Logix_ALMA", "CODETEXT_LANG": "Logix_ALMA", "PARTCODE": "" }, { "CODE": "Logix_ALMA_Config", "CODETEXT_LANG": "Logix_ALMA_Config", "PARTCODE": "" }, { "CODE": "Logix_ALMA_Status", "CODETEXT_LANG": "Logix_ALMA_Status", "PARTCODE": "" }, { "CODE": "Logix_ALMD", "CODETEXT_LANG": "Logix_ALMD", "PARTCODE": "" }, { "CODE": "Logix_ALMD_Config", "CODETEXT_LANG": "Logix_ALMD_Config", "PARTCODE": "" }, { "CODE": "Logix_ALMD_Status", "CODETEXT_LANG": "Logix_ALMD_Status", "PARTCODE": "" }, { "CODE": "Logix_ALM_Config", "CODETEXT_LANG": "Logix_ALM_Config", "PARTCODE": "" }, { "CODE": "Logix_ALM_Status", "CODETEXT_LANG": "Logix_ALM_Status", "PARTCODE": "" }, { "CODE": "Logix_CC", "CODETEXT_LANG": "Logix_CC", "PARTCODE": "" }, { "CODE": "Logix_CC_AutoTune", "CODETEXT_LANG": "Logix_CC_AutoTune", "PARTCODE": "" }, { "CODE": "Logix_CC_AutoTune_CV", "CODETEXT_LANG": "Logix_CC_AutoTune_CV", "PARTCODE": "" }, { "CODE": "Logix_CC_Config", "CODETEXT_LANG": "Logix_CC_Config", "PARTCODE": "" }, { "CODE": "Logix_CC_Status", "CODETEXT_LANG": "Logix_CC_Status", "PARTCODE": "" }, { "CODE": "Logix_CC_Trend", "CODETEXT_LANG": "Logix_CC_Trend", "PARTCODE": "" }, { "CODE": "Logix_CC_Tune", "CODETEXT_LANG": "Logix_CC_Tune", "PARTCODE": "" }, { "CODE": "Logix_D2SD", "CODETEXT_LANG": "Logix_D2SD", "PARTCODE": "" }, { "CODE": "Logix_D2SD_Status", "CODETEXT_LANG": "Logix_D2SD_Status", "PARTCODE": "" }, { "CODE": "Logix_D3SD", "CODETEXT_LANG": "Logix_D3SD", "PARTCODE": "" }, { "CODE": "Logix_D3SD_Status", "CODETEXT_LANG": "Logix_D3SD_Status", "PARTCODE": "" }, { "CODE": "Logix_ESEL", "CODETEXT_LANG": "Logix_ESEL", "PARTCODE": "" }, { "CODE": "Logix_ESEL_Status", "CODETEXT_LANG": "Logix_ESEL_Status", "PARTCODE": "" }, { "CODE": "Logix_Help_Browser", "CODETEXT_LANG": "Logix_Help_Browser", "PARTCODE": "" }, { "CODE": "Logix_IMC", "CODETEXT_LANG": "Logix_IMC", "PARTCODE": "" }, { "CODE": "Logix_IMC_AutoTune", "CODETEXT_LANG": "Logix_IMC_AutoTune", "PARTCODE": "" }, { "CODE": "Logix_IMC_Config", "CODETEXT_LANG": "Logix_IMC_Config", "PARTCODE": "" }, { "CODE": "Logix_IMC_Status", "CODETEXT_LANG": "Logix_IMC_Status", "PARTCODE": "" }, { "CODE": "Logix_IMC_Trend", "CODETEXT_LANG": "Logix_IMC_Trend", "PARTCODE": "" }, { "CODE": "Logix_IMC_Tune", "CODETEXT_LANG": "Logix_IMC_Tune", "PARTCODE": "" }, { "CODE": "Logix_PIDE", "CODETEXT_LANG": "Logix_PIDE", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Autotune", "CODETEXT_LANG": "Logix_PIDE_Autotune", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Config", "CODETEXT_LANG": "Logix_PIDE_Config", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Status", "CODETEXT_LANG": "Logix_PIDE_Status", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Trend", "CODETEXT_LANG": "Logix_PIDE_Trend", "PARTCODE": "" }, { "CODE": "Logix_PIDE_Tune", "CODETEXT_LANG": "Logix_PIDE_Tune", "PARTCODE": "" }, { "CODE": "Logix_PhaseManager", "CODETEXT_LANG": "Logix_PhaseManager", "PARTCODE": "" }, { "CODE": "Logix_RMPS", "CODETEXT_LANG": "Logix_RMPS", "PARTCODE": "" }, { "CODE": "Logix_RMPS_Config", "CODETEXT_LANG": "Logix_RMPS_Config", "PARTCODE": "" }, { "CODE": "Logix_RMPS_Status", "CODETEXT_LANG": "Logix_RMPS_Status", "PARTCODE": "" }, { "CODE": "Logix_TOT", "CODETEXT_LANG": "Logix_TOT", "PARTCODE": "" }, { "CODE": "Logix_TOT_Config", "CODETEXT_LANG": "Logix_TOT_Config", "PARTCODE": "" }, { "CODE": "Logix_TOT_Status", "CODETEXT_LANG": "Logix_TOT_Status", "PARTCODE": "" }, { "CODE": "me", "CODETEXT_LANG": "me", "PARTCODE": "" }]
-this.lkpArrINVOKE_ADD_TAG = []
-this.lkpArrINVOKE_MODE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Invoke method in object", "CODETEXT_LANG": "Invoke method in object", "PARTCODE": "" }, { "CODE": "Set object property to value of tag", "CODETEXT_LANG": "Set object property to value of tag", "PARTCODE": "" }, { "CODE": "Set tag to value from object method", "CODETEXT_LANG": "Set tag to value from object method", "PARTCODE": "" }, { "CODE": "Set tag to value of object property", "CODETEXT_LANG": "Set tag to value of object property", "PARTCODE": "" }]
-this.lkpArrSET_TAG_TO_VALUE_OF_OBJECT = [{ "CODE": "", "CODETEXT_LANG": "", "CODEVALUE_LANG": "" }, { "CODE": "SET_TAG_TO_VALUE_OF_OBJECT0", "CODETEXT_LANG": "SET_TAG_TO_VALUE_OF_OBJECT0", "CODEVALUE_LANG": "" }, { "CODE": "SET_TAG_TO_VALUE_OF_OBJECT1", "CODETEXT_LANG": "SET_TAG_TO_VALUE_OF_OBJECT1", "CODEVALUE_LANG": "" }]
-this.lkpArrSET_OBJECT_PROPERTY = [{ "CODE": "", "CODETEXT_LANG": "", "CODEVALUE_LANG": "" }, { "CODE": "SET_OBJECT_PROPERTY0", "CODETEXT_LANG": "SET_OBJECT_PROPERTY0", "CODEVALUE_LANG": "" }, { "CODE": "SET_OBJECT_PROPERTY1", "CODETEXT_LANG": "SET_OBJECT_PROPERTY1", "CODEVALUE_LANG": "" }]
-this.lkpArrSET_TAG_TO_VALUE_FROM = [{ "CODE": "", "CODETEXT_LANG": "", "CODEVALUE_LANG": "" }, { "CODE": "SET_TAG_TO_VALUE_FROM0", "CODETEXT_LANG": "SET_TAG_TO_VALUE_FROM0", "CODEVALUE_LANG": "" }, { "CODE": "SET_TAG_TO_VALUE_FROM1", "CODETEXT_LANG": "SET_TAG_TO_VALUE_FROM1", "CODEVALUE_LANG": "" }]
-this.lkpArrRECIPE_FILE_MODE = [{ "CODE": "", "CODETEXT_LANG": "", "PARTCODE": "" }, { "CODE": "Recipe File", "CODETEXT_LANG": "Recipe File", "PARTCODE": "" }, { "CODE": "Variable Recipe", "CODETEXT_LANG": "Variable Recipe", "PARTCODE": "" }]
+this.form.valueChanges.subscribe(() => {
+    this.refreshCommand();
+
+  });
 
     
   }
@@ -1985,7 +1969,7 @@ async WHEN_VALIDATE_ITEM_DISPLAY_BROWSE(value) {
  }
 
  async ON_CLICK_DISPLAY_BROWSE(event){
-
+this.browseForFile("PDF_FILE_PATH2", ".pdf");
 }
 
 async WHEN_VALIDATE_ITEM_PRINTDISPLAY_PARAMETER_TAGS(value) {
@@ -2634,7 +2618,11 @@ async WHEN_VALIDATE_ITEM_CLOSE_MODE(value) {
  if (typeof this.form.controls['CLOSE_MODE'] != "undefined" ) 
       this.form.controls['CLOSE_MODE'].setErrors({invalid: true}); 
  // Code goes here 
- 
+ console.log("WHEN_VALIDATE_ITEM_CLOSE_MODE:", value)
+ if (value == "Close graphic display")
+  this.visibleDISPLAY_ABORT = true;
+else
+  this.visibleDISPLAY_ABORT = false; 
 
  if ( this.FORM_TRIGGER_FAILURE == true) 
  return; 
@@ -3085,7 +3073,7 @@ async WHEN_VALIDATE_ITEM_START_RECORDING_KEYS(value) {
  }
 
  async ON_CLICK_START_RECORDING_KEYS(event){
-
+this.startRecordingKeys();
 }
 
 async WHEN_VALIDATE_ITEM_STOP_RECORDING_KEYS(value) {
@@ -3105,7 +3093,7 @@ async WHEN_VALIDATE_ITEM_STOP_RECORDING_KEYS(value) {
  }
 
  async ON_CLICK_STOP_RECORDING_KEYS(event){
-
+ this.stopRecordingKeys();
 }
 
 async WHEN_VALIDATE_ITEM_CLEAR_KEYS(value) {
@@ -3125,7 +3113,7 @@ async WHEN_VALIDATE_ITEM_CLEAR_KEYS(value) {
  }
 
  async ON_CLICK_CLEAR_KEYS(event){
-
+this.form.get("SENDKEYS_KEYSTRING")?.setValue("");
 }
 
 async WHEN_VALIDATE_ITEM_KEY_MODE(value) {
@@ -3245,7 +3233,7 @@ async WHEN_VALIDATE_ITEM_SIMPLE_UTILITY_BROWSE(value) {
  }
 
  async ON_CLICK_SIMPLE_UTILITY_BROWSE(event){
-
+this.browseForFile("FILE_NAME", ".cli");
 }
 
 async WHEN_VALIDATE_ITEM_TITLE_TEXT(value) {
@@ -3945,7 +3933,7 @@ async WHEN_VALIDATE_ITEM_BUT_TAG_MIN_VAL(value) {
  }
 
  async ON_CLICK_BUT_TAG_MIN_VAL(event){
-
+this.insertPlaceholder("\\tm");
 }
 
 async WHEN_VALIDATE_ITEM_BUT_TAG_MAX_VAL(value) {
@@ -3965,7 +3953,7 @@ async WHEN_VALIDATE_ITEM_BUT_TAG_MAX_VAL(value) {
  }
 
  async ON_CLICK_BUT_TAG_MAX_VAL(event){
-
+this.insertPlaceholder("\\tx");
 }
 
 async WHEN_VALIDATE_ITEM_BUT_TAG_UNITS(value) {
@@ -3985,7 +3973,7 @@ async WHEN_VALIDATE_ITEM_BUT_TAG_UNITS(value) {
  }
 
  async ON_CLICK_BUT_TAG_UNITS(event){
-
+this.insertPlaceholder("\\u");
 }
 
 async WHEN_VALIDATE_ITEM_BUT_TAG_NAME(value) {
@@ -4005,7 +3993,7 @@ async WHEN_VALIDATE_ITEM_BUT_TAG_NAME(value) {
  }
 
  async ON_CLICK_BUT_TAG_NAME(event){
-
+this.insertPlaceholder("\\n");
 }
 
 async WHEN_VALIDATE_ITEM_BUT_TAG_DESC(value) {
@@ -4025,7 +4013,7 @@ async WHEN_VALIDATE_ITEM_BUT_TAG_DESC(value) {
  }
 
  async ON_CLICK_BUT_TAG_DESC(event){
-
+this.insertPlaceholder("\\s");
 }
 
 async WHEN_VALIDATE_ITEM_BUT_TAG_VALUE(value) {
@@ -4045,7 +4033,7 @@ async WHEN_VALIDATE_ITEM_BUT_TAG_VALUE(value) {
  }
 
  async ON_CLICK_BUT_TAG_VALUE(event){
-
+this.insertPlaceholder("\\t");
 }
 
 async WHEN_VALIDATE_ITEM_TAG_SELECT(value) {
@@ -4245,7 +4233,7 @@ async WHEN_VALIDATE_ITEM_PROGRAM_BROWSE(value) {
  }
 
  async ON_CLICK_PROGRAM_BROWSE(event){
-
+//this.browseForFile("PROGRAM", "");
 }
 
 async WHEN_VALIDATE_ITEM_WAVE_FILE(value) {
@@ -4285,7 +4273,7 @@ async WHEN_VALIDATE_ITEM_WAVE_BROWSE(value) {
  }
 
  async ON_CLICK_WAVE_BROWSE(event){
-
+this.browseForFile("WAVE_FILE", ".wav,audio/wav");
 }
 
 async WHEN_VALIDATE_ITEM_DEFINE_SYMBOL(value) {
@@ -4370,7 +4358,7 @@ async WHEN_VALIDATE_ITEM_HELP_BROWSE(value) {
  }
 
  async ON_CLICK_HELP_BROWSE(event){
-
+this.browseForFile("HELP_FILE", ".chm,.hlp,.htm,.html");
 }
 
 async WHEN_VALIDATE_ITEM_SEARCH_FOR(value) {
@@ -5450,11 +5438,709 @@ public ON_CLICK_OK(event){
 	}
 	public  help_1Config : componentConfigDef;
   	public helpOpened = false;
+    //private cdr = inject(ChangeDetectorRef);
 	public ON_CLICK_HELP(event){
     	this.helpOpened = true;
+      //this.cdr.detectChanges();
+	}
+  public closeHelp(){
+    	this.helpOpened = false;
+    	//this.cdr.detectChanges();
 	}
 	public visibleOK_BTNS = true;
 	
+    /**
+   * Function NAME (as in the commands grid) -> tab of FormStepsArr, as per "Wizard Screen Inventory" (Part 2).
+   * Functions that have no Wizard fields (Beep, Download, ...) and DDEExecute, OpenRSLogix5000 and Password
+   * (not among the 18 tabs yet) are not listed and show no tab.
+   */
+  private readonly COMMAND_TAB: Record<string, number> = {
+    // 1 AE_Command
+    AE_Acknowledge: 1, AE_ClearCount: 1, AE_Disable: 1, AE_Enable: 1, AE_Reset: 1,
+    AE_Suppress: 1, AE_Unsuppress: 1, AE_Unshelve: 1, AE_Shelve: 1,
+    // 2 AE_Remark
+    AE_Remark: 2,
+    // 3 DataLog
+    DataLogOn: 3, DataLogOff: 3, DataLogMergeToPrimary: 3, DataLogSnapshot: 3, DataLogSwitchBack: 3,
+    DataLogNewFile: 3, DataLogRenameFile: 3, DataLogChangeRate: 3,
+    // 4 File Command
+    DerivedOn: 4, DerivedOff: 4, EventOn: 4, EventOff: 4, RecipeSave: 4, RecipeRestore: 4,
+    FlushCache: 4, SetFocus: 4, PushBack: 4, PullForward: 4,
+    // 5 App Command
+    AppStart: 5, AppActivate: 5, AppAbort: 5,
+    // 6 to 13: one function each
+    PlayWave: 6, Define: 7, Help: 8, ScreenPrint: 9, PrintDisplay: 10, Display: 11, Abort: 12, Unpin: 13,
+    // 14 Tag Value Command
+    "=": 14, Toggle: 14, Set: 14, Ramp: 14,
+    // 15 Simple Utility
+    Position: 15, Language: 15, Login: 15, Remark: 15, Undefine: 15, Pause: 15, SendKeys: 15, Key: 15,
+    DisplayClientOpen: 15, DisplayClientClose: 15, RecipeProEdit: 15,
+    // 16 IF, 17 Invoke
+    IF: 16, Invoke: 17,
+    // 18 RecipePro Command
+    RecipeProUpload: 18, RecipeProDownload: 18, RecipeProList: 18
+  };
+
+  // ---- Buttons of the screens: text placeholders (AE_Remark), Browse, and recording keys (SendKeys) ----
+
+  /** True while the SendKeys screen records the keys that are pressed. */
+  public recordingKeys = false;
+
+  /** AE_Remark: puts a text placeholder (for example \tm) into the comment, where the cursor is. */
+  private insertPlaceholder(token: string): void {
+    const control = this.form.get("AE_REMARK_COMMENT");
+    if (!control) {
+      return;
+    }
+    const area = document.querySelector('kendo-textarea[formcontrolname="AE_REMARK_COMMENT"] textarea') as HTMLTextAreaElement | null;
+    const value = String(control.value ?? "");
+    const start = area?.selectionStart ?? value.length;
+    const end = area?.selectionEnd ?? start;
+    control.setValue(value.slice(0, start) + token + value.slice(end));
+    setTimeout(() => {
+      area?.focus();
+      area?.setSelectionRange(start + token.length, start + token.length);
+    });
+  }
+
+  /**
+   * Browse...: opens the file picker of the browser. A browser only tells the name of the chosen file, not the folder,
+   * so the name is put into the field and the folder has to be typed in front of it.
+   */
+  private browseForFile(controlName: string, accept: string): void {
+    const picker = document.createElement("input");
+    picker.type = "file";
+    if (accept) {
+      picker.accept = accept;
+    }
+    picker.onchange = () => {
+      const file = picker.files?.[0];
+      if (file) {
+        this.form.get(controlName)?.setValue(file.name);
+      }
+    };
+    picker.click();
+  }
+
+  /** The names that SendKeys uses for keys that have no character of their own. */
+  private readonly SENDKEYS_NAMES: Record<string, string> = {
+    Backspace: "BACKSPACE", Delete: "DELETE", ArrowDown: "DOWN", ArrowUp: "UP", ArrowLeft: "LEFT", ArrowRight: "RIGHT",
+    End: "END", Enter: "ENTER", Escape: "ESC", Home: "HOME", Insert: "INSERT", PageDown: "PGDN", PageUp: "PGUP",
+    PrintScreen: "PRTSC", Tab: "TAB"
+  };
+
+  /** One key press as SendKeys text: ^ is Ctrl, + is Shift, % is Alt, and special keys are inside { }. */
+  private keystrokeText(event: KeyboardEvent): string {
+    if (["Control", "Shift", "Alt", "Meta", "AltGraph", "CapsLock"].includes(event.key)) {
+      return "";
+    }
+    const named = this.SENDKEYS_NAMES[event.key] ?? (/^F([1-9]|1[0-2])$/.test(event.key) ? event.key : "");
+    const modified = event.ctrlKey || event.altKey;
+    const modifiers = (event.ctrlKey ? "^" : "") + (event.altKey ? "%" : "") + (event.shiftKey && (named || modified) ? "+" : "");
+    if (named) {
+      return `${modifiers}{${named}}`;
+    }
+    if (event.key.length !== 1) {
+      return "";
+    }
+    if (modified) {
+      return `${modifiers}{${event.key.toUpperCase()}}`;
+    }
+    // These characters mean something in SendKeys, so they go inside { }.
+    return "+^%~(){}[]".includes(event.key) ? `{${event.key}}` : event.key;
+  }
+
+  private readonly keyRecorder = (event: KeyboardEvent): void => {
+    // The window of the wizard was closed while recording: stop, and leave the keys alone.
+    const host = document.querySelector("app-scd2-cwe-command-wizard") as HTMLElement | null;
+    if (!host || host.offsetParent === null) {
+      this.stopRecordingKeys();
+      return;
+    }
+    const text = this.keystrokeText(event);
+    if (!text) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    const control = this.form.get("SENDKEYS_KEYSTRING");
+    control?.setValue(String(control.value ?? "") + text);
+  };
+
+  private startRecordingKeys(): void {
+    if (!this.recordingKeys) {
+      this.recordingKeys = true;
+      document.addEventListener("keydown", this.keyRecorder, true);
+    }
+  }
+
+  private stopRecordingKeys(): void {
+    this.recordingKeys = false;
+    document.removeEventListener("keydown", this.keyRecorder, true);
+  }
+
+  // ---- Phase 2 and 3: the fields shown for the selected function, and the commandString built from them ----
+
+  /** NAME (as in the grid) of the function whose Wizard screen is shown. */
+  public currentCommand = "";
+  /** True while the fields do not make a valid command: commandString then holds the error text and Ok is disabled. */
+  public commandError = false;
+
+  /** Functions that have no Wizard fields: the command is just its name. */
+  private readonly NO_FIELD_COMMANDS = [
+    "Beep", "Download", "DownloadAll", "Upload", "UploadAll", "Logout", "Pin", "Password",
+    "NextPosition", "NextWindow", "PrevPosition", "PrevWindow",
+    "DisplayNavigationHistory", "DisplayNextScreen", "DisplayPreviousScreen", "Shutdown", "Startup"
+  ];
+
+  /** Every field (and button) that has a visibleXXX flag in this form. */
+  private readonly ALL_FIELDS = [
+    "ALARM_SOURCE", "DURATION", "PROMPT_FOR_COMMENT",
+    "AE_REMARK_ALARM_SERVER", "AE_REMARK_COMMENT", "BUT_TAG_MIN_VAL", "BUT_TAG_MAX_VAL", "BUT_TAG_UNITS", "BUT_TAG_NAME",
+    "BUT_TAG_DESC", "BUT_TAG_VALUE", "TAG_SELECT", "TAG_INPUT", "PROMPT_FOR_COMMENT_2",
+    "DATALOG_FILE", "FILE_IDENTIFIER", "RATE", "DATALOG_UNITS", "FILE_COMMAND",
+    "PROGRAM", "PROGRAM_BROWSE", "WAVE_FILE", "WAVE_BROWSE", "DEFINE_SYMBOL", "DEFINE_COMMAND", "DEFINE_COMMAND_BUT",
+    "HELP_FILE", "HELP_BROWSE", "SEARCH_FOR", "PRINT_TO_PDF", "PDF_FILE_PATH", "PDF_FILE_BUT",
+    "PRINTDISPLAY_DISPLAY_FILE", "PRINTDISPLAY_UPLOAD_DATA_ENTRY_FIELDS", "PRINTDISPLAY_WAIT_BEFORE_PRINT", "WAIT_MS",
+    "PRINTDISPLAY_PRINT_TO_PDF", "PDF_FILE_PATH2", "DISPLAY_BROWSE", "PRINTDISPLAY_PARAMETER_TAGS", "PARAMETER_TAGS_LKP",
+    "PRINTDISPLAY_PARAMETER_FILE", "PARAMETER_FILE_LKP",
+    "DISPLAY_DISPLAY_FILE", "DISPLAY_IN_BACKGROUND", "DISABLE_ENTER_KEY", "DISPLAY_UPLOAD_DATA_ENTRY_FIELDS",
+    "DISABLE_KEY_LIST", "DISPLAY_MINIMIZED", "DISPLAY_MAXIMIZED", "CACHE_DISPLAY", "CACHE_DISPLAY_ALWAYS_UPDATING",
+    "DISPLAY_PARAMETER_TAGS3", "TAG_LIST2", "DISPLAY_PARAMETER_FILE3", "DISPLAY_PARAMETER_FILE", "WINDOW_POSITION",
+    "DISPLAY_POSITION", "MONITOR_INDEX", "MONITOR_INDEX_VALUE", "DISPLAY_HEIGHT", "HEIGHT_PX", "DISPLAY_WIDTH", "WIDTH_PX",
+    "DISPLAY_LEFT", "LEFT_PX", "DISPLAY_TOP", "TOP_PX",
+    "CLOSE_MODE", "DISPLAY_ABORT", "INCLUDE_DOCKED_DISPLAYS", "UNPIN_MODE",
+    "TAG", "VERIFY", "ASYNCHRONOUS", "SET_TO", "EXPRESSION", "RAMP_BY", "VALUE_INPUT", "PERCENTAGE_INPUT", "DIRECTION",
+    "OTHER_TAG_INPUT", "STRING_INPUT",
+    "POSITION_INDEX", "LANGUAGE_ID", "SIMPLE_UTILITY_USER", "SIMPLE_UTILITY_PASSWORD", "SIMPLE_UTILITY_SYMBOL",
+    "SIMPLE_UTILITY_REMARK_TEXT", "SENDKEYS_KEYSTRING", "START_RECORDING_KEYS", "STOP_RECORDING_KEYS", "CLEAR_KEYS",
+    "KEY_MODE", "KEY_FILE", "TIME_SECONDS", "DISPLAY_CLIENT_CLOSE_MODE", "FILE_NAME", "SIMPLE_UTILITY_BROWSE", "TITLE_TEXT",
+    "WRITE_RECIPE_NAME_TO_STRING_TAG", "RECIPE_NAME_TAG",
+    "EXPRESSION_EDITOR", "THEN_ACTION", "THEN_ACTION_BUTTON", "ELSE_ACTION", "ELSE_ACTION_BUTTON",
+    "INVOKE_DISPLAY_FILE", "INVOKE_OBJECT", "PROPERTY_OR_METHOD", "METHOD_PARAMETER", "INVOKE_ADD_TAG", "INVOKE_MODE",
+    "SET_TAG_TO_VALUE_OF_OBJECT", "SET_OBJECT_PROPERTY", "SET_TAG_TO_VALUE_FROM",
+    "RECIPE_FILE_MODE", "RECIPE_FILE", "VARIABLE_RECIPE_INPUT", "RECIPE_FILTER", "FILTER_TEXT",
+    "WRITE_RECIPE_NAME_AFTER_DOWNLOAD", "TAG_AFTER_DOWNLOAD", "STATUS_CODE", "STATUS_TAG", "CURRENT_RECIPE_NAME",
+    "RECIPE_NAME_TAG_RPC"
+  ];
+
+  /** The check boxes of the form (they hold "Y" or "N"). */
+  private readonly CHECKBOX_FIELDS = [
+    "PROMPT_FOR_COMMENT", "TAG_SELECT", "PROMPT_FOR_COMMENT_2", "PRINT_TO_PDF",
+    "PRINTDISPLAY_UPLOAD_DATA_ENTRY_FIELDS", "PRINTDISPLAY_WAIT_BEFORE_PRINT", "PRINTDISPLAY_PRINT_TO_PDF",
+    "PRINTDISPLAY_PARAMETER_TAGS", "PRINTDISPLAY_PARAMETER_FILE", "PRINTDISPLAY_TAG_LIST",
+    "DISPLAY_IN_BACKGROUND", "WINDOW_POSITION", "DISABLE_ENTER_KEY", "MONITOR_INDEX", "DISPLAY_UPLOAD_DATA_ENTRY_FIELDS",
+    "DISPLAY_HEIGHT", "DISABLE_KEY_LIST", "DISPLAY_WIDTH", "DISPLAY_MINIMIZED", "DISPLAY_LEFT", "DISPLAY_MAXIMIZED",
+    "DISPLAY_TOP", "CACHE_DISPLAY_ALWAYS_UPDATING", "DISPLAY_PARAMETER_TAGS3", "CACHE_DISPLAY", "DISPLAY_PARAMETER_FILE3",
+    "INCLUDE_DOCKED_DISPLAYS", "VERIFY", "ASYNCHRONOUS", "WRITE_RECIPE_NAME_TO_STRING_TAG", "RECIPE_FILTER",
+    "WRITE_RECIPE_NAME_AFTER_DOWNLOAD", "STATUS_CODE", "CURRENT_RECIPE_NAME"
+  ];
+
+  /** The first choice of each group of radio buttons, and the start values of other fields. */
+  private readonly FIELD_DEFAULTS: Record<string, any> = {
+    CLOSE_MODE: "Close active window", UNPIN_MODE: "Unpin active window", SET_TO: "Value or Label",
+    RAMP_BY: "Value", DIRECTION: "Up", KEY_MODE: "File", DISPLAY_CLIENT_CLOSE_MODE: "FileName",
+    INVOKE_MODE: "Invoke method in object", RECIPE_FILE_MODE: "Recipe File",
+    ASYNCHRONOUS: "Y", DURATION: 1, RATE: 1, WAIT_MS: 2000, HEIGHT_PX: 200, WIDTH_PX: 200
+  };
+
+  /** Clears the fields when another function is selected. */
+  private resetFieldValues(): void {
+    const values: Record<string, any> = {};
+    for (const name of Object.keys(this.form.controls)) {
+      values[name] = this.FIELD_DEFAULTS[name] ?? (this.CHECKBOX_FIELDS.includes(name) ? "N" : null);
+    }
+    this.form.reset(values);
+  }
+
+  /** The fields (by control name) shown for this function, according to the other fields of the same screen. */
+  private shownFields(cmd: string, v: any): Set<string> {
+    const on = (name: string) => v[name] === "Y";
+    const s = new Set<string>();
+    const add = (...names: string[]) => names.forEach(n => s.add(n));
+    switch (this.COMMAND_TAB[cmd]) {
+      case 1:
+        add("ALARM_SOURCE", "PROMPT_FOR_COMMENT");
+        if (cmd == "AE_Shelve") { add("DURATION"); }
+        break;
+      case 2:
+        add("AE_REMARK_ALARM_SERVER", "AE_REMARK_COMMENT", "BUT_TAG_MIN_VAL", "BUT_TAG_MAX_VAL", "BUT_TAG_UNITS",
+          "BUT_TAG_NAME", "BUT_TAG_DESC", "BUT_TAG_VALUE", "TAG_SELECT", "PROMPT_FOR_COMMENT_2");
+        if (on("TAG_SELECT")) { add("TAG_INPUT"); }
+        break;
+      case 3:
+        add("DATALOG_FILE");
+        if (cmd == "DataLogRenameFile") { add("FILE_IDENTIFIER"); }
+        if (cmd == "DataLogChangeRate") { add("RATE", "DATALOG_UNITS"); }
+        break;
+      case 4: add("FILE_COMMAND"); break;
+      case 5:
+        add("PROGRAM");
+        //if (cmd == "AppStart") { add("PROGRAM_BROWSE"); }
+        break;
+      case 6: add("WAVE_FILE", "WAVE_BROWSE"); break;
+      case 7: add("DEFINE_SYMBOL", "DEFINE_COMMAND", "DEFINE_COMMAND_BUT"); break;
+      case 8: add("HELP_FILE", "HELP_BROWSE", "SEARCH_FOR"); break;
+      case 9:
+        add("PRINT_TO_PDF");
+        if (on("PRINT_TO_PDF")) { add("PDF_FILE_PATH", "PDF_FILE_BUT"); }
+        break;
+      case 10:
+        add("PRINTDISPLAY_DISPLAY_FILE", "PRINTDISPLAY_UPLOAD_DATA_ENTRY_FIELDS", "PRINTDISPLAY_WAIT_BEFORE_PRINT",
+          "PRINTDISPLAY_PRINT_TO_PDF", "PRINTDISPLAY_PARAMETER_TAGS", "PRINTDISPLAY_PARAMETER_FILE");
+        if (on("PRINTDISPLAY_WAIT_BEFORE_PRINT")) { add("WAIT_MS"); }
+        if (on("PRINTDISPLAY_PRINT_TO_PDF")) { add("PDF_FILE_PATH2", "DISPLAY_BROWSE"); }
+        if (on("PRINTDISPLAY_PARAMETER_TAGS")) { add("PARAMETER_TAGS_LKP"); }
+        if (on("PRINTDISPLAY_PARAMETER_FILE")) { add("PARAMETER_FILE_LKP"); }
+        break;
+      case 11:
+        add("DISPLAY_DISPLAY_FILE", "DISPLAY_IN_BACKGROUND", "DISABLE_ENTER_KEY", "DISPLAY_UPLOAD_DATA_ENTRY_FIELDS",
+          "DISABLE_KEY_LIST", "DISPLAY_MINIMIZED", "DISPLAY_MAXIMIZED", "CACHE_DISPLAY", "CACHE_DISPLAY_ALWAYS_UPDATING",
+          "DISPLAY_PARAMETER_TAGS3", "DISPLAY_PARAMETER_FILE3", "WINDOW_POSITION", "MONITOR_INDEX", "DISPLAY_HEIGHT",
+          "DISPLAY_WIDTH", "DISPLAY_LEFT", "DISPLAY_TOP");
+        if (on("DISPLAY_PARAMETER_TAGS3")) { add("TAG_LIST2"); }
+        if (on("DISPLAY_PARAMETER_FILE3")) { add("DISPLAY_PARAMETER_FILE"); }
+        if (on("WINDOW_POSITION")) { add("DISPLAY_POSITION"); }
+        if (on("MONITOR_INDEX")) { add("MONITOR_INDEX_VALUE"); }
+        if (on("DISPLAY_HEIGHT")) { add("HEIGHT_PX"); }
+        if (on("DISPLAY_WIDTH")) { add("WIDTH_PX"); }
+        if (on("DISPLAY_LEFT")) { add("LEFT_PX"); }
+        if (on("DISPLAY_TOP")) { add("TOP_PX"); }
+        break;
+      case 12:
+        add("CLOSE_MODE");
+        if (v.CLOSE_MODE == "Close graphic display") { add("DISPLAY_ABORT"); }
+        if (v.CLOSE_MODE == "Close all windows") { add("INCLUDE_DOCKED_DISPLAYS"); }
+        break;
+      case 13: add("UNPIN_MODE"); break;
+      case 14:
+        add("TAG");
+        if (cmd == "Toggle") { add("VERIFY"); }
+        if (cmd == "=") { add("ASYNCHRONOUS", "EXPRESSION"); }
+        if (cmd == "Set") { add("VERIFY", "ASYNCHRONOUS", "SET_TO"); }
+        if (cmd == "Ramp") { add("VERIFY", "DIRECTION", "RAMP_BY"); }
+        {
+          const by = cmd == "Set" ? v.SET_TO : cmd == "Ramp" ? v.RAMP_BY : "";
+          if (by == "Value or Label" || by == "Value") { add("VALUE_INPUT"); }
+          if (by == "Percentage") { add("PERCENTAGE_INPUT"); if (cmd == "Set") { add("DIRECTION"); } }
+          if (by == "String") { add("STRING_INPUT"); }
+          if (by == "Other tag") { add("OTHER_TAG_INPUT"); }
+        }
+        break;
+      case 15:
+        switch (cmd) {
+          case "Position": add("POSITION_INDEX"); break;
+          case "Language": add("LANGUAGE_ID"); break;
+          case "Login": add("SIMPLE_UTILITY_USER", "SIMPLE_UTILITY_PASSWORD"); break;
+          case "Remark": add("SIMPLE_UTILITY_REMARK_TEXT"); break;
+          case "Undefine": add("SIMPLE_UTILITY_SYMBOL"); break;
+          case "Pause": add("TIME_SECONDS"); break;
+          case "SendKeys": add("SENDKEYS_KEYSTRING", "START_RECORDING_KEYS", "STOP_RECORDING_KEYS", "CLEAR_KEYS"); break;
+          case "Key":
+            add("KEY_MODE");
+            if (v.KEY_MODE == "File") { add("KEY_FILE"); }
+            break;
+          case "DisplayClientOpen": add("FILE_NAME", "SIMPLE_UTILITY_BROWSE"); break;
+          case "DisplayClientClose":
+            add("DISPLAY_CLIENT_CLOSE_MODE");
+            if (v.DISPLAY_CLIENT_CLOSE_MODE == "FileName") { add("FILE_NAME", "SIMPLE_UTILITY_BROWSE"); }
+            if (v.DISPLAY_CLIENT_CLOSE_MODE == "Title Bar") { add("TITLE_TEXT"); }
+            break;
+          case "RecipeProEdit":
+            add("WRITE_RECIPE_NAME_TO_STRING_TAG");
+            if (on("WRITE_RECIPE_NAME_TO_STRING_TAG")) { add("RECIPE_NAME_TAG"); }
+            break;
+        }
+        break;
+      case 16: add("EXPRESSION_EDITOR", "THEN_ACTION", "THEN_ACTION_BUTTON", "ELSE_ACTION", "ELSE_ACTION_BUTTON"); break;
+      case 17:
+        add("INVOKE_DISPLAY_FILE", "INVOKE_OBJECT", "PROPERTY_OR_METHOD", "INVOKE_MODE");
+        // The method parameters only make sense when a method is called; the property modes do not take them.
+        if (v.INVOKE_MODE != "Set object property to value of tag" && v.INVOKE_MODE != "Set tag to value of object property") {
+          add("METHOD_PARAMETER", "INVOKE_ADD_TAG");
+        }
+        if (v.INVOKE_MODE == "Set tag to value from object method") { add("SET_TAG_TO_VALUE_FROM"); }
+        if (v.INVOKE_MODE == "Set tag to value of object property") { add("SET_TAG_TO_VALUE_OF_OBJECT"); }
+        if (v.INVOKE_MODE == "Set object property to value of tag") { add("SET_OBJECT_PROPERTY"); }
+        break;
+      case 18:
+        if (cmd == "RecipeProList") {
+          add("RECIPE_FILTER", "WRITE_RECIPE_NAME_AFTER_DOWNLOAD");
+          if (on("RECIPE_FILTER")) { add("FILTER_TEXT"); }
+          if (on("WRITE_RECIPE_NAME_AFTER_DOWNLOAD")) { add("TAG_AFTER_DOWNLOAD"); }
+        } else {
+          add("RECIPE_FILE_MODE", "STATUS_CODE");
+          if (v.RECIPE_FILE_MODE == "Recipe File") { add("RECIPE_FILE"); }
+          if (v.RECIPE_FILE_MODE == "Variable Recipe") { add("VARIABLE_RECIPE_INPUT"); }
+          if (on("STATUS_CODE")) { add("STATUS_TAG"); }
+          if (cmd == "RecipeProDownload") {
+            add("CURRENT_RECIPE_NAME");
+            if (on("CURRENT_RECIPE_NAME")) { add("RECIPE_NAME_TAG_RPC"); }
+          }
+        }
+        break;
+    }
+    return s;
+  }
+
+  /** The text of a window position (Display command), as the Display help lists them. */
+  private readonly POSITION_CODES: Record<string, string> = {
+    "Top right corner": "/Q1", "Top left corner": "/Q2", "Bottom left corner": "/Q3", "Bottom right corner": "/Q4",
+    "Centered in the top half": "/CT", "Centered in the bottom half": "/CB", "Centered on the left side": "/CL",
+    "Centered on the right side": "/CR", "Centered of the screen": "/CC", "Docked to the top": "/DT",
+    "Docked to the bottom": "/DB", "Docked to the left": "/DL", "Docked to the right": "/DR",
+    "Relative to the calling position": "/RP"
+  };
+
+  /** Builds the command of the selected function from the fields, or throws the syntax error (Command Wizard "Error: [...]"). */
+  private buildCommand(cmd: string, v: any): string {
+    const txt = (name: string): string => String(v[name] ?? "").trim();
+    const on = (name: string): boolean => v[name] === "Y";
+    // A name with a space in it is enclosed in quotes.
+    const q = (s: string): string => /\s/.test(s) ? `"${s}"` : s;
+    const need = (name: string, message: string): string => {
+      const value = txt(name);
+      if (!value) { throw new Error(message); }
+      return value;
+    };
+    const whole = (value: string, message: string, min: number, max: number): number => {
+      const n = Number(value);
+      if (!value || !Number.isInteger(n) || n < min || n > max) { throw new Error(message); }
+      return n;
+    };
+    const parts: string[] = [];
+    switch (this.COMMAND_TAB[cmd]) {
+      case 1: {
+        const source = need("ALARM_SOURCE", "No alarm source specified");
+        // Several alarms are separated by a semicolon, which has to be inside quotes.
+        parts.push(cmd, /[\s;]/.test(source) ? `"${source}"` : source);
+        if (cmd == "AE_Shelve") {
+          parts.push("/D" + whole(txt("DURATION"), "Duration must be a whole number of minutes (1 to 2147483647)", 1, 2147483647));
+        }
+        if (on("PROMPT_FOR_COMMENT")) { parts.push("/P"); }
+        break;
+      }
+      case 2: {
+        parts.push(cmd, need("AE_REMARK_ALARM_SERVER", "No alarm server specified"));
+        const comment = txt("AE_REMARK_COMMENT");
+        if (comment) { parts.push("/C" + (comment.includes(";") ? `"${comment}"` : comment)); }
+        if (on("TAG_SELECT")) { parts.push("/T" + need("TAG_INPUT", "No tag specified")); }
+        if (on("PROMPT_FOR_COMMENT_2")) { parts.push("/P"); }
+        break;
+      }
+      case 3: {
+        parts.push(cmd, q(need("DATALOG_FILE", "No File specified")));
+        if (cmd == "DataLogRenameFile") {
+          const id = need("FILE_IDENTIFIER", "No File Identifier specified");
+          if (id.length > 20) { throw new Error("File Identifier is up to 20 characters"); }
+          // The File Identifier is written between double quotes: DataLogRenameFile * "ss"
+          parts.push(`"${id.replace(/"/g, "")}"`);
+        }
+        if (cmd == "DataLogChangeRate") {
+          parts.push(String(whole(txt("RATE"), "Rate must be a whole number from 1 to 64000", 1, 64000)));
+          if (txt("DATALOG_UNITS")) { parts.push(txt("DATALOG_UNITS").toLowerCase()); }
+        }
+        break;
+      }
+      case 4: {
+        const file = txt("FILE_COMMAND");
+        if (!file && cmd != "FlushCache") { throw new Error("No File specified"); }
+        parts.push(cmd);
+        if (file) { parts.push(q(file)); }
+        break;
+      }
+      case 5:
+        // The program or title bar is one argument that keeps its spaces and dashes (no quotes).
+        parts.push(cmd, need("PROGRAM", cmd == "AppStart" ? "No program specified" : "No title bar specified"));
+        break;
+      case 6: {
+        // (The original screen words this error as "No program specified".)
+        const file = need("WAVE_FILE", "No program specified");
+        if (!/\.wav$/i.test(file)) { throw new Error("The file must end with .WAV"); }
+        parts.push(cmd, q(file));
+        break;
+      }
+      case 7: {
+        // With nothing entered the command is just "Define", as on the original screen.
+        const symbol = txt("DEFINE_SYMBOL");
+        if (/\s/.test(symbol)) { throw new Error("The symbol cannot contain spaces"); }
+        parts.push(cmd);
+        if (symbol) {
+          parts.push(symbol);
+          if (txt("DEFINE_COMMAND")) { parts.push(txt("DEFINE_COMMAND")); }
+        }
+        break;
+      }
+      case 8:
+        parts.push(cmd);
+        if (txt("SEARCH_FOR")) { parts.push(txt("SEARCH_FOR")); }
+        if (txt("HELP_FILE")) { parts.push("/F" + q(txt("HELP_FILE"))); }
+        break;
+      case 9:
+        parts.push(cmd);
+        if (on("PRINT_TO_PDF")) {
+          parts.push("/F");
+          if (txt("PDF_FILE_PATH")) { parts.push(`File="${txt("PDF_FILE_PATH")}"`); }
+        }
+        break;
+      case 10: {
+        parts.push(cmd, q(need("PRINTDISPLAY_DISPLAY_FILE", "No File specified")));
+		if (on("PRINTDISPLAY_PARAMETER_TAGS") && on("PRINTDISPLAY_PARAMETER_FILE")) {
+          throw new Error("Use either Parameter Tags /T or Parameter File /P, not both");
+        }
+        if (on("PRINTDISPLAY_WAIT_BEFORE_PRINT")) {
+          parts.push("/Wait=" + whole(txt("WAIT_MS"), "Wait must be a whole number of milliseconds", 0, 2147483647));
+        }
+        if (on("PRINTDISPLAY_UPLOAD_DATA_ENTRY_FIELDS")) { parts.push("/U"); }
+        if (on("PRINTDISPLAY_PARAMETER_FILE")) { parts.push("/P" + q(need("PARAMETER_FILE_LKP", "No parameter file specified"))); }
+        if (on("PRINTDISPLAY_PARAMETER_TAGS")) { parts.push("/T" + need("PARAMETER_TAGS_LKP", "No parameter tags specified")); }
+        if (on("PRINTDISPLAY_PRINT_TO_PDF")) {
+          parts.push("/F");
+          if (txt("PDF_FILE_PATH2")) { parts.push(`File="${txt("PDF_FILE_PATH2")}"`); }
+        }
+        break;
+      }
+      case 11: {
+        parts.push(cmd, q(need("DISPLAY_DISPLAY_FILE", "No File specified")));
+        if (on("DISPLAY_MINIMIZED") && on("DISPLAY_MAXIMIZED")) { throw new Error("/Min and /Max cannot be used together"); }
+        if (on("CACHE_DISPLAY") && on("CACHE_DISPLAY_ALWAYS_UPDATING")) { throw new Error("/Z and /ZA cannot be used together"); }
+        if (on("DISPLAY_PARAMETER_TAGS3") && on("DISPLAY_PARAMETER_FILE3")) {
+          throw new Error("Use either Parameter Tags /T or Parameter File /P, not both");
+        }
+        if (on("WINDOW_POSITION") && (on("DISPLAY_LEFT") || on("DISPLAY_TOP"))) {
+          throw new Error("Use either Window Position or Display Left and Top, not both");
+        }
+		if (on("DISPLAY_IN_BACKGROUND")) { parts.push("/B"); }
+        if (on("DISABLE_ENTER_KEY")) { parts.push("/E"); }
+        if (on("DISPLAY_UPLOAD_DATA_ENTRY_FIELDS")) { parts.push("/U"); }
+        if (on("DISABLE_KEY_LIST")) { parts.push("/O"); }
+        if (on("CACHE_DISPLAY")) { parts.push("/Z"); }
+        if (on("CACHE_DISPLAY_ALWAYS_UPDATING")) { parts.push("/ZA"); }
+        if (on("DISPLAY_PARAMETER_FILE3")) { parts.push("/P" + q(need("DISPLAY_PARAMETER_FILE", "No parameter file specified"))); }
+        if (on("DISPLAY_PARAMETER_TAGS3")) { parts.push("/T" + need("TAG_LIST2", "No parameter tags specified")); }
+        if (on("DISPLAY_HEIGHT")) { parts.push("/H" + whole(txt("HEIGHT_PX"), "Height must be a whole number of pixels", 1, 100000)); }
+        if (on("DISPLAY_WIDTH")) { parts.push("/W" + whole(txt("WIDTH_PX"), "Width must be a whole number of pixels", 1, 100000)); }
+        if (on("DISPLAY_MINIMIZED")) { parts.push("/Min"); }
+        if (on("DISPLAY_MAXIMIZED")) { parts.push("/Max"); }
+        if (on("MONITOR_INDEX")) {
+          const monitor = need("MONITOR_INDEX_VALUE", "No monitor specified").replace(/\D/g, "");
+          parts.push("/M" + monitor);
+        }
+        if (on("WINDOW_POSITION")) {
+          parts.push(this.POSITION_CODES[need("DISPLAY_POSITION", "No window position specified")] ?? "");
+        }
+        if (on("DISPLAY_LEFT")) { parts.push("/X" + whole(txt("LEFT_PX"), "Left must be a whole number of pixels", 0, 100000)); }
+        if (on("DISPLAY_TOP")) { parts.push("/Y" + whole(txt("TOP_PX"), "Top must be a whole number of pixels", 0, 100000)); }
+        break;
+      }
+      case 12:
+        parts.push(cmd);
+        if (v.CLOSE_MODE == "Close display Me") { parts.push("Me"); }
+        if (v.CLOSE_MODE == "Close graphic display") { parts.push(q(need("DISPLAY_ABORT", "No display specified"))); }
+        // Close all windows is "*", with /D right after it to include the docked displays (Abort */D).
+        if (v.CLOSE_MODE == "Close all windows") { parts.push(on("INCLUDE_DOCKED_DISPLAYS") ? "*/D" : "*"); }
+        break;
+      case 13:
+        parts.push(cmd);
+        if (v.UNPIN_MODE == "Unpin all windows") { parts.push("*"); }
+        break;
+      case 14: {
+        const tag = need("TAG", "No tag specified");
+        if (cmd == "Toggle") {
+          parts.push(cmd);
+          if (on("VERIFY")) { parts.push("/V"); }
+          parts.push(tag);
+        } else if (cmd == "=") {
+          const expression = need("EXPRESSION", "No expression specified");
+          if ((expression.match(/"/g) ?? []).length % 2 !== 0) { throw new Error("Unbalanced quotes in the expression"); }
+          let depth = 0;
+          for (const ch of expression) {
+            depth += ch == "{" ? 1 : ch == "}" ? -1 : 0;
+            if (depth < 0 || depth > 1) { throw new Error("Brackets { } in the expression must be balanced and not nested"); }
+          }
+          if (depth !== 0) { throw new Error("Brackets { } in the expression must be balanced and not nested"); }
+          parts.push(`${on("ASYNCHRONOUS") ? "&" : ""}${tag} = ${expression}`);
+        } else {
+          const by = cmd == "Set" ? v.SET_TO : v.RAMP_BY;
+          let value: string;
+          if (by == "Value" || by == "Value or Label") {
+            value = need("VALUE_INPUT", "No value specified");
+          } else if (by == "Percentage") {
+            value = whole(txt("PERCENTAGE_INPUT"), "Percentage must be a number from 0 to 100", 0, 100) + "%";
+			// Set: Direction Up (+) or Down (-) goes in front of the percentage, as in the original (&Set /V AIT_2001 -6%).
+            if (cmd == "Set") { value = (v.DIRECTION == "Down" ? "-" : "+") + value; }
+          } else if (by == "String") {
+            value = `"${need("STRING_INPUT", "No string specified")}"`;
+          } else {
+            value = need("OTHER_TAG_INPUT", "No other tag specified");
+          }
+          if (cmd == "Set") {
+            parts.push(`${on("ASYNCHRONOUS") ? "&" : ""}Set`);
+            if (on("VERIFY")) { parts.push("/V"); }
+            parts.push(tag, value);
+          } else {
+            // Ramp: the direction is a sign in front of the amount.
+            parts.push(cmd);
+            if (on("VERIFY")) { parts.push("/V"); }
+            if (by == "Other tag") {
+              // Another tag goes in brackets: Ramp TAG0 +(TAG1)
+              parts.push(tag, `${v.DIRECTION == "Down" ? "-" : "+"}(${value})`);
+            } else {
+              parts.push(tag, v.DIRECTION == "Down" ? "-" : "+", value);
+            }
+          }
+        }
+        break;
+      }
+      case 15:
+        switch (cmd) {
+          case "Position":
+            parts.push(cmd, String(whole(txt("POSITION_INDEX"), "No position specified", 0, 2147483647)));
+            break;
+          case "Language": {
+            const language = need("LANGUAGE_ID", "No language specified");
+            // The command takes the RFC1766 code.
+            parts.push(cmd, language == "English" ? "en-US" : language);
+            break;
+          }
+          case "Login":
+            if (txt("SIMPLE_UTILITY_PASSWORD") && !txt("SIMPLE_UTILITY_USER")) { throw new Error("User Field: no User specified"); }
+            parts.push(cmd);
+            if (txt("SIMPLE_UTILITY_USER")) { parts.push(txt("SIMPLE_UTILITY_USER")); }
+            if (txt("SIMPLE_UTILITY_PASSWORD")) { parts.push(txt("SIMPLE_UTILITY_PASSWORD")); }
+            break;
+          case "Remark": {
+            // With nothing entered the command is just "Remark", as on the original screen.
+            const text = txt("SIMPLE_UTILITY_REMARK_TEXT");
+            if (text.length > 132) { throw new Error("The remark is up to 132 characters"); }
+            parts.push(cmd);
+            if (text) {
+              // A semicolon goes inside quotes and an apostrophe inside double quotes.
+              parts.push(text.replace(/;/g, '";"').replace(/'/g, `"'"`));
+            }
+            break;
+          }
+          case "Undefine": {
+            const symbol = need("SIMPLE_UTILITY_SYMBOL", "Symbol Field: no Symbol specified");
+            if (/\s/.test(symbol)) { throw new Error("The symbol cannot contain spaces"); }
+            parts.push(cmd, symbol);
+            break;
+          }
+          case "Pause": {
+            const seconds = txt("TIME_SECONDS");
+            if (!seconds || !(Number(seconds) >= 0)) { throw new Error("No time specified"); }
+            parts.push(cmd, seconds);
+            break;
+          }
+          case "SendKeys":
+            parts.push(cmd, `"${need("SENDKEYS_KEYSTRING", "No keys specified").replace(/"/g, "")}"`);
+            break;
+          case "Key":
+            parts.push(cmd, v.KEY_MODE == "Stop" ? "/R" : q(need("KEY_FILE", "No File specified")));
+            break;
+          case "DisplayClientOpen":
+            parts.push(cmd, q(need("FILE_NAME", "No File specified")));
+            break;
+          case "DisplayClientClose":
+            if (v.DISPLAY_CLIENT_CLOSE_MODE == "Current Display") { parts.push(cmd, "Me"); }
+            else if (v.DISPLAY_CLIENT_CLOSE_MODE == "Title Bar") { parts.push(cmd, need("TITLE_TEXT", "No title specified")); }
+            else { parts.push(cmd, q(need("FILE_NAME", "No File specified"))); }
+            break;
+          case "RecipeProEdit":
+            parts.push(cmd);
+            if (on("WRITE_RECIPE_NAME_TO_STRING_TAG")) { parts.push("/R" + need("RECIPE_NAME_TAG", "No recipe name tag specified")); }
+            break;
+        }
+        break;
+      case 16:
+        // The IF Wizard is kept aside for now.
+        throw new Error("The IF command is not available yet");
+      case 17: {
+        const display = txt("INVOKE_DISPLAY_FILE");
+        const target = [display, need("INVOKE_OBJECT", "No object specified")].filter(Boolean).join(".");
+        const member = need("PROPERTY_OR_METHOD", "No property or method specified");
+        // The added tag is one more parameter of the method: method(param, TAG0)
+        const argument = [txt("METHOD_PARAMETER"), txt("INVOKE_ADD_TAG")].filter(Boolean).join(", ");
+        const call = `${target}.${member}(${argument})`;
+        const property = `${target}.${member}`;
+        if (v.INVOKE_MODE == "Set tag to value from object method") {
+          parts.push(cmd, `${need("SET_TAG_TO_VALUE_FROM", "No tag specified")}=${call}`);
+        } else if (v.INVOKE_MODE == "Set tag to value of object property") {
+          parts.push(cmd, `${need("SET_TAG_TO_VALUE_OF_OBJECT", "No tag specified")}=${property}`);
+        } else if (v.INVOKE_MODE == "Set object property to value of tag") {
+          parts.push(cmd, `${target}.${member}(${need("SET_OBJECT_PROPERTY", "No tag specified")})`);
+        } else {
+          parts.push(cmd, call);
+        }
+        break;
+      }
+      case 18:
+        parts.push(cmd);
+        if (cmd == "RecipeProList") {
+          if (on("RECIPE_FILTER")) { parts.push("/F" + need("FILTER_TEXT", "No Recipe Filter specified")); }
+          if (on("WRITE_RECIPE_NAME_AFTER_DOWNLOAD")) { parts.push("/R" + need("TAG_AFTER_DOWNLOAD", "No recipe name tag specified")); }
+        } else {
+          // A variable recipe is written between dollar signs: $VARIABLE_RECIPE_INPUT0$
+          parts.push(v.RECIPE_FILE_MODE == "Variable Recipe"
+            ? `$${need("VARIABLE_RECIPE_INPUT", "No Variable recipe specified")}$`
+            : q(need("RECIPE_FILE", "No File specified")));
+          if (on("STATUS_CODE")) { parts.push("/S" + need("STATUS_TAG", "No status tag specified")); }
+          if (cmd == "RecipeProDownload" && on("CURRENT_RECIPE_NAME")) {
+            parts.push("/R" + need("RECIPE_NAME_TAG_RPC", "No recipe name tag specified"));
+          }
+        }
+        break;
+    }
+    return parts.join(" ");
+  }
+
+  /** Shows the fields of the selected function and rebuilds the commandString from them. */
+  private refreshCommand(): void {
+    const cmd = this.currentCommand;
+    if (!this.form || !cmd) {
+      return;
+    }
+    if (this.NO_FIELD_COMMANDS.includes(cmd)) {
+      this.commandString = cmd;
+      this.commandError = false;
+      return;
+    }
+    if (!(cmd in this.COMMAND_TAB)) {
+      this.commandString = "Error: [No Wizard screen for this command yet]";
+      this.commandError = true;
+      return;
+    }
+    const v = this.form.getRawValue();
+    const shown = this.shownFields(cmd, v);
+    for (const field of this.ALL_FIELDS) {
+      (this as any)["visible" + field] = shown.has(field);
+    }
+    try {
+      this.commandString = this.buildCommand(cmd, v);
+      this.commandError = false;
+    } catch (e: any) {
+      const message = String(e.message);
+      this.commandError = true;
+      if (this.PLACEHOLDER_WHEN_EMPTY.includes(cmd) && message.startsWith("No ")) {
+        this.commandString = `${cmd} <file>`;
+      } else if (this.BLANK_WHEN_EMPTY.includes(cmd) && message.startsWith("No ")) {
+        this.commandString = "";
+      } else {
+        this.commandString = `Error: [${message}]`;
+      }
+    }
+  }
+
+  /** On these original screens a missing field shows no error text (the Command String stays empty) and Finish is off. */
+  private readonly BLANK_WHEN_EMPTY = [
+    "AppAbort", "AppActivate", "DataLogOn", "DataLogOff", "DataLogMergeToPrimary", "DataLogSnapshot",
+    "DataLogSwitchBack", "DataLogNewFile", "DataLogRenameFile", "DataLogChangeRate", "RecipeSave", "RecipeRestore",
+    "SetFocus", "PushBack", "PullForward", "Position", "Pause", "SendKeys", "Invoke"
+  ];
+
+  /** These original screens show the syntax placeholder, for example "DerivedOn <file>", until a file is chosen. */
+  private readonly PLACEHOLDER_WHEN_EMPTY = ["DerivedOn", "DerivedOff", "EventOn", "EventOff"];
+
   
 // For Adding new CODE
   public  grid_som_tabs_codes={};
