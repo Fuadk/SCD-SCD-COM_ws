@@ -110,6 +110,7 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.isChild = true;
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = 'app-scd-arrow-timing-properties';
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
+   if (this.paramConfig.DEBUG_FLAG) console.log("communication:initComponents",this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config);
    if (typeof this['steps']  !== 'undefined') {
      this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.navigable = false;
      //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.insertable = true;
@@ -147,6 +148,7 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
 	  {
     	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
     	this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.formattedWhere  = form_SCD_SHAPE;
+      if (this.paramConfig.DEBUG_FLAG) console.log("communication:readCompletedHandler",this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config);
     	this.SCD_ARROW_BUTTON_LABELFormdivs_2Config = new componentConfigDef();
     	this.SCD_ARROW_BUTTON_LABELFormdivs_2Config.formattedWhere  = form_SCD_SHAPE;
     	this.SCD_ARROW_BUTTON_TIMINGForm_3Config = new componentConfigDef();
@@ -161,6 +163,7 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyArr =  [form_SCD_SHAPE.SHAPE_ID,form_SCD_SHAPE.DISPLAY_ID];
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterKeyNameArr =  ["SHAPE_ID","DISPLAY_ID"];
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterReadCompleted = true;
+    if (this.paramConfig.DEBUG_FLAG) console.log("communication:readCompletedHandler",this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config);
    if (typeof this['steps'] !== 'undefined') {
      this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.queryable = false;
      //this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.removeable = true;
@@ -196,6 +199,7 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
   async clearCompletedHandler( form_SCD_SHAPE) {
      //await this.starServices.sleep(200);
     this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
+    if (this.paramConfig.DEBUG_FLAG) console.log("communication:readCompletedHandler",this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config);
      //await this.starServices.sleep(200);
     this.SCD_ARROW_BUTTON_LABELFormdivs_2Config = new componentConfigDef();
      //await this.starServices.sleep(200);
@@ -308,7 +312,7 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
    	 }
     }
     public handleComponentConfig(ComponentConfig:any) {
-    if (this.paramConfig.DEBUG_FLAG) console.log("ComponentConfig:ScdArrowTimingPropertiesComponent:",ComponentConfig);
+    if (this.paramConfig.DEBUG_FLAG) console.log("communication::ComponentConfig:ScdArrowTimingPropertiesComponent:",ComponentConfig);
     if (typeof ComponentConfig !== "undefined"){
        this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig  );
        if (ComponentConfig.languageChanged != null) { 
@@ -337,6 +341,7 @@ export class ScdArrowTimingPropertiesComponent implements OnInit {
        if (ComponentConfig.masterParams != null) {
               this.SCD_SHAPEForm_0Config.masterParams = ComponentConfig.masterParams;
               this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterParams = ComponentConfig.masterParams;
+              if (this.paramConfig.DEBUG_FLAG) console.log("communication:this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterParams:",this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterParams);
               this.SCD_ARROW_BUTTON_LABELFormdivs_2Config.masterParams = ComponentConfig.masterParams;
               this.SCD_ARROW_BUTTON_TIMINGForm_3Config.masterParams = ComponentConfig.masterParams;
    		

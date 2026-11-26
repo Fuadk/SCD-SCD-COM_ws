@@ -107,6 +107,25 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelPATTERN_STYLETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePATTERN_STYLE >
+		<kendo-label *ngIf="(!labelPATTERN_STYLETop && !isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label" [for]="PATTERN_STYLE" [text]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.PATTERN_STYLE','Pattern Style')"></kendo-label>
+		<label *ngIf="(labelPATTERN_STYLETop || isPhonePortrait) && labelPATTERN_STYLEVisible" class="form-label"  >{{starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.PATTERN_STYLE','Pattern Style')}}</label>
+		<kendo-combobox  #PATTERN_STYLE class="form-field-combobox"  [formControlName]="'PATTERN_STYLE'"
+		[data]="lkpArrPATTERN_STYLE" [textField]="'CODETEXT_LANG'"  [valueField]="'CODE'"
+  [placeholder]="starServices.getNLS([],'SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.PATTERN_STYLE_Hint','Please enter Pattern Style.')"		(click)="ON_CLICK_PATTERN_STYLE($event)"
+ (valueChange)="onValueChange_PATTERN_STYLE($event)"      adaptiveMode="auto" 
+		 (filterChange)="starServices.handleFilterCode(this, $event)" 
+		[valuePrimitive]="true"  [kendoDropDownFilter]="{ operator: 'contains' }">
+		 <ng-template kendoDropDownListNoDataTemplate>
+		 <div> 
+		 	<button *ngIf="filterCode" kendoButton (click)="starServices.addNewCode(this, 'PATTERN_STYLE')"> 
+		 		{{starServices.getNLS([],'ADD_NEW_ITEM','Add new item')}} 
+		 	</button> 
+		 </div> 
+		 </ng-template> 
+		</kendo-combobox>
+	</kendo-formfield>
+
 
 </div>
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
@@ -264,13 +283,15 @@
 		<ul class="k-radio-list" 		(click)="ON_CLICK_BUTTON_ACTION($event)"
  (change)="onChange_BUTTON_ACTION($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrBUTTON_ACTION"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrBUTTON_ACTION" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'BUTTON_ACTION'"
+		 		 [formControlName]="'BUTTON_ACTION'"
 					#BUTTON_ACTION ></kendo-radiobutton> 
 				<kendo-label  [for]="BUTTON_ACTION " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -329,13 +350,15 @@
 		<ul class="k-radio-list" 		(click)="ON_CLICK_RAMP_UP_DOWN($event)"
  (change)="onChange_RAMP_UP_DOWN($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrRAMP_UP_DOWN"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrRAMP_UP_DOWN" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'RAMP_UP_DOWN'"
+		 		 [formControlName]="'RAMP_UP_DOWN'"
 					#RAMP_UP_DOWN ></kendo-radiobutton> 
 				<kendo-label  [for]="RAMP_UP_DOWN " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 

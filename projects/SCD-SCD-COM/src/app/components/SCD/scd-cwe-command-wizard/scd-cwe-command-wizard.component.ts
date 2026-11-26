@@ -838,9 +838,11 @@ public disablePDF_FILE_PATH = false;
   if (this.componentConfig_output) {
     this.componentConfig_output.eventFrom = this.compSelector;
     
+    
     console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
     this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
+
 }
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
@@ -5431,7 +5433,9 @@ public ON_CLICK_OK(event){
         }
         this.componentConfig_output.masterParams = masterParams;    
         this.emitcomponentConfig_output();
+        
 	}
+
 	@Output() cancelClicked = new EventEmitter<void>();  // Add this line
 	public ON_CLICK_CANCEL(event){
     this.cancelClicked.emit();

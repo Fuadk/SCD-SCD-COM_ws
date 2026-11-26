@@ -2252,30 +2252,32 @@
 	public BORDER_WIDTH = '';
 	public BORDER_USES_BACK_COLOR = '';
 	public HIGHLIGHT_COLOR = '';
+	public BACK_STYLE = '';
+	public SHAPE_TYPE = '';
 	public NAVIGATION_ACTION = '';
+	public BUTTON_ACTION = '';
 	public LATCH_RESET_TYPE = '';
 	public HOLD_TIME = '';
 	public NUMBER_OF_STATES = '';
 	public NEXT_STATE_BASED_ON = '';
 	public BUTTON_VALUE = '';
-	public USE_VARIABLE_RAMP_VALUE = '';
-	public RAMP_VALUE = '';
-	public UPPER_LIMIT = '';
-	public BACK_COLOR = '';
-	public BLINK = '';
-	public BORDER_COLOR = '';
-	public PATTERN_COLOR = '';
-	public BACK_STYLE = '';
-	public SHAPE_TYPE = '';
-	public BUTTON_ACTION = '';
 	public USE_VARIABLE_LOWER_UPPER_LIMIT = '';
+	public USE_VARIABLE_RAMP_VALUE = '';
 	public RAMP_UP_DOWN = '';
 	public LOWER_LIMIT = '';
+	public RAMP_VALUE = '';
 	public HORIZONTAL_MARGIN = '';
 	public VERTICAL_MARGIN = '';
 	public AUDIO = '';
+	public UPPER_LIMIT = '';
+	public BACK_COLOR = '';
+	public BORDER_COLOR = '';
+	public PATTERN_COLOR = '';
+	public BLINK = '';
+	public PATTERN_STYLE = '';
 
 }
+
 
 
 

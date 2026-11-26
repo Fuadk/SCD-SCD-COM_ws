@@ -4041,6 +4041,7 @@ import { ScdAlarmColumnsPropertiesComponent } from '../components/SCD/scd-alarm-
 import { ScdCommandsScdScdCommandsGridComponent } from '../components/SCD/scd-scd-commands/scd-scd-commands.component';
 import { ScdCommandsScdScdCommandsGridGridComponent } from '../components/SCD/scd-scd-commands-grid/scd-scd-commands-grid.component';
 import { ScdCommandWizrdScdCweCommandWizardFormtabsComponent } from '../components/SCD/scd-cwe-command-wizard/scd-cwe-command-wizard.component';
+import { ScdActionbuttonsComponent } from '../components/SCD/scd-actionbuttons/scd-actionbuttons.component';
 //point1
 
 export const PanelbarRoutes: Routes = [
@@ -8168,6 +8169,7 @@ export const PanelbarRoutes: Routes = [
 	{ path: 'scd_scd_commands', component: ScdCommandsScdScdCommandsGridComponent },
 	{ path: 'scd_scd_commands_grid', component: ScdCommandsScdScdCommandsGridGridComponent },
 	{ path: 'scd_cwe_command_wizard', component: ScdCommandWizrdScdCweCommandWizardFormtabsComponent },
+	{ path: 'scd_actionbuttons', component: ScdActionbuttonsComponent },
   //point2
 
 ];

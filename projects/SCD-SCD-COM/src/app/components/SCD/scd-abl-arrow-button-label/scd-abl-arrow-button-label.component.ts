@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener,ViewChild } from '@angular/core';
+import { TabStripComponent} from "@progress/kendo-angular-layout";
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -51,6 +52,7 @@ declare function getParamConfig():any;
 
 
 export class ScdArrowButtonLabelScdAblArrowButtonLabelFormdivsComponent {
+  @ViewChild("tabstrip") public tabstrip: TabStripComponent;
   public title =  this.starServices.getNLS([],"SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.component_title","Arrow Button Label");
   public compTitleMsg =  "SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel";
   public routineName = "ScdArrowButtonLabelScdAblArrowButtonLabelFormdivs";
@@ -103,53 +105,53 @@ export class ScdArrowButtonLabelScdAblArrowButtonLabelFormdivsComponent {
   public PK_AUTO = 'ARROW_BUTTON_LABEL_ID';
   public customerFacing = false;
   public FormStepsArr = [{"CODE":"","CODETEXT_LANG":"","visible":true},{"CODE":"1","CODETEXT_LANG":"Caption","visible":true},{"CODE":"2","CODETEXT_LANG":"Image Settings","visible":true}] ;
-public labelARROW_BUTTON_LABEL_IDTop=true;
+public labelARROW_BUTTON_LABEL_IDTop=false;
 public labelARROW_BUTTON_LABEL_IDVisible=true;
-public labelSHAPE_IDTop=true;
+public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
-public labelCAPTIONTop=true;
+public labelCAPTIONTop=false;
 public labelCAPTIONVisible=true;
-public labelINSERT_VARIABLETop=true;
+public labelINSERT_VARIABLETop=false;
 public labelINSERT_VARIABLEVisible=true;
-public labelFONT_NAMETop=true;
+public labelFONT_NAMETop=false;
 public labelFONT_NAMEVisible=true;
-public labelFONT_SIZETop=true;
+public labelFONT_SIZETop=false;
 public labelFONT_SIZEVisible=true;
-public labelFONT_BOLDTop=true;
+public labelFONT_BOLDTop=false;
 public labelFONT_BOLDVisible=true;
-public labelFONT_ITALICTop=true;
+public labelFONT_ITALICTop=false;
 public labelFONT_ITALICVisible=true;
-public labelFONT_UNDERLINETop=true;
+public labelFONT_UNDERLINETop=false;
 public labelFONT_UNDERLINEVisible=true;
-public labelCAPTION_COLORTop=true;
+public labelCAPTION_COLORTop=false;
 public labelCAPTION_COLORVisible=true;
-public labelCAPTION_BLINKTop=true;
+public labelCAPTION_BLINKTop=false;
 public labelCAPTION_BLINKVisible=true;
-public labelCAPTION_BACK_COLORTop=true;
+public labelCAPTION_BACK_COLORTop=false;
 public labelCAPTION_BACK_COLORVisible=true;
-public labelCAPTION_WORD_WRAPTop=true;
+public labelCAPTION_WORD_WRAPTop=false;
 public labelCAPTION_WORD_WRAPVisible=true;
-public labelCAPTION_ALIGNMENTTop=true;
+public labelCAPTION_ALIGNMENTTop=false;
 public labelCAPTION_ALIGNMENTVisible=true;
-public labelCAPTION_BACK_STYLETop=true;
+public labelCAPTION_BACK_STYLETop=false;
 public labelCAPTION_BACK_STYLEVisible=true;
-public labelIMAGE_SELECT_ABLTop=true;
+public labelIMAGE_SELECT_ABLTop=false;
 public labelIMAGE_SELECT_ABLVisible=true;
-public labelIMAGE_NAMETop=true;
+public labelIMAGE_NAMETop=false;
 public labelIMAGE_NAMEVisible=true;
-public labelIMAGE_BACK_STYLETop=true;
+public labelIMAGE_BACK_STYLETop=false;
 public labelIMAGE_BACK_STYLEVisible=true;
-public labelIMAGE_TYPETop=true;
+public labelIMAGE_TYPETop=false;
 public labelIMAGE_TYPEVisible=true;
-public labelIMAGE_COLORTop=true;
+public labelIMAGE_COLORTop=false;
 public labelIMAGE_COLORVisible=true;
-public labelIMAGE_BLINKTop=true;
+public labelIMAGE_BLINKTop=false;
 public labelIMAGE_BLINKVisible=true;
-public labelIMAGE_BACK_COLORTop=true;
+public labelIMAGE_BACK_COLORTop=false;
 public labelIMAGE_BACK_COLORVisible=true;
-public labelSCALE_IMAGETop=true;
+public labelSCALE_IMAGETop=false;
 public labelSCALE_IMAGEVisible=true;
-public labelIMAGE_ALIGNMENTTop=true;
+public labelIMAGE_ALIGNMENTTop=false;
 public labelIMAGE_ALIGNMENTVisible=true;
 
 public visibleARROW_BUTTON_LABEL_ID = false;
@@ -221,6 +223,7 @@ public variableIMAGE_SELECT_ABL;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
@@ -271,7 +274,7 @@ public variableIMAGE_SELECT_ABL;
     this.onChanges();
     this.setlookupArrDef();
     this.form.reset(this.formInitialValues);
-    this.onNew(this.form);
+    //this.onNew(this.form); //Causes children to lose events. If needed add it in WHEN_NEW_FORM_INSTANCE
 
  // Subscribing the event.
     this.componentConfigChangeEvent = this.starNotify.subscribeEvent<componentConfigDef>('componentConfigDef', componentConfig => {
@@ -292,26 +295,26 @@ public variableIMAGE_SELECT_ABL;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -443,6 +446,11 @@ public variableIMAGE_SELECT_ABL;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+    //  this.FormStepsArr.forEach(item => {
+    //  (item as any).visible = true;
+    //});
+    let nextTab = 1;
+    this.tabstrip.selectTab(nextTab);
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -1555,10 +1563,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

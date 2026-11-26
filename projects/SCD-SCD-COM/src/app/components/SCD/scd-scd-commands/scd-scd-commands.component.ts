@@ -77,7 +77,7 @@ export class ScdCommandsScdScdCommandsGridComponent implements OnInit,OnDestroy 
   
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
-  public  gridHeight = "";
+  public  gridHeight = "600";
 
   public masterKeyArr = [];
   public masterKeyNameArr = [];

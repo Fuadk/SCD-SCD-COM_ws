@@ -41,6 +41,7 @@ import { Router } from '@angular/router';
 import { TabAlignment } from '@progress/kendo-angular-layout';
 import { scddisplayScdScdDisplayDiagram , componentConfigDef} from '@modeldir/model';
 import { ScadaIntegrationService, ScadaChangeEvent } from '../../../services/scada-integration.service';
+import { ServerInfo } from "../../../services/scada.service";
 import { ServerConfig } from '../../../services/scada.service';
 import {ScdAlarmAndEventBannerPropertiesComponent} from '../scd-alarm-and-event-banner-properties/scd-alarm-and-event-banner-properties.component';
 import {ScdAlarmAndEventLogViewerPropertiesComponent} from '../scd-alarm-and-event-log-viewer-properties/scd-alarm-and-event-log-viewer-properties.component';
@@ -287,9 +288,8 @@ public disableDISPLAY_DATA = false;
   @Output() setComponentConfig_Output = new EventEmitter<any>();
   @Output() valueChange = new EventEmitter<string>();
   
-  // Server management
-  public availableServers: ServerConfig[] = [];
-  public selectedServerId: number = 0;
+
+ 
 
    constructor(public router: Router,
               public intl: IntlService, 
@@ -315,10 +315,20 @@ public disableDISPLAY_DATA = false;
     this.actEditMode(this.isEditMode);
 
   }
+  // ---- Live values from the OPC UA server (Prosys), through the Node backend (prosys-opcua-client.js, port 53531) ----
   public scadaData: any = {};
   private scadaConfig = {};
   private scadaSubscriptions: Subscription[] = [];
+  private liveKeepAlive: any = null;
+  public availableServers: ServerInfo[] = [];
   private componentConfigChangeEvent!: Subscription;
+  public selectedServerId = 0;
+  /** The last value of every tag the server sent, by its key ("ServerName:TagName"). */
+  public liveTags: Record<string, any> = {};
+  /** The alarms the server sent last. */
+  public liveAlarms: any[] = [];
+  // The tag events are processed in Edit mode (isEditMode) and in Run mode (animationRunning) alike.
+
   public ngAfterViewInit() {
     if (typeof document !== "undefined") {
       document.addEventListener("keydown", this.polyKeyHandler, true);
@@ -397,12 +407,15 @@ public disableDISPLAY_DATA = false;
     );
     
     // Get servers from integration service
-    this.scadaIntegration.getServersObservable().subscribe(servers => {
+    this.scadaSubscriptions.push(this.scadaIntegration.getServersObservable().subscribe(servers => {
       this.availableServers = servers;
       if (servers.length > 0 && this.selectedServerId === 0) {
         this.selectedServerId = servers[0].id;
       }
-    });
+    }));
+    // Fuad : Check:Shapes can be recreated (undo, restore): give them their live value again now and then.
+    this.liveKeepAlive = setInterval(() => this.applyLiveTags(), 2000);
+
     // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
     if (this.componentConfig) {
@@ -427,8 +440,50 @@ public disableDISPLAY_DATA = false;
     this.setComponentConfig_Output.emit(this.componentConfig);
   }
 }
+/** The number of a tag: its key is "Server:Tag", and a Value tag typed with or without the server name is found. */
+  private liveTagValue(name: any): number | undefined {
+    const wanted = String(name ?? "").trim().toLowerCase();
+    if (!wanted) {
+      return undefined;
+    }
+    for (const [key, raw] of Object.entries(this.liveTags)) {
+      const lower = key.toLowerCase();
+      const bare = lower.includes(":") ? lower.slice(lower.indexOf(":") + 1) : lower;
+      if (lower === wanted || bare === wanted) {
+        const n = typeof raw === "boolean" ? (raw ? 1 : 0) : Number(raw);
+        return Number.isFinite(n) ? n : undefined;
+      }
+    }
+    return undefined;
+  }
+
+  /** Bar Graphs and Gauges connected to a tag (Value, and Minimum / Maximum when those are tags) show its live value. */
+  private applyLiveTags(only?: any[]): void {
+    if (!this.diagram) {
+      return;
+    }
+    for (const shape of (only ?? (this.diagram.diagramShapes as any[]))) {
+      const d: any = this.shapeDataItem(shape);
+      if (!d || (d.libraryKind !== "barGraph" && d.libraryKind !== "gauge")) {
+        continue;
+      }
+      const value = this.liveTagValue(d.connValue);
+      const min = this.liveTagValue(d.connMin);
+      const max = this.liveTagValue(d.connMax);
+      const next = value === undefined && min === undefined && max === undefined ? undefined : { value, min, max };
+      const prev = d.__live;
+      if (JSON.stringify(prev ?? null) === JSON.stringify(next ?? null)) {
+        continue;
+      }
+      Object.defineProperty(d, "__live", { value: next, enumerable: false, writable: true, configurable: true });
+      this.redrawAnimated(shape);
+    }
+  }
   public ngOnDestroy(): void {
     // Unsubscribe the event once not needed.
+    this.scadaSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.scadaSubscriptions = [];
+    clearInterval(this.liveKeepAlive);
     if (typeof document !== "undefined") {
       document.removeEventListener("keydown", this.polyKeyHandler, true);
       document.removeEventListener("keydown", this.editorKeyHandler, true);
@@ -3375,20 +3430,27 @@ public onStagePointerDown(event: PointerEvent): void {
     }
     return null;
   }
-
+  /**
+   * Minimum, maximum and value of a Bar Graph / Gauge. A shape that is connected to a tag shows the live value
+   * the OPC UA server sent (and a live minimum / maximum when those are tags too); otherwise its own settings.
+   */
+  private liveLevel(d: any): { min: number; max: number; value: number } {
+    const live = (d as any).__live;
+    const min = Number.isFinite(live?.min) ? live.min : (Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0);
+    const max = Number.isFinite(live?.max) ? live.max
+      : (Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number.isFinite(Number(d.graphMaximum)) ? Number(d.graphMaximum) : 100));
+    const value = Number.isFinite(live?.value) ? live.value : (Number.isFinite(Number(d.containerValue)) ? Number(d.containerValue) : min);
+    return { min, max, value };
+  }
   /** Level (0-1) from containerValue between the graph minimum and maximum. */
   private dbLevelRatio(d: any): number {
-    const min = Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0;
-    const max = Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number.isFinite(Number(d.graphMaximum)) ? Number(d.graphMaximum) : 100);
-    const value = Number.isFinite(Number(d.containerValue)) ? Number(d.containerValue) : min;
+    const { min, max, value } = this.liveLevel(d);
     return max === min ? 0 : Math.max(0, Math.min(1, (value - min) / (max - min)));
   }
 
   /** Colour of a bar / gauge fill, switching at the thresholds when there are any. */
   private dbGraphColor(d: any): string {
-    const min = Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0;
-    const max = Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number.isFinite(Number(d.graphMaximum)) ? Number(d.graphMaximum) : 100);
-    const value = Number.isFinite(Number(d.containerValue)) ? Number(d.containerValue) : min;
+    const { min, max, value } = this.liveLevel(d);
     const percent = this.dbKey(d.thresholdType) === "percent";
     const level = percent ? (max === min ? 0 : ((value - min) / (max - min)) * 100) : value;
     const count = Number(d.thresholdCount) || 0;
@@ -3780,8 +3842,7 @@ public onStagePointerDown(event: PointerEvent): void {
         const ink = d.foreColor || "#000000";
         const thin = { color: ink, width: Math.max(1, Number(d.lineWidth) || 1) };
         const ratio = this.dbLevelRatio(d);
-        const min = Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0;
-        const max = Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number(d.graphMaximum) || 100);
+        const { min, max } = this.liveLevel(d);
         const digits = Number(d.digitsAfterDecimal) || 0;
         const point = (deg: number, radius: number): string => {
           const a = (deg * Math.PI) / 180;
@@ -4458,9 +4519,7 @@ public onStagePointerDown(event: PointerEvent): void {
 
   /** Index (0 = base, 1, 2) of the threshold the current level has reached. */
   private dbThresholdIndex(d: any): number {
-    const min = Number.isFinite(Number(d.graphMinimum)) ? Number(d.graphMinimum) : 0;
-    const max = Number(d.containerMax) > 0 ? Number(d.containerMax) : (Number(d.graphMaximum) || 100);
-    const value = Number.isFinite(Number(d.containerValue)) ? Number(d.containerValue) : min;
+    const { min, max, value } = this.liveLevel(d);
     const percent = this.dbKey(d.thresholdType) === "percent";
     const level = percent ? (max === min ? 0 : ((value - min) / (max - min)) * 100) : value;
     const count = Number(d.thresholdCount) || 0;
@@ -5332,6 +5391,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     this.patchShapes(shapes, { [key]: value });
     if (key.startsWith("conn")) {
       this.updateConnectionTooltip(shapes);
+      
     }
     this.statusMessage = `${key} set to ${value}.`;
   }
@@ -5474,6 +5534,7 @@ private applyDrawingTransform(group: Group, style?:ShapeEditorStyle): void {
     this.patchShapes(shapes, patch);
     if (key.startsWith("conn")) {
       this.updateConnectionTooltip(shapes);
+      this.applyLiveTags(shapes);
     }
     this.statusMessage = `${key} set to ${value}.`;
   }
@@ -9496,6 +9557,9 @@ console.log("populateshapeAttributes:options:",{...options})
     const merged = { ...defaults, ...dataItem, dbShape: true };
     if ((dataItem as any).__focus) {
       Object.defineProperty(merged, "__focus", { value: true, enumerable: false, writable: true, configurable: true });
+    }
+    if ((dataItem as any).__live) {
+      Object.defineProperty(merged, "__live", { value: (dataItem as any).__live, enumerable: false, writable: true, configurable: true });
     }
     return merged;
   }

@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener,ViewChild } from '@angular/core';
+import { TabStripComponent} from "@progress/kendo-angular-layout";
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -19,6 +20,7 @@ import { scdbuttonPushGeneralScdPbgPushButtonGeneral , componentConfigDef} from 
 'BORDER_STYLE' : new FormControl(dataItem.BORDER_STYLE  , ) ,
 'BORDER_WIDTH' : new FormControl(dataItem.BORDER_WIDTH  , ) ,
 'SHAPE_ID' : new FormControl(dataItem.SHAPE_ID  ,   Validators.required ) ,
+'PATTERN_STYLE' : new FormControl(dataItem.PATTERN_STYLE  , ) ,
 'BORDER_USES_BACK_COLOR' : new FormControl(dataItem.BORDER_USES_BACK_COLOR  , ) ,
 'BLINK' : new FormControl(dataItem.BLINK  , ) ,
 'BORDER_COLOR' : new FormControl(dataItem.BORDER_COLOR  , ) ,
@@ -56,6 +58,7 @@ declare function getParamConfig():any;
 
 
 export class ScdButtonPushGeneralScdPbgPushButtonGeneralFormdivsComponent {
+  @ViewChild("tabstrip") public tabstrip: TabStripComponent;
   public title =  this.starServices.getNLS([],"SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral.component_title","Push Button General");
   public compTitleMsg =  "SCD_PBG_PUSH_BUTTON_GENERAL.scdbuttonPushGeneralScdPbgPushButtonGeneral";
   public routineName = "ScdButtonPushGeneralScdPbgPushButtonGeneralFormdivs";
@@ -116,6 +119,8 @@ public labelBORDER_WIDTHTop=false;
 public labelBORDER_WIDTHVisible=true;
 public labelSHAPE_IDTop=false;
 public labelSHAPE_IDVisible=true;
+public labelPATTERN_STYLETop=false;
+public labelPATTERN_STYLEVisible=true;
 public labelBORDER_USES_BACK_COLORTop=false;
 public labelBORDER_USES_BACK_COLORVisible=true;
 public labelBLINKTop=false;
@@ -169,6 +174,7 @@ public visibleBUTTON_PUSH_GENERAL_ID = false;
 public visibleBORDER_STYLE = true;
 public visibleBORDER_WIDTH = true;
 public visibleSHAPE_ID = false;
+public visiblePATTERN_STYLE = true;
 public visibleBORDER_USES_BACK_COLOR = true;
 public visibleBLINK = true;
 public visibleBORDER_COLOR = true;
@@ -198,6 +204,7 @@ public disableBUTTON_PUSH_GENERAL_ID = false;
 public disableBORDER_STYLE = false;
 public disableBORDER_WIDTH = false;
 public disableSHAPE_ID = false;
+public disablePATTERN_STYLE = false;
 public disableBORDER_USES_BACK_COLOR = false;
 public disableBLINK = false;
 public disableBORDER_COLOR = false;
@@ -241,6 +248,7 @@ public disableAUDIO = false;
    ) {
       this.router = router;
       this.componentConfig = new componentConfigDef(); 
+      this.componentConfig_output = new componentConfigDef(); 
       this.paramConfig = getParamConfig();
       this.userLang =  this.paramConfig.userLang.toUpperCase() ;
       this.componentConfig.queryable  = true;
@@ -312,26 +320,26 @@ public disableAUDIO = false;
     }, 100)
   // Watch form changes to update isDirty in componentConfig
   this.form.valueChanges.subscribe(() => {
-    if (this.componentConfig) {
-      const wasDirty = this.componentConfig.isDirty;
-      this.componentConfig = new componentConfigDef();
-      this.componentConfig.isDirty = this.form.dirty;
+    if (this.componentConfig_output) {
+      const wasDirty = this.componentConfig_output.isDirty;
+      this.componentConfig_output = new componentConfigDef();
+      this.componentConfig_output.isDirty = this.form.dirty;
       
       // Only emit if state changed
-      if (wasDirty !== this.componentConfig.isDirty) {
-        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig.isDirty);
-        this.emitComponentConfig();
+      if (wasDirty !== this.componentConfig_output.isDirty) {
+        console.log('onCloseWindowDebug:Form dirty state changed:', this.form.dirty, this.componentConfig_output.isDirty);
+        this.emitcomponentConfig_output();
       }
     }
   });
 
   }
-  private emitComponentConfig(): void {
-  if (this.componentConfig) {
-    this.componentConfig.eventFrom = this.compSelector;
-    //this.componentConfig.eventTo = ['any'];
-    console.log('onCloseWindowDebug:Emitting componentConfig:', this.componentConfig);
-    this.setComponentConfig_Output.emit(this.componentConfig);
+  private emitcomponentConfig_output(): void {
+  if (this.componentConfig_output) {
+    this.componentConfig_output.eventFrom = this.compSelector;
+    
+    console.log('onCloseWindowDebug:Emitting componentConfig_output:', this.componentConfig_output);
+    this.setComponentConfig_Output.emit(this.componentConfig_output);
   }
 }
   public ngOnDestroy(): void {
@@ -463,6 +471,11 @@ public disableAUDIO = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
+    //  this.FormStepsArr.forEach(item => {
+    //  (item as any).visible = true;
+    //});
+    let nextTab = 1;
+    this.tabstrip.selectTab(nextTab);
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -639,6 +652,8 @@ this.lookupArrDef =[	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM
 			"lkpArrName":"lkpArrBORDER_STYLE"},
 	{"statment":"SELECT SHAPE_ID CODE, NAME CODETEXT_LANG  FROM SCD_SHAPE  order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrSHAPE_ID"},
+	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"PATTERN_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
+			"lkpArrName":"lkpArrPATTERN_STYLE"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"BACK_STYLE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
 			"lkpArrName":"lkpArrBACK_STYLE"},
 	{"statment":"SELECT CODE, CODETEXT_LANG , PARTCODE FROM SOM_TABS_CODES WHERE CODENAME = \"SHAPE_TYPE\"  and LANGUAGE_NAME = '" + this.userLang + "' order by CODETEXT_LANG ",
@@ -665,6 +680,8 @@ public lkpArrBORDER_STYLE = [];
 
 public lkpArrSHAPE_ID = [];
 
+public lkpArrPATTERN_STYLE = [];
+
 public lkpArrBACK_STYLE = [];
 
 public lkpArrSHAPE_TYPE = [];
@@ -690,6 +707,11 @@ return rec;
 
 public lkpArrGetSHAPE_ID(CODE: any): any {
 var rec = this.lkpArrSHAPE_ID.find((x:any) => x.CODE === CODE);
+return rec;
+}
+
+public lkpArrGetPATTERN_STYLE(CODE: any): any {
+var rec = this.lkpArrPATTERN_STYLE.find((x:any) => x.CODE === CODE);
 return rec;
 }
 
@@ -785,9 +807,10 @@ public printScreen(){
         this.form.get(name).enable();
     });
   }
+
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
-      if (this.paramConfig.DEBUG_FLAG) console.log("ScdButtonPushGeneralScdPbgPushButtonGeneralFormdivs ComponentConfig:", {...ComponentConfig});
+      if (this.paramConfig.DEBUG_FLAG) console.log("communication:ScdButtonPushGeneralScdPbgPushButtonGeneralFormdivs ComponentConfig:", {...ComponentConfig});
 
       this.componentConfig = this.starServices.setComponentConfig(ComponentConfig, this.componentConfig);
       this.WHEN_NOTIFY(ComponentConfig);
@@ -870,7 +893,7 @@ public printScreen(){
   }
   async WHEN_NOTIFY(ComponentConfig){
     if (ComponentConfig.masterParams != null) {
-  console.log("WHEN_NOTIFY:ComponentConfig.masterParams:",
+  console.log("WHEN_NOTIFY:1ComponentConfig.masterParams:",
     ComponentConfig.masterParams.data)
   this.butMode = ComponentConfig.masterParams.data.SHAPE_TYPE.toUpperCase();
   console.log("this.butMode:", this.butMode)
@@ -1131,6 +1154,26 @@ async WHEN_VALIDATE_ITEM_SHAPE_ID(value) {
  }
 
  async ON_CLICK_SHAPE_ID(event){
+
+}
+
+async WHEN_VALIDATE_ITEM_PATTERN_STYLE(value) {
+
+ this.FORM_TRIGGER_FAILURE = false ; 
+ if (typeof this.form.controls['PATTERN_STYLE'] != "undefined" ) 
+      this.form.controls['PATTERN_STYLE'].setErrors({invalid: true}); 
+ // Code goes here 
+ 
+
+ if ( this.FORM_TRIGGER_FAILURE == true) 
+ return; 
+ 
+ if (typeof this.form.controls['PATTERN_STYLE'] != "undefined" ) 
+     this.form.get('PATTERN_STYLE').updateValueAndValidity();
+ this.form.updateValueAndValidity(); 
+ }
+
+ async ON_CLICK_PATTERN_STYLE(event){
 
 }
 
@@ -1644,6 +1687,12 @@ async WHEN_VALIDATE_ITEM_AUDIO(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   } 
+ async onValueChange_PATTERN_STYLE(value) { 
+  this.FORM_TRIGGER_FAILURE = false;	
+ await this.WHEN_VALIDATE_ITEM_PATTERN_STYLE(value); if ( this.FORM_TRIGGER_FAILURE) return; 
+ this.formValidationChangedOutput.emit(this.form.valid); 
+  
+  } 
  async onChange_BORDER_USES_BACK_COLOR(event:any) { 
  var value = event.target.value; 
  if ((value == null) || (value == '')) 	
@@ -1851,10 +1900,15 @@ public svg_arr = [];
 public svg_data = [];
 
 
+
 public update_svgicons(formGroup){
   this.showIcon = false;
     for (let i = 0; i < this.svg_arr.length; i++) {
-      this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      if (typeof this.form['kendoui_content'] == "undefined")
+        this.starServices.convertSvgToKendoSVGIcon (this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+      else
+        this.starServices.convertSvgToKendoIcon(this, formGroup[this.svg_arr[i]], formGroup.svg_name,this.svg_arr[i])
+
       
     }
     

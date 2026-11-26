@@ -138,7 +138,7 @@
 	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelPRESS_ACTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visiblePRESS_ACTION >
 		<kendo-label *ngIf="(!labelPRESS_ACTIONTop && !isPhonePortrait) && labelPRESS_ACTIONVisible" class="form-label" [for]="PRESS_ACTION" [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.PRESS_ACTION','Press Action')"></kendo-label>
 		<label *ngIf="(labelPRESS_ACTIONTop || isPhonePortrait) && labelPRESS_ACTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.PRESS_ACTION','Press Action')}}</label>
-		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="3" [cols]="70"  kendoTextBox  formControlName="PRESS_ACTION"
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="4" [cols]="70"  kendoTextBox  formControlName="PRESS_ACTION"
  #PRESS_ACTION
   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.PRESS_ACTION_Hint','Please enter Press Action.')"		(click)="ON_CLICK_PRESS_ACTION($event)"
      adaptiveMode="auto" ></kendo-textarea>
@@ -157,7 +157,7 @@
 	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelREPEAT_ACTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleREPEAT_ACTION >
 		<kendo-label *ngIf="(!labelREPEAT_ACTIONTop && !isPhonePortrait) && labelREPEAT_ACTIONVisible" class="form-label" [for]="REPEAT_ACTION" [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_ACTION','Repeat Action')"></kendo-label>
 		<label *ngIf="(labelREPEAT_ACTIONTop || isPhonePortrait) && labelREPEAT_ACTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_ACTION','Repeat Action')}}</label>
-		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="3" [cols]="70"  kendoTextBox  formControlName="REPEAT_ACTION"
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="4" [cols]="70"  kendoTextBox  formControlName="REPEAT_ACTION"
  #REPEAT_ACTION
   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.REPEAT_ACTION_Hint','Please enter Repeat Action.')"		(click)="ON_CLICK_REPEAT_ACTION($event)"
      adaptiveMode="auto" ></kendo-textarea>
@@ -188,7 +188,7 @@
 	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelRELEASE_ACTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleRELEASE_ACTION >
 		<kendo-label *ngIf="(!labelRELEASE_ACTIONTop && !isPhonePortrait) && labelRELEASE_ACTIONVisible" class="form-label" [for]="RELEASE_ACTION" [text]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.RELEASE_ACTION','Release Action')"></kendo-label>
 		<label *ngIf="(labelRELEASE_ACTIONTop || isPhonePortrait) && labelRELEASE_ACTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.RELEASE_ACTION','Release Action')}}</label>
-		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="3" [cols]="70"  kendoTextBox  formControlName="RELEASE_ACTION"
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="4" [cols]="70"  kendoTextBox  formControlName="RELEASE_ACTION"
  #RELEASE_ACTION
   [placeholder]="starServices.getNLS([],'SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.RELEASE_ACTION_Hint','Please enter Release Action.')"		(click)="ON_CLICK_RELEASE_ACTION($event)"
      adaptiveMode="auto" ></kendo-textarea>
@@ -244,7 +244,16 @@
     </div>
  
 
+		<kendo-dialog [hidden]="!grid_1_SCD_COMMANDSOpened" class="form-borders" 
+        [themeColor]="'primary'" [ title="" (close)="grid_1_SCD_COMMANDSClose()">
+			<app-scd-scd-commands-grid (setComponentConfig_Output)="onComponentConfig_Output($event)"
+				[setComponentConfig_Input]="SCD_COMMANDSGrid_1Config">
+			</app-scd-scd-commands-grid>
 
+
+			<button kendoButton [icon]="'close'" (click)="grid_1_SCD_COMMANDSOpened=!grid_1_SCD_COMMANDSOpened">
+				{{this.starServices.getNLS([],"CLOSE","Close")}}</button>
+		</kendo-dialog>
 
 
 

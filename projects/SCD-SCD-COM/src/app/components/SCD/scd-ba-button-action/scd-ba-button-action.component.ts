@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener,ViewChild } from '@angular/core';
+import { TabStripComponent} from "@progress/kendo-angular-layout";
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -37,6 +38,7 @@ declare function getParamConfig():any;
 
 
 export class ScdButtonActionScdBaButtonActionFormdivsComponent {
+  @ViewChild("tabstrip") public tabstrip: TabStripComponent;
   public title =  this.starServices.getNLS([],"SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction.component_title","Button Action");
   public compTitleMsg =  "SCD_BA_BUTTON_ACTION.scdbuttonActionScdBaButtonAction";
   public routineName = "ScdButtonActionScdBaButtonActionFormdivs";
@@ -222,7 +224,7 @@ public variableCONFIGURE_ESIGNATURE;
     this.onChanges();
     this.setlookupArrDef();
     this.form.reset(this.formInitialValues);
-    this.onNew(this.form);
+    //this.onNew(this.form); //Causes children to lose events. If needed add it in WHEN_NEW_FORM_INSTANCE
 
  // Subscribing the event.
     this.componentConfigChangeEvent = this.starNotify.subscribeEvent<componentConfigDef>('componentConfigDef', componentConfig => {
@@ -394,9 +396,11 @@ public variableCONFIGURE_ESIGNATURE;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
-      this.FormStepsArr.forEach(item => {
-      (item as any).visible = true;
-    });
+    //  this.FormStepsArr.forEach(item => {
+    //  (item as any).visible = true;
+    //});
+    let nextTab = 1;
+    this.tabstrip.selectTab(nextTab);
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       
@@ -653,6 +657,49 @@ public printScreen(){
         this.form.get(name).enable();
     });
   }
+  public onComponentConfig_Output(ComponentConfig)
+  {
+    if (typeof ComponentConfig !== 'undefined'){
+      this.WHEN_OUTPUT(ComponentConfig);
+    }
+  }
+async WHEN_OUTPUT(ComponentConfig){
+    console.log("onComponentConfig_Output:ComponentConfig:BA_BUTTON_ACTION:", ComponentConfig);
+this.grid_1_SCD_COMMANDSOpened = false;
+if (ComponentConfig.masterParams != null) {
+    if (ComponentConfig.masterParams.data != null) {
+        let command = ComponentConfig.masterParams.data;
+        this.form.markAsDirty();
+        if (this.commandType == "PRESS") {
+            if (this.form.value.PRESS_ACTION != "") {
+                command = this.form.value.PRESS_ACTION + ";" + command;
+            }
+            this.form.patchValue({ 'PRESS_ACTION': command });
+        }
+        else if (this.commandType == "RELEASE") {
+            if (this.form.value.RELEASE_ACTION != "") {
+                command = this.form.value.RELEASE_ACTION + ";" + command;
+            }
+            this.form.patchValue({ 'RELEASE_ACTION': command });
+        }
+        else if (this.commandType == "REPEAT") {
+            if (this.form.value.REPEAT_ACTION != "") {
+                command = this.form.value.REPEAT_ACTION + ";" + command;
+            }
+            this.form.patchValue({ 'REPEAT_ACTION': command });
+        }
+       
+    }
+}
+
+if (ComponentConfig.hideComponents != null) {
+    for (let i = 0; i < ComponentConfig.hideComponents.length; i++) {
+        let comp = ComponentConfig.hideComponents[i];
+        let comp_name = 'hide_comp_' + comp;
+        this[comp_name] = !this[comp_name];
+    }
+}
+}
   public handleComponentConfig(ComponentConfig:any) {
     if (typeof ComponentConfig !== "undefined") {
       if (this.paramConfig.DEBUG_FLAG) console.log("ScdButtonActionScdBaButtonActionFormdivs ComponentConfig:", {...ComponentConfig});
@@ -953,6 +1000,8 @@ async WHEN_VALIDATE_ITEM_PRESS_COMMANDS_BA(value) {
  }
 
  async ON_CLICK_PRESS_COMMANDS_BA(event){
+this.grid_1_SCD_COMMANDSOpened = true;
+this.commandType = "PRESS";
 
 }
 
@@ -993,7 +1042,8 @@ async WHEN_VALIDATE_ITEM_REPEAT_COMMANDS_BA(value) {
  }
 
  async ON_CLICK_REPEAT_COMMANDS_BA(event){
-
+this.grid_1_SCD_COMMANDSOpened = true;
+this.commandType = "REPEAT";
 }
 
 async WHEN_VALIDATE_ITEM_REPEAT_RATE(value) {
@@ -1053,7 +1103,8 @@ async WHEN_VALIDATE_ITEM_RELEASE_COMMANDS_BA(value) {
  }
 
  async ON_CLICK_RELEASE_COMMANDS_BA(event){
-
+this.grid_1_SCD_COMMANDSOpened = true;
+this.commandType = "RELEASE";
 }
 
 async WHEN_VALIDATE_ITEM_E_SIGNATURE_SETTINGS(value) {
@@ -1192,7 +1243,30 @@ async WHEN_VALIDATE_ITEM_CONFIGURE_ESIGNATURE(value) {
  this.formValidationChangedOutput.emit(this.form.valid); 
   
   }
-set_action(value){
+
+public  SCD_COMMANDSGrid_1Config : componentConfigDef;
+public commandType = "";
+//   public onComponentConfig_Output1(ComponentConfig)
+//   {
+//   if (typeof ComponentConfig !== 'undefined'){
+//     this.setComponentConfig_Output.emit(ComponentConfig);
+//     if (ComponentConfig.hideComponents != null) { 
+//       for (let i=0; i < ComponentConfig.hideComponents.length;i++){
+//         let comp = ComponentConfig.hideComponents[i];
+//         let comp_name = 'hide_comp_' + comp;
+//         this[comp_name] = !this[comp_name];
+//       }
+//     }
+//   }
+// }
+public grid_1_SCD_COMMANDSOpened = false;
+  public  grid_1_SCD_COMMANDSClose() { 
+    this.grid_1_SCD_COMMANDSOpened = false;  
+  }
+  public  grid_1_SCD_COMMANDSOpen() { 
+    this.grid_1_SCD_COMMANDSOpened = true;  
+  }
+public set_action(value){
   if (typeof value != "undefined" ){
     if (value == "Run Command"){
       this.visibleTAG = false;

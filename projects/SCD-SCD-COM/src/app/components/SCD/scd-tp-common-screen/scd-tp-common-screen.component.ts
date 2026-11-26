@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener,ViewChild } from '@angular/core';
+import { TabStripComponent} from "@progress/kendo-angular-layout";
 import { FormGroup, FormControl, Validators ,FormBuilder} from '@angular/forms';
 import { starServices } from 'starlib';
 import { Starlib1 } from '../../Starlib1';
@@ -45,6 +46,7 @@ declare function getParamConfig():any;
 
 
 export class ScdShapeScdTpCommonScreenFormComponent {
+  @ViewChild("tabstrip") public tabstrip: TabStripComponent;
   public title =  this.starServices.getNLS([],"SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen.component_title","Common Screen");
   public compTitleMsg =  "SCD_TP_COMMON_SCREEN.scdshapeScdTpCommonScreen";
   public routineName = "ScdShapeScdTpCommonScreenForm";
@@ -237,7 +239,7 @@ public disableINSERT_VARIABLE = false;
     this.onChanges();
     this.setlookupArrDef();
     this.form.reset(this.formInitialValues);
-    this.onNew(this.form);
+    //this.onNew(this.form); //Causes children to lose events. If needed add it in WHEN_NEW_FORM_INSTANCE
 
  // Subscribing the event.
     this.componentConfigChangeEvent = this.starNotify.subscribeEvent<componentConfigDef>('componentConfigDef', componentConfig => {
@@ -409,9 +411,11 @@ public disableINSERT_VARIABLE = false;
     this.starServices.onCancel_form ( e , this);
   }
    async fetchLookupsCallBack() {
-      this.FormStepsArr.forEach(item => {
-      (item as any).visible = true;
-    });
+    //  this.FormStepsArr.forEach(item => {
+    //  (item as any).visible = true;
+    //});
+    let nextTab = 1;
+    this.tabstrip.selectTab(nextTab);
       this.starServices.callltransformForTreeView(this);
       if (this.paramConfig.DEBUG_FLAG) console.log("this.lookupArrDef:", this.lookupArrDef)
       

@@ -77,7 +77,7 @@ export class ScdCommandsScdScdCommandsGridGridComponent implements OnInit,OnDest
   public groupFields = [ { field: 'CATEGORY' }, { field: 'SUB_CATEGORY' }, ]
   public  isFilterable : boolean = false;
   public  isColumnMenu : boolean = false;
-  public  gridHeight = "";
+  public  gridHeight = "700";
 
   public masterKeyArr = [];
   public masterKeyNameArr = [];
@@ -622,6 +622,30 @@ this.lookupArrDef =[];
 public printScreen(){
   window.print();
 }
+public onComponentConfig_Output(ComponentConfig)
+  {
+    if (typeof ComponentConfig !== 'undefined'){
+      this.WHEN_OUTPUT(ComponentConfig);
+    }
+  }
+async WHEN_OUTPUT(ComponentConfig){
+      console.log("onComponentConfig_Output:ComponentConfig", ComponentConfig);
+ 
+  if (ComponentConfig.masterParams != null) {
+    if (ComponentConfig.masterParams.data != null) {
+        this.formtabs_1_SCD2_COMMAND_WIZRDOpened = false;
+         this.setComponentConfig_Output.emit(ComponentConfig);
+    }
+  }
+  
+  if (ComponentConfig.hideComponents != null) {
+    for (let i = 0; i < ComponentConfig.hideComponents.length; i++) {
+      let comp = ComponentConfig.hideComponents[i];
+      let comp_name = 'hide_comp_' + comp;
+      this[comp_name] = !this[comp_name];
+    }
+  }
+}
    public handleComponentConfig(ComponentConfig:any) {
 
       if (typeof ComponentConfig !== "undefined") {
@@ -917,19 +941,7 @@ public  SCD2_COMMAND_WIZRDFormtabs_1Config : componentConfigDef;
   public  formtabs_1_SCD2_COMMAND_WIZRDOpen() { 
     this.formtabs_1_SCD2_COMMAND_WIZRDOpened = true;  
   }
-public onComponentConfig_Output(ComponentConfig)
-  {
-  if (typeof ComponentConfig !== 'undefined'){
-    this.setComponentConfig_Output.emit(ComponentConfig);
-    if (ComponentConfig.hideComponents != null) { 
-      for (let i=0; i < ComponentConfig.hideComponents.length;i++){
-        let comp = ComponentConfig.hideComponents[i];
-        let comp_name = 'hide_comp_' + comp;
-        this[comp_name] = !this[comp_name];
-      }
-    }
-  }
-}
+
 public gridDataStatic = {
   "data": [
     {

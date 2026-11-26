@@ -82,7 +82,7 @@
 	<kendo-formfield  [orientation]="'horizontal'" [ngClass]="(labelCAPTIONTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleCAPTION >
 		<kendo-label *ngIf="(!labelCAPTIONTop && !isPhonePortrait) && labelCAPTIONVisible" class="form-label" [for]="CAPTION" [text]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.CAPTION','Caption')"></kendo-label>
 		<label *ngIf="(labelCAPTIONTop || isPhonePortrait) && labelCAPTIONVisible" class="form-label"  >{{starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.CAPTION','Caption')}}</label>
-		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="5" [cols]="100"  kendoTextBox  formControlName="CAPTION"
+		<kendo-textarea   style="width: auto;" resizable="both"  [rows]="3" [cols]="100"  kendoTextBox  formControlName="CAPTION"
  #CAPTION
   [placeholder]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.CAPTION_Hint','Please enter Caption.')"		(click)="ON_CLICK_CAPTION($event)"
      adaptiveMode="auto" ></kendo-textarea>
@@ -151,20 +151,26 @@
 		</kendo-combobox>
 	</kendo-formfield>
 
+	<div class="form-field"  [ngClass]="(labelFONT_BOLDTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_BOLD >
 		<button  (valueChange)="onValueChange_FONT_BOLD($event)"  style="font-weight : bold ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_BOLD_Hint','Please enter Font Bold.')" 
- iconClass="fas fa-"  *ngIf=visibleFONT_BOLD 		(click)="ON_CLICK_FONT_BOLD($event)"
+		 [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_BOLD_Hint','Please enter Font Bold.')" 
+ [icon]="''" 		(click)="ON_CLICK_FONT_BOLD($event)"
  >{{starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_BOLD','B')}}</button>
+	</div>
 
+	<div class="form-field"  [ngClass]="(labelFONT_ITALICTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_ITALIC >
 		<button  (valueChange)="onValueChange_FONT_ITALIC($event)"  style="font-style : italic ;margin : 4px ;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_ITALIC_Hint','Please enter Font Italic.')" 
- iconClass="fas fa-"  *ngIf=visibleFONT_ITALIC 		(click)="ON_CLICK_FONT_ITALIC($event)"
+		 [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_ITALIC_Hint','Please enter Font Italic.')" 
+ [icon]="''" 		(click)="ON_CLICK_FONT_ITALIC($event)"
  >{{starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_ITALIC','I')}}</button>
+	</div>
 
+	<div class="form-field"  [ngClass]="(labelFONT_UNDERLINETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleFONT_UNDERLINE >
 		<button  (valueChange)="onValueChange_FONT_UNDERLINE($event)"  style="margin : 4px ;text-decoration: underline;height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_UNDERLINE_Hint','Please enter Font Underline.')" 
- iconClass="fas fa-"  *ngIf=visibleFONT_UNDERLINE 		(click)="ON_CLICK_FONT_UNDERLINE($event)"
+		 [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_UNDERLINE_Hint','Please enter Font Underline.')" 
+ [icon]="''" 		(click)="ON_CLICK_FONT_UNDERLINE($event)"
  >{{starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.FONT_UNDERLINE','U')}}</button>
+	</div>
 
 
 </div>
@@ -231,13 +237,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_CAPTION_ALIGNMENT($event)"
  (change)="onChange_CAPTION_ALIGNMENT($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrCAPTION_ALIGNMENT"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrCAPTION_ALIGNMENT" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'CAPTION_ALIGNMENT'"
+		 		 [formControlName]="'CAPTION_ALIGNMENT'"
 					#CAPTION_ALIGNMENT ></kendo-radiobutton> 
 				<kendo-label  [for]="CAPTION_ALIGNMENT " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 
@@ -266,17 +274,19 @@
 		<legend *ngIf="FormStepsArr[2].visible" class="divTitle">{{FormStepsArr[2].CODETEXT_LANG}}</legend>
 		<div *ngIf="FormStepsArr[2].visible"  class="form-div">
 <div [ngClass]="isPhonePortrait || customerFacing ? 'wrapno1' : 'wrap' ">
+	<div class="form-field"  [ngClass]="(labelIMAGE_SELECT_ABLTop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_SELECT_ABL >
 		<button  (valueChange)="onValueChange_IMAGE_SELECT_ABL($event)"  style="height : 30px ;"    adaptiveMode="auto" 		 class="k-button k-primary" kendoButton  
-		 title="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.IMAGE_SELECT_ABL_Hint','Please enter Image Select Abl.')" 
- iconClass="fas fa-image"  *ngIf=visibleIMAGE_SELECT_ABL 		(click)="ON_CLICK_IMAGE_SELECT_ABL($event)"
+		 [title]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.IMAGE_SELECT_ABL_Hint','Please enter Image Select Abl.')" 
+ [icon]="'image'" 		(click)="ON_CLICK_IMAGE_SELECT_ABL($event)"
  >{{starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.IMAGE_SELECT_ABL','...')}}</button>
+	</div>
 
 	<kendo-formfield class="form-field" [orientation]="'horizontal'" [ngClass]="(labelIMAGE_NAMETop || (isPhonePortrait && !customerFacing) ) ? 'displayBlock' : 'standard' "  *ngIf=visibleIMAGE_NAME >
 		<kendo-label *ngIf="(!labelIMAGE_NAMETop && !isPhonePortrait) && labelIMAGE_NAMEVisible" class="form-label" 
 			 [text]="starServices.getNLS([],'SCD_ABL_ARROW_BUTTON_LABEL.scdarrowButtonLabelScdAblArrowButtonLabel.IMAGE_NAME','Image Name')"></kendo-label>
 			 <input style="display:none" [ngClass]="customerFacing ?  'summaryClass' : 'form-input' "  formControlName="IMAGE_NAME"
  #IMAGE_NAME /> 
-			 <kendo-avatar shape="rounded" [imageSrc]="form.value.IMAGE_NAME" width="100px" height="100px"       adaptiveMode="auto" 			 (click)="form.markAsTouched()"></kendo-avatar> 
+			 <kendo-avatar shape="rounded" [imageSrc]="form.value.IMAGE_NAME" width="50px" height="50px"       adaptiveMode="auto" 			 (click)="form.markAsTouched()"></kendo-avatar> 
 	</kendo-formfield>
 	<kendo-formfield *ngIf="form.touched&&componentConfig.enabled"   [orientation]="'horizontal'" > 
 		<textarea kendoTextArea  style="resize: both;" class="form-input-double"  
@@ -388,13 +398,15 @@
 		<ul class="k-radio-list-horizontal" 		(click)="ON_CLICK_IMAGE_ALIGNMENT($event)"
  (change)="onChange_IMAGE_ALIGNMENT($event)" 
 >
-			<li class="k-radio-item" *ngFor="let item of lkpArrIMAGE_ALIGNMENT"     adaptiveMode="auto" >
+			<ng-container *ngFor="let item of lkpArrIMAGE_ALIGNMENT" >
+			  <li class="k-radio-item" *ngIf="item.CODE !== '' "     adaptiveMode="auto" >
 				<kendo-radiobutton value={{item.CODE}} 
- [formControlName]="'IMAGE_ALIGNMENT'"
+		 		 [formControlName]="'IMAGE_ALIGNMENT'"
 					#IMAGE_ALIGNMENT ></kendo-radiobutton> 
 				<kendo-label  [for]="IMAGE_ALIGNMENT " 
 					text={{item.CODETEXT_LANG}}></kendo-label>
-			</li>
+			  </li>
+			</ng-container>
 		</ul>
 	</div>
 </div>

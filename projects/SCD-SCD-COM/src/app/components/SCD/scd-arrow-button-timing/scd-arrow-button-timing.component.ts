@@ -109,7 +109,7 @@ export class ScdArrowButtonTimingComponent implements OnInit {
      this.SCD_SHAPEForm_0Config.insertable = false;
    }
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
-   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General1");
+   this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.isChild = true;
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.masterSelector = 'app-scd-arrow-button-timing';
    this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.showToolBar = !this.visibleOK_BTNS; 
@@ -357,7 +357,7 @@ export class ScdArrowButtonTimingComponent implements OnInit {
              this.SCD_SHAPEForm_0Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID1","Common");
              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config = new componentConfigDef();
              this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.languageChanged = ComponentConfig.languageChanged;
-             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General1");
+             this.SCD_BUTTON_PUSH_GENERALFormdivs_1Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID2","General");
              this.SCD_ALARMFormtabs_2Config = new componentConfigDef();
              this.SCD_ALARMFormtabs_2Config.languageChanged = ComponentConfig.languageChanged;
              this.SCD_ALARMFormtabs_2Config.title = this.starServices.getNLS([],"scd_arrow_button_timing.scd_arrow_button_timing.compsTitleID3","States");
